@@ -260,6 +260,14 @@ def create_app():
     except Exception as e:
         logger.warning(f"Could not register Research API: {e}")
     
+    # Register Volatility Surface API Blueprint (Agent-1B)
+    try:
+        from .api.volsurface import register_blueprints as register_vol_blueprints
+        register_vol_blueprints(server)
+        logger.info("✅ Registered Volatility Surface API: /api/volsurface/*, /admin/vollab/*")
+    except Exception as e:
+        logger.warning(f"Could not register Volatility Surface API: {e}")
+    
     # ========================================================================
     # STEP 3: Create Dash Application
     # ========================================================================
