@@ -562,9 +562,9 @@ def _build_datatable(df):
                 'week_start_price': r.get('week_start_price_raw'),
                 'profit_loss': r.get('profit_loss_raw')
             }
-        hidden_json = html.Pre(_json.dumps({'prices': price_map}, default=str), id='wp-prices-json', style={'display': 'none'})
+        hidden_json = html.Pre(_json.dumps({'prices': price_map}, default=str), id='wp-prices-json-weekly', style={'display': 'none'})
     except Exception:
-        hidden_json = html.Div(id='wp-prices-json', style={'display': 'none'})
+        hidden_json = html.Div(id='wp-prices-json-weekly', style={'display': 'none'})
 
     # Format data for display
     df_display['current_price'] = df_display['current_price'].apply(lambda x: f"${x:.2f}" if pd.notna(x) else "N/A")
@@ -644,9 +644,9 @@ def layout():
                     'week_start_price': row.get('week_start_price') if 'week_start_price' in df.columns else None,
                     'profit_loss': row.get('profit_loss') if 'profit_loss' in df.columns else None
                 }
-        hidden_json = html.Pre(_json.dumps({'prices': hidden_prices}, default=str), id='wp-prices-json', style={'display': 'none'})
+        hidden_json = html.Pre(_json.dumps({'prices': hidden_prices}, default=str), id='wp-prices-json-weekly', style={'display': 'none'})
     except Exception:
-        hidden_json = html.Div(id='wp-prices-json', style={'display': 'none'})
+        hidden_json = html.Div(id='wp-prices-json-weekly', style={'display': 'none'})
 
     return html.Div([
         # Header
@@ -959,9 +959,9 @@ def register_callbacks(app, SH=None):
                     'week_start_price': r.get('week_start_price_raw'),
                     'profit_loss': r.get('profit_loss_raw')
                 }
-            hidden_json = html.Pre(_json.dumps({'prices': price_map}, default=str), id='wp-prices-json', style={'display': 'none'})
+            hidden_json = html.Pre(_json.dumps({'prices': price_map}, default=str), id='wp-prices-json-weekly', style={'display': 'none'})
         except Exception:
-            hidden_json = html.Div(id='wp-prices-json', style={'display': 'none'})
+            hidden_json = html.Div(id='wp-prices-json-weekly', style={'display': 'none'})
 
         # Format data for display (apply formatting to DataFrame)
         df_display['current_price'] = df_display['current_price'].apply(lambda x: f"${x:.2f}" if pd.notna(x) else "N/A")

@@ -1,0 +1,200 @@
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   ✅ Created layout for azure_ml_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 🤖 Azure ML Lab
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   ✅ Successfully added tab azure_ml_lab to tabs list
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO - 🔍 Processing tab: weekly_picks
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   📋 Tab info: Weekly Picks
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   🔧 Found layout function for weekly_picks
+2025-11-18 19:57:20,102 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,102 - financial_dashboard.tabs.weekly_picks - INFO - ✅ CACHE HIT: Using cached weekly picks (age: 2.6s)
+2025-11-18 19:57:20,106 - financial_dashboard.index - INFO -   ✅ Created layout for weekly_picks, content type: <class 'dash.html.Div.Div'>
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Weekly Picks
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO -   ✅ Successfully added tab weekly_picks to tabs list
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO - 🔍 Processing tab: monthly_picks
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO -   📋 Tab info: Monthly Picks
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO -   🔧 Found layout function for monthly_picks
+2025-11-18 19:57:20,107 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,107 - financial_dashboard.tabs.monthly_picks - INFO - ✅ CACHE HIT: Using cached monthly picks (age: 2.5s / TTL: 300s)
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   ✅ Created layout for monthly_picks, content type: <class 'dash.html.Div.Div'>
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Monthly Picks
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   ✅ Successfully added tab monthly_picks to tabs list
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO - 🔍 Processing tab: market_trends
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   📋 Tab info: Market Trends
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   🔧 Found layout function for market_trends
+2025-11-18 19:57:20,112 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,123 - financial_dashboard.tabs.market_trends - INFO - ✅ Layout cache load: SUCCESS - 15 tickers
+2025-11-18 19:57:20,128 - financial_dashboard.tabs.market_trends - INFO - 🎨 _render_initial_table_from_cache called with: <class 'dict'> - True
+2025-11-18 19:57:20,128 - financial_dashboard.tabs.market_trends - INFO - 📊 Attempting to render table from 15 tickers
+2025-11-18 19:57:20,208 - financial_dashboard.tabs.market_trends - INFO - ✅ Rendering table with 15 rows
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   ✅ Created layout for market_trends, content type: <class 'dash.html.Div.Div'>
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Market Trends
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   ✅ Successfully added tab market_trends to tabs list
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO - 🔍 Processing tab: market_forecast
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   📋 Tab info: Market Forecast
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   🔧 Found layout function for market_forecast
+2025-11-18 19:57:20,213 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   ✅ Created layout for market_forecast, content type: <class 'dash.html.Div.Div'>
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Market Forecast
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   ✅ Successfully added tab market_forecast to tabs list
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO - 🔍 Processing tab: volatility_lab
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   📋 Tab info: ⚡ Volatility Lab
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   🔧 Found layout function for volatility_lab
+2025-11-18 19:57:20,214 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   ✅ Created layout for volatility_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: ⚡ Volatility Lab
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   ✅ Successfully added tab volatility_lab to tabs list
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO - 🔍 Processing tab: portfolio
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   📋 Tab info: Portfolio
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   🔧 Found layout function for portfolio
+2025-11-18 19:57:20,215 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,215 - financial_dashboard.tabs.portfolio - INFO - Loaded portfolio cache for layout preload: /home/aarav/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-11-18 19:57:20,216 - financial_dashboard.tabs.portfolio_positions - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-11-18 19:57:20,219 - financial_dashboard.tabs.portfolio_positions - INFO - ✅ Server-side positions table rendered successfully
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   ✅ Created layout for portfolio, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Portfolio
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   ✅ Successfully added tab portfolio to tabs list
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO - 🔍 Processing tab: options_lab
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   📋 Tab info: 💹 Options Lab
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   🔧 Found layout function for options_lab
+2025-11-18 19:57:20,220 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-18 19:57:20,221 - financial_dashboard.index - INFO -   ✅ Created layout for options_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-18 19:57:20,221 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 💹 Options Lab
+2025-11-18 19:57:20,222 - financial_dashboard.index - INFO -   ✅ Successfully added tab options_lab to tabs list
+2025-11-18 19:57:20,222 - financial_dashboard.index - INFO - ✅ Created 12 tabs total
+2025-11-18 19:57:20,222 - financial_dashboard.app - INFO - Sanitizing layout to prevent React rendering errors...
+2025-11-18 19:57:20,223 - financial_dashboard.utils.component_sanitizer - INFO - Sanitizing layout...
+2025-11-18 19:57:20,224 - financial_dashboard.utils.component_sanitizer - INFO - ✅ Layout sanitization complete
+2025-11-18 19:57:20,224 - financial_dashboard.app - INFO - ✅ Layout set with 12 tabs
+2025-11-18 19:57:20,224 - financial_dashboard.app - INFO - Step 5: Registering callbacks...
+2025-11-18 19:57:20,224 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Starting callback registration. app object id: 140608207920896, type: <class 'dash.dash.Dash'>
+2025-11-18 19:57:20,224 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for 🏠 Home
+2025-11-18 19:57:20,224 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for 🏠 Home
+2025-11-18 19:57:20,224 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 4 entries after 🏠 Home
+2025-11-18 19:57:20,224 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-11-18 19:57:20,225 - financial_dashboard.tabs.market_trends_callbacks_fixed - INFO - Fixed callbacks registered successfully
+2025-11-18 19:57:20,225 - financial_dashboard.tabs.market_trends - INFO - ✅ Market Trends: Cache Manager and News Manager initialized
+2025-11-18 19:57:20,225 - financial_dashboard.tabs.market_trends - INFO - ✅ Market Trends: Fixed callbacks registered
+2025-11-18 19:57:20,225 - financial_dashboard.callbacks - ERROR - Error registering callbacks for Market Trends: allow_duplicate requires prevent_initial_call to be True. The order of the call is not guaranteed to be the same on every page load. To enable duplicate callback with initial call, set prevent_initial_call='initial_duplicate'  or globally in the config prevent_initial_callbacks='initial_duplicate'
+2025-11-18 19:57:20,234 - financial_dashboard.callbacks - ERROR - Traceback (most recent call last):
+  File "/home/aarav/unified-dashboard/financial_dashboard/callbacks.py", line 34, in register_all_callbacks
+    callback_func(app)
+  File "/home/aarav/unified-dashboard/financial_dashboard/tabs/market_trends.py", line 1151, in register_callbacks
+    @app.callback(
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/dash.py", line 1354, in callback
+    return _callback.callback(
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_callback.py", line 206, in callback
+    return register_callback(
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_callback.py", line 612, in register_callback
+    callback_id = insert_callback(
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_callback.py", line 265, in insert_callback
+    _validate.validate_duplicate_output(
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_validate.py", line 583, in validate_duplicate_output
+    _valid(o)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_validate.py", line 574, in _valid
+    raise exceptions.DuplicateCallback(
+dash.exceptions.DuplicateCallback: allow_duplicate requires prevent_initial_call to be True. The order of the call is not guaranteed to be the same on every page load. To enable duplicate callback with initial call, set prevent_initial_call='initial_duplicate'  or globally in the config prevent_initial_callbacks='initial_duplicate'
+
+2025-11-18 19:57:20,234 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Forecast
+2025-11-18 19:57:20,234 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for Market Forecast
+2025-11-18 19:57:20,234 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 10 entries after Market Forecast
+2025-11-18 19:57:20,234 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Volatility Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for ⚡ Volatility Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 14 entries after ⚡ Volatility Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 18 entries after 📊 Attribution Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Strategy Lab
+2025-11-18 19:57:20,235 - financial_dashboard.tabs.strategy_lab.callbacks - INFO - ✅ Strategy Lab callbacks registered successfully (8 callbacks)
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for ⚡ Strategy Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 26 entries after ⚡ Strategy Lab
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-11-18 19:57:20,235 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for Monthly Picks
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 28 entries after Monthly Picks
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for Weekly Picks
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 30 entries after Weekly Picks
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-11-18 19:57:20,236 - financial_dashboard.tabs.portfolio - INFO - Portfolio database initialized
+2025-11-18 19:57:20,236 - financial_dashboard.tabs.portfolio_factors - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-11-18 19:57:20,236 - financial_dashboard.tabs.portfolio - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for Portfolio
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 41 entries after Portfolio
+2025-11-18 19:57:20,236 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-11-18 19:57:20,237 - financial_dashboard.tabs.options_lab.callbacks - INFO - ✅ Options Lab callbacks registered successfully
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 52 entries after 💹 Options Lab
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-11-18 19:57:20,237 - financial_dashboard.tabs.research_lab.callbacks - INFO - ✓ Registered Research Lab callbacks
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 61 entries after 🔬 Research Lab
+2025-11-18 19:57:20,237 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Attempting to register callbacks for 🤖 Azure ML Lab
+2025-11-18 19:57:20,237 - financial_dashboard.tabs.azure_ml_lab.callbacks - INFO - 📌 Registering Azure ML Lab callbacks (Phase 20B Complete)
+2025-11-18 19:57:20,238 - financial_dashboard.tabs.azure_ml_lab.callbacks - INFO - ✅ Azure ML Lab callbacks registered (9 callbacks)
+2025-11-18 19:57:20,238 - financial_dashboard.callbacks - INFO - ✓ Registered callbacks for 🤖 Azure ML Lab
+2025-11-18 19:57:20,238 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Callback map now has 70 entries after 🤖 Azure ML Lab
+2025-11-18 19:57:20,238 - financial_dashboard.callbacks - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 72
+2025-11-18 19:57:20,238 - financial_dashboard.app - INFO - ✅ Registered 72 callbacks
+2025-11-18 19:57:20,238 - financial_dashboard.app - INFO - ======================================================================
+2025-11-18 19:57:20,238 - financial_dashboard.app - INFO - ✅ Application created successfully!
+2025-11-18 19:57:20,238 - financial_dashboard.app - INFO - ======================================================================
+2025-11-18 19:57:20,238 - __main__ - INFO - Application created successfully!
+2025-11-18 19:57:20,238 - __main__ - INFO - 
+2025-11-18 19:57:20,238 - __main__ - INFO - ============================================================
+2025-11-18 19:57:20,238 - __main__ - INFO - Dashboard is starting on http://0.0.0.0:8090
+2025-11-18 19:57:20,238 - __main__ - INFO - ============================================================
+2025-11-18 19:57:20,238 - __main__ - INFO - 
+2025-11-18 19:57:20,238 - __main__ - INFO - Press CTRL+C to stop the server
+2025-11-18 19:57:20,238 - __main__ - INFO - 
+Dash is running on http://0.0.0.0:8090/
+
+2025-11-18 19:57:20,238 - dash.dash - INFO - Dash is running on http://0.0.0.0:8090/
+
+ * Serving Flask app 'financial_dashboard.app'
+ * Debug mode: off
+2025-11-18 19:57:20,246 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8090
+ * Running on http://172.28.84.22:8090
+2025-11-18 19:57:20,247 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-18 19:57:27,605 - financial_dashboard.app - ERROR - Exception on /_dash-update-component [POST]
+Traceback (most recent call last):
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/flask/app.py", line 915, in full_dispatch_request
+    rv = self.preprocess_request()
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/flask/app.py", line 1291, in preprocess_request
+    rv = self.ensure_sync(before_func)()
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/dash.py", line 1527, in _setup_server
+    _validate.validate_layout(self.layout, self._layout_value())
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_validate.py", line 456, in validate_layout
+    _validate(layout_value)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_validate.py", line 443, in _validate
+    _validate_id(component)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/_validate.py", line 433, in _validate_id
+    raise exceptions.DuplicateIdError(
+dash.exceptions.DuplicateIdError: Duplicate component id found in the initial layout: `wp-prices-json`
+2025-11-18 19:57:27,615 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 19:57:27] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 500 -
+2025-11-18 19:57:27,682 - financial_dashboard.tabs.monthly_picks - INFO - 🔵 Monthly Picks refresh triggered: n_clicks=0, n_intervals=73
+[MonthlyPicks] Refresh triggered! n_clicks=0, n_intervals=73
+2025-11-18 19:57:27,683 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 19:57:27] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+2025-11-18 19:57:27,848 - financial_dashboard.tabs.weekly_picks - INFO - 🔵 Weekly Picks refresh triggered: n_clicks=0, n_intervals=75
+[WeeklyPicks] Refresh triggered! n_clicks=0, n_intervals=75
+2025-11-18 19:57:27,848 - financial_dashboard.tabs.weekly_picks - WARNING - [CALLBACK] SH id: 140609239270320, RESULTS_CACHE id: 140609239293760, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py, cache_len: 62
+[CALLBACK] SH id: 140609239270320, RESULTS_CACHE id: 140609239293760, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py, cache_len: 62
+2025-11-18 19:57:27,848 - financial_dashboard.tabs.weekly_picks - INFO - ✅ CACHE HIT: Using cached weekly picks (age: 10.3s)
+2025-11-18 19:57:27,849 - financial_dashboard.tabs.weekly_picks - INFO - Weekly Picks: DB presence check failed: (psycopg2.errors.UndefinedTable) relation "picks" does not exist
+LINE 1: SELECT count(*) as c FROM picks
+                                  ^
+
+[SQL: SELECT count(*) as c FROM picks]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-11-18 19:57:27,849 - financial_dashboard.tabs.weekly_picks - INFO - Weekly Picks: summary source after DB check = db
+2025-11-18 19:57:27,850 - financial_dashboard.tabs.weekly_picks - INFO - 🔵 [WeeklyPicks] Rendering 5 rows with columns: ['rank', 'ticker', 'current_price', 'daily_change', 'week_start_price', 'profit_loss']
+[WeeklyPicks] DataTable callback fired - building table with 5 rows
+2025-11-18 19:57:27,854 - financial_dashboard.tabs.weekly_picks - INFO - ✅ [WeeklyPicks] DataTable created with 5 rows
+2025-11-18 19:57:27,885 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 19:57:27] "POST /_dash-update-component HTTP/1.1" 200 -
+2025-11-18 19:57:27,999 - financial_dashboard.tabs.monthly_picks - INFO - 🔵 Monthly Picks refresh triggered: n_clicks=0, n_intervals=74
+[MonthlyPicks] Refresh triggered! n_clicks=0, n_intervals=74
+2025-11-18 19:57:28,000 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 19:57:28] "[35m[1mPOST /_dash-update-component HTTP/1.1[0m" 204 -
+2025-11-18 19:57:55,008 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 19:57:55] "GET / HTTP/1.1" 200 -

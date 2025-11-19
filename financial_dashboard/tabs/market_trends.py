@@ -1157,7 +1157,7 @@ def register_callbacks(app):
         Input('dashboard-tabs', 'active_tab'),
         State('current-job', 'data'),  # BUGFIX: Check if job is running
         State('trends-last-cached', 'data'),  # PHASE 3: Compare timestamps
-        prevent_initial_call=False  # Callback must fire when tab changes
+        prevent_initial_call='initial_duplicate'  # Allow initial call while permitting allow_duplicate outputs
     )
     def render_on_tab_activation(active_tab, job_id, last_cached_timestamp):
         """
