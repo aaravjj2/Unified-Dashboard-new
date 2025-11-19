@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-10-30T16:16:29.311027",
+  "models_trained": 3,
+  "results": [
+    {
+      "model": "forecast",
+      "r2_score": 0.9889120061923803,
+      "rmse": 2.1366084201490554,
+      "samples": 10000,
+      "features": 8
+    },
+    {
+      "model": "clustering",
+      "silhouette_score": 0.38043237822274234,
+      "n_clusters": 5,
+      "samples": 5000,
+      "features": 5
+    },
+    {
+      "model": "strategy",
+      "r2_score": 0.9411088138374472,
+      "rmse": 5.854706885941296,
+      "samples": 8000,
+      "features": 8
+    }
+  ],
+  "models_dir": "/mnt/c/Aarav/fin_env/unified-dashboard/models"
+}

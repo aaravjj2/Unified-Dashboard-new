@@ -1,0 +1,22 @@
+{
+  "total_expected_tabs": 13,
+  "tab_indicators_found": 1,
+  "tab_indicators": {
+    "command_center": false,
+    "home": false,
+    "market_trends": false,
+    "market_forecast": false,
+    "volatility_lab": false,
+    "attribution_lab": false,
+    "strategy_lab": false,
+    "monthly_picks": false,
+    "weekly_picks": false,
+    "portfolio": true,
+    "options_lab": false,
+    "research_lab": false,
+    "azure_ml_lab": false
+  },
+  "page_contains_tabs": true,
+  "page_contains_dash": true,
+  "content_length": 8028
+}

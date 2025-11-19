@@ -1,0 +1,192 @@
+8056
+bash
+powershell
+ls
+cat
+echo
+touch
+rm
+mkdir
+cp
+mv
+chmod
+sed
+awk
+grep
+egrep
+jq
+tee
+tail
+head
+print
+printf
+python
+python3
+C:\Aarav\fin_env\Scripts\python.exe
+/mnt/c/Aarav/fin_env/.venv_local/bin/python3
+/mnt/c/Aarav/fin_env/.venv_rag/bin/python
+pip
+gunicorn
+uvicorn
+gradio
+bentoml
+./start_all.sh
+./stop_all.sh
+ps
+kill
+pkill
+nohup
+setsid
+source
+C:/Aarav/fin_env/Scripts/Activate.ps1
+export
+sudo
+tmux
+curl
+netstat
+lsof
+fuser
+pytest
+flake8
+mypy
+bandit
+docker
+docker-compose
+trivy
+DOCKER_BUILDKIT=1
+python -c "import requests; r=requests.get('http://127.0.0.1:8051', timeout=5); open('c:/Aarav/dashboard_page.html','w',encoding='utf-8').write(r.text); print('saved', len(r.text))"
+powershell -NoProfile -Command "Get-Command msedge.exe -ErrorAction SilentlyContinue | Select-Object Source,Path -First 1 ; if (-not (Get-Command msedge.exe -ErrorAction SilentlyContinue)) { Get-ChildItem 'C:\Program Files*' -Filter 'msedge.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName -First 5 }"
+sleep 2; echo 'tail last 80 lines of batch log:'; tail -n 80 logs/batch_hw3_mistral7b.log || true; echo ''; echo 'ls -l tools/hw3_results_mistral7b.csv (if created)'; ls -l tools/hw3_results_mistral7b.csv || true
+curl -sS -D /tmp/headers.txt http://127.0.0.1:8050/_dash-layout -o /tmp/dash_layout_raw.txt || true; echo '--- headers ---'; sed -n '1,200p' /tmp/headers.txt; echo '--- body (first 400 chars) ---'; head -c 400 /tmp/dash_layout_raw.txt | sed -n '1,200p'
+sleep 1; ps -p $(cat run_market_trends.pid) -o pid,cmd,etimes,stat || true
+curl -sS -X POST http://127.0.0.1:8001/chat -H "Content-Type: application/json" -d '{"question":"power dissipated in 10 ohm with 2 A","history":[]}' | sed -n '1,200p'
+cd /mnt/c/Aarav/fin_env/Dash && python3 -c "
+from utils import trade_utils
+
+result = trade_utils.compute_position_size(
+    prediction=0.08,
+    volatility=0.25,
+    max_notional=100_000,
+    adv=100_000,  # Low ADV
+    method='volatility'
+)
+
+print('Position size dollars:', result['position_size_dollars'])
+print('Position pct:', result['position_pct'])
+print('Constraints:', result['constraints'])
+print('10% of ADV:', 100_000 * 0.10)
+print('10% of max_notional:', 100_000 * 0.10)
+"
+echo "Testing Portfolio Service directly:" && curl -s -X POST http://localhost:8056/api/jobs -H "Content-Type: application/json" -d '{"analysis_type":"positions"}' | python3 -m json.tool | head -20 && echo -e "\n---\nTesting through Gateway:" && curl -s -X POST http://localhost:8049/api/portfolio/jobs -H "Content-Type: application/json" -d '{"analysis_type":"positions"}' 2>&1 | head -10
+docker ps -a --format 'table {{.Names}}\t{{.Status}}'
+timeout
+\
+.Names}}\t
+.Status}}"
+"strategy":
+}
+}}'
+data=json.load(sys.stdin)
+data['total_return_pct']:.2f}%,
+data['total_trades']},
+data['win_rate']:.1f}%\")"
+error"
+failed"
+"tickers":
+./validate_all_services.sh
+true
+cd /mnt/c/Aarav/fin_env/Dash && python3 -c "from index import app; print('✓ index.py imports successfully')"
+./validate_sprint_0.sh
+'Architecture':
+category}:'
+test_name}')
+passed}
+failed}
+:8049
+:8050
+:8051
+:8052
+:8053
+:8054
+:8056
+:8058
+:8060
+:8062
+:8064
+:44277
+:41909
+:3484)
+sudo ss -tulnp | awk '/:8000 /{print $0}' || true
+#
+do
+then
+target=""
+$target"
+time
+.Repository}}\t
+.Tag}}\t
+.ID}}\t
+.CreatedAt}}\t
+.Size}}"
+fin"
+dash-"
+.Image}}\t
+.Ports}}"
+ss
+.Status}}\t
+json
+FINNHUB_API_KEY:-dummy}
+POLYGON_API_KEY:-dummy}
+docker network inspect bridge --format '{{json .Containers}}' || true
+LOGFILE=run_logs/compose_logs_$(date
+"$LOGFILE"
+run_logs/compose_logs.pid
+ALPACA"
+docker exec fin_dash_portfolio python3 -c "import os; print('APCA_API_KEY_ID:', os.getenv('APCA_API_KEY_ID')); print('APCA_API_KEY:', os.getenv('APCA_API_KEY')); print('ALPACA_API_KEY:', os.getenv('ALPACA_API_KEY')); print('APCA_API_SECRET_KEY:', os.getenv('APCA_API_SECRET_KEY')); print('ALPACA_API_SECRET:', os.getenv('ALPACA_API_SECRET'))"
+account"
+started"
+Exception
+Traceback"
+sys.path.insert(0,
+importlib.import_module('tabs.home')
+"tickers":["SPY","QQQ","DIA"],"period":"1mo","interval":"1d","options":false,"news":false,"topn":10}'
+"tickers":["SPY","QQQ","DIA"],
+xargs
+}
+set
+git rm
+git add
+git commit
+git push
+git gc
+git repack
+git filter-branch
+git lfs
+.gitattributes
+'EOF'
+git branch backup-before-lfs-$(date +%Y%m%d%H%M%S)
+git reflog
+git branch backup-before-lfs-$(date +%Y%m%d%H%M%S)
+doppler
+comm
+FS="="}
+'PY'
+m.group(1).upper()}\")",
+m.group(1).upper()}\"]"),
+m.group(1).upper()}"),
+([A-Za-z0-9_]+)\}"),
+m.group(1).upper()}}}"),
+2_000_000:
+'portfolio_value':
+})
+utils/db_utils.py
+self.db_user}:
+self.db_password}@
+self.db_host}:5432/
+self.db_name}"
+self.db_host}")
+e}")
+tests/test_final_validation.py
+scripts/run_local_tests.sh
+service_name
+"}, 

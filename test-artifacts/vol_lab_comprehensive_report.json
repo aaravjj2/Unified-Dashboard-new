@@ -1,0 +1,115 @@
+{
+  "test_timestamp": "2025-10-27T11:03:11.342625",
+  "tab_visible": true,
+  "subtabs_count": 8,
+  "subtabs_details": {
+    "Historical HV": {
+      "name": "Historical HV",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 52,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_02_hv.png",
+      "html_content_length": 662347,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "IV Surface": {
+      "name": "IV Surface",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 56,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_03_iv.png",
+      "html_content_length": 683269,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "Correlation": {
+      "name": "Correlation",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 56,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_04_corr.png",
+      "html_content_length": 683305,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "Factor Analytics": {
+      "name": "Factor Analytics",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 56,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_05_factor.png",
+      "html_content_length": 683317,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "Advanced Charts": {
+      "name": "Advanced Charts",
+      "clickable": true,
+      "elements_found": {},
+      "screenshot": "vol_lab_06_advanced.png",
+      "html_content_length": 683330,
+      "errors": []
+    },
+    "Metrics Table": {
+      "name": "Metrics Table",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 56,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_07_metrics.png",
+      "html_content_length": 683330,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "Custom Scenarios": {
+      "name": "Custom Scenarios",
+      "clickable": true,
+      "elements_found": {
+        "inputs": 56,
+        "buttons": 97
+      },
+      "screenshot": "vol_lab_08_scenarios.png",
+      "html_content_length": 683330,
+      "errors": [
+        "ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      ]
+    },
+    "Alerts": {
+      "name": "Alerts",
+      "clickable": true,
+      "elements_found": {},
+      "screenshot": "vol_lab_09_alerts.png",
+      "html_content_length": 683330,
+      "errors": []
+    }
+  },
+  "screenshots": [
+    "vol_lab_00_homepage.png",
+    "vol_lab_01_tab_clicked.png",
+    "vol_lab_02_hv.png",
+    "vol_lab_03_iv.png",
+    "vol_lab_04_corr.png",
+    "vol_lab_05_factor.png",
+    "vol_lab_06_advanced.png",
+    "vol_lab_07_metrics.png",
+    "vol_lab_08_scenarios.png",
+    "vol_lab_09_alerts.png",
+    "vol_lab_99_final_state.png"
+  ],
+  "errors": []
+}

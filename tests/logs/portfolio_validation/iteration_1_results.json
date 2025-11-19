@@ -1,0 +1,57 @@
+{
+  "positions": {
+    "status": "PASS",
+    "has_table": true,
+    "tickers_found": [
+      "INTC"
+    ],
+    "ticker_count": 1,
+    "has_empty_state": false,
+    "has_closed_positions": false,
+    "snapshot": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/portfolio_snapshots/iter1_positions.png"
+  },
+  "orders": {
+    "status": "PASS",
+    "has_table": true,
+    "has_filled_orders": true,
+    "has_order_data": true,
+    "has_empty_state": false,
+    "row_count": 53,
+    "snapshot": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/portfolio_snapshots/iter1_orders.png"
+  },
+  "analytics": {
+    "status": "WARN",
+    "metrics": {
+      "var": false,
+      "cvar": false,
+      "sharpe": false,
+      "beta": false
+    },
+    "metrics_count": 0,
+    "graph_count": 4,
+    "has_calc_button": true,
+    "has_no_analytics": true,
+    "has_numeric_values": true,
+    "snapshot": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/portfolio_snapshots/iter1_analytics.png",
+    "reason": "Analytics not calculated - requires button click"
+  },
+  "factors": {
+    "status": "PASS",
+    "has_shap": true,
+    "has_factors": true,
+    "graph_count": 4,
+    "has_empty_state": false,
+    "snapshot": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/portfolio_snapshots/iter1_factors.png"
+  },
+  "optimization": {
+    "status": "WARN",
+    "input_count": 47,
+    "button_count": 53,
+    "has_optimize_btn": true,
+    "has_ticker_input": true,
+    "graph_count_before": 4,
+    "snapshot_before": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/portfolio_snapshots/iter1_optimization_before.png",
+    "interaction_attempted": false,
+    "interaction_error": "Locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"input[placeholder*=\\\"ticker\\\" i]\").first\n    - locator resolved to <input value=\"\" step=\"any\" type=\"text\" class=\"dash-input\" id=\"mf-ticker-input\" placeholder=\"Or enter comma-separated tickers (e.g. AAPL,TSLA,IBM)\"/>\n    - fill(\"AAPL,MSFT,GOOGL,NVDA\")\n  - attempting fill action\n    2 \u00d7 waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n      - waiting 100ms\n    60 \u00d7 waiting for element to be visible, enabled and editable\n       - element is not visible\n     - retrying fill action\n       - waiting 500ms\n"
+  }
+}

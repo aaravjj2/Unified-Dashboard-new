@@ -1,0 +1,29 @@
+{
+  "/_dash-layout": {
+    "status_code": 200,
+    "response_time_ms": 96.844,
+    "content_type": "application/json",
+    "content_length": 308795,
+    "valid_json": true,
+    "json_keys": [
+      "props",
+      "type",
+      "namespace"
+    ]
+  },
+  "/_dash-dependencies": {
+    "status_code": 200,
+    "response_time_ms": 6.768,
+    "content_type": "application/json",
+    "content_length": 24128,
+    "valid_json": true,
+    "json_keys": "array"
+  },
+  "/_dash-component-suites": {
+    "status_code": 200,
+    "response_time_ms": 14.873000000000001,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": 8028,
+    "valid_json": false
+  }
+}

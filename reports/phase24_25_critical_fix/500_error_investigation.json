@@ -1,0 +1,34 @@
+[
+  {
+    "test_name": "Empty POST",
+    "status_code": 500,
+    "success": false,
+    "response_size": 265,
+    "content_type": "text/html; charset=utf-8",
+    "response_preview": "<!doctype html>\n<html lang=en>\n<title>500 Internal Server Error</title>\n<h1>Internal Server Error</h1>\n<p>The server encountered an internal error and was unable to complete your request. Either the s"
+  },
+  {
+    "test_name": "Valid Dash Callback Structure",
+    "status_code": 500,
+    "success": false,
+    "response_size": 265,
+    "content_type": "text/html; charset=utf-8",
+    "response_preview": "<!doctype html>\n<html lang=en>\n<title>500 Internal Server Error</title>\n<h1>Internal Server Error</h1>\n<p>The server encountered an internal error and was unable to complete your request. Either the s"
+  },
+  {
+    "test_name": "Real Portfolio Callback",
+    "status_code": 500,
+    "success": false,
+    "response_size": 265,
+    "content_type": "text/html; charset=utf-8",
+    "response_preview": "<!doctype html>\n<html lang=en>\n<title>500 Internal Server Error</title>\n<h1>Internal Server Error</h1>\n<p>The server encountered an internal error and was unable to complete your request. Either the s"
+  },
+  {
+    "test_name": "GET Request (should fail)",
+    "status_code": 200,
+    "success": true,
+    "response_size": 7658,
+    "content_type": "text/html; charset=utf-8",
+    "response_preview": "Success"
+  }
+]

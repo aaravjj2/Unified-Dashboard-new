@@ -1,0 +1,51 @@
+
+🚀 Phase 20A UI Clicker Test - Azure ML Lab
+
+🌐 Loading http://localhost:8050...
+📸 Screenshot 1: Homepage
+
+🔍 Looking for Azure ML Lab tab...
+   Trying selector: text=Azure ML Lab
+   ✅ Clicked with: text=Azure ML Lab
+📸 Screenshot 2: Azure ML Lab tab
+
+🔍 Looking for Run Prediction button...
+   Trying selector: button:has-text("Run Prediction")
+   ✅ Clicked with: button:has-text("Run Prediction")
+
+⏳ Waiting for prediction to complete (15 seconds)...
+📸 Screenshot 3: After Run Prediction
+
+🔍 Checking for prediction results...
+
+📊 Results Analysis:
+   Phase 20A indicators: ❌
+   Azure ML mention: ✅
+   Database save: ❌
+   Still using mock: ✅
+
+   Found 10 table(s) on page
+   Table 1: 1 rows
+   Table 2: 3 rows
+   Table 3: 5 rows
+   Table 4: 11 rows
+   Table 5: 10 rows
+   Table 6: 22 rows
+   Table 7: 22 rows
+   Table 8: 15 rows
+   Table 9: 4 rows
+   Table 10: 26 rows
+
+💾 Saved full page HTML to page_content_after_prediction.html
+
+🔍 Testing Insights button...
+   ✅ Clicked Insights button
+📸 Screenshot 4: After Insights click
+
+🔍 Testing Metrics button...
+   ⚠️  Metrics button not found or not clickable
+
+⏸️  Browser will stay open for 10 seconds for manual inspection...
+
+✅ Test Complete - Check screenshots and HTML files
+

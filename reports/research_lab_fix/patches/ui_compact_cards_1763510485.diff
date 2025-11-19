@@ -1,0 +1,75 @@
+diff --git a/assets/compact_cards.css b/assets/compact_cards.css
+new file mode 100644
+index 0000000..d153fdb
+--- /dev/null
++++ b/assets/compact_cards.css
+@@ -0,0 +1,43 @@
++/* Compact card styling for dashboards to reduce vertical stacking and spacing */
++
++.card {
++  margin-bottom: 0.5rem !important;
++  border-radius: 6px !important;
++}
++
++.card .card-body {
++  padding-top: 0.5rem !important;
++  padding-bottom: 0.5rem !important;
++  padding-left: 0.6rem !important;
++  padding-right: 0.6rem !important;
++}
++
++.lab-status-row .card {
++  min-height: 72px;
++  display: flex;
++  align-items: center;
++}
++
++.lab-status-row .card h5,
++.lab-status-row .card p,
++.lab-status-row .card small {
++  margin: 0 !important;
++  padding: 0 !important;
++}
++
++/* Reduce heading sizes in cards across tabs */
++.card h5 {
++  font-size: 1rem !important;
++}
++
++/* Make badges smaller */
++.badge {
++  padding: 0.25rem 0.45rem !important;
++  font-size: 0.72rem !important;
++}
++
++/* Tighter gutters for rows where used */
++.row.g-2 {
++  --bs-gutter-x: 0.5rem;
++  --bs-gutter-y: 0.5rem;
++}
+diff --git a/financial_dashboard/tabs/home_lab/layout.py b/financial_dashboard/tabs/home_lab/layout.py
+index 9f7f290..763cd80 100644
+--- a/financial_dashboard/tabs/home_lab/layout.py
++++ b/financial_dashboard/tabs/home_lab/layout.py
+@@ -103,9 +103,10 @@ def create_system_summary_section():
+                 ], className="mb-0")
+             ], color="info", className="mb-4"),
+             
+-            # Lab Status Cards
++            # Lab Status Cards (compact responsive grid)
+             html.H6("Lab Status Overview", className="mb-3 fw-bold"),
+-            dbc.Row(status_cards),
++            # Use bootstrap responsive row-cols to avoid tall stacked cards
++            dbc.Row(status_cards, className="lab-status-row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2"),
+             
+             # Diagnostic Button
+             dbc.Row([
+@@ -121,7 +122,7 @@ def create_system_summary_section():
+                         dbc.CardBody([
+                             html.H6("System Health", className="mb-2"),
+                             html.Div(system_health_children)
+-                        ])
++                        ], className="py-2 px-2")
+                     ], className="bg-light")
+                 ], md=6)
+             ])

@@ -1,0 +1,60 @@
+================================================================================
+MARKET TRENDS E2E TEST - CHROMIUM BROWSER
+================================================================================
+Started at: 2025-10-23 14:41:56
+
+📍 Step 1: Loading dashboard...
+   ✅ Dashboard loaded
+
+📍 Step 2: Clicking Market Trends tab...
+   Found tab with selector: #tab-market_trends (count: 1, attempt: 3)
+   ✅ Tab clicked successfully
+
+📍 Step 3: Verifying table rendered...
+   ✅ Table found (visible: True)
+   📊 Rows: 31
+   📸 Screenshot saved: e2e_after_tab_click.png
+
+📍 Step 4: Clicking Run Full Analysis button...
+   Found button with selector: #run-btn (visible: True)
+   ✅ Button clicked
+
+📍 Step 5: Waiting for analysis to complete...
+   ⏱️  10s elapsed... Status: Job job_1761244969152 is running...
+   ⏱️  20s elapsed... Status: Job job_1761244969152 is running...
+   ⏱️  30s elapsed... Status: Job job_1761244969152 is running...
+   ✅ Table updated at 31s (rows: 51)
+
+📍 Step 6: Verifying final state...
+   📊 Final row count: 51
+   🎯 Top 5 tickers:
+      1. 1WDCData
+      2. 2WBDData
+      3. 3STXData
+      4. 4AVAVData
+      5. 5CIFRData
+   📸 Screenshot saved: e2e_after_analysis.png
+
+📍 Step 7: Checking cache file...
+   ✅ Cache file found: outputs/market_brief.json
+   📦 Cache keys: ['detailed', 'tidy', 'timestamp', 'source']
+
+📍 Step 8: API Call Summary...
+   📞 Finnhub calls: 0
+   📞 Alpaca calls: 0
+
+   Console messages (last 10):
+      log: [Analysis Hub] Skipping - not on Analysis Hub/Unified Dashboard
+      log: [Portfolio Fix] Skipping - not on Portfolio/Unified Dashboard
+      log: [Research Lab Fix] Skipping - not on Research Lab
+      log: [Paste] DataTable not found yet, will retry...
+      log: [Paste] DataTable paste module loaded
+      log: [Paste] DataTable not found yet, will retry...
+      log: [Paste] DataTable not found yet, will retry...
+      log: [Paste] DataTable not found yet, will retry...
+      log: [Paste] DataTable not found yet, will retry...
+      log: [Paste] Paste listener attached to DataTable
+
+================================================================================
+TEST COMPLETE - Browser will close in 15 seconds
+================================================================================

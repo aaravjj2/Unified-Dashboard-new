@@ -1,0 +1,46 @@
+INFO:__main__:Found 1 HTML reports:
+INFO:__main__:  - outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_report.html
+INFO:__main__:
+INFO:__main__:================================================================================
+INFO:__main__:🌐 CHROMIUM SNAPSHOT VALIDATION
+INFO:__main__:================================================================================
+INFO:__main__:Reports to validate: 1
+INFO:__main__:
+INFO:__main__:📸 Capturing snapshots: report_01
+INFO:__main__:  ✅ Chart.js loaded on desktop
+INFO:__main__:  ✅ Found 2 charts on desktop
+INFO:__main__:  📸 Captured desktop screenshot: report_01_desktop.png
+INFO:__main__:    📊 Captured chart 1: report_01_desktop_chart1.png
+INFO:__main__:    📊 Captured chart 2: report_01_desktop_chart2.png
+INFO:__main__:  ✅ Chart.js loaded on tablet
+INFO:__main__:  ✅ Found 2 charts on tablet
+INFO:__main__:  📸 Captured tablet screenshot: report_01_tablet.png
+INFO:__main__:    📊 Captured chart 1: report_01_tablet_chart1.png
+INFO:__main__:    📊 Captured chart 2: report_01_tablet_chart2.png
+INFO:__main__:  ✅ Chart.js loaded on mobile
+INFO:__main__:  ✅ Found 2 charts on mobile
+INFO:__main__:  📸 Captured mobile screenshot: report_01_mobile.png
+INFO:__main__:    📊 Captured chart 1: report_01_mobile_chart1.png
+INFO:__main__:    📊 Captured chart 2: report_01_mobile_chart2.png
+WARNING:__main__:  ⚠️ External resource detected: src="http
+INFO:__main__:✅ Snapshot validation complete: report_01
+INFO:__main__:
+INFO:__main__:================================================================================
+INFO:__main__:📊 SNAPSHOT VALIDATION SUMMARY
+INFO:__main__:================================================================================
+INFO:__main__:Total Reports: 1
+INFO:__main__:Successful: 1
+INFO:__main__:Pass Rate: 100.0%
+INFO:__main__:
+INFO:__main__:Validation Checks:
+INFO:__main__:  chart_js_loaded: 1/1 (100.0%)
+INFO:__main__:  interactive_charts: 1/1 (100.0%)
+INFO:__main__:  responsive_design: 1/1 (100.0%)
+INFO:__main__:  offline_capable: 0/1 (0.0%)
+INFO:__main__:
+INFO:__main__:Total Screenshots: 3
+INFO:__main__:💾 Summary saved: outputs/phase7_chromium_snapshots/snapshot_validation_summary.json
+INFO:__main__:================================================================================
+INFO:__main__:
+INFO:__main__:✅ CHROMIUM SNAPSHOT VALIDATION COMPLETE
+INFO:__main__:📊 View screenshots in: outputs/phase7_chromium_snapshots

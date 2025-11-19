@@ -1,0 +1,1025 @@
+<!DOCTYPE html><html><head><style>input.dash-input:invalid {
+    outline: solid red;
+}
+
+input.dash-input:valid {
+    outline: none black;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL2Nzcy9pbnB1dC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxrQkFBa0I7QUFDdEI7O0FBRUE7SUFDSSxtQkFBbUI7QUFDdkIiLCJzb3VyY2VzQ29udGVudCI6WyJpbnB1dC5kYXNoLWlucHV0OmludmFsaWQge1xuICAgIG91dGxpbmU6IHNvbGlkIHJlZDtcbn1cblxuaW5wdXQuZGFzaC1pbnB1dDp2YWxpZCB7XG4gICAgb3V0bGluZTogbm9uZSBibGFjaztcbn1cbiJdLCJzb3VyY2VSb290IjoiIn0= */</style><style>.Select,.Select-control{position:relative}.Select-control,.Select-input>input{width:100%;cursor:default;outline:0}.Select-arrow-zone,.Select-clear-zone,.Select-loading-zone{text-align:center;cursor:pointer}.Select,.Select div,.Select input,.Select span{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.Select.is-disabled>.Select-control{background-color:#f9f9f9}.Select.is-disabled>.Select-control:hover{box-shadow:none}.Select.is-disabled .Select-arrow-zone{cursor:default;pointer-events:none;opacity:.35}.Select-control{background-color:#fff;border-radius:4px;border:1px solid #ccc;color:#333;display:table;border-spacing:0;border-collapse:separate;height:36px;overflow:hidden}.is-searchable.is-focused:not(.is-open)>.Select-control,.is-searchable.is-open>.Select-control{cursor:text}.Select-control:hover{box-shadow:0 1px 0 rgba(0,0,0,.06)}.Select-control .Select-input:focus{outline:0}.is-open>.Select-control{border-bottom-right-radius:0;border-bottom-left-radius:0;background:#fff;border-color:#b3b3b3 #ccc #d9d9d9}.is-open>.Select-control .Select-arrow{top:-2px;border-color:transparent transparent #999;border-width:0 5px 5px}.is-focused:not(.is-open)>.Select-control{border-color:#007eff;box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 0 3px rgba(0,126,255,.1)}.Select--single>.Select-control .Select-value,.Select-placeholder{bottom:0;color:#aaa;left:0;line-height:34px;padding-left:10px;padding-right:10px;position:absolute;right:0;top:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.has-value.Select--single>.Select-control .Select-value .Select-value-label,.has-value.is-pseudo-focused.Select--single>.Select-control .Select-value .Select-value-label{color:#333}.has-value.Select--single>.Select-control .Select-value a.Select-value-label,.has-value.is-pseudo-focused.Select--single>.Select-control .Select-value a.Select-value-label{cursor:pointer;text-decoration:none}.has-value.Select--single>.Select-control .Select-value a.Select-value-label:focus,.has-value.Select--single>.Select-control .Select-value a.Select-value-label:hover,.has-value.is-pseudo-focused.Select--single>.Select-control .Select-value a.Select-value-label:focus,.has-value.is-pseudo-focused.Select--single>.Select-control .Select-value a.Select-value-label:hover{color:#007eff;outline:0;text-decoration:underline}.Select-input{height:34px;padding-left:10px;padding-right:10px;vertical-align:middle}.Select-input>input{background:none;border:0;box-shadow:none;display:inline-block;font-family:inherit;font-size:inherit;margin:0;line-height:14px;padding:8px 0 12px;-webkit-appearance:none}.Select-loading,.Select-loading-zone{width:16px;position:relative;vertical-align:middle}.is-focused .Select-input>input{cursor:text}.has-value.is-pseudo-focused .Select-input{opacity:0}.Select-control:not(.is-searchable)>.Select-input{outline:0}.Select-loading-zone{display:table-cell}.Select-loading{-webkit-animation:Select-animation-spin .4s infinite linear;-o-animation:Select-animation-spin .4s infinite linear;animation:Select-animation-spin .4s infinite linear;height:16px;box-sizing:border-box;border-radius:50%;border:2px solid #ccc;border-right-color:#333;display:inline-block}.Select-clear-zone{-webkit-animation:Select-animation-fadeIn .2s;-o-animation:Select-animation-fadeIn .2s;animation:Select-animation-fadeIn .2s;color:#999;display:table-cell;position:relative;vertical-align:middle;width:17px}.Select-clear-zone:hover{color:#D0021B}.Select-clear{display:inline-block;font-size:18px;line-height:1}.Select--multi .Select-clear-zone{width:17px}.Select-arrow-zone{display:table-cell;position:relative;vertical-align:middle;width:25px;padding-right:5px}.Select--multi .Select-multi-value-wrapper,.Select-arrow{display:inline-block}.Select-arrow{border-color:#999 transparent transparent;border-style:solid;border-width:5px 5px 2.5px;height:0;width:0;position:relative}.Select-arrow-zone:hover>.Select-arrow,.is-open .Select-arrow{border-top-color:#666}.Select .Select-aria-only{display:inline-block;height:1px;width:1px;margin:-1px;clip:rect(0,0,0,0);overflow:hidden;float:left}.Select-noresults,.Select-option{box-sizing:border-box;display:block;padding:8px 10px}@-webkit-keyframes Select-animation-fadeIn{from{opacity:0}to{opacity:1}}@keyframes Select-animation-fadeIn{from{opacity:0}to{opacity:1}}.Select-menu-outer{border-bottom-right-radius:4px;border-bottom-left-radius:4px;background-color:#fff;border:1px solid #ccc;border-top-color:#e6e6e6;box-shadow:0 1px 0 rgba(0,0,0,.06);box-sizing:border-box;margin-top:-1px;max-height:200px;position:absolute;top:100%;width:100%;z-index:1;-webkit-overflow-scrolling:touch}.Select-menu{max-height:198px;overflow-y:auto}.Select-option{background-color:#fff;color:#666;cursor:pointer}.Select-option:last-child{border-bottom-right-radius:4px;border-bottom-left-radius:4px}.Select-option.is-selected{background-color:#f5faff;background-color:rgba(0,126,255,.04);color:#333}.Select-option.is-focused{background-color:#ebf5ff;background-color:rgba(0,126,255,.08);color:#333}.Select-option.is-disabled{color:#ccc;cursor:default}.Select-noresults{color:#999;cursor:default}.Select--multi .Select-input{vertical-align:middle;margin-left:10px;padding:0}.Select--multi.has-value .Select-input{margin-left:5px}.Select--multi .Select-value{background-color:#ebf5ff;background-color:rgba(0,126,255,.08);border-radius:2px;border:1px solid #c2e0ff;border:1px solid rgba(0,126,255,.24);color:#007eff;display:inline-block;font-size:.9em;line-height:1.4;margin-left:5px;margin-top:5px;vertical-align:top}.Select--multi .Select-value-icon,.Select--multi .Select-value-label{display:inline-block;vertical-align:middle}.Select--multi .Select-value-label{border-bottom-right-radius:2px;border-top-right-radius:2px;cursor:default;padding:2px 5px}.Select--multi a.Select-value-label{color:#007eff;cursor:pointer;text-decoration:none}.Select--multi a.Select-value-label:hover{text-decoration:underline}.Select--multi .Select-value-icon{cursor:pointer;border-bottom-left-radius:2px;border-top-left-radius:2px;border-right:1px solid #c2e0ff;border-right:1px solid rgba(0,126,255,.24);padding:1px 5px 3px}.Select--multi .Select-value-icon:focus,.Select--multi .Select-value-icon:hover{background-color:#d8eafd;background-color:rgba(0,113,230,.08);color:#0071e6}.Select--multi .Select-value-icon:active{background-color:#c2e0ff;background-color:rgba(0,126,255,.24)}.Select--multi.is-disabled .Select-value{background-color:#fcfcfc;border:1px solid #e3e3e3;color:#333}.Select--multi.is-disabled .Select-value-icon{cursor:not-allowed;border-right:1px solid #e3e3e3}.Select--multi.is-disabled .Select-value-icon:active,.Select--multi.is-disabled .Select-value-icon:focus,.Select--multi.is-disabled .Select-value-icon:hover{background-color:#fcfcfc}@keyframes Select-animation-spin{to{transform:rotate(1turn)}}@-webkit-keyframes Select-animation-spin{to{-webkit-transform:rotate(1turn)}}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL2Nzcy9yZWFjdC1zZWxlY3RAMS4wLjAtcmMuMy5taW4uY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLHdCQUF3QixpQkFBaUIsQ0FBQyxvQ0FBb0MsVUFBVSxDQUFDLGNBQWMsQ0FBQyxTQUFTLENBQUMsMkRBQTJELGlCQUFpQixDQUFDLGNBQWMsQ0FBQywrQ0FBK0MsNkJBQTZCLENBQUMsMEJBQTBCLENBQUMscUJBQXFCLENBQUMsb0NBQW9DLHdCQUF3QixDQUFDLDBDQUEwQyxlQUFlLENBQUMsdUNBQXVDLGNBQWMsQ0FBQyxtQkFBbUIsQ0FBQyxXQUFXLENBQUMsZ0JBQWdCLHFCQUFxQixDQUFDLGlCQUFpQixDQUFDLHFCQUFxQixDQUFDLFVBQVUsQ0FBQyxhQUFhLENBQUMsZ0JBQWdCLENBQUMsd0JBQXdCLENBQUMsV0FBVyxDQUFDLGVBQWUsQ0FBQywrRkFBK0YsV0FBVyxDQUFDLHNCQUFzQixrQ0FBa0MsQ0FBQyxvQ0FBb0MsU0FBUyxDQUFDLHlCQUF5Qiw0QkFBNEIsQ0FBQywyQkFBMkIsQ0FBQyxlQUFlLENBQUMsaUNBQWlDLENBQUMsdUNBQXVDLFFBQVEsQ0FBQyx5Q0FBeUMsQ0FBQyxzQkFBc0IsQ0FBQywwQ0FBMEMsb0JBQW9CLENBQUMsd0VBQXdFLENBQUMsa0VBQWtFLFFBQVEsQ0FBQyxVQUFVLENBQUMsTUFBTSxDQUFDLGdCQUFnQixDQUFDLGlCQUFpQixDQUFDLGtCQUFrQixDQUFDLGlCQUFpQixDQUFDLE9BQU8sQ0FBQyxLQUFLLENBQUMsY0FBYyxDQUFDLGVBQWUsQ0FBQyxzQkFBc0IsQ0FBQyxrQkFBa0IsQ0FBQywwS0FBMEssVUFBVSxDQUFDLDRLQUE0SyxjQUFjLENBQUMsb0JBQW9CLENBQUMsZ1hBQWdYLGFBQWEsQ0FBQyxTQUFTLENBQUMseUJBQXlCLENBQUMsY0FBYyxXQUFXLENBQUMsaUJBQWlCLENBQUMsa0JBQWtCLENBQUMscUJBQXFCLENBQUMsb0JBQW9CLGVB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QUMsVUFBVSxDQUFDLDhDQUE4QyxrQkFBa0IsQ0FBQyw4QkFBOEIsQ0FBQyw2SkFBNkosd0JBQXdCLENBQUMsaUNBQWlDLEdBQUcsdUJBQXVCLENBQUMsQ0FBQyx5Q0FBeUMsR0FBRywrQkFBK0IsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi5TZWxlY3QsLlNlbGVjdC1jb250cm9se3Bvc2l0aW9uOnJlbGF0aXZlfS5TZWxlY3QtY29udHJvbCwuU2VsZWN0LWlucHV0PmlucHV0e3dpZHRoOjEwMCU7Y3Vyc29yOmRlZmF1bHQ7b3V0bGluZTowfS5TZWxlY3QtYXJyb3ctem9uZSwuU2VsZWN0LWNsZWFyLXpvbmUsLlNlbGVjdC1sb2FkaW5nLXpvbmV7dGV4dC1hbGlnbjpjZW50ZXI7Y3Vyc29yOnBvaW50ZXJ9LlNlbGVjdCwuU2VsZWN0IGRpdiwuU2VsZWN0IGlucHV0LC5TZWxlY3Qgc3Bhbnstd2Via2l0LWJveC1zaXppbmc6Ym9yZGVyLWJveDstbW96LWJveC1zaXppbmc6Ym9yZGVyLWJveDtib3gtc2l6aW5nOmJvcmRlci1ib3h9LlNlbGVjdC5pcy1kaXNhYmxlZD4uU2VsZWN0LWNvbnRyb2x7YmFja2dyb3VuZC1jb2xvcjojZjlmOWY5fS5TZWxlY3QuaXMtZGlzYWJsZWQ+LlNlbGVjdC1jb250cm9sOmhvdmVye2JveC1zaGFkb3c6bm9uZX0uU2VsZWN0LmlzLWRpc2FibGVkIC5TZWxlY3QtYXJyb3ctem9uZXtjdXJzb3I6ZGVmYXVsdDtwb2ludGVyLWV2ZW50czpub25lO29wYWNpdHk6LjM1fS5TZWxlY3QtY29udHJvbHtiYWNrZ3JvdW5kLWNvbG9yOiNmZmY7Ym9yZGVyLXJhZGl1czo0cHg7Ym9yZGVyOjFweCBzb2xpZCAjY2NjO2NvbG9yOiMzMzM7ZGlzcGxheTp0YWJsZTtib3JkZXItc3BhY2luZzowO2JvcmRlci1jb2xsYXBzZTpzZXBhcmF0ZTtoZWlnaHQ6MzZweDtvdmVyZmxvdzpoaWRkZW59LmlzLXNlYXJjaGFibGUuaXMtZm9jdXNlZDpub3QoLmlzLW9wZW4pPi5TZWxlY3QtY29udHJvbCwuaXMtc2VhcmNoYWJsZS5pcy1vcGVuPi5TZWxlY3QtY29udHJvbHtjdXJzb3I6dGV4dH0uU2VsZWN0LWNvbnRyb2w6aG92ZXJ7Ym94LXNoYWRvdzowIDFweCAwIHJnYmEoMCwwLDAsLjA2KX0uU2VsZWN0LWNvbnRyb2wgLlNlbGVjdC1pbnB1dDpmb2N1c3tvdXRsaW5lOjB9LmlzLW9wZW4+LlNlbGVjdC1jb250cm9se2JvcmRlci1ib3R0b20tcmlnaHQtcmFkaXVzOjA7Ym9yZGVyLWJvdHRvbS1sZWZ0LXJhZGl1czowO2JhY2tncm91bmQ6I2ZmZjtib3JkZXItY29sb3I6I2IzYjNiMyAjY2NjICNkOWQ5ZDl9LmlzLW9wZW4+LlNlbGVjdC1jb250cm9sIC5TZWxlY3QtYXJyb3d7dG9wOi0ycHg7Ym9yZGVyLWNvbG9yOnRyYW5zcGFyZW50IHRyYW5zcGFyZW50ICM5OTk7Ym9yZGVyLXdpZHRoOjAgNXB4IDVweH0uaXMtZm9jdXNlZDpub3QoLmlzLW9wZW4pPi5TZWxlY3QtY29udHJvbHtib3JkZXItY29sb3I6IzAwN2VmZjtib3gtc2hhZG93Omluc2V0IDAgMXB4IDFweCByZ2JhKDAsMCwwLC4wNzUpLDAgMCAwIDNweCByZ2JhKDAsMTI2LDI1NSwuMSl9LlNlbGVjdC0tc2luZ2xlPi5TZWxlY3QtY29udHJvbCAuU2VsZWN0LXZhbHVlLC5TZWxlY3QtcGxhY2Vob2xkZXJ7Ym90dG9tOjA7Y29sb3I6I2FhYTtsZWZ0OjA7bGluZS1oZWlnaHQ6MzRweDtwYWRkaW5nLWxlZnQ6MTBweDtwYWRkaW5nLXJpZ2h0OjEwcHg7cG9zaXRpb246YWJzb2x1dGU7cmlnaHQ6MDt0b3A6MDttYXgtd2lkdGg6MTAwJTtvdmVyZmxvdzpoaWRkZW47dGV4dC1vdmVyZmxvdzplbGxpcHNpczt3aGl0ZS1zcGFjZTpub3dyYXB9Lmhhcy12YWx1ZS5TZWxlY3QtLXNpbmdsZT4uU2VsZWN0LWNvbnRyb2wgLlNlbGVjdC12YWx1ZSAuU2VsZWN0LXZhbHVlLWxhYmVsLC5oYXMtdmFsdWUuaXMtcHNldWRvLWZvY3VzZWQuU2VsZWN0LS1zaW5nbGU+LlNlbGVjdC1jb250cm9sIC5TZWxlY3QtdmFsdWUgLlNlbGVjdC12YWx1ZS1sYWJlbHtjb2xvcjojMzMzfS5oYXMtdmFsdWUuU2VsZWN0LS1zaW5nbGU+LlNlbGVjdC1jb250cm9sIC5TZWxlY3QtdmFsdWUgYS5TZWxlY3QtdmFsdWUtbGFiZWwsLmhhcy12YWx1ZS5pcy1wc2V1ZG8tZm9jdXNlZC5TZWxlY3QtLXNpbmdsZT4uU2VsZWN0LWNvbnRyb2wgLlNlbGVjdC12YWx1ZSBhLlNlbGVjdC12YWx1ZS1sYWJlbHtjdXJzb3I6cG9pbnRlcjt0ZXh0LWRlY29yYXRpb246bm9uZX0uaGFzLXZhbHVlLlNlbGVjdC0tc2luZ2xlPi5TZWxlY3QtY29udHJvbCAuU2VsZWN0LXZhbHVlIGEuU2VsZWN0LXZhbHVlLWxhYmVsOmZvY3VzLC5oYXMtdmFsdWUuU2VsZWN0LS1zaW5nbGU+LlNlbGVjdC1jb250cm9sIC5TZWxlY3QtdmFsdWUgYS5TZWxlY3QtdmFsdWUtbGFiZWw6aG92ZXIsLmhhcy12YWx1ZS5pcy1wc2V1ZG8tZm9jdXNlZC5TZWxlY3QtLXNpbmdsZT4uU2VsZWN0LWNvbnRyb2wgLlNlbGVjdC12YWx1ZSBhLlNlbGVjdC12YWx1ZS1sYWJlbDpmb2N1cywuaGFzLXZhbHVlLmlzLXBzZXVkby1mb2N1c2VkLlNlbGVjdC0tc2luZ2xlPi5TZWxlY3QtY29udHJvbCAuU2VsZWN0LXZhbHVlIGEuU2VsZWN0LXZhbHVlLWxhYmVsOmhvdmVye2NvbG9yOiMwMDdlZmY7b3V0bGluZTowO3RleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmV9LlNlbGVjdC1pbnB1dHtoZWlnaHQ6MzRweDtwYWRkaW5nLWxlZnQ6MTBweDtwYWRkaW5nLXJpZ2h0OjEwcHg7dmVydGljYWwtYWxpZ246bWlkZGxlfS5TZWxlY3QtaW5wdXQ+aW5wdXR7YmFja2dyb3VuZDpub25lO2JvcmRlcjowO2JveC1zaGFkb3c6bm9uZTtkaXNwbGF5OmlubGluZS1ibG9jaztmb250LWZhbWlseTppbmhlcml0O2ZvbnQtc2l6ZTppbmhlcml0O21hcmdpbjowO2xpbmUtaGVpZ2h0OjE0cHg7cGFkZGluZzo4cHggMCAxMnB4Oy13ZWJraXQtYXBwZWFyYW5jZTpub25lfS5TZWxlY3QtbG9hZGluZywuU2VsZWN0LWxvYWRpbmctem9uZXt3aWR0aDoxNnB4O3Bvc2l0aW9uOnJlbGF0aXZlO3ZlcnRpY2FsLWFsaWduOm1pZGRsZX0uaXMtZm9jdXNlZCAuU2VsZWN0LWlucHV0PmlucHV0e2N1cnNvcjp0ZXh0fS5oYXMtdmFsdWUuaXMtcHNldWRvLWZvY3VzZWQgLlNlbGVjdC1pbnB1dHtvcGFjaXR5OjB9LlNlbGVjdC1jb250cm9sOm5vdCguaXMtc2VhcmNoYWJsZSk+LlNlbGVjdC1pbnB1dHtvdXRsaW5lOjB9LlNlbGVjdC1sb2FkaW5nLXpvbmV7ZGlzcGxheTp0YWJsZS1jZWxsfS5TZWxlY3QtbG9hZGluZ3std2Via2l0LWFuaW1hdGlvbjpTZWxlY3QtYW5pbWF0aW9uLXNwaW4gLjRzIGluZmluaXRlIGxpbmVhcjstby1hbmltYXRpb246U2VsZWN0LWFuaW1hdGlvbi1zcGluIC40cyBpbmZpbml0ZSBsaW5lYXI7YW5pbWF0aW9uOlNlbGVjdC1hbmltYXRpb24tc3BpbiAuNHMgaW5maW5pdGUgbGluZWFyO2hlaWdodDoxNnB4O2JveC1zaXppbmc6Ym9yZGVyLWJveDtib3JkZXItcmFkaXVzOjUwJTtib3JkZXI6MnB4IHNvbGlkICNjY2M7Ym9yZGVyLXJpZ2h0LWNvbG9yOiMzMzM7ZGlzcGxheTppbmxpbmUtYmxvY2t9LlNlbGVjdC1jbGVhci16b25ley13ZWJraXQtYW5pbWF0aW9uOlNlbGVjdC1hbmltYXRpb24tZmFkZUluIC4yczstby1hbmltYXRpb246U2VsZWN0LWFuaW1hdGlvbi1mYWRlSW4gLjJzO2FuaW1hdGlvbjpTZWxlY3QtYW5pbWF0aW9uLWZhZGVJbiAuMnM7Y29sb3I6Izk5OTtkaXNwbGF5OnRhYmxlLWNlbGw7cG9zaXRpb246cmVsYXRpdmU7dmVydGljYWwtYWxpZ246bWlkZGxlO3dpZHRoOjE3cHh9LlNlbGVjdC1jbGVhci16b25lOmhvdmVye2NvbG9yOiNEMDAyMUJ9LlNlbGVjdC1jbGVhcntkaXNwbGF5OmlubGluZS1ibG9jaztmb250LXNpemU6MThweDtsaW5lLWhlaWdodDoxfS5TZWxlY3QtLW11bHRpIC5TZWxlY3QtY2xlYXItem9uZXt3aWR0aDoxN3B4fS5TZWxlY3QtYXJyb3ctem9uZXtkaXNwbGF5OnRhYmxlLWNlbGw7cG9zaXRpb246cmVsYXRpdmU7dmVydGljYWwtYWxpZ246bWlkZGxlO3dpZHRoOjI1cHg7cGFkZGluZy1yaWdodDo1cHh9LlNlbGVjdC0tbXVsdGkgLlNlbGVjdC1tdWx0aS12YWx1ZS13cmFwcGVyLC5TZWxlY3QtYXJyb3d7ZGlzcGxheTppbmxpbmUtYmxvY2t9LlNlbGVjdC1hcnJvd3tib3JkZXItY29sb3I6Izk5OSB0cmFuc3BhcmVudCB0cmFuc3BhcmVudDtib3JkZXItc3R5bGU6c29saWQ7Ym9yZGVyLXdpZHRoOjVweCA1cHggMi41cHg7aGVpZ2h0OjA7d2lkdGg6MDtwb3NpdGlvbjpyZWxhdGl2ZX0uU2VsZWN0LWFycm93LXpvbmU6aG92ZXI+LlNlbGVjdC1hcnJvdywuaXMtb3BlbiAuU2VsZWN0LWFycm93e2JvcmRlci10b3AtY29sb3I6IzY2Nn0uU2VsZWN0IC5TZWxlY3QtYXJpYS1vbmx5e2Rpc3BsYXk6aW5saW5lLWJsb2NrO2hlaWdodDoxcHg7d2lkdGg6MXB4O21hcmdpbjotMXB4O2NsaXA6cmVjdCgwLDAsMCwwKTtvdmVyZmxvdzpoaWRkZW47ZmxvYXQ6bGVmdH0uU2VsZWN0LW5vcmVzdWx0cywuU2VsZWN0LW9wdGlvbntib3gtc2l6aW5nOmJvcmRlci1ib3g7ZGlzcGxheTpibG9jaztwYWRkaW5nOjhweCAxMHB4fUAtd2Via2l0LWtleWZyYW1lcyBTZWxlY3QtYW5pbWF0aW9uLWZhZGVJbntmcm9te29wYWNpdHk6MH10b3tvcGFjaXR5OjF9fUBrZXlmcmFtZXMgU2VsZWN0LWFuaW1hdGlvbi1mYWRlSW57ZnJvbXtvcGFjaXR5OjB9dG97b3BhY2l0eToxfX0uU2VsZWN0LW1lbnUtb3V0ZXJ7Ym9yZGVyLWJvdHRvbS1yaWdodC1yYWRpdXM6NHB4O2JvcmRlci1ib3R0b20tbGVmdC1yYWRpdXM6NHB4O2JhY2tncm91bmQtY29sb3I6I2ZmZjtib3JkZXI6MXB4IHNvbGlkICNjY2M7Ym9yZGVyLXRvcC1jb2xvcjojZTZlNmU2O2JveC1zaGFkb3c6MCAxcHggMCByZ2JhKDAsMCwwLC4wNik7Ym94LXNpemluZzpib3JkZXItYm94O21hcmdpbi10b3A6LTFweDttYXgtaGVpZ2h0OjIwMHB4O3Bvc2l0aW9uOmFic29sdXRlO3RvcDoxMDAlO3dpZHRoOjEwMCU7ei1pbmRleDoxOy13ZWJraXQtb3ZlcmZsb3ctc2Nyb2xsaW5nOnRvdWNofS5TZWxlY3QtbWVudXttYXgtaGVpZ2h0OjE5OHB4O292ZXJmbG93LXk6YXV0b30uU2VsZWN0LW9wdGlvbntiYWNrZ3JvdW5kLWNvbG9yOiNmZmY7Y29sb3I6IzY2NjtjdXJzb3I6cG9pbnRlcn0uU2VsZWN0LW9wdGlvbjpsYXN0LWNoaWxke2JvcmRlci1ib3R0b20tcmlnaHQtcmFkaXVzOjRweDtib3JkZXItYm90dG9tLWxlZnQtcmFkaXVzOjRweH0uU2VsZWN0LW9wdGlvbi5pcy1zZWxlY3RlZHtiYWNrZ3JvdW5kLWNvbG9yOiNmNWZhZmY7YmFja2dyb3VuZC1jb2xvcjpyZ2JhKDAsMTI2LDI1NSwuMDQpO2NvbG9yOiMzMzN9LlNlbGVjdC1vcHRpb24uaXMtZm9jdXNlZHtiYWNrZ3JvdW5kLWNvbG9yOiNlYmY1ZmY7YmFja2dyb3VuZC1jb2xvcjpyZ2JhKDAsMTI2LDI1NSwuMDgpO2NvbG9yOiMzMzN9LlNlbGVjdC1vcHRpb24uaXMtZGlzYWJsZWR7Y29sb3I6I2NjYztjdXJzb3I6ZGVmYXVsdH0uU2VsZWN0LW5vcmVzdWx0c3tjb2xvcjojOTk5O2N1cnNvcjpkZWZhdWx0fS5TZWxlY3QtLW11bHRpIC5TZWxlY3QtaW5wdXR7dmVydGljYWwtYWxpZ246bWlkZGxlO21hcmdpbi1sZWZ0OjEwcHg7cGFkZGluZzowfS5TZWxlY3QtLW11bHRpLmhhcy12YWx1ZSAuU2VsZWN0LWlucHV0e21hcmdpbi1sZWZ0OjVweH0uU2VsZWN0LS1tdWx0aSAuU2VsZWN0LXZhbHVle2JhY2tncm91bmQtY29sb3I6I2ViZjVmZjtiYWNrZ3JvdW5kLWNvbG9yOnJnYmEoMCwxMjYsMjU1LC4wOCk7Ym9yZGVyLXJhZGl1czoycHg7Ym9yZGVyOjFweCBzb2xpZCAjYzJlMGZmO2JvcmRlcjoxcHggc29saWQgcmdiYSgwLDEyNiwyNTUsLjI0KTtjb2xvcjojMDA3ZWZmO2Rpc3BsYXk6aW5saW5lLWJsb2NrO2ZvbnQtc2l6ZTouOWVtO2xpbmUtaGVpZ2h0OjEuNDttYXJnaW4tbGVmdDo1cHg7bWFyZ2luLXRvcDo1cHg7dmVydGljYWwtYWxpZ246dG9wfS5TZWxlY3QtLW11bHRpIC5TZWxlY3QtdmFsdWUtaWNvbiwuU2VsZWN0LS1tdWx0aSAuU2VsZWN0LXZhbHVlLWxhYmVse2Rpc3BsYXk6aW5saW5lLWJsb2NrO3ZlcnRpY2FsLWFsaWduOm1pZGRsZX0uU2VsZWN0LS1tdWx0aSAuU2VsZWN0LXZhbHVlLWxhYmVse2JvcmRlci1ib3R0b20tcmlnaHQtcmFkaXVzOjJweDtib3JkZXItdG9wLXJpZ2h0LXJhZGl1czoycHg7Y3Vyc29yOmRlZmF1bHQ7cGFkZGluZzoycHggNXB4fS5TZWxlY3QtLW11bHRpIGEuU2VsZWN0LXZhbHVlLWxhYmVse2NvbG9yOiMwMDdlZmY7Y3Vyc29yOnBvaW50ZXI7dGV4dC1kZWNvcmF0aW9uOm5vbmV9LlNlbGVjdC0tbXVsdGkgYS5TZWxlY3QtdmFsdWUtbGFiZWw6aG92ZXJ7dGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZX0uU2VsZWN0LS1tdWx0aSAuU2VsZWN0LXZhbHVlLWljb257Y3Vyc29yOnBvaW50ZXI7Ym9yZGVyLWJvdHRvbS1sZWZ0LXJhZGl1czoycHg7Ym9yZGVyLXRvcC1sZWZ0LXJhZGl1czoycHg7Ym9yZGVyLXJpZ2h0OjFweCBzb2xpZCAjYzJlMGZmO2JvcmRlci1yaWdodDoxcHggc29saWQgcmdiYSgwLDEyNiwyNTUsLjI0KTtwYWRkaW5nOjFweCA1cHggM3B4fS5TZWxlY3QtLW11bHRpIC5TZWxlY3QtdmFsdWUtaWNvbjpmb2N1cywuU2VsZWN0LS1tdWx0aSAuU2VsZWN0LXZhbHVlLWljb246aG92ZXJ7YmFja2dyb3VuZC1jb2xvcjojZDhlYWZkO2JhY2tncm91bmQtY29sb3I6cmdiYSgwLDExMywyMzAsLjA4KTtjb2xvcjojMDA3MWU2fS5TZWxlY3QtLW11bHRpIC5TZWxlY3QtdmFsdWUtaWNvbjphY3RpdmV7YmFja2dyb3VuZC1jb2xvcjojYzJlMGZmO2JhY2tncm91bmQtY29sb3I6cmdiYSgwLDEyNiwyNTUsLjI0KX0uU2VsZWN0LS1tdWx0aS5pcy1kaXNhYmxlZCAuU2VsZWN0LXZhbHVle2JhY2tncm91bmQtY29sb3I6I2ZjZmNmYztib3JkZXI6MXB4IHNvbGlkICNlM2UzZTM7Y29sb3I6IzMzM30uU2VsZWN0LS1tdWx0aS5pcy1kaXNhYmxlZCAuU2VsZWN0LXZhbHVlLWljb257Y3Vyc29yOm5vdC1hbGxvd2VkO2JvcmRlci1yaWdodDoxcHggc29saWQgI2UzZTNlM30uU2VsZWN0LS1tdWx0aS5pcy1kaXNhYmxlZCAuU2VsZWN0LXZhbHVlLWljb246YWN0aXZlLC5TZWxlY3QtLW11bHRpLmlzLWRpc2FibGVkIC5TZWxlY3QtdmFsdWUtaWNvbjpmb2N1cywuU2VsZWN0LS1tdWx0aS5pcy1kaXNhYmxlZCAuU2VsZWN0LXZhbHVlLWljb246aG92ZXJ7YmFja2dyb3VuZC1jb2xvcjojZmNmY2ZjfUBrZXlmcmFtZXMgU2VsZWN0LWFuaW1hdGlvbi1zcGlue3Rve3RyYW5zZm9ybTpyb3RhdGUoMXR1cm4pfX1ALXdlYmtpdC1rZXlmcmFtZXMgU2VsZWN0LWFuaW1hdGlvbi1zcGlue3Rvey13ZWJraXQtdHJhbnNmb3JtOnJvdGF0ZSgxdHVybil9fSJdLCJzb3VyY2VSb290IjoiIn0= */</style><style>/* Fix the default tooltip style height conflicting with the actual size of the tooltip. */
+.rc-slider-tooltip-content > .rc-slider-tooltip-inner {
+    height: unset;
+    min-height: 20px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL2Nzcy9zbGlkZXJzLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSwwRkFBMEY7QUFDMUY7SUFDSSxhQUFhO0lBQ2IsZ0JBQWdCO0FBQ3BCIiwic291cmNlc0NvbnRlbnQiOlsiLyogRml4IHRoZSBkZWZhdWx0IHRvb2x0aXAgc3R5bGUgaGVpZ2h0IGNvbmZsaWN0aW5nIHdpdGggdGhlIGFjdHVhbCBzaXplIG9mIHRoZSB0b29sdGlwLiAqL1xuLnJjLXNsaWRlci10b29sdGlwLWNvbnRlbnQgPiAucmMtc2xpZGVyLXRvb2x0aXAtaW5uZXIge1xuICAgIGhlaWdodDogdW5zZXQ7XG4gICAgbWluLWhlaWdodDogMjBweDtcbn1cbiJdLCJzb3VyY2VSb290IjoiIn0= */</style><style>.PresetDateRangePicker_panel {
+  padding: 0 22px 11px
+}
+.PresetDateRangePicker_button {
+  position: relative;
+  height: 100%;
+  text-align: center;
+  background: 0 0;
+  border: 2px solid #00a699;
+  color: #00a699;
+  padding: 4px 12px;
+  margin-right: 8px;
+  font: inherit;
+  font-weight: 700;
+  line-height: normal;
+  overflow: visible;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: pointer
+}
+.PresetDateRangePicker_button:active {
+  outline: 0
+}
+.PresetDateRangePicker_button__selected {
+  color: #fff;
+  background: #00a699
+}
+.SingleDatePickerInput {
+  display: inline-block;
+  background-color: #fff
+}
+.SingleDatePickerInput__withBorder {
+  border-radius: 2px;
+  border: 1px solid #dbdbdb
+}
+.SingleDatePickerInput__rtl {
+  direction: rtl
+}
+.SingleDatePickerInput__disabled {
+  background-color: #f2f2f2
+}
+.SingleDatePickerInput__block {
+  display: block
+}
+.SingleDatePickerInput__showClearDate {
+  padding-right: 30px
+}
+.SingleDatePickerInput_clearDate {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  padding: 10px;
+  margin: 0 10px 0 5px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%)
+}
+.SingleDatePickerInput_clearDate__default:focus,
+.SingleDatePickerInput_clearDate__default:hover {
+  background: #dbdbdb;
+  border-radius: 50%
+}
+.SingleDatePickerInput_clearDate__small {
+  padding: 6px
+}
+.SingleDatePickerInput_clearDate__hide {
+  visibility: hidden
+}
+.SingleDatePickerInput_clearDate_svg {
+  fill: #82888a;
+  height: 12px;
+  width: 15px;
+  vertical-align: middle
+}
+.SingleDatePickerInput_clearDate_svg__small {
+  height: 9px
+}
+.SingleDatePickerInput_calendarIcon {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 10px;
+  margin: 0 5px 0 10px
+}
+.SingleDatePickerInput_calendarIcon_svg {
+  fill: #82888a;
+  height: 15px;
+  width: 14px;
+  vertical-align: middle
+}
+.SingleDatePicker {
+  position: relative;
+  display: inline-block
+}
+.SingleDatePicker__block {
+  display: block
+}
+.SingleDatePicker_picker {
+  z-index: 1;
+  background-color: #fff;
+  position: absolute
+}
+.SingleDatePicker_picker__rtl {
+  direction: rtl
+}
+.SingleDatePicker_picker__directionLeft {
+  left: 0
+}
+.SingleDatePicker_picker__directionRight {
+  right: 0
+}
+.SingleDatePicker_picker__portal {
+  background-color: rgba(0,0,0,.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%
+}
+.SingleDatePicker_picker__fullScreenPortal {
+  background-color: #fff
+}
+.SingleDatePicker_closeButton {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 15px;
+  z-index: 2
+}
+.SingleDatePicker_closeButton:focus,
+.SingleDatePicker_closeButton:hover {
+  color: darken(#cacccd,10%);
+  text-decoration: none
+}
+.SingleDatePicker_closeButton_svg {
+  height: 15px;
+  width: 15px;
+  fill: #cacccd
+}
+.DayPickerKeyboardShortcuts_buttonReset {
+  background: 0 0;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px
+}
+.DayPickerKeyboardShortcuts_buttonReset:active {
+  outline: 0
+}
+.DayPickerKeyboardShortcuts_show {
+  width: 33px;
+  height: 26px;
+  position: absolute;
+  z-index: 2
+}
+.DayPickerKeyboardShortcuts_show::before {
+  content: "";
+  display: block;
+  position: absolute
+}
+.DayPickerKeyboardShortcuts_show__bottomRight {
+  bottom: 0;
+  right: 0
+}
+.DayPickerKeyboardShortcuts_show__bottomRight::before {
+  border-top: 26px solid transparent;
+  border-right: 33px solid #00a699;
+  bottom: 0;
+  right: 0
+}
+.DayPickerKeyboardShortcuts_show__bottomRight:hover::before {
+  border-right: 33px solid #008489
+}
+.DayPickerKeyboardShortcuts_show__topRight {
+  top: 0;
+  right: 0
+}
+.DayPickerKeyboardShortcuts_show__topRight::before {
+  border-bottom: 26px solid transparent;
+  border-right: 33px solid #00a699;
+  top: 0;
+  right: 0
+}
+.DayPickerKeyboardShortcuts_show__topRight:hover::before {
+  border-right: 33px solid #008489
+}
+.DayPickerKeyboardShortcuts_show__topLeft {
+  top: 0;
+  left: 0
+}
+.DayPickerKeyboardShortcuts_show__topLeft::before {
+  border-bottom: 26px solid transparent;
+  border-left: 33px solid #00a699;
+  top: 0;
+  left: 0
+}
+.DayPickerKeyboardShortcuts_show__topLeft:hover::before {
+  border-left: 33px solid #008489
+}
+.DayPickerKeyboardShortcuts_showSpan {
+  color: #fff;
+  position: absolute
+}
+.DayPickerKeyboardShortcuts_showSpan__bottomRight {
+  bottom: 0;
+  right: 5px
+}
+.DayPickerKeyboardShortcuts_showSpan__topRight {
+  top: 1px;
+  right: 5px
+}
+.DayPickerKeyboardShortcuts_showSpan__topLeft {
+  top: 1px;
+  left: 5px
+}
+.DayPickerKeyboardShortcuts_panel {
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 2px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  padding: 22px;
+  margin: 33px;
+  text-align: left
+}
+.DayPickerKeyboardShortcuts_title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0
+}
+.DayPickerKeyboardShortcuts_list {
+  list-style: none;
+  padding: 0;
+  font-size: 14px
+}
+.DayPickerKeyboardShortcuts_close {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  z-index: 2
+}
+.DayPickerKeyboardShortcuts_close:active {
+  outline: 0
+}
+.DayPickerKeyboardShortcuts_closeSvg {
+  height: 15px;
+  width: 15px;
+  fill: #cacccd
+}
+.DayPickerKeyboardShortcuts_closeSvg:focus,
+.DayPickerKeyboardShortcuts_closeSvg:hover {
+  fill: #82888a
+}
+.CalendarDay {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center
+}
+.CalendarDay:active {
+  outline: 0
+}
+.CalendarDay__defaultCursor {
+  cursor: default
+}
+.CalendarDay__default {
+  border: 1px solid #e4e7e7;
+  color: #484848;
+  background: #fff
+}
+.CalendarDay__default:hover {
+  background: #e4e7e7;
+  border: 1px solid #e4e7e7;
+  color: inherit
+}
+.CalendarDay__hovered_offset {
+  background: #f4f5f5;
+  border: 1px double #e4e7e7;
+  color: inherit
+}
+.CalendarDay__outside {
+  border: 0;
+  background: #fff;
+  color: #484848
+}
+.CalendarDay__outside:hover {
+  border: 0
+}
+.CalendarDay__blocked_minimum_nights {
+  background: #fff;
+  border: 1px solid #eceeee;
+  color: #cacccd
+}
+.CalendarDay__blocked_minimum_nights:active,
+.CalendarDay__blocked_minimum_nights:hover {
+  background: #fff;
+  color: #cacccd
+}
+.CalendarDay__highlighted_calendar {
+  background: #ffe8bc;
+  color: #484848
+}
+.CalendarDay__highlighted_calendar:active,
+.CalendarDay__highlighted_calendar:hover {
+  background: #ffce71;
+  color: #484848
+}
+.CalendarDay__selected_span {
+  background: #66e2da;
+  border: 1px double #33dacd;
+  color: #fff
+}
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
+  background: #33dacd;
+  border: 1px double #33dacd;
+  color: #fff
+}
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+  background: #00a699;
+  border: 1px double #00a699;
+  color: #fff
+}
+.CalendarDay__hovered_span,
+.CalendarDay__hovered_span:hover {
+  background: #b2f1ec;
+  border: 1px double #80e8e0;
+  color: #007a87
+}
+.CalendarDay__hovered_span:active {
+  background: #80e8e0;
+  border: 1px double #80e8e0;
+  color: #007a87
+}
+.CalendarDay__blocked_calendar,
+.CalendarDay__blocked_calendar:active,
+.CalendarDay__blocked_calendar:hover {
+  background: #cacccd;
+  border: 1px solid #cacccd;
+  color: #82888a
+}
+.CalendarDay__blocked_out_of_range,
+.CalendarDay__blocked_out_of_range:active,
+.CalendarDay__blocked_out_of_range:hover {
+  background: #fff;
+  border: 1px solid #e4e7e7;
+  color: #cacccd
+}
+.CalendarDay__hovered_start_first_possible_end {
+  background: #eceeee;
+  border: 1px double #eceeee
+}
+.CalendarDay__hovered_start_blocked_min_nights {
+  background: #eceeee;
+  border: 1px double #e4e7e7
+}
+.CalendarMonth {
+  background: #fff;
+  text-align: center;
+  vertical-align: top;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+.CalendarMonth_table {
+  border-collapse: collapse;
+  border-spacing: 0
+}
+.CalendarMonth_verticalSpacing {
+  border-collapse: separate
+}
+.CalendarMonth_caption {
+  color: #484848;
+  font-size: 18px;
+  text-align: center;
+  padding-top: 22px;
+  padding-bottom: 37px;
+  caption-side: initial
+}
+.CalendarMonth_caption__verticalScrollable {
+  padding-top: 12px;
+  padding-bottom: 7px
+}
+.CalendarMonthGrid {
+  background: #fff;
+  text-align: left;
+  z-index: 0
+}
+.CalendarMonthGrid__animating {
+  z-index: 1
+}
+.CalendarMonthGrid__horizontal {
+  position: absolute;
+  left: 9px
+}
+.CalendarMonthGrid__vertical,
+.CalendarMonthGrid__vertical_scrollable {
+  margin: 0 auto
+}
+.CalendarMonthGrid_month__horizontal {
+  display: inline-block;
+  vertical-align: top;
+  min-height: 100%
+}
+.CalendarMonthGrid_month__hideForAnimation {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none
+}
+.CalendarMonthGrid_month__hidden {
+  visibility: hidden
+}
+.DayPickerNavigation {
+  position: relative;
+  z-index: 2
+}
+.DayPickerNavigation__horizontal {
+  height: 0
+}
+.DayPickerNavigation__verticalScrollable_prevNav {
+  z-index: 1
+}
+.DayPickerNavigation__verticalDefault {
+  position: absolute;
+  width: 100%;
+  height: 52px;
+  bottom: 0;
+  left: 0
+}
+.DayPickerNavigation__verticalScrollableDefault {
+  position: relative
+}
+.DayPickerNavigation__bottom {
+  height: auto
+}
+.DayPickerNavigation__bottomDefault {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between
+}
+.DayPickerNavigation_button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 0;
+  padding: 0;
+  margin: 0
+}
+.DayPickerNavigation_button__default {
+  border: 1px solid #e4e7e7;
+  background-color: #fff;
+  color: #757575
+}
+.DayPickerNavigation_button__default:focus,
+.DayPickerNavigation_button__default:hover {
+  border: 1px solid #c4c4c4
+}
+.DayPickerNavigation_button__default:active {
+  background: #f2f2f2
+}
+.DayPickerNavigation_button__disabled {
+  cursor: default;
+  border: 1px solid #f2f2f2
+}
+.DayPickerNavigation_button__disabled:focus,
+.DayPickerNavigation_button__disabled:hover {
+  border: 1px solid #f2f2f2
+}
+.DayPickerNavigation_button__disabled:active {
+  background: 0 0
+}
+.DayPickerNavigation_button__horizontalDefault {
+  position: absolute;
+  top: 18px;
+  line-height: .78;
+  border-radius: 3px;
+  padding: 6px 9px
+}
+.DayPickerNavigation_bottomButton__horizontalDefault {
+  position: static;
+  margin: -10px 22px 30px
+}
+.DayPickerNavigation_leftButton__horizontalDefault {
+  left: 22px
+}
+.DayPickerNavigation_rightButton__horizontalDefault {
+  right: 22px
+}
+.DayPickerNavigation_button__verticalDefault {
+  padding: 5px;
+  background: #fff;
+  box-shadow: 0 0 5px 2px rgba(0,0,0,.1);
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  height: 100%;
+  width: 50%
+}
+.DayPickerNavigation_nextButton__verticalDefault {
+  border-left: 0
+}
+.DayPickerNavigation_nextButton__verticalScrollableDefault,
+.DayPickerNavigation_prevButton__verticalScrollableDefault {
+  width: 100%
+}
+.DayPickerNavigation_svg__horizontal {
+  height: 19px;
+  width: 19px;
+  fill: #82888a;
+  display: block
+}
+.DayPickerNavigation_svg__vertical {
+  height: 42px;
+  width: 42px;
+  fill: #484848
+}
+.DayPickerNavigation_svg__disabled {
+  fill: #f2f2f2
+}
+.DayPicker {
+  background: #fff;
+  position: relative;
+  text-align: left
+}
+.DayPicker__horizontal {
+  background: #fff
+}
+.DayPicker__verticalScrollable {
+  height: 100%
+}
+.DayPicker__hidden {
+  visibility: hidden
+}
+.DayPicker__withBorder {
+  box-shadow: 0 2px 6px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.07);
+  border-radius: 3px
+}
+.DayPicker_portal__horizontal {
+  box-shadow: none;
+  position: absolute;
+  left: 50%;
+  top: 50%
+}
+.DayPicker_portal__vertical {
+  position: initial
+}
+.DayPicker_focusRegion {
+  outline: 0
+}
+.DayPicker_calendarInfo__horizontal,
+.DayPicker_wrapper__horizontal {
+  display: inline-block;
+  vertical-align: top
+}
+.DayPicker_weekHeaders {
+  position: relative
+}
+.DayPicker_weekHeaders__horizontal {
+  margin-left: 9px
+}
+.DayPicker_weekHeader {
+  color: #757575;
+  position: absolute;
+  top: 62px;
+  z-index: 2;
+  text-align: left
+}
+.DayPicker_weekHeader__vertical {
+  left: 50%
+}
+.DayPicker_weekHeader__verticalScrollable {
+  top: 0;
+  display: table-row;
+  border-bottom: 1px solid #dbdbdb;
+  background: #fff;
+  margin-left: 0;
+  left: 0;
+  width: 100%;
+  text-align: center
+}
+.DayPicker_weekHeader_ul {
+  list-style: none;
+  margin: 1px 0;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 14px
+}
+.DayPicker_weekHeader_li {
+  display: inline-block;
+  text-align: center
+}
+.DayPicker_transitionContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px
+}
+.DayPicker_transitionContainer__horizontal {
+  -webkit-transition: height .2s ease-in-out;
+  -moz-transition: height .2s ease-in-out;
+  transition: height .2s ease-in-out
+}
+.DayPicker_transitionContainer__vertical {
+  width: 100%
+}
+.DayPicker_transitionContainer__verticalScrollable {
+  padding-top: 20px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: scroll
+}
+.DateInput {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  position: relative;
+  display: inline-block;
+  width: 130px;
+  vertical-align: middle
+}
+.DateInput__small {
+  width: 97px
+}
+.DateInput__block {
+  width: 100%
+}
+.DateInput__disabled {
+  background: #f2f2f2;
+  color: #dbdbdb
+}
+.DateInput_input {
+  font-weight: 200;
+  font-size: 19px;
+  line-height: 24px;
+  color: #484848;
+  background-color: #fff;
+  width: 100%;
+  padding: 11px 11px 9px;
+  border: 0;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 2px solid transparent;
+  border-left: 0;
+  border-radius: 0
+}
+.DateInput_input__small {
+  font-size: 15px;
+  line-height: 18px;
+  letter-spacing: .2px;
+  padding: 7px 7px 5px
+}
+.DateInput_input__regular {
+  font-weight: auto
+}
+.DateInput_input__readOnly {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+.DateInput_input__focused {
+  outline: 0;
+  background: #fff;
+  border: 0;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 2px solid #008489;
+  border-left: 0
+}
+.DateInput_input__disabled {
+  background: #f2f2f2;
+  font-style: italic
+}
+.DateInput_screenReaderMessage {
+  border: 0;
+  clip: rect(0,0,0,0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px
+}
+.DateInput_fang {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  left: 22px;
+  z-index: 2
+}
+.DateInput_fangShape {
+  fill: #fff
+}
+.DateInput_fangStroke {
+  stroke: #dbdbdb;
+  fill: transparent
+}
+.DateRangePickerInput {
+  background-color: #fff;
+  display: inline-block
+}
+.DateRangePickerInput__disabled {
+  background: #f2f2f2
+}
+.DateRangePickerInput__withBorder {
+  border-radius: 2px;
+  border: 1px solid #dbdbdb
+}
+.DateRangePickerInput__rtl {
+  direction: rtl
+}
+.DateRangePickerInput__block {
+  display: block
+}
+.DateRangePickerInput__showClearDates {
+  padding-right: 30px
+}
+.DateRangePickerInput_arrow {
+  display: inline-block;
+  vertical-align: middle;
+  color: #484848
+}
+.DateRangePickerInput_arrow_svg {
+  vertical-align: middle;
+  fill: #484848;
+  height: 24px;
+  width: 24px
+}
+.DateRangePickerInput_clearDates {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  padding: 10px;
+  margin: 0 10px 0 5px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%)
+}
+.DateRangePickerInput_clearDates__small {
+  padding: 6px
+}
+.DateRangePickerInput_clearDates_default:focus,
+.DateRangePickerInput_clearDates_default:hover {
+  background: #dbdbdb;
+  border-radius: 50%
+}
+.DateRangePickerInput_clearDates__hide {
+  visibility: hidden
+}
+.DateRangePickerInput_clearDates_svg {
+  fill: #82888a;
+  height: 12px;
+  width: 15px;
+  vertical-align: middle
+}
+.DateRangePickerInput_clearDates_svg__small {
+  height: 9px
+}
+.DateRangePickerInput_calendarIcon {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 10px;
+  margin: 0 5px 0 10px
+}
+.DateRangePickerInput_calendarIcon_svg {
+  fill: #82888a;
+  height: 15px;
+  width: 14px;
+  vertical-align: middle
+}
+.DateRangePicker {
+  position: relative;
+  display: inline-block
+}
+.DateRangePicker__block {
+  display: block
+}
+.DateRangePicker_picker {
+  z-index: 1;
+  background-color: #fff;
+  position: absolute
+}
+.DateRangePicker_picker__rtl {
+  direction: rtl
+}
+.DateRangePicker_picker__directionLeft {
+  left: 0
+}
+.DateRangePicker_picker__directionRight {
+  right: 0
+}
+.DateRangePicker_picker__portal {
+  background-color: rgba(0,0,0,.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%
+}
+.DateRangePicker_picker__fullScreenPortal {
+  background-color: #fff
+}
+.DateRangePicker_closeButton {
+  background: 0 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 15px;
+  z-index: 2
+}
+.DateRangePicker_closeButton:focus,
+.DateRangePicker_closeButton:hover {
+  color: darken(#cacccd,10%);
+  text-decoration: none
+}
+.DateRangePicker_closeButton_svg {
+  height: 15px;
+  width: 15px;
+  fill: #cacccd
+}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL25vZGVfbW9kdWxlcy9yZWFjdC1kYXRlcy9saWIvY3NzL19kYXRlcGlja2VyLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFO0FBQ0Y7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixZQUFZO0VBQ1osa0JBQWtCO0VBQ2xCLGVBQWU7RUFDZix5QkFBeUI7RUFDekIsY0FBYztFQUNkLGlCQUFpQjtFQUNqQixpQkFBaUI7RUFDakIsYUFBYTtFQUNiLGdCQUFnQjtFQUNoQixtQkFBbUI7RUFDbkIsaUJBQWlCO0VBQ2pCLDJCQUEyQjtFQUMzQixzQkFBc0I7RUFDdEI7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0UsV0FBVztFQUNYO0FBQ0Y7QUFDQTtFQUNFLHFCQUFxQjtFQUNyQjtBQUNGO0FBQ0E7RUFDRSxrQkFBa0I7RUFDbEI7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0UsZUFBZTtFQUNmLFNBQVM7RUFDVCxjQUFjO0VBQ2QsYUFBYTtFQUNiLG1CQUFtQjtFQUNuQixpQkFBaUI7RUFDakIsZUFBZTtFQUNmLGFBQWE7RUFDYixvQkFBb0I7RUFDcEIsa0JBQWtCO0VBQ2xCLFFBQVE7RUFDUixRQUFRO0VBQ1IsbUNBQW1DO0VBQ25DLCtCQUErQjtFQUMvQjtBQUNGO0FBQ0E7O0VBRUUsbUJBQW1CO0VBQ25CO0FBQ0Y7QUFDQTtFQUNFO0FBQ0Y7QUFDQTtFQUNFO0FBQ0Y7QUFDQTtFQUNFLGFBQWE7RUFDYixZQUFZO0VBQ1osV0FBVztFQUNYO0FBQ0Y7QUFDQTtFQUNFO0FBQ0Y7QUFDQTtFQUNFLGVBQWU7RUFDZixTQUFTO0VBQ1QsY0FBYztFQUNkLGFBQWE7RUFDYixtQkFBbUI7RUFDbkIsaUJBQWlCO0VBQ2pCLGVBQWU7RUFDZixxQkFBcUI7RUFDckIsc0JBQXNCO0VBQ3RCLGFBQWE7RUFDYjtBQUNGO0FBQ0E7RUFDRSxhQUFh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QUFhO0VBQ2I7QUFDRjtBQUNBO0VBQ0UsYUFBYTtFQUNiLFlBQVk7RUFDWixXQUFXO0VBQ1g7QUFDRjtBQUNBO0VBQ0Usa0JBQWtCO0VBQ2xCO0FBQ0Y7QUFDQTtFQUNFO0FBQ0Y7QUFDQTtFQUNFLFVBQVU7RUFDVixzQkFBc0I7RUFDdEI7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0U7QUFDRjtBQUNBO0VBQ0UsZ0NBQWdDO0VBQ2hDLGVBQWU7RUFDZixNQUFNO0VBQ04sT0FBTztFQUNQLFlBQVk7RUFDWjtBQUNGO0FBQ0E7RUFDRTtBQUNGO0FBQ0E7RUFDRSxlQUFlO0VBQ2YsU0FBUztFQUNULGNBQWM7RUFDZCxhQUFhO0VBQ2IsbUJBQW1CO0VBQ25CLGlCQUFpQjtFQUNqQixlQUFlO0VBQ2Ysa0JBQWtCO0VBQ2xCLE1BQU07RUFDTixRQUFRO0VBQ1IsYUFBYTtFQUNiO0FBQ0Y7QUFDQTs7RUFFRSwwQkFBMEI7RUFDMUI7QUFDRjtBQUNBO0VBQ0UsWUFBWTtFQUNaLFdBQVc7RUFDWDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiLlByZXNldERhdGVSYW5nZVBpY2tlcl9wYW5lbCB7XG4gIHBhZGRpbmc6IDAgMjJweCAxMXB4XG59XG4uUHJlc2V0RGF0ZVJhbmdlUGlja2VyX2J1dHRvbiB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgaGVpZ2h0OiAxMDAlO1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGJhY2tncm91bmQ6IDAgMDtcbiAgYm9yZGVyOiAycHggc29saWQgIzAwYTY5OTtcbiAgY29sb3I6ICMwMGE2OTk7XG4gIHBhZGRpbmc6IDRweCAxMnB4O1xuICBtYXJnaW4tcmlnaHQ6IDhweDtcbiAgZm9udDogaW5oZXJpdDtcbiAgZm9udC13ZWlnaHQ6IDcwMDtcbiAgbGluZS1oZWlnaHQ6IG5vcm1hbDtcbiAgb3ZlcmZsb3c6IHZpc2libGU7XG4gIC1tb3otYm94LXNpemluZzogYm9yZGVyLWJveDtcbiAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbiAgY3Vyc29yOiBwb2ludGVyXG59XG4uUHJlc2V0RGF0ZVJhbmdlUGlja2VyX2J1dHRvbjphY3RpdmUge1xuICBvdXRsaW5lOiAwXG59XG4uUHJlc2V0RGF0ZVJhbmdlUGlja2VyX2J1dHRvbl9fc2VsZWN0ZWQge1xuICBjb2xvcjogI2ZmZjtcbiAgYmFja2dyb3VuZDogIzAwYTY5OVxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dCB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZlxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9fd2l0aEJvcmRlciB7XG4gIGJvcmRlci1yYWRpdXM6IDJweDtcbiAgYm9yZGVyOiAxcHggc29saWQgI2RiZGJkYlxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9fcnRsIHtcbiAgZGlyZWN0aW9uOiBydGxcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfX2Rpc2FibGVkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2YyZjJmMlxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9fYmxvY2sge1xuICBkaXNwbGF5OiBibG9ja1xufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9fc2hvd0NsZWFyRGF0ZSB7XG4gIHBhZGRpbmctcmlnaHQ6IDMwcHhcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2xlYXJEYXRlIHtcbiAgYmFja2dyb3VuZDogMCAwO1xuICBib3JkZXI6IDA7XG4gIGNvbG9yOiBpbmhlcml0O1xuICBmb250OiBpbmhlcml0O1xuICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBwYWRkaW5nOiAxMHB4O1xuICBtYXJnaW46IDAgMTBweCAwIDVweDtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICByaWdodDogMDtcbiAgdG9wOiA1MCU7XG4gIC13ZWJraXQtdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC01MCUpO1xuICAtbXMtdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC01MCUpO1xuICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTUwJSlcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2xlYXJEYXRlX19kZWZhdWx0OmZvY3VzLFxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9jbGVhckRhdGVfX2RlZmF1bHQ6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiAjZGJkYmRiO1xuICBib3JkZXItcmFkaXVzOiA1MCVcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2xlYXJEYXRlX19zbWFsbCB7XG4gIHBhZGRpbmc6IDZweFxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9jbGVhckRhdGVfX2hpZGUge1xuICB2aXNpYmlsaXR5OiBoaWRkZW5cbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2xlYXJEYXRlX3N2ZyB7XG4gIGZpbGw6ICM4Mjg4OGE7XG4gIGhlaWdodDogMTJweDtcbiAgd2lkdGg6IDE1cHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGVcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2xlYXJEYXRlX3N2Z19fc21hbGwge1xuICBoZWlnaHQ6IDlweFxufVxuLlNpbmdsZURhdGVQaWNrZXJJbnB1dF9jYWxlbmRhckljb24ge1xuICBiYWNrZ3JvdW5kOiAwIDA7XG4gIGJvcmRlcjogMDtcbiAgY29sb3I6IGluaGVyaXQ7XG4gIGZvbnQ6IGluaGVyaXQ7XG4gIGxpbmUtaGVpZ2h0OiBub3JtYWw7XG4gIG92ZXJmbG93OiB2aXNpYmxlO1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgcGFkZGluZzogMTBweDtcbiAgbWFyZ2luOiAwIDVweCAwIDEwcHhcbn1cbi5TaW5nbGVEYXRlUGlja2VySW5wdXRfY2FsZW5kYXJJY29uX3N2ZyB7XG4gIGZpbGw6ICM4Mjg4OGE7XG4gIGhlaWdodDogMTVweDtcbiAgd2lkdGg6IDE0cHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGVcbn1cbi5TaW5nbGVEYXRlUGlja2VyIHtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2tcbn1cbi5TaW5nbGVEYXRlUGlja2VyX19ibG9jayB7XG4gIGRpc3BsYXk6IGJsb2NrXG59XG4uU2luZ2xlRGF0ZVBpY2tlcl9waWNrZXIge1xuICB6LWluZGV4OiAxO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICBwb3NpdGlvbjogYWJzb2x1dGVcbn1cbi5TaW5nbGVEYXRlUGlja2VyX3BpY2tlcl9fcnRsIHtcbiAgZGlyZWN0aW9uOiBydGxcbn1cbi5TaW5nbGVEYXRlUGlja2VyX3BpY2tlcl9fZGlyZWN0aW9uTGVmdCB7XG4gIGxlZnQ6IDBcbn1cbi5TaW5nbGVEYXRlUGlja2VyX3BpY2tlcl9fZGlyZWN0aW9uUmlnaHQge1xuICByaWdodDogMFxufVxuLlNpbmdsZURhdGVQaWNrZXJfcGlja2VyX19wb3J0YWwge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDAsMCwwLC4zKTtcbiAgcG9zaXRpb246IGZpeGVkO1xuICB0b3A6IDA7XG4gIGxlZnQ6IDA7XG4gIGhlaWdodDogMTAwJTtcbiAgd2lkdGg6IDEwMCVcbn1cbi5TaW5nbGVEYXRlUGlja2VyX3BpY2tlcl9fZnVsbFNjcmVlblBvcnRhbCB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmZcbn1cbi5TaW5nbGVEYXRlUGlja2VyX2Nsb3NlQnV0dG9uIHtcbiAgYmFja2dyb3VuZDogMCAwO1xuICBib3JkZXI6IDA7XG4gIGNvbG9yOiBpbmhlcml0O1xuICBmb250OiBpbmhlcml0O1xuICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogMDtcbiAgcmlnaHQ6IDA7XG4gIHBhZGRpbmc6IDE1cHg7XG4gIHotaW5kZXg6IDJcbn1cbi5TaW5nbGVEYXRlUGlja2VyX2Nsb3NlQnV0dG9uOmZvY3VzLFxuLlNpbmdsZURhdGVQaWNrZXJfY2xvc2VCdXR0b246aG92ZXIge1xuICBjb2xvcjogZGFya2VuKCNjYWNjY2QsMTAlKTtcbiAgdGV4dC1kZWNvcmF0aW9uOiBub25lXG59XG4uU2luZ2xlRGF0ZVBpY2tlcl9jbG9zZUJ1dHRvbl9zdmcge1xuICBoZWlnaHQ6IDE1cHg7XG4gIHdpZHRoOiAxNXB4O1xuICBmaWxsOiAjY2FjY2NkXG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfYnV0dG9uUmVzZXQge1xuICBiYWNrZ3JvdW5kOiAwIDA7XG4gIGJvcmRlcjogMDtcbiAgYm9yZGVyLXJhZGl1czogMDtcbiAgY29sb3I6IGluaGVyaXQ7XG4gIGZvbnQ6IGluaGVyaXQ7XG4gIGxpbmUtaGVpZ2h0OiBub3JtYWw7XG4gIG92ZXJmbG93OiB2aXNpYmxlO1xuICBwYWRkaW5nOiAwO1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGZvbnQtc2l6ZTogMTRweFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX2J1dHRvblJlc2V0OmFjdGl2ZSB7XG4gIG91dGxpbmU6IDBcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c19zaG93IHtcbiAgd2lkdGg6IDMzcHg7XG4gIGhlaWdodDogMjZweDtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICB6LWluZGV4OiAyXG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfc2hvdzo6YmVmb3JlIHtcbiAgY29udGVudDogXCJcIjtcbiAgZGlzcGxheTogYmxvY2s7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZVxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX2JvdHRvbVJpZ2h0IHtcbiAgYm90dG9tOiAwO1xuICByaWdodDogMFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX2JvdHRvbVJpZ2h0OjpiZWZvcmUge1xuICBib3JkZXItdG9wOiAyNnB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICBib3JkZXItcmlnaHQ6IDMzcHggc29saWQgIzAwYTY5OTtcbiAgYm90dG9tOiAwO1xuICByaWdodDogMFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX2JvdHRvbVJpZ2h0OmhvdmVyOjpiZWZvcmUge1xuICBib3JkZXItcmlnaHQ6IDMzcHggc29saWQgIzAwODQ4OVxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX3RvcFJpZ2h0IHtcbiAgdG9wOiAwO1xuICByaWdodDogMFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX3RvcFJpZ2h0OjpiZWZvcmUge1xuICBib3JkZXItYm90dG9tOiAyNnB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICBib3JkZXItcmlnaHQ6IDMzcHggc29saWQgIzAwYTY5OTtcbiAgdG9wOiAwO1xuICByaWdodDogMFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX3RvcFJpZ2h0OmhvdmVyOjpiZWZvcmUge1xuICBib3JkZXItcmlnaHQ6IDMzcHggc29saWQgIzAwODQ4OVxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX3Nob3dfX3RvcExlZnQge1xuICB0b3A6IDA7XG4gIGxlZnQ6IDBcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c19zaG93X190b3BMZWZ0OjpiZWZvcmUge1xuICBib3JkZXItYm90dG9tOiAyNnB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICBib3JkZXItbGVmdDogMzNweCBzb2xpZCAjMDBhNjk5O1xuICB0b3A6IDA7XG4gIGxlZnQ6IDBcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c19zaG93X190b3BMZWZ0OmhvdmVyOjpiZWZvcmUge1xuICBib3JkZXItbGVmdDogMzNweCBzb2xpZCAjMDA4NDg5XG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfc2hvd1NwYW4ge1xuICBjb2xvcjogI2ZmZjtcbiAgcG9zaXRpb246IGFic29sdXRlXG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfc2hvd1NwYW5fX2JvdHRvbVJpZ2h0IHtcbiAgYm90dG9tOiAwO1xuICByaWdodDogNXB4XG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfc2hvd1NwYW5fX3RvcFJpZ2h0IHtcbiAgdG9wOiAxcHg7XG4gIHJpZ2h0OiA1cHhcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c19zaG93U3Bhbl9fdG9wTGVmdCB7XG4gIHRvcDogMXB4O1xuICBsZWZ0OiA1cHhcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c19wYW5lbCB7XG4gIG92ZXJmbG93OiBhdXRvO1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICBib3JkZXI6IDFweCBzb2xpZCAjZGJkYmRiO1xuICBib3JkZXItcmFkaXVzOiAycHg7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgdG9wOiAwO1xuICBib3R0b206IDA7XG4gIHJpZ2h0OiAwO1xuICBsZWZ0OiAwO1xuICB6LWluZGV4OiAyO1xuICBwYWRkaW5nOiAyMnB4O1xuICBtYXJnaW46IDMzcHg7XG4gIHRleHQtYWxpZ246IGxlZnRcbn1cbi5EYXlQaWNrZXJLZXlib2FyZFNob3J0Y3V0c190aXRsZSB7XG4gIGZvbnQtc2l6ZTogMTZweDtcbiAgZm9udC13ZWlnaHQ6IDcwMDtcbiAgbWFyZ2luOiAwXG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfbGlzdCB7XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG4gIGZvbnQtc2l6ZTogMTRweFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX2Nsb3NlIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICByaWdodDogMjJweDtcbiAgdG9wOiAyMnB4O1xuICB6LWluZGV4OiAyXG59XG4uRGF5UGlja2VyS2V5Ym9hcmRTaG9ydGN1dHNfY2xvc2U6YWN0aXZlIHtcbiAgb3V0bGluZTogMFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX2Nsb3NlU3ZnIHtcbiAgaGVpZ2h0OiAxNXB4O1xuICB3aWR0aDogMTVweDtcbiAgZmlsbDogI2NhY2NjZFxufVxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX2Nsb3NlU3ZnOmZvY3VzLFxuLkRheVBpY2tlcktleWJvYXJkU2hvcnRjdXRzX2Nsb3NlU3ZnOmhvdmVyIHtcbiAgZmlsbDogIzgyODg4YVxufVxuLkNhbGVuZGFyRGF5IHtcbiAgLW1vei1ib3gtc2l6aW5nOiBib3JkZXItYm94O1xuICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGZvbnQtc2l6ZTogMTRweDtcbiAgdGV4dC1hbGlnbjogY2VudGVyXG59XG4uQ2FsZW5kYXJEYXk6YWN0aXZlIHtcbiAgb3V0bGluZTogMFxufVxuLkNhbGVuZGFyRGF5X19kZWZhdWx0Q3Vyc29yIHtcbiAgY3Vyc29yOiBkZWZhdWx0XG59XG4uQ2FsZW5kYXJEYXlfX2RlZmF1bHQge1xuICBib3JkZXI6IDFweCBzb2xpZCAjZTRlN2U3O1xuICBjb2xvcjogIzQ4NDg0ODtcbiAgYmFja2dyb3VuZDogI2ZmZlxufVxuLkNhbGVuZGFyRGF5X19kZWZhdWx0OmhvdmVyIHtcbiAgYmFja2dyb3VuZDogI2U0ZTdlNztcbiAgYm9yZGVyOiAxcHggc29saWQgI2U0ZTdlNztcbiAgY29sb3I6IGluaGVyaXRcbn1cbi5DYWxlbmRhckRheV9faG92ZXJlZF9vZmZzZXQge1xuICBiYWNrZ3JvdW5kOiAjZjRmNWY1O1xuICBib3JkZXI6IDFweCBkb3VibGUgI2U0ZTdlNztcbiAgY29sb3I6IGluaGVyaXRcbn1cbi5DYWxlbmRhckRheV9fb3V0c2lkZSB7XG4gIGJvcmRlcjogMDtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgY29sb3I6ICM0ODQ4NDhcbn1cbi5DYWxlbmRhckRheV9fb3V0c2lkZTpob3ZlciB7XG4gIGJvcmRlcjogMFxufVxuLkNhbGVuZGFyRGF5X19ibG9ja2VkX21pbmltdW1fbmlnaHRzIHtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgYm9yZGVyOiAxcHggc29saWQgI2VjZWVlZTtcbiAgY29sb3I6ICNjYWNjY2Rcbn1cbi5DYWxlbmRhckRheV9fYmxvY2tlZF9taW5pbXVtX25pZ2h0czphY3RpdmUsXG4uQ2FsZW5kYXJEYXlfX2Jsb2NrZWRfbWluaW11bV9uaWdodHM6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICBjb2xvcjogI2NhY2NjZFxufVxuLkNhbGVuZGFyRGF5X19oaWdobGlnaHRlZF9jYWxlbmRhciB7XG4gIGJhY2tncm91bmQ6ICNmZmU4YmM7XG4gIGNvbG9yOiAjNDg0ODQ4XG59XG4uQ2FsZW5kYXJEYXlfX2hpZ2hsaWdodGVkX2NhbGVuZGFyOmFjdGl2ZSxcbi5DYWxlbmRhckRheV9faGlnaGxpZ2h0ZWRfY2FsZW5kYXI6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiAjZmZjZTcxO1xuICBjb2xvcjogIzQ4NDg0OFxufVxuLkNhbGVuZGFyRGF5X19zZWxlY3RlZF9zcGFuIHtcbiAgYmFja2dyb3VuZDogIzY2ZTJkYTtcbiAgYm9yZGVyOiAxcHggZG91YmxlICMzM2RhY2Q7XG4gIGNvbG9yOiAjZmZmXG59XG4uQ2FsZW5kYXJEYXlfX3NlbGVjdGVkX3NwYW46YWN0aXZlLFxuLkNhbGVuZGFyRGF5X19zZWxlY3RlZF9zcGFuOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogIzMzZGFjZDtcbiAgYm9yZGVyOiAxcHggZG91YmxlICMzM2RhY2Q7XG4gIGNvbG9yOiAjZmZmXG59XG4uQ2FsZW5kYXJEYXlfX3NlbGVjdGVkLFxuLkNhbGVuZGFyRGF5X19zZWxlY3RlZDphY3RpdmUsXG4uQ2FsZW5kYXJEYXlfX3NlbGVjdGVkOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogIzAwYTY5OTtcbiAgYm9yZGVyOiAxcHggZG91YmxlICMwMGE2OTk7XG4gIGNvbG9yOiAjZmZmXG59XG4uQ2FsZW5kYXJEYXlfX2hvdmVyZWRfc3Bhbixcbi5DYWxlbmRhckRheV9faG92ZXJlZF9zcGFuOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogI2IyZjFlYztcbiAgYm9yZGVyOiAxcHggZG91YmxlICM4MGU4ZTA7XG4gIGNvbG9yOiAjMDA3YTg3XG59XG4uQ2FsZW5kYXJEYXlfX2hvdmVyZWRfc3BhbjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiAjODBlOGUwO1xuICBib3JkZXI6IDFweCBkb3VibGUgIzgwZThlMDtcbiAgY29sb3I6ICMwMDdhODdcbn1cbi5DYWxlbmRhckRheV9fYmxvY2tlZF9jYWxlbmRhcixcbi5DYWxlbmRhckRheV9fYmxvY2tlZF9jYWxlbmRhcjphY3RpdmUsXG4uQ2FsZW5kYXJEYXlfX2Jsb2NrZWRfY2FsZW5kYXI6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiAjY2FjY2NkO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2FjY2NkO1xuICBjb2xvcjogIzgyODg4YVxufVxuLkNhbGVuZGFyRGF5X19ibG9ja2VkX291dF9vZl9yYW5nZSxcbi5DYWxlbmRhckRheV9fYmxvY2tlZF9vdXRfb2ZfcmFuZ2U6YWN0aXZlLFxuLkNhbGVuZGFyRGF5X19ibG9ja2VkX291dF9vZl9yYW5nZTpob3ZlciB7XG4gIGJhY2tncm91bmQ6ICNmZmY7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNlNGU3ZTc7XG4gIGNvbG9yOiAjY2FjY2NkXG59XG4uQ2FsZW5kYXJEYXlfX2hvdmVyZWRfc3RhcnRfZmlyc3RfcG9zc2libGVfZW5kIHtcbiAgYmFja2dyb3VuZDogI2VjZWVlZTtcbiAgYm9yZGVyOiAxcHggZG91YmxlICNlY2VlZWVcbn1cbi5DYWxlbmRhckRheV9faG92ZXJlZF9zdGFydF9ibG9ja2VkX21pbl9uaWdodHMge1xuICBiYWNrZ3JvdW5kOiAjZWNlZWVlO1xuICBib3JkZXI6IDFweCBkb3VibGUgI2U0ZTdlN1xufVxuLkNhbGVuZGFyTW9udGgge1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIHZlcnRpY2FsLWFsaWduOiB0b3A7XG4gIC13ZWJraXQtdXNlci1zZWxlY3Q6IG5vbmU7XG4gIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7XG4gIC1tcy11c2VyLXNlbGVjdDogbm9uZTtcbiAgdXNlci1zZWxlY3Q6IG5vbmVcbn1cbi5DYWxlbmRhck1vbnRoX3RhYmxlIHtcbiAgYm9yZGVyLWNvbGxhcHNlOiBjb2xsYXBzZTtcbiAgYm9yZGVyLXNwYWNpbmc6IDBcbn1cbi5DYWxlbmRhck1vbnRoX3ZlcnRpY2FsU3BhY2luZyB7XG4gIGJvcmRlci1jb2xsYXBzZTogc2VwYXJhdGVcbn1cbi5DYWxlbmRhck1vbnRoX2NhcHRpb24ge1xuICBjb2xvcjogIzQ4NDg0ODtcbiAgZm9udC1zaXplOiAxOHB4O1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIHBhZGRpbmctdG9wOiAyMnB4O1xuICBwYWRkaW5nLWJvdHRvbTogMzdweDtcbiAgY2FwdGlvbi1zaWRlOiBpbml0aWFsXG59XG4uQ2FsZW5kYXJNb250aF9jYXB0aW9uX192ZXJ0aWNhbFNjcm9sbGFibGUge1xuICBwYWRkaW5nLXRvcDogMTJweDtcbiAgcGFkZGluZy1ib3R0b206IDdweFxufVxuLkNhbGVuZGFyTW9udGhHcmlkIHtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgdGV4dC1hbGlnbjogbGVmdDtcbiAgei1pbmRleDogMFxufVxuLkNhbGVuZGFyTW9udGhHcmlkX19hbmltYXRpbmcge1xuICB6LWluZGV4OiAxXG59XG4uQ2FsZW5kYXJNb250aEdyaWRfX2hvcml6b250YWwge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGxlZnQ6IDlweFxufVxuLkNhbGVuZGFyTW9udGhHcmlkX192ZXJ0aWNhbCxcbi5DYWxlbmRhck1vbnRoR3JpZF9fdmVydGljYWxfc2Nyb2xsYWJsZSB7XG4gIG1hcmdpbjogMCBhdXRvXG59XG4uQ2FsZW5kYXJNb250aEdyaWRfbW9udGhfX2hvcml6b250YWwge1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIHZlcnRpY2FsLWFsaWduOiB0b3A7XG4gIG1pbi1oZWlnaHQ6IDEwMCVcbn1cbi5DYWxlbmRhck1vbnRoR3JpZF9tb250aF9faGlkZUZvckFuaW1hdGlvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgei1pbmRleDogLTE7XG4gIG9wYWNpdHk6IDA7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lXG59XG4uQ2FsZW5kYXJNb250aEdyaWRfbW9udGhfX2hpZGRlbiB7XG4gIHZpc2liaWxpdHk6IGhpZGRlblxufVxuLkRheVBpY2tlck5hdmlnYXRpb24ge1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIHotaW5kZXg6IDJcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX19ob3Jpem9udGFsIHtcbiAgaGVpZ2h0OiAwXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9fdmVydGljYWxTY3JvbGxhYmxlX3ByZXZOYXYge1xuICB6LWluZGV4OiAxXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9fdmVydGljYWxEZWZhdWx0IHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiA1MnB4O1xuICBib3R0b206IDA7XG4gIGxlZnQ6IDBcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX192ZXJ0aWNhbFNjcm9sbGFibGVEZWZhdWx0IHtcbiAgcG9zaXRpb246IHJlbGF0aXZlXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9fYm90dG9tIHtcbiAgaGVpZ2h0OiBhdXRvXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9fYm90dG9tRGVmYXVsdCB7XG4gIC13ZWJraXQtYm94LXBhY2s6IGp1c3RpZnk7XG4gIC1tcy1mbGV4LXBhY2s6IGp1c3RpZnk7XG4gIGRpc3BsYXk6IC13ZWJraXQtYm94O1xuICBkaXNwbGF5OiAtbW96LWJveDtcbiAgZGlzcGxheTogLW1zLWZsZXhib3g7XG4gIGRpc3BsYXk6IC13ZWJraXQtZmxleDtcbiAgZGlzcGxheTogZmxleDtcbiAgLXdlYmtpdC1qdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlblxufVxuLkRheVBpY2tlck5hdmlnYXRpb25fYnV0dG9uIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICAtd2Via2l0LXVzZXItc2VsZWN0OiBub25lO1xuICAtbW96LXVzZXItc2VsZWN0OiBub25lO1xuICAtbXMtdXNlci1zZWxlY3Q6IG5vbmU7XG4gIHVzZXItc2VsZWN0OiBub25lO1xuICBib3JkZXI6IDA7XG4gIHBhZGRpbmc6IDA7XG4gIG1hcmdpbjogMFxufVxuLkRheVBpY2tlck5hdmlnYXRpb25fYnV0dG9uX19kZWZhdWx0IHtcbiAgYm9yZGVyOiAxcHggc29saWQgI2U0ZTdlNztcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgY29sb3I6ICM3NTc1NzVcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX2J1dHRvbl9fZGVmYXVsdDpmb2N1cyxcbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX2J1dHRvbl9fZGVmYXVsdDpob3ZlciB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjNGM0YzRcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX2J1dHRvbl9fZGVmYXVsdDphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiAjZjJmMmYyXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9idXR0b25fX2Rpc2FibGVkIHtcbiAgY3Vyc29yOiBkZWZhdWx0O1xuICBib3JkZXI6IDFweCBzb2xpZCAjZjJmMmYyXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9idXR0b25fX2Rpc2FibGVkOmZvY3VzLFxuLkRheVBpY2tlck5hdmlnYXRpb25fYnV0dG9uX19kaXNhYmxlZDpob3ZlciB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNmMmYyZjJcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX2J1dHRvbl9fZGlzYWJsZWQ6YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogMCAwXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9idXR0b25fX2hvcml6b250YWxEZWZhdWx0IHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICB0b3A6IDE4cHg7XG4gIGxpbmUtaGVpZ2h0OiAuNzg7XG4gIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgcGFkZGluZzogNnB4IDlweFxufVxuLkRheVBpY2tlck5hdmlnYXRpb25fYm90dG9tQnV0dG9uX19ob3Jpem9udGFsRGVmYXVsdCB7XG4gIHBvc2l0aW9uOiBzdGF0aWM7XG4gIG1hcmdpbjogLTEwcHggMjJweCAzMHB4XG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9sZWZ0QnV0dG9uX19ob3Jpem9udGFsRGVmYXVsdCB7XG4gIGxlZnQ6IDIycHhcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX3JpZ2h0QnV0dG9uX19ob3Jpem9udGFsRGVmYXVsdCB7XG4gIHJpZ2h0OiAyMnB4XG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9idXR0b25fX3ZlcnRpY2FsRGVmYXVsdCB7XG4gIHBhZGRpbmc6IDVweDtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgYm94LXNoYWRvdzogMCAwIDVweCAycHggcmdiYSgwLDAsMCwuMSk7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGhlaWdodDogMTAwJTtcbiAgd2lkdGg6IDUwJVxufVxuLkRheVBpY2tlck5hdmlnYXRpb25fbmV4dEJ1dHRvbl9fdmVydGljYWxEZWZhdWx0IHtcbiAgYm9yZGVyLWxlZnQ6IDBcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX25leHRCdXR0b25fX3ZlcnRpY2FsU2Nyb2xsYWJsZURlZmF1bHQsXG4uRGF5UGlja2VyTmF2aWdhdGlvbl9wcmV2QnV0dG9uX192ZXJ0aWNhbFNjcm9sbGFibGVEZWZhdWx0IHtcbiAgd2lkdGg6IDEwMCVcbn1cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX3N2Z19faG9yaXpvbnRhbCB7XG4gIGhlaWdodDogMTlweDtcbiAgd2lkdGg6IDE5cHg7XG4gIGZpbGw6ICM4Mjg4OGE7XG4gIGRpc3BsYXk6IGJsb2NrXG59XG4uRGF5UGlja2VyTmF2aWdhdGlvbl9zdmdfX3ZlcnRpY2FsIHtcbiAgaGVpZ2h0OiA0MnB4O1xuICB3aWR0aDogNDJweDtcbiAgZmlsbDogIzQ4NDg0OFxufVxuLkRheVBpY2tlck5hdmlnYXRpb25fc3ZnX19kaXNhYmxlZCB7XG4gIGZpbGw6ICNmMmYyZjJcbn1cbi5EYXlQaWNrZXIge1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIHRleHQtYWxpZ246IGxlZnRcbn1cbi5EYXlQaWNrZXJfX2hvcml6b250YWwge1xuICBiYWNrZ3JvdW5kOiAjZmZmXG59XG4uRGF5UGlja2VyX192ZXJ0aWNhbFNjcm9sbGFibGUge1xuICBoZWlnaHQ6IDEwMCVcbn1cbi5EYXlQaWNrZXJfX2hpZGRlbiB7XG4gIHZpc2liaWxpdHk6IGhpZGRlblxufVxuLkRheVBpY2tlcl9fd2l0aEJvcmRlciB7XG4gIGJveC1zaGFkb3c6IDAgMnB4IDZweCByZ2JhKDAsMCwwLC4wNSksMCAwIDAgMXB4IHJnYmEoMCwwLDAsLjA3KTtcbiAgYm9yZGVyLXJhZGl1czogM3B4XG59XG4uRGF5UGlja2VyX3BvcnRhbF9faG9yaXpvbnRhbCB7XG4gIGJveC1zaGFkb3c6IG5vbmU7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgbGVmdDogNTAlO1xuICB0b3A6IDUwJVxufVxuLkRheVBpY2tlcl9wb3J0YWxfX3ZlcnRpY2FsIHtcbiAgcG9zaXRpb246IGluaXRpYWxcbn1cbi5EYXlQaWNrZXJfZm9jdXNSZWdpb24ge1xuICBvdXRsaW5lOiAwXG59XG4uRGF5UGlja2VyX2NhbGVuZGFySW5mb19faG9yaXpvbnRhbCxcbi5EYXlQaWNrZXJfd3JhcHBlcl9faG9yaXpvbnRhbCB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgdmVydGljYWwtYWxpZ246IHRvcFxufVxuLkRheVBpY2tlcl93ZWVrSGVhZGVycyB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZVxufVxuLkRheVBpY2tlcl93ZWVrSGVhZGVyc19faG9yaXpvbnRhbCB7XG4gIG1hcmdpbi1sZWZ0OiA5cHhcbn1cbi5EYXlQaWNrZXJfd2Vla0hlYWRlciB7XG4gIGNvbG9yOiAjNzU3NTc1O1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogNjJweDtcbiAgei1pbmRleDogMjtcbiAgdGV4dC1hbGlnbjogbGVmdFxufVxuLkRheVBpY2tlcl93ZWVrSGVhZGVyX192ZXJ0aWNhbCB7XG4gIGxlZnQ6IDUwJVxufVxuLkRheVBpY2tlcl93ZWVrSGVhZGVyX192ZXJ0aWNhbFNjcm9sbGFibGUge1xuICB0b3A6IDA7XG4gIGRpc3BsYXk6IHRhYmxlLXJvdztcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNkYmRiZGI7XG4gIGJhY2tncm91bmQ6ICNmZmY7XG4gIG1hcmdpbi1sZWZ0OiAwO1xuICBsZWZ0OiAwO1xuICB3aWR0aDogMTAwJTtcbiAgdGV4dC1hbGlnbjogY2VudGVyXG59XG4uRGF5UGlja2VyX3dlZWtIZWFkZXJfdWwge1xuICBsaXN0LXN0eWxlOiBub25lO1xuICBtYXJnaW46IDFweCAwO1xuICBwYWRkaW5nLWxlZnQ6IDA7XG4gIHBhZGRpbmctcmlnaHQ6IDA7XG4gIGZvbnQtc2l6ZTogMTRweFxufVxuLkRheVBpY2tlcl93ZWVrSGVhZGVyX2xpIHtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB0ZXh0LWFsaWduOiBjZW50ZXJcbn1cbi5EYXlQaWNrZXJfdHJhbnNpdGlvbkNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgYm9yZGVyLXJhZGl1czogM3B4XG59XG4uRGF5UGlja2VyX3RyYW5zaXRpb25Db250YWluZXJfX2hvcml6b250YWwge1xuICAtd2Via2l0LXRyYW5zaXRpb246IGhlaWdodCAuMnMgZWFzZS1pbi1vdXQ7XG4gIC1tb3otdHJhbnNpdGlvbjogaGVpZ2h0IC4ycyBlYXNlLWluLW91dDtcbiAgdHJhbnNpdGlvbjogaGVpZ2h0IC4ycyBlYXNlLWluLW91dFxufVxuLkRheVBpY2tlcl90cmFuc2l0aW9uQ29udGFpbmVyX192ZXJ0aWNhbCB7XG4gIHdpZHRoOiAxMDAlXG59XG4uRGF5UGlja2VyX3RyYW5zaXRpb25Db250YWluZXJfX3ZlcnRpY2FsU2Nyb2xsYWJsZSB7XG4gIHBhZGRpbmctdG9wOiAyMHB4O1xuICBoZWlnaHQ6IDEwMCU7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgdG9wOiAwO1xuICBib3R0b206IDA7XG4gIHJpZ2h0OiAwO1xuICBsZWZ0OiAwO1xuICBvdmVyZmxvdy15OiBzY3JvbGxcbn1cbi5EYXRlSW5wdXQge1xuICBtYXJnaW46IDA7XG4gIHBhZGRpbmc6IDA7XG4gIGJhY2tncm91bmQ6ICNmZmY7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB3aWR0aDogMTMwcHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGVcbn1cbi5EYXRlSW5wdXRfX3NtYWxsIHtcbiAgd2lkdGg6IDk3cHhcbn1cbi5EYXRlSW5wdXRfX2Jsb2NrIHtcbiAgd2lkdGg6IDEwMCVcbn1cbi5EYXRlSW5wdXRfX2Rpc2FibGVkIHtcbiAgYmFja2dyb3VuZDogI2YyZjJmMjtcbiAgY29sb3I6ICNkYmRiZGJcbn1cbi5EYXRlSW5wdXRfaW5wdXQge1xuICBmb250LXdlaWdodDogMjAwO1xuICBmb250LXNpemU6IDE5cHg7XG4gIGxpbmUtaGVpZ2h0OiAyNHB4O1xuICBjb2xvcjogIzQ4NDg0ODtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgd2lkdGg6IDEwMCU7XG4gIHBhZGRpbmc6IDExcHggMTFweCA5cHg7XG4gIGJvcmRlcjogMDtcbiAgYm9yZGVyLXRvcDogMDtcbiAgYm9yZGVyLXJpZ2h0OiAwO1xuICBib3JkZXItYm90dG9tOiAycHggc29saWQgdHJhbnNwYXJlbnQ7XG4gIGJvcmRlci1sZWZ0OiAwO1xuICBib3JkZXItcmFkaXVzOiAwXG59XG4uRGF0ZUlucHV0X2lucHV0X19zbWFsbCB7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgbGluZS1oZWlnaHQ6IDE4cHg7XG4gIGxldHRlci1zcGFjaW5nOiAuMnB4O1xuICBwYWRkaW5nOiA3cHggN3B4IDVweFxufVxuLkRhdGVJbnB1dF9pbnB1dF9fcmVndWxhciB7XG4gIGZvbnQtd2VpZ2h0OiBhdXRvXG59XG4uRGF0ZUlucHV0X2lucHV0X19yZWFkT25seSB7XG4gIC13ZWJraXQtdXNlci1zZWxlY3Q6IG5vbmU7XG4gIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7XG4gIC1tcy11c2VyLXNlbGVjdDogbm9uZTtcbiAgdXNlci1zZWxlY3Q6IG5vbmVcbn1cbi5EYXRlSW5wdXRfaW5wdXRfX2ZvY3VzZWQge1xuICBvdXRsaW5lOiAwO1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICBib3JkZXI6IDA7XG4gIGJvcmRlci10b3A6IDA7XG4gIGJvcmRlci1yaWdodDogMDtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICMwMDg0ODk7XG4gIGJvcmRlci1sZWZ0OiAwXG59XG4uRGF0ZUlucHV0X2lucHV0X19kaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6ICNmMmYyZjI7XG4gIGZvbnQtc3R5bGU6IGl0YWxpY1xufVxuLkRhdGVJbnB1dF9zY3JlZW5SZWFkZXJNZXNzYWdlIHtcbiAgYm9yZGVyOiAwO1xuICBjbGlwOiByZWN0KDAsMCwwLDApO1xuICBoZWlnaHQ6IDFweDtcbiAgbWFyZ2luOiAtMXB4O1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBwYWRkaW5nOiAwO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHdpZHRoOiAxcHhcbn1cbi5EYXRlSW5wdXRfZmFuZyB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgd2lkdGg6IDIwcHg7XG4gIGhlaWdodDogMTBweDtcbiAgbGVmdDogMjJweDtcbiAgei1pbmRleDogMlxufVxuLkRhdGVJbnB1dF9mYW5nU2hhcGUge1xuICBmaWxsOiAjZmZmXG59XG4uRGF0ZUlucHV0X2ZhbmdTdHJva2Uge1xuICBzdHJva2U6ICNkYmRiZGI7XG4gIGZpbGw6IHRyYW5zcGFyZW50XG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXQge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2tcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9fZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiAjZjJmMmYyXG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfX3dpdGhCb3JkZXIge1xuICBib3JkZXItcmFkaXVzOiAycHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNkYmRiZGJcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9fcnRsIHtcbiAgZGlyZWN0aW9uOiBydGxcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9fYmxvY2sge1xuICBkaXNwbGF5OiBibG9ja1xufVxuLkRhdGVSYW5nZVBpY2tlcklucHV0X19zaG93Q2xlYXJEYXRlcyB7XG4gIHBhZGRpbmctcmlnaHQ6IDMwcHhcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9hcnJvdyB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgY29sb3I6ICM0ODQ4NDhcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9hcnJvd19zdmcge1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICBmaWxsOiAjNDg0ODQ4O1xuICBoZWlnaHQ6IDI0cHg7XG4gIHdpZHRoOiAyNHB4XG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2xlYXJEYXRlcyB7XG4gIGJhY2tncm91bmQ6IDAgMDtcbiAgYm9yZGVyOiAwO1xuICBjb2xvcjogaW5oZXJpdDtcbiAgZm9udDogaW5oZXJpdDtcbiAgbGluZS1oZWlnaHQ6IG5vcm1hbDtcbiAgb3ZlcmZsb3c6IHZpc2libGU7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgcGFkZGluZzogMTBweDtcbiAgbWFyZ2luOiAwIDEwcHggMCA1cHg7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgcmlnaHQ6IDA7XG4gIHRvcDogNTAlO1xuICAtd2Via2l0LXRyYW5zZm9ybTogdHJhbnNsYXRlWSgtNTAlKTtcbiAgLW1zLXRyYW5zZm9ybTogdHJhbnNsYXRlWSgtNTAlKTtcbiAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC01MCUpXG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2xlYXJEYXRlc19fc21hbGwge1xuICBwYWRkaW5nOiA2cHhcbn1cbi5EYXRlUmFuZ2VQaWNrZXJJbnB1dF9jbGVhckRhdGVzX2RlZmF1bHQ6Zm9jdXMsXG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2xlYXJEYXRlc19kZWZhdWx0OmhvdmVyIHtcbiAgYmFja2dyb3VuZDogI2RiZGJkYjtcbiAgYm9yZGVyLXJhZGl1czogNTAlXG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2xlYXJEYXRlc19faGlkZSB7XG4gIHZpc2liaWxpdHk6IGhpZGRlblxufVxuLkRhdGVSYW5nZVBpY2tlcklucHV0X2NsZWFyRGF0ZXNfc3ZnIHtcbiAgZmlsbDogIzgyODg4YTtcbiAgaGVpZ2h0OiAxMnB4O1xuICB3aWR0aDogMTVweDtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZVxufVxuLkRhdGVSYW5nZVBpY2tlcklucHV0X2NsZWFyRGF0ZXNfc3ZnX19zbWFsbCB7XG4gIGhlaWdodDogOXB4XG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2FsZW5kYXJJY29uIHtcbiAgYmFja2dyb3VuZDogMCAwO1xuICBib3JkZXI6IDA7XG4gIGNvbG9yOiBpbmhlcml0O1xuICBmb250OiBpbmhlcml0O1xuICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHBhZGRpbmc6IDEwcHg7XG4gIG1hcmdpbjogMCA1cHggMCAxMHB4XG59XG4uRGF0ZVJhbmdlUGlja2VySW5wdXRfY2FsZW5kYXJJY29uX3N2ZyB7XG4gIGZpbGw6ICM4Mjg4OGE7XG4gIGhlaWdodDogMTVweDtcbiAgd2lkdGg6IDE0cHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGVcbn1cbi5EYXRlUmFuZ2VQaWNrZXIge1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9ja1xufVxuLkRhdGVSYW5nZVBpY2tlcl9fYmxvY2sge1xuICBkaXNwbGF5OiBibG9ja1xufVxuLkRhdGVSYW5nZVBpY2tlcl9waWNrZXIge1xuICB6LWluZGV4OiAxO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICBwb3NpdGlvbjogYWJzb2x1dGVcbn1cbi5EYXRlUmFuZ2VQaWNrZXJfcGlja2VyX19ydGwge1xuICBkaXJlY3Rpb246IHJ0bFxufVxuLkRhdGVSYW5nZVBpY2tlcl9waWNrZXJfX2RpcmVjdGlvbkxlZnQge1xuICBsZWZ0OiAwXG59XG4uRGF0ZVJhbmdlUGlja2VyX3BpY2tlcl9fZGlyZWN0aW9uUmlnaHQge1xuICByaWdodDogMFxufVxuLkRhdGVSYW5nZVBpY2tlcl9waWNrZXJfX3BvcnRhbCB7XG4gIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsLjMpO1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIHRvcDogMDtcbiAgbGVmdDogMDtcbiAgaGVpZ2h0OiAxMDAlO1xuICB3aWR0aDogMTAwJVxufVxuLkRhdGVSYW5nZVBpY2tlcl9waWNrZXJfX2Z1bGxTY3JlZW5Qb3J0YWwge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmXG59XG4uRGF0ZVJhbmdlUGlja2VyX2Nsb3NlQnV0dG9uIHtcbiAgYmFja2dyb3VuZDogMCAwO1xuICBib3JkZXI6IDA7XG4gIGNvbG9yOiBpbmhlcml0O1xuICBmb250OiBpbmhlcml0O1xuICBsaW5lLWhlaWdodDogbm9ybWFsO1xuICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogMDtcbiAgcmlnaHQ6IDA7XG4gIHBhZGRpbmc6IDE1cHg7XG4gIHotaW5kZXg6IDJcbn1cbi5EYXRlUmFuZ2VQaWNrZXJfY2xvc2VCdXR0b246Zm9jdXMsXG4uRGF0ZVJhbmdlUGlja2VyX2Nsb3NlQnV0dG9uOmhvdmVyIHtcbiAgY29sb3I6IGRhcmtlbigjY2FjY2NkLDEwJSk7XG4gIHRleHQtZGVjb3JhdGlvbjogbm9uZVxufVxuLkRhdGVSYW5nZVBpY2tlcl9jbG9zZUJ1dHRvbl9zdmcge1xuICBoZWlnaHQ6IDE1cHg7XG4gIHdpZHRoOiAxNXB4O1xuICBmaWxsOiAjY2FjY2NkXG59Il0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.DateInput_input {
+    box-sizing: border-box;
+}
+
+.DayPickerNavigation__verticalDefault {
+    text-align: center;
+    height: initial;
+    padding: 10px 0px;
+}
+
+.DayPickerNavigation_svg__vertical {
+    height: 20px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL2Nzcy9yZWFjdC1kYXRlc0AyMC4xLjAtZml4LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLHNCQUFzQjtBQUMxQjs7QUFFQTtJQUNJLGtCQUFrQjtJQUNsQixlQUFlO0lBQ2YsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQiIsInNvdXJjZXNDb250ZW50IjpbIi5EYXRlSW5wdXRfaW5wdXQge1xuICAgIGJveC1zaXppbmc6IGJvcmRlci1ib3g7XG59XG5cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX192ZXJ0aWNhbERlZmF1bHQge1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBoZWlnaHQ6IGluaXRpYWw7XG4gICAgcGFkZGluZzogMTBweCAwcHg7XG59XG5cbi5EYXlQaWNrZXJOYXZpZ2F0aW9uX3N2Z19fdmVydGljYWwge1xuICAgIGhlaWdodDogMjBweDtcbn1cbiJdLCJzb3VyY2VSb290IjoiIn0= */</style>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Financial Dashboard</title>
+        <link rel="icon" type="image/x-icon" href="/_favicon.ico?v=3.2.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/custom.css?v=v2025101802_sprint0">
+<link rel="stylesheet" href="/assets/custom.css?m=1761088689.6181931">
+<link rel="stylesheet" href="/assets/force_tabs_visible.css?m=1761066857.134066">
+<link rel="stylesheet" href="/assets/market_forecast_table.css?m=1759346630.0">
+<link rel="stylesheet" href="/assets/market_trends_force_black.css?m=1759019650.0">
+<link rel="stylesheet" href="/assets/market_trends_override.css?m=1759599782.0">
+<link rel="stylesheet" href="/assets/market_trends_table.css?m=1759599782.0">
+<link rel="stylesheet" href="/assets/portfolio_fix.css?m=1760070052.0">
+<link rel="stylesheet" href="/assets/research_lab_fix.css?m=1761088689.7860198">
+<link rel="stylesheet" href="/assets/z_market_trends_override.css?m=1759599782.0">
+<link rel="stylesheet" href="/assets/zz_ultimate_fix.css?m=1759536680.0">
+    <style>._dash-undo-redo {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    font-size: 20px;
+    text-align: center;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+._dash-undo-redo > div {
+    position: relative;
+}
+._dash-undo-redo-link {
+    color: #0074d9;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    opacity: 0.2;
+}
+._dash-undo-redo-link:hover {
+    opacity: 1;
+}
+._dash-undo-redo-link ._dash-icon-undo {
+    font-size: 20px;
+    transform: rotate(270deg);
+}
+._dash-undo-redo-link ._dash-icon-redo {
+    font-size: 20px;
+    transform: rotate(90deg);
+}
+._dash-undo-redo-link ._dash-undo-redo-label {
+    font-size: 15px;
+}
+</style><style type="text/css" data-styled-jsx="">.tab-parent.jsx-4017309047{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}.tab-container.jsx-4017309047{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}.tab-container--vert.jsx-4017309047{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;}.tab-content--vert.jsx-4017309047{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}@media screen and (min-width:800px){.tab-container--vert .tab{width:auto;border-right:none !important;border-bottom:none !important;}.tab-container--vert .tab:last-of-type{border-bottom:1px solid #d6d6d6 !important;}.tab-container--vert .tab--selected{border-top:1px solid #d6d6d6;border-left:2px solid #1975FA;border-right:none;}.tab-container.jsx-4017309047{-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;}.tab-container--vert.jsx-4017309047{-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}.tab-parent--vert.jsx-4017309047{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;}}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BoaWxpcHBlL25ld3JlcG9zL2Rhc2gvY29tcG9uZW50cy9kYXNoLWNvcmUtY29tcG9uZW50cy9zcmMvY29tcG9uZW50cy9UYWJzLnJlYWN0LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQTZRNEIsQUFHc0MsQUFJQSxBQUlPLEFBR0EsQUFLTCxBQUtxRCxBQUdkLEFBSy9CLEFBR0csQUFHRixXQWxCUyw2QkFDQyxVQU9xQixjQUh2RCxLQVFBLENBWEEsSUFsQnNCLEFBSUEsSUE0QnRCLHVCQVBzQixDQWpCMUIsQUFHMEIsQUF3QkMsaUJBVHZCLGlDQXpCSixBQUlBLG1CQStCSSxTQXhCSiIsImZpbGUiOiIvaG9tZS9waGlsaXBwZS9uZXdyZXBvcy9kYXNoL2NvbXBvbmVudHMvZGFzaC1jb3JlLWNvbXBvbmVudHMvc3JjL2NvbXBvbmVudHMvVGFicy5yZWFjdC5qcyIsInNvdXJjZXNDb250ZW50IjpbIi8qIGVzbGludC1kaXNhYmxlIHJlYWN0L3Byb3AtdHlwZXMgKi9cbmltcG9ydCBSZWFjdCwge0NvbXBvbmVudH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IFByb3BUeXBlcyBmcm9tICdwcm9wLXR5cGVzJztcbmltcG9ydCB7aGFzLCBpcywgaXNOaWx9IGZyb20gJ3JhbWRhJztcblxuLy8gc29tZSB3ZWlyZCBpbnRlcmFjdGlvbiBidHduIHN0eWxlZC1qc3ggMy40IGFuZCBiYWJlbFxuLy8gc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS92ZXJjZWwvc3R5bGVkLWpzeC9wdWxsLzcxNlxuaW1wb3J0IF9KU1hTdHlsZSBmcm9tICdzdHlsZWQtanN4L3N0eWxlJzsgLy8gZXNsaW50LWRpc2FibGUtbGluZSBuby11bnVzZWQtdmFyc1xuaW1wb3J0IExvYWRpbmdFbGVtZW50IGZyb20gJy4uL3V0aWxzL0xvYWRpbmdFbGVtZW50JztcblxuLy8gRW5oYW5jZWRUYWIgaXMgZGVmaW5lZCBoZXJlIGluc3RlYWQgb2YgaW4gVGFiLnJlYWN0LmpzIGJlY2F1c2UgaWYgZXhwb3J0ZWQgdGhlcmUsXG4vLyBpdCB3aWxsIG1lc3MgdXAgdGhlIFB5dGhvbiBpbXBvcnRzIGFuZCBtZXRhZGF0YS5qc29uXG5jb25zdCBFbmhhbmNlZFRhYiA9ICh7XG4gICAgaWQsXG4gICAgbGFiZWwsXG4gICAgc2VsZWN0ZWQsXG4gICAgY2xhc3NOYW1lLFxuICAgIHN0eWxlLFxuICAgIHNlbGVjdGVkQ2xhc3NOYW1lLFxuICAgIHNlbGVjdGVkX3N0eWxlLFxuICAgIHNlbGVjdEhhbmRsZXIsXG4gICAgdmFsdWUsXG4gICAgZGlzYWJsZWQgPSBmYWxzZSxcbiAgICBkaXNhYmxlZF9zdHlsZSA9IHtjb2xvcjogJyNkNmQ2ZDYnfSxcbiAgICBkaXNhYmxlZF9jbGFzc05hbWUsXG4gICAgbW9iaWxlX2JyZWFrcG9pbnQsXG4gICAgYW1vdW50T2ZUYWJzLFxuICAgIGNvbG9ycyxcbiAgICB2ZXJ0aWNhbCxcbiAgICBjb21wb25lbnRQYXRoLFxufSkgPT4ge1xuICAgIGNvbnN0IGN0eCA9IHdpbmRvdy5kYXNoX2NvbXBvbmVudF9hcGkudXNlRGFzaENvbnRleHQoKTtcbiAgICAvLyBXZSB1c2UgdGhlIHJhdyBwYXRoIGhlcmUgc2luY2UgaXQncyB1cCBvbmUgbGV2ZWwgZnJvbVxuICAgIC8vIHRoZSB0YWJzIGNoaWxkLlxuICAgIGNvbnN0IGlzTG9hZGluZyA9IGN0eC51c2VMb2FkaW5nKHtyYXdQYXRoOiBjb21wb25lbnRQYXRofSk7XG5cbiAgICBsZXQgdGFiU3R5bGUgPSBzdHlsZTtcbiAgICBpZiAoZGlzYWJsZWQpIHtcbiAgICAgICAgdGFiU3R5bGUgPSB7dGFiU3R5bGUsIC4uLmRpc2FibGVkX3N0eWxlfTtcbiAgICB9XG4gICAgaWYgKHNlbGVjdGVkKSB7XG4gICAgICAgIHRhYlN0eWxlID0ge3RhYlN0eWxlLCAuLi5zZWxlY3RlZF9zdHlsZX07XG4gICAgfVxuICAgIGxldCB0YWJDbGFzc05hbWUgPSBgdGFiICR7Y2xhc3NOYW1lIHx8ICcnfWA7XG4gICAgaWYgKGRpc2FibGVkKSB7XG4gICAgICAgIHRhYkNsYXNzTmFtZSArPSBgIHRhYi0tZGlzYWJsZWQgJHtkaXNhYmxlZF9jbGFzc05hbWUgfHwgJyd9YDtcbiAgICB9XG4gICAgaWYgKHNlbGVjdGVkKSB7XG4gICAgICAgIHRhYkNsYXNzTmFtZSArPSBgIHRhYi0tc2VsZWN0ZWQgJHtzZWxlY3RlZENsYXNzTmFtZSB8fCAnJ31gO1xuICAgIH1cbiAgICBsZXQgbGFiZWxEaXNwbGF5O1xuICAgIGlmIChpcyhBcnJheSwgbGFiZWwpKSB7XG4gICAgICAgIC8vIGxhYmVsIGlzIGFuIGFycmF5LCBzbyBpdCBoYXMgY2hpbGRyZW4gdGhhdCB3ZSB3YW50IHRvIHJlbmRlclxuICAgICAgICBsYWJlbERpc3BsYXkgPSBsYWJlbFswXS5wcm9wcy5jaGlsZHJlbjtcbiAgICB9IGVsc2Uge1xuICAgICAgICAvLyBlbHNlIGl0IGlzIGEgc3RyaW5nLCBzbyB3ZSBqdXN0IHdhbnQgdG8gcmVuZGVyIHRoYXRcbiAgICAgICAgbGFiZWxEaXNwbGF5ID0gbGFiZWw7XG4gICAgfVxuICAgIHJldHVybiAoXG4gICAgICAgIDxkaXZcbiAgICAgICAgICAgIGRhdGEtZGFzaC1pcy1sb2FkaW5nPXtpc0xvYWRpbmd9XG4gICAgICAgICAgICBjbGFzc05hbWU9e3RhYkNsYXNzTmFtZX1cbiAgICAgICAgICAgIGlkPXtpZH1cbiAgICAgICAgICAgIHN0eWxlPXt0YWJTdHlsZX1cbiAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHtcbiAgICAgICAgICAgICAgICBpZiAoIWRpc2FibGVkKSB7XG4gICAgICAgICAgICAgICAgICAgIHNlbGVjdEhhbmRsZXIodmFsdWUpO1xuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH19XG4gICAgICAgID5cbiAgICAgICAgICAgIDxzcGFuPntsYWJlbERpc3BsYXl9PC9zcGFuPlxuICAgICAgICAgICAgPHN0eWxlIGpzeD57YFxuICAgICAgICAgICAgICAgIC50YWIge1xuICAgICAgICAgICAgICAgICAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgICAgICAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICR7Y29sb3JzLmJhY2tncm91bmR9O1xuICAgICAgICAgICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCAke2NvbG9ycy5ib3JkZXJ9O1xuICAgICAgICAgICAgICAgICAgICBib3JkZXItYm90dG9tOiBub25lO1xuICAgICAgICAgICAgICAgICAgICBwYWRkaW5nOiAyMHB4IDI1cHg7XG4gICAgICAgICAgICAgICAgICAgIHRyYW5zaXRpb246IGJhY2tncm91bmQtY29sb3IsIGNvbG9yIDIwMG1zO1xuICAgICAgICAgICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgICAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgICAgICAgICAgICAgICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAudGFiOmxhc3Qtb2YtdHlwZSB7XG4gICAgICAgICAgICAgICAgICAgIGJvcmRlci1yaWdodDogMXB4IHNvbGlkICR7Y29sb3JzLmJvcmRlcn07XG4gICAgICAgICAgICAgICAgICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAke2NvbG9ycy5ib3JkZXJ9O1xuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAudGFiOmhvdmVyIHtcbiAgICAgICAgICAgICAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAudGFiLS1zZWxlY3RlZCB7XG4gICAgICAgICAgICAgICAgICAgIGJvcmRlci10b3A6IDJweCBzb2xpZCAke2NvbG9ycy5wcmltYXJ5fTtcbiAgICAgICAgICAgICAgICAgICAgY29sb3I6IGJsYWNrO1xuICAgICAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgLnRhYi0tc2VsZWN0ZWQ6aG92ZXIge1xuICAgICAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgLnRhYi0tZGlzYWJsZWQge1xuICAgICAgICAgICAgICAgICAgICBjb2xvcjogI2Q2ZDZkNjtcbiAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICBAbWVkaWEgc2NyZWVuIGFuZCAobWluLXdpZHRoOiAke21vYmlsZV9icmVha3BvaW50fXB4KSB7XG4gICAgICAgICAgICAgICAgICAgIC50YWIge1xuICAgICAgICAgICAgICAgICAgICAgICAgYm9yZGVyOiAxcHggc29saWQgJHtjb2xvcnMuYm9yZGVyfTtcbiAgICAgICAgICAgICAgICAgICAgICAgIGJvcmRlci1yaWdodDogbm9uZTtcbiAgICAgICAgICAgICAgICAgICAgICAgICR7dmVydGljYWxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA/ICcnXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgOiBgd2lkdGg6IGNhbGMoMTAwJSAvICR7YW1vdW50T2ZUYWJzfSk7YH07XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgLnRhYi0tc2VsZWN0ZWQsXG4gICAgICAgICAgICAgICAgICAgIC50YWI6bGFzdC1vZi10eXBlLnRhYi0tc2VsZWN0ZWQge1xuICAgICAgICAgICAgICAgICAgICAgICAgYm9yZGVyLWJvdHRvbTogbm9uZTtcbiAgICAgICAgICAgICAgICAgICAgICAgICR7dmVydGljYWxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA/IGBib3JkZXItbGVmdDogMnB4IHNvbGlkICR7Y29sb3JzLnByaW1hcnl9O2BcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA6IGBib3JkZXItdG9wOiAycHggc29saWQgJHtjb2xvcnMucHJpbWFyeX07YH07XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICBgfTwvc3R5bGU+XG4gICAgICAgIDwvZGl2PlxuICAgICk7XG59O1xuXG4vKipcbiAqIEEgRGFzaCBjb21wb25lbnQgdGhhdCBsZXRzIHlvdSByZW5kZXIgcGFnZXMgd2l0aCB0YWJzIC0gdGhlIFRhYnMgY29tcG9uZW50J3MgY2hpbGRyZW5cbiAqIGNhbiBiZSBkY2MuVGFiIGNvbXBvbmVudHMsIHdoaWNoIGNhbiBob2xkIGEgbGFiZWwgdGhhdCB3aWxsIGJlIGRpc3BsYXllZCBhcyBhIHRhYiwgYW5kIGNhbiBpbiB0dXJuIGhvbGRcbiAqIGNoaWxkcmVuIGNvbXBvbmVudHMgdGhhdCB3aWxsIGJlIHRoYXQgdGFiJ3MgY29udGVudC5cbiAqL1xuZXhwb3J0IGRlZmF1bHQgY2xhc3MgVGFicyBleHRlbmRzIENvbXBvbmVudCB7XG4gICAgY29uc3RydWN0b3IocHJvcHMpIHtcbiAgICAgICAgc3VwZXIocHJvcHMpO1xuXG4gICAgICAgIHRoaXMuc2VsZWN0SGFuZGxlciA9IHRoaXMuc2VsZWN0SGFuZGxlci5iaW5kKHRoaXMpO1xuXG4gICAgICAgIGlmICghaGFzKCd2YWx1ZScsIHRoaXMucHJvcHMpKSB7XG4gICAgICAgICAgICB0aGlzLnByb3BzLnNldFByb3BzKHtcbiAgICAgICAgICAgICAgICB2YWx1ZTogdGhpcy52YWx1ZU9yRGVmYXVsdCgpLFxuICAgICAgICAgICAgfSk7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICB2YWx1ZU9yRGVmYXVsdCgpIHtcbiAgICAgICAgaWYgKGhhcygndmFsdWUnLCB0aGlzLnByb3BzKSkge1xuICAgICAgICAgICAgcmV0dXJuIHRoaXMucHJvcHMudmFsdWU7XG4gICAgICAgIH1cbiAgICAgICAgY29uc3QgY2hpbGRyZW4gPSB0aGlzLnBhcnNlQ2hpbGRyZW5Ub0FycmF5KCk7XG4gICAgICAgIGlmIChjaGlsZHJlbiAmJiBjaGlsZHJlbi5sZW5ndGgpIHtcbiAgICAgICAgICAgIGNvbnN0IGZpcnN0Q2hpbGRyZW4gPSB3aW5kb3cuZGFzaF9jb21wb25lbnRfYXBpLmdldExheW91dChbXG4gICAgICAgICAgICAgICAgLi4uY2hpbGRyZW5bMF0ucHJvcHMuY29tcG9uZW50UGF0aCxcbiAgICAgICAgICAgICAgICAncHJvcHMnLFxuICAgICAgICAgICAgICAgICd2YWx1ZScsXG4gICAgICAgICAgICBdKTtcbiAgICAgICAgICAgIHJldHVybiBmaXJzdENoaWxkcmVuIHx8ICd0YWItMSc7XG4gICAgICAgIH1cbiAgICAgICAgcmV0dXJuICd0YWItMSc7XG4gICAgfVxuXG4gICAgcGFyc2VDaGlsZHJlblRvQXJyYXkoKSB7XG4gICAgICAgIGlmICh0aGlzLnByb3BzLmNoaWxkcmVuICYmICFpcyhBcnJheSwgdGhpcy5wcm9wcy5jaGlsZHJlbikpIHtcbiAgICAgICAgICAgIC8vIGlmIGRjYy5UYWJzLmNoaWxkcmVuIGNvbnRhaW5zIGp1c3Qgb25lIHNpbmdsZSBlbGVtZW50LCBpdCBnZXRzIHBhc3NlZCBhcyBhbiBvYmplY3RcbiAgICAgICAgICAgIC8vIGluc3RlYWQgb2YgYW4gYXJyYXkgLSBzbyB3ZSBwdXQgaXQgaW4gYW4gYXJyYXkgb3Vyc2VsdmVzIVxuICAgICAgICAgICAgcmV0dXJuIFt0aGlzLnByb3BzLmNoaWxkcmVuXTtcbiAgICAgICAgfVxuICAgICAgICByZXR1cm4gdGhpcy5wcm9wcy5jaGlsZHJlbjtcbiAgICB9XG5cbiAgICBzZWxlY3RIYW5kbGVyKHZhbHVlKSB7XG4gICAgICAgIHRoaXMucHJvcHMuc2V0UHJvcHMoe3ZhbHVlOiB2YWx1ZX0pO1xuICAgIH1cblxuICAgIHJlbmRlcigpIHtcbiAgICAgICAgbGV0IEVuaGFuY2VkVGFicztcbiAgICAgICAgbGV0IHNlbGVjdGVkVGFiO1xuXG4gICAgICAgIGNvbnN0IHZhbHVlID0gdGhpcy52YWx1ZU9yRGVmYXVsdCgpO1xuXG4gICAgICAgIGlmICh0aGlzLnByb3BzLmNoaWxkcmVuKSB7XG4gICAgICAgICAgICBjb25zdCBjaGlsZHJlbiA9IHRoaXMucGFyc2VDaGlsZHJlblRvQXJyYXkoKTtcblxuICAgICAgICAgICAgY29uc3QgYW1vdW50T2ZUYWJzID0gY2hpbGRyZW4ubGVuZ3RoO1xuXG4gICAgICAgICAgICBFbmhhbmNlZFRhYnMgPSBjaGlsZHJlbi5tYXAoKGNoaWxkLCBpbmRleCkgPT4ge1xuICAgICAgICAgICAgICAgIC8vIFRPRE86IGhhbmRsZSBjb21wb25lbnRzIHRoYXQgYXJlIG5vdCBkY2MuVGFiIGNvbXBvbmVudHMgKHRocm93IGVycm9yKVxuICAgICAgICAgICAgICAgIC8vIGVuaGFuY2UgVGFiIGNvbXBvbmVudHMgY29taW5nIGZyb20gRGFzaCAoYXMgZGNjLlRhYikgd2l0aCBtZXRob2RzIG5lZWRlZCBmb3IgaGFuZGxpbmcgbG9naWNcbiAgICAgICAgICAgICAgICBsZXQgY2hpbGRQcm9wcztcblxuICAgICAgICAgICAgICAgIGlmIChSZWFjdC5pc1ZhbGlkRWxlbWVudChjaGlsZCkpIHtcbiAgICAgICAgICAgICAgICAgICAgY2hpbGRQcm9wcyA9IHdpbmRvdy5kYXNoX2NvbXBvbmVudF9hcGkuZ2V0TGF5b3V0KFtcbiAgICAgICAgICAgICAgICAgICAgICAgIC4uLmNoaWxkLnByb3BzLmNvbXBvbmVudFBhdGgsXG4gICAgICAgICAgICAgICAgICAgICAgICAncHJvcHMnLFxuICAgICAgICAgICAgICAgICAgICBdKTtcbiAgICAgICAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgICAgICAgICAvLyBJbiBjYXNlIHRoZSBzZWxlY3RlZCB0YWIgaXMgYSBzdHJpbmcuXG4gICAgICAgICAgICAgICAgICAgIGNoaWxkUHJvcHMgPSB7fTtcbiAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICBpZiAoIWNoaWxkUHJvcHMudmFsdWUpIHtcbiAgICAgICAgICAgICAgICAgICAgY2hpbGRQcm9wcyA9IHsuLi5jaGlsZFByb3BzLCB2YWx1ZTogYHRhYi0ke2luZGV4ICsgMX1gfTtcbiAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAvLyBjaGVjayBpZiB0aGlzIGNoaWxkL1RhYiBpcyBjdXJyZW50bHkgc2VsZWN0ZWRcbiAgICAgICAgICAgICAgICBpZiAoY2hpbGRQcm9wcy52YWx1ZSA9PT0gdmFsdWUpIHtcbiAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWRUYWIgPSBjaGlsZDtcbiAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICAgICAgICA8RW5oYW5jZWRUYWJcbiAgICAgICAgICAgICAgICAgICAgICAgIGtleT17aW5kZXh9XG4gICAgICAgICAgICAgICAgICAgICAgICBpZD17Y2hpbGRQcm9wcy5pZH1cbiAgICAgICAgICAgICAgICAgICAgICAgIGxhYmVsPXtjaGlsZFByb3BzLmxhYmVsfVxuICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWQ9e3ZhbHVlID09PSBjaGlsZFByb3BzLnZhbHVlfVxuICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0SGFuZGxlcj17dGhpcy5zZWxlY3RIYW5kbGVyfVxuICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtjaGlsZFByb3BzLmNsYXNzTmFtZX1cbiAgICAgICAgICAgICAgICAgICAgICAgIHN0eWxlPXtjaGlsZFByb3BzLnN0eWxlfVxuICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWRDbGFzc05hbWU9e2NoaWxkUHJvcHMuc2VsZWN0ZWRfY2xhc3NOYW1lfVxuICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWRfc3R5bGU9e2NoaWxkUHJvcHMuc2VsZWN0ZWRfc3R5bGV9XG4gICAgICAgICAgICAgICAgICAgICAgICB2YWx1ZT17Y2hpbGRQcm9wcy52YWx1ZX1cbiAgICAgICAgICAgICAgICAgICAgICAgIGRpc2FibGVkPXtjaGlsZFByb3BzLmRpc2FibGVkfVxuICAgICAgICAgICAgICAgICAgICAgICAgZGlzYWJsZWRfc3R5bGU9e2NoaWxkUHJvcHMuZGlzYWJsZWRfc3R5bGV9XG4gICAgICAgICAgICAgICAgICAgICAgICBkaXNhYmxlZF9jbGFzc05hbWU9e2NoaWxkUHJvcHMuZGlzYWJsZWRfY2xhc3NOYW1lfVxuICAgICAgICAgICAgICAgICAgICAgICAgbW9iaWxlX2JyZWFrcG9pbnQ9e3RoaXMucHJvcHMubW9iaWxlX2JyZWFrcG9pbnR9XG4gICAgICAgICAgICAgICAgICAgICAgICB2ZXJ0aWNhbD17dGhpcy5wcm9wcy52ZXJ0aWNhbH1cbiAgICAgICAgICAgICAgICAgICAgICAgIGFtb3VudE9mVGFicz17YW1vdW50T2ZUYWJzfVxuICAgICAgICAgICAgICAgICAgICAgICAgY29sb3JzPXt0aGlzLnByb3BzLmNvbG9yc31cbiAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBvbmVudFBhdGg9e2NoaWxkLmNvbXBvbmVudFBhdGh9XG4gICAgICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgKTtcbiAgICAgICAgICAgIH0pO1xuICAgICAgICB9XG5cbiAgICAgICAgY29uc3Qgc2VsZWN0ZWRUYWJDb250ZW50ID0gIWlzTmlsKHNlbGVjdGVkVGFiKSA/IHNlbGVjdGVkVGFiIDogJyc7XG5cbiAgICAgICAgY29uc3QgdGFiQ29udGFpbmVyQ2xhc3MgPSB0aGlzLnByb3BzLnZlcnRpY2FsXG4gICAgICAgICAgICA/ICd0YWItY29udGFpbmVyIHRhYi1jb250YWluZXItLXZlcnQnXG4gICAgICAgICAgICA6ICd0YWItY29udGFpbmVyJztcblxuICAgICAgICBjb25zdCB0YWJDb250ZW50Q2xhc3MgPSB0aGlzLnByb3BzLnZlcnRpY2FsXG4gICAgICAgICAgICA/ICd0YWItY29udGVudCB0YWItY29udGVudC0tdmVydCdcbiAgICAgICAgICAgIDogJ3RhYi1jb250ZW50JztcblxuICAgICAgICBjb25zdCB0YWJQYXJlbnRDbGFzcyA9IHRoaXMucHJvcHMudmVydGljYWxcbiAgICAgICAgICAgID8gJ3RhYi1wYXJlbnQgdGFiLXBhcmVudC0tdmVydCdcbiAgICAgICAgICAgIDogJ3RhYi1wYXJlbnQnO1xuXG4gICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICA8TG9hZGluZ0VsZW1lbnRcbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Ake3RhYlBhcmVudENsYXNzfSAke1xuICAgICAgICAgICAgICAgICAgICB0aGlzLnByb3BzLnBhcmVudF9jbGFzc05hbWUgfHwgJydcbiAgICAgICAgICAgICAgICB9YH1cbiAgICAgICAgICAgICAgICBzdHlsZT17dGhpcy5wcm9wcy5wYXJlbnRfc3R5bGV9XG4gICAgICAgICAgICAgICAgaWQ9e2Ake3RoaXMucHJvcHMuaWR9LXBhcmVudGB9XG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgPGRpdlxuICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Ake3RhYkNvbnRhaW5lckNsYXNzfSAke1xuICAgICAgICAgICAgICAgICAgICAgICAgdGhpcy5wcm9wcy5jbGFzc05hbWUgfHwgJydcbiAgICAgICAgICAgICAgICAgICAgfWB9XG4gICAgICAgICAgICAgICAgICAgIHN0eWxlPXt0aGlzLnByb3BzLnN0eWxlfVxuICAgICAgICAgICAgICAgICAgICBpZD17dGhpcy5wcm9wcy5pZH1cbiAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICAgIHtFbmhhbmNlZFRhYnN9XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPGRpdlxuICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Ake3RhYkNvbnRlbnRDbGFzc30gJHtcbiAgICAgICAgICAgICAgICAgICAgICAgIHRoaXMucHJvcHMuY29udGVudF9jbGFzc05hbWUgfHwgJydcbiAgICAgICAgICAgICAgICAgICAgfWB9XG4gICAgICAgICAgICAgICAgICAgIHN0eWxlPXt0aGlzLnByb3BzLmNvbnRlbnRfc3R5bGV9XG4gICAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgICAgICB7c2VsZWN0ZWRUYWJDb250ZW50IHx8ICcnfVxuICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgIDxzdHlsZSBqc3g+e2BcbiAgICAgICAgICAgICAgICAgICAgLnRhYi1wYXJlbnQge1xuICAgICAgICAgICAgICAgICAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgICAgICAgICAgICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgLnRhYi1jb250YWluZXIge1xuICAgICAgICAgICAgICAgICAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgICAgICAgICAgICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgLnRhYi1jb250YWluZXItLXZlcnQge1xuICAgICAgICAgICAgICAgICAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgLnRhYi1jb250ZW50LS12ZXJ0IHtcbiAgICAgICAgICAgICAgICAgICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICAgICAgICAgICAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICBAbWVkaWEgc2NyZWVuIGFuZCAobWluLXdpZHRoOiAke3RoaXMucHJvcHNcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAubW9iaWxlX2JyZWFrcG9pbnR9cHgpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIDpnbG9iYWwoLnRhYi1jb250YWluZXItLXZlcnQgLnRhYikge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvcmRlci1yaWdodDogbm9uZSAhaW1wb3J0YW50O1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvcmRlci1ib3R0b206IG5vbmUgIWltcG9ydGFudDtcbiAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgIDpnbG9iYWwoLnRhYi1jb250YWluZXItLXZlcnQgLnRhYjpsYXN0LW9mLXR5cGUpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgJHt0aGlzLnByb3BzLmNvbG9ycy5ib3JkZXJ9ICFpbXBvcnRhbnQ7XG4gICAgICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgICAgICA6Z2xvYmFsKC50YWItY29udGFpbmVyLS12ZXJ0IC50YWItLXNlbGVjdGVkKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgYm9yZGVyLXRvcDogMXB4IHNvbGlkICR7dGhpcy5wcm9wcy5jb2xvcnMuYm9yZGVyfTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBib3JkZXItbGVmdDogMnB4IHNvbGlkICR7dGhpcy5wcm9wcy5jb2xvcnMucHJpbWFyeX07XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgYm9yZGVyLXJpZ2h0OiBub25lO1xuICAgICAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICAgICAgLnRhYi1jb250YWluZXIge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZsZXgtZGlyZWN0aW9uOiByb3c7XG4gICAgICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgICAgICAudGFiLWNvbnRhaW5lci0tdmVydCB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgIC50YWItcGFyZW50LS12ZXJ0IHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBmbGV4LWRpcmVjdGlvbjogcm93O1xuICAgICAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgYH08L3N0eWxlPlxuICAgICAgICAgICAgPC9Mb2FkaW5nRWxlbWVudD5cbiAgICAgICAgKTtcbiAgICB9XG59XG5cblRhYnMuZGVmYXVsdFByb3BzID0ge1xuICAgIG1vYmlsZV9icmVha3BvaW50OiA4MDAsXG4gICAgY29sb3JzOiB7XG4gICAgICAgIGJvcmRlcjogJyNkNmQ2ZDYnLFxuICAgICAgICBwcmltYXJ5OiAnIzE5NzVGQScsXG4gICAgICAgIGJhY2tncm91bmQ6ICcjZjlmOWY5JyxcbiAgICB9LFxuICAgIHZlcnRpY2FsOiBmYWxzZSxcbiAgICBwZXJzaXN0ZWRfcHJvcHM6IFsndmFsdWUnXSxcbiAgICBwZXJzaXN0ZW5jZV90eXBlOiAnbG9jYWwnLFxufTtcblxuVGFicy5wcm9wVHlwZXMgPSB7XG4gICAgLyoqXG4gICAgICogVGhlIElEIG9mIHRoaXMgY29tcG9uZW50LCB1c2VkIHRvIGlkZW50aWZ5IGRhc2ggY29tcG9uZW50c1xuICAgICAqIGluIGNhbGxiYWNrcy4gVGhlIElEIG5lZWRzIHRvIGJlIHVuaXF1ZSBhY3Jvc3MgYWxsIG9mIHRoZVxuICAgICAqIGNvbXBvbmVudHMgaW4gYW4gYXBwLlxuICAgICAqL1xuICAgIGlkOiBQcm9wVHlwZXMuc3RyaW5nLFxuXG4gICAgLyoqXG4gICAgICogVGhlIHZhbHVlIG9mIHRoZSBjdXJyZW50bHkgc2VsZWN0ZWQgVGFiXG4gICAgICovXG4gICAgdmFsdWU6IFByb3BUeXBlcy5zdHJpbmcsXG5cbiAgICAvKipcbiAgICAgKiBBcHBlbmRzIGEgY2xhc3MgdG8gdGhlIFRhYnMgY29udGFpbmVyIGhvbGRpbmcgdGhlIGluZGl2aWR1YWwgVGFiIGNvbXBvbmVudHMuXG4gICAgICovXG4gICAgY2xhc3NOYW1lOiBQcm9wVHlwZXMuc3RyaW5nLFxuXG4gICAgLyoqXG4gICAgICogQXBwZW5kcyBhIGNsYXNzIHRvIHRoZSBUYWIgY29udGVudCBjb250YWluZXIgaG9sZGluZyB0aGUgY2hpbGRyZW4gb2YgdGhlIFRhYiB0aGF0IGlzIHNlbGVjdGVkLlxuICAgICAqL1xuICAgIGNvbnRlbnRfY2xhc3NOYW1lOiBQcm9wVHlwZXMuc3RyaW5nLFxuXG4gICAgLyoqXG4gICAgICogQXBwZW5kcyBhIGNsYXNzIHRvIHRoZSB0b3AtbGV2ZWwgcGFyZW50IGNvbnRhaW5lciBob2xkaW5nIGJvdGggdGhlIFRhYnMgY29udGFpbmVyIGFuZCB0aGUgY29udGVudCBjb250YWluZXIuXG4gICAgICovXG4gICAgcGFyZW50X2NsYXNzTmFtZTogUHJvcFR5cGVzLnN0cmluZyxcblxuICAgIC8qKlxuICAgICAqIEFwcGVuZHMgKGlubGluZSkgc3R5bGVzIHRvIHRoZSBUYWJzIGNvbnRhaW5lciBob2xkaW5nIHRoZSBpbmRpdmlkdWFsIFRhYiBjb21wb25lbnRzLlxuICAgICAqL1xuICAgIHN0eWxlOiBQcm9wVHlwZXMub2JqZWN0LFxuXG4gICAgLyoqXG4gICAgICogQXBwZW5kcyAoaW5saW5lKSBzdHlsZXMgdG8gdGhlIHRvcC1sZXZlbCBwYXJlbnQgY29udGFpbmVyIGhvbGRpbmcgYm90aCB0aGUgVGFicyBjb250YWluZXIgYW5kIHRoZSBjb250ZW50IGNvbnRhaW5lci5cbiAgICAgKi9cbiAgICBwYXJlbnRfc3R5bGU6IFByb3BUeXBlcy5vYmplY3QsXG5cbiAgICAvKipcbiAgICAgKiBBcHBlbmRzIChpbmxpbmUpIHN0eWxlcyB0byB0aGUgdGFiIGNvbnRlbnQgY29udGFpbmVyIGhvbGRpbmcgdGhlIGNoaWxkcmVuIG9mIHRoZSBUYWIgdGhhdCBpcyBzZWxlY3RlZC5cbiAgICAgKi9cbiAgICBjb250ZW50X3N0eWxlOiBQcm9wVHlwZXMub2JqZWN0LFxuXG4gICAgLyoqXG4gICAgICogUmVuZGVycyB0aGUgdGFicyB2ZXJ0aWNhbGx5IChvbiB0aGUgc2lkZSlcbiAgICAgKi9cbiAgICB2ZXJ0aWNhbDogUHJvcFR5cGVzLmJvb2wsXG5cbiAgICAvKipcbiAgICAgKiBCcmVha3BvaW50IGF0IHdoaWNoIHRhYnMgYXJlIHJlbmRlcmVkIGZ1bGwgd2lkdGggKGNhbiBiZSAwIGlmIHlvdSBkb24ndCB3YW50IGZ1bGwgd2lkdGggdGFicyBvbiBtb2JpbGUpXG4gICAgICovXG4gICAgbW9iaWxlX2JyZWFrcG9pbnQ6IFByb3BUeXBlcy5udW1iZXIsXG5cbiAgICAvKipcbiAgICAgKiBBcnJheSB0aGF0IGhvbGRzIFRhYiBjb21wb25lbnRzXG4gICAgICovXG4gICAgY2hpbGRyZW46IFByb3BUeXBlcy5vbmVPZlR5cGUoW1xuICAgICAgICBQcm9wVHlwZXMuYXJyYXlPZihQcm9wVHlwZXMubm9kZSksXG4gICAgICAgIFByb3BUeXBlcy5ub2RlLFxuICAgIF0pLFxuXG4gICAgLyoqXG4gICAgICogSG9sZHMgdGhlIGNvbG9ycyB1c2VkIGJ5IHRoZSBUYWJzIGFuZCBUYWIgY29tcG9uZW50cy4gSWYgeW91IHNldCB0aGVzZSwgeW91IHNob3VsZCBzcGVjaWZ5IGNvbG9ycyBmb3IgYWxsIHByb3BlcnRpZXMsIHNvOlxuICAgICAqIGNvbG9yczoge1xuICAgICAqICAgIGJvcmRlcjogJyNkNmQ2ZDYnLFxuICAgICAqICAgIHByaW1hcnk6ICcjMTk3NUZBJyxcbiAgICAgKiAgICBiYWNrZ3JvdW5kOiAnI2Y5ZjlmOSdcbiAgICAgKiAgfVxuICAgICAqL1xuICAgIGNvbG9yczogUHJvcFR5cGVzLmV4YWN0KHtcbiAgICAgICAgYm9yZGVyOiBQcm9wVHlwZXMuc3RyaW5nLFxuICAgICAgICBwcmltYXJ5OiBQcm9wVHlwZXMuc3RyaW5nLFxuICAgICAgICBiYWNrZ3JvdW5kOiBQcm9wVHlwZXMuc3RyaW5nLFxuICAgIH0pLFxuXG4gICAgLyoqXG4gICAgICogVXNlZCB0byBhbGxvdyB1c2VyIGludGVyYWN0aW9ucyBpbiB0aGlzIGNvbXBvbmVudCB0byBiZSBwZXJzaXN0ZWQgd2hlblxuICAgICAqIHRoZSBjb21wb25lbnQgLSBvciB0aGUgcGFnZSAtIGlzIHJlZnJlc2hlZC4gSWYgYHBlcnNpc3RlZGAgaXMgdHJ1dGh5IGFuZFxuICAgICAqIGhhc24ndCBjaGFuZ2VkIGZyb20gaXRzIHByZXZpb3VzIHZhbHVlLCBhIGB2YWx1ZWAgdGhhdCB0aGUgdXNlciBoYXNcbiAgICAgKiBjaGFuZ2VkIHdoaWxlIHVzaW5nIHRoZSBhcHAgd2lsbCBrZWVwIHRoYXQgY2hhbmdlLCBhcyBsb25nIGFzXG4gICAgICogdGhlIG5ldyBgdmFsdWVgIGFsc28gbWF0Y2hlcyB3aGF0IHdhcyBnaXZlbiBvcmlnaW5hbGx5LlxuICAgICAqIFVzZWQgaW4gY29uanVuY3Rpb24gd2l0aCBgcGVyc2lzdGVuY2VfdHlwZWAuXG4gICAgICovXG4gICAgcGVyc2lzdGVuY2U6IFByb3BUeXBlcy5vbmVPZlR5cGUoW1xuICAgICAgICBQcm9wVHlwZXMuYm9vbCxcbiAgICAgICAgUHJvcFR5cGVzLnN0cmluZyxcbiAgICAgICAgUHJvcFR5cGVzLm51bWJlcixcbiAgICBdKSxcblxuICAgIC8qKlxuICAgICAqIFByb3BlcnRpZXMgd2hvc2UgdXNlciBpbnRlcmFjdGlvbnMgd2lsbCBwZXJzaXN0IGFmdGVyIHJlZnJlc2hpbmcgdGhlXG4gICAgICogY29tcG9uZW50IG9yIHRoZSBwYWdlLiBTaW5jZSBvbmx5IGB2YWx1ZWAgaXMgYWxsb3dlZCB0aGlzIHByb3AgY2FuXG4gICAgICogbm9ybWFsbHkgYmUgaWdub3JlZC5cbiAgICAgKi9cbiAgICBwZXJzaXN0ZWRfcHJvcHM6IFByb3BUeXBlcy5hcnJheU9mKFByb3BUeXBlcy5vbmVPZihbJ3ZhbHVlJ10pKSxcblxuICAgIC8qKlxuICAgICAqIFdoZXJlIHBlcnNpc3RlZCB1c2VyIGNoYW5nZXMgd2lsbCBiZSBzdG9yZWQ6XG4gICAgICogbWVtb3J5OiBvbmx5IGtlcHQgaW4gbWVtb3J5LCByZXNldCBvbiBwYWdlIHJlZnJlc2guXG4gICAgICogbG9jYWw6IHdpbmRvdy5sb2NhbFN0b3JhZ2UsIGRhdGEgaXMga2VwdCBhZnRlciB0aGUgYnJvd3NlciBxdWl0LlxuICAgICAqIHNlc3Npb246IHdpbmRvdy5zZXNzaW9uU3RvcmFnZSwgZGF0YSBpcyBjbGVhcmVkIG9uY2UgdGhlIGJyb3dzZXIgcXVpdC5cbiAgICAgKi9cbiAgICBwZXJzaXN0ZW5jZV90eXBlOiBQcm9wVHlwZXMub25lT2YoWydsb2NhbCcsICdzZXNzaW9uJywgJ21lbW9yeSddKSxcbn07XG5cblRhYnMuZGFzaENoaWxkcmVuVXBkYXRlID0gdHJ1ZTtcbiJdfQ== */
+/*@ sourceURL=/home/philippe/newrepos/dash/components/dash-core-components/src/components/Tabs.react.js */</style></head>
+    <body><button id="pa-calc-btn" class="btn btn-primary mb-3" type="button" data-proxy="1" style="display: inline-block; visibility: visible; opacity: 1; padding: 0.5rem 1.25rem; min-width: 200px; position: relative; z-index: 5; margin: 16px 0px; font-size: 1rem; line-height: 1.5; transform: none; white-space: nowrap;" data-pa-calc-bound="1">Calculate Analytics</button><div id="pa-results-container" class="mb-4"><div id="pa-results-summary" class="alert alert-info">No analytics calculated yet. Click Calculate Analytics to generate results.</div></div>
+        <!--[if IE]><script>
+        alert("Dash v2.7+ does not support Internet Explorer. Please use a newer browser.");
+        </script><![endif]-->
+        
+<div id="react-entry-point"><div class="container-fluid" style="background-color: rgb(10, 14, 39); min-height: 100vh; color: rgb(230, 238, 248);"><nav class="mb-4 navbar navbar-expand-md navbar-dark bg-dark"><div class="container-fluid"><div class="w-100 align-items-center row"><div class="col-auto"><a href="/" style="text-decoration: none;"><h3 class="text-primary mb-0"><i class="bi bi-bar-chart-fill me-2"></i>Financial Dashboard</h3></a></div><div class="d-flex justify-content-center col"><div class="input-group" style="max-width: 600px;"><input class="border-primary form-control" id="global-search-input" placeholder="Search stocks, strategies, reports... (Ctrl+K)" step="any"><button id="global-search-button" class="btn btn-primary"><i class="bi bi-search"></i></button></div></div><div class="d-flex align-items-center justify-content-end col-auto"><button id="theme-toggle-button" class="me-2 btn btn-secondary btn-sm"><i id="theme-icon" class="bi bi-moon-fill"></i></button><button class="btn btn-secondary btn-sm"><i class="bi bi-person-circle"></i></button></div></div></div></nav><div class="row"><div class="col"><ul class="mb-3 nav nav-tabs" id="dashboard-tabs" role="tablist"><div class="nav-item" id="tab-weekly_picks" style="padding: 12px 20px;"><a role="tab" id="react-aria8131239890-:r0:-tab-null" aria-controls="react-aria8131239890-:r0:-tabpane-null" tabindex="-1" class="nav-link" href="#" style="cursor: pointer; color: rgb(148, 163, 184); font-size: 14px; font-weight: 500;">Weekly Picks</a></div><div class="nav-item" id="tab-monthly_picks" style="padding: 12px 20px;"><a role="tab" id="react-aria8131239890-:r0:-tab-null" aria-controls="react-aria8131239890-:r0:-tabpane-null" tabindex="-1" class="nav-link" href="#" style="cursor: pointer; color: rgb(148, 163, 184); font-size: 14px; font-weight: 500;">Monthly Picks</a></div><div class="nav-item" id="tab-market_trends" style="padding: 12px 20px;"><a role="tab" id="react-aria8131239890-:r0:-tab-null" aria-controls="react-aria8131239890-:r0:-tabpane-null" tabindex="-1" class="active nav-link" href="#" style="cursor: pointer; color: rgb(96, 165, 250); font-size: 14px; font-weight: 600;">Market Trends</a></div></ul><div class="tab-content"><div role="tabpanel" id="react-aria8131239890-:r0:-tabpane-weekly_picks" aria-labelledby="react-aria8131239890-:r0:-tab-weekly_picks" class="fade tab-pane"><div><div style="font-family: Arial, sans-serif; padding: 20px; min-height: 100vh;"><h1 style="color: rgb(76, 175, 80); font-family: Arial, sans-serif; margin-bottom: 10px;">📊 Weekly Picks Dashboard</h1><div style="color: rgb(255, 215, 0); font-weight: 700; margin-top: 6px; margin-bottom: 20px;">DEV: Weekly picks template updated 2025-10-07 — refresh to see live prices</div><button id="wp-refresh-btn" style="padding: 10px 20px; background: rgb(76, 175, 80); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-bottom: 20px;">🔄 Refresh Prices</button><div id="wp-content"><div><div style="margin-bottom: 20px;"><div style="color: rgb(136, 136, 136); font-size: 12px;">Loaded: /app/models/weekly_run/picks_20251021_top20.csv</div><div style="color: rgb(136, 136, 136); font-size: 12px;">Total picks: 20 | Price data updated: 2025-10-23 14:10:13</div><div style="color: rgb(136, 136, 136); font-size: 11px; font-style: italic; margin-top: 5px;">Refresh page to update live prices</div></div><div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;"><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; text-align: center;"><div style="color: rgb(136, 136, 136); font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">Total Money Spent</div><div style="font-size: 28px; font-weight: bold; color: rgb(33, 150, 243);">$5,000</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; text-align: center;"><div style="color: rgb(136, 136, 136); font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">Total Profit/Loss</div><div style="font-size: 28px; font-weight: bold; color: rgb(255, 107, 107);">$-473.83</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; text-align: center;"><div style="color: rgb(136, 136, 136); font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">ROI</div><div style="font-size: 28px; font-weight: bold; color: rgb(255, 107, 107);">-9.48%</div></div></div><table style="width: 100%; border-collapse: collapse; overflow-x: auto; margin-top: 20px;"><thead><tr><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Rank</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Ticker</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Current Price</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Daily Change</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Week Start</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Profit/Loss</th><th data-col="data_source" style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px; text-align: right;">Data Source</th></tr></thead><tbody><tr data-ticker="ASTS"><td data-value="1" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">1</td><td data-value="ASTS" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">ASTS</td><td aria-label="$71.35" data-value="71.35" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$71.35</td><td aria-label="-9.24%" data-value="-9.24" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-9.24%</td><td aria-label="$90.50" data-value="90.50" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$90.50</td><td aria-label="$-52.90" data-value="-52.90" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-52.90</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="SNDK"><td data-value="2" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">2</td><td data-value="SNDK" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">SNDK</td><td aria-label="$146.95" data-value="146.95" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$146.95</td><td aria-label="-1.57%" data-value="-1.57" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.57%</td><td aria-label="$134.61" data-value="134.61" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$134.61</td><td aria-label="$22.92" data-value="22.92" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$22.92</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="RGTI"><td data-value="3" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">3</td><td data-value="RGTI" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">RGTI</td><td aria-label="$36.06" data-value="36.06" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$36.06</td><td aria-label="-9.85%" data-value="-9.85" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-9.85%</td><td aria-label="$54.91" data-value="54.91" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$54.91</td><td aria-label="$-85.82" data-value="-85.82" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-85.82</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="AVAV"><td data-value="4" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">4</td><td data-value="AVAV" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">AVAV</td><td aria-label="$355.18" data-value="355.18" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$355.18</td><td aria-label="-5.83%" data-value="-5.83" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-5.83%</td><td aria-label="$409.83" data-value="409.83" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$409.83</td><td aria-label="$-33.34" data-value="-33.34" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-33.34</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="CIFR"><td data-value="5" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">5</td><td data-value="CIFR" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">CIFR</td><td aria-label="$16.11" data-value="16.11" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$16.11</td><td aria-label="-10.87%" data-value="-10.87" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-10.87%</td><td aria-label="$20.34" data-value="20.34" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$20.34</td><td aria-label="$-51.99" data-value="-51.99" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-51.99</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="BEAM"><td data-value="6" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">6</td><td data-value="BEAM" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">BEAM</td><td aria-label="$27.68" data-value="27.68" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$27.68</td><td aria-label="-7.39%" data-value="-7.39" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-7.39%</td><td aria-label="$25.39" data-value="25.39" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$25.39</td><td aria-label="$22.55" data-value="22.55" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$22.55</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="HUT"><td data-value="7" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">7</td><td data-value="HUT" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">HUT</td><td aria-label="$38.84" data-value="38.84" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$38.84</td><td aria-label="-17.22%" data-value="-17.22" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-17.22%</td><td aria-label="$49.11" data-value="49.11" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$49.11</td><td aria-label="$-52.28" data-value="-52.28" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-52.28</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="BE"><td data-value="8" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">8</td><td data-value="BE" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">BE</td><td aria-label="$94.37" data-value="94.37" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$94.37</td><td aria-label="-9.59%" data-value="-9.59" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-9.59%</td><td aria-label="$109.91" data-value="109.91" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$109.91</td><td aria-label="$-35.35" data-value="-35.35" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-35.35</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="ARWR"><td data-value="9" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">9</td><td data-value="ARWR" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">ARWR</td><td aria-label="$37.63" data-value="37.63" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$37.63</td><td aria-label="-1.05%" data-value="-1.05" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.05%</td><td aria-label="$36.25" data-value="36.25" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$36.25</td><td aria-label="$9.52" data-value="9.52" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$9.52</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="CGON"><td data-value="10" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">10</td><td data-value="CGON" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">CGON</td><td aria-label="$41.91" data-value="41.91" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$41.91</td><td aria-label="-2.67%" data-value="-2.67" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.67%</td><td aria-label="$42.96" data-value="42.96" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$42.96</td><td aria-label="$-6.11" data-value="-6.11" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-6.11</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="SYM"><td data-value="11" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">11</td><td data-value="SYM" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">SYM</td><td aria-label="$64.44" data-value="64.44" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$64.44</td><td aria-label="-7.80%" data-value="-7.80" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-7.80%</td><td aria-label="$70.51" data-value="70.51" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$70.51</td><td aria-label="$-21.52" data-value="-21.52" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-21.52</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="PLUG"><td data-value="12" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">12</td><td data-value="PLUG" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">PLUG</td><td aria-label="$2.92" data-value="2.92" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$2.92</td><td aria-label="-6.41%" data-value="-6.41" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-6.41%</td><td aria-label="$3.90" data-value="3.90" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$3.90</td><td aria-label="$-62.82" data-value="-62.82" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-62.82</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="QS"><td data-value="13" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">13</td><td data-value="QS" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">QS</td><td aria-label="$13.58" data-value="13.58" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$13.58</td><td aria-label="-12.50%" data-value="-12.50" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-12.50%</td><td aria-label="$16.99" data-value="16.99" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$16.99</td><td aria-label="$-50.18" data-value="-50.18" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-50.18</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="PL"><td data-value="14" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">14</td><td data-value="PL" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">PL</td><td aria-label="$12.50" data-value="12.50" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$12.50</td><td aria-label="-3.18%" data-value="-3.18" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-3.18%</td><td aria-label="$15.25" data-value="15.25" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$15.25</td><td aria-label="$-45.08" data-value="-45.08" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-45.08</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="JNJ"><td data-value="15" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">15</td><td data-value="JNJ" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">JNJ</td><td aria-label="$192.94" data-value="192.94" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$192.94</td><td aria-label="+0.55%" data-value="0.55" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+0.55%</td><td aria-label="$190.90" data-value="190.90" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$190.90</td><td aria-label="$2.67" data-value="2.67" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$2.67</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="INOD"><td data-value="16" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">16</td><td data-value="INOD" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">INOD</td><td aria-label="$72.07" data-value="72.07" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$72.07</td><td aria-label="-6.44%" data-value="-6.44" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-6.44%</td><td aria-label="$81.68" data-value="81.68" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$81.68</td><td aria-label="$-29.41" data-value="-29.41" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-29.41</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="UNH"><td data-value="17" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">17</td><td data-value="UNH" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">UNH</td><td aria-label="$361.49" data-value="361.49" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$361.49</td><td aria-label="-1.06%" data-value="-1.06" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.06%</td><td aria-label="$358.66" data-value="358.66" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$358.66</td><td aria-label="$1.97" data-value="1.97" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$1.97</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="HOOD"><td data-value="18" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">18</td><td data-value="HOOD" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">HOOD</td><td aria-label="$127.22" data-value="127.22" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$127.22</td><td aria-label="-3.50%" data-value="-3.50" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-3.50%</td><td aria-label="$140.68" data-value="140.68" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$140.68</td><td aria-label="$-23.92" data-value="-23.92" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-23.92</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="AAPL"><td data-value="19" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">19</td><td data-value="AAPL" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">AAPL</td><td aria-label="$258.45" data-value="258.45" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$258.45</td><td aria-label="-1.64%" data-value="-1.64" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.64%</td><td aria-label="$247.66" data-value="247.66" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$247.66</td><td aria-label="$10.89" data-value="10.89" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$10.89</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="DIS"><td data-value="20" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">20</td><td data-value="DIS" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">DIS</td><td aria-label="$113.08" data-value="113.08" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$113.08</td><td aria-label="-1.07%" data-value="-1.07" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.07%</td><td aria-label="$110.27" data-value="110.27" data-col="week_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$110.27</td><td aria-label="$6.37" data-value="6.37" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$6.37</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr></tbody></table></div></div></div></div></div><div role="tabpanel" id="react-aria8131239890-:r0:-tabpane-monthly_picks" aria-labelledby="react-aria8131239890-:r0:-tab-monthly_picks" class="fade tab-pane"><div><div style="font-family: Arial, sans-serif; padding: 20px; min-height: 100vh;"><h1 style="color: rgb(33, 150, 243); font-family: Arial, sans-serif; margin-bottom: 10px;">📊 Monthly Stock Picks</h1><div style="color: rgb(255, 215, 0); font-weight: 700; margin-top: 6px; margin-bottom: 20px;">DEV: Monthly picks template updated 2025-10-08 — refresh to see live prices</div><button id="mp-refresh-btn" style="padding: 10px 20px; background: rgb(33, 150, 243); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-bottom: 20px;">🔄 Refresh Prices</button><div id="mp-content"><div><div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;"><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">📈 Total Picks</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px;">20</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">💰 Total Investment</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px;">$20,000</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">📊 Total P/L</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px; color: rgb(76, 175, 80);">$+1,651.48</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">🎯 Total ROI %</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px; color: rgb(76, 175, 80);">+8.26%</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">📈 Winners</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px; color: rgb(76, 175, 80);">16</div></div><div style="background: rgb(44, 44, 44); border: 2px solid rgb(68, 68, 68); border-radius: 8px; padding: 20px; min-width: 200px; flex: 1 1 0%;"><h3 style="color: rgb(33, 150, 243); font-size: 16px; margin: 0px 0px 10px;">📉 Losers</h3><div style="font-size: 24px; font-weight: bold; margin: 5px 0px; color: rgb(255, 107, 107);">4</div></div></div><div><div style="color: rgb(136, 136, 136); font-size: 12px; margin: 10px 0px;">Investment per stock: $1,000 | P/L calculated from month start</div><div style="color: rgb(136, 136, 136); font-size: 12px; margin-top: 20px;"><span style="margin-right: 20px;">CSV file: picks_20251001.csv</span><span>Last updated: 2025-10-23 14:10:13</span></div></div><table style="width: 100%; border-collapse: collapse; overflow-x: auto;"><thead><tr><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Rank</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Ticker</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Current Price</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Daily Change</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Month Start</th><th style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px;">Profit/Loss</th><th data-col="data_source" style="padding: 12px; background-color: rgb(51, 51, 51); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-weight: bold; font-size: 12px; text-align: right;">Data Source</th></tr></thead><tbody><tr data-ticker="WDC"><td data-value="1" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">1</td><td data-value="WDC" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">WDC</td><td aria-label="$120.47" data-value="120.47" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$120.47</td><td aria-label="-0.77%" data-value="-0.77" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-0.77%</td><td aria-label="$105.15" data-value="105.15" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$105.15</td><td aria-label="$145.70" data-value="145.70" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$145.70</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="WBD"><td data-value="2" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">2</td><td data-value="WBD" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">WBD</td><td aria-label="$20.53" data-value="20.53" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$20.53</td><td aria-label="+0.98%" data-value="0.98" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+0.98%</td><td aria-label="$18.70" data-value="18.70" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$18.70</td><td aria-label="$97.86" data-value="97.86" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$97.86</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="STX"><td data-value="3" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">3</td><td data-value="STX" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">STX</td><td aria-label="$215.05" data-value="215.05" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$215.05</td><td aria-label="+0.22%" data-value="0.22" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+0.22%</td><td aria-label="$215.96" data-value="215.96" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$215.96</td><td aria-label="$-4.21" data-value="-4.21" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-4.21</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="MU"><td data-value="4" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">4</td><td data-value="MU" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">MU</td><td aria-label="$198.47" data-value="198.47" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$198.47</td><td aria-label="-1.89%" data-value="-1.89" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.89%</td><td aria-label="$168.78" data-value="168.78" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$168.78</td><td aria-label="$175.88" data-value="175.88" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$175.88</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="LRCX"><td data-value="5" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">5</td><td data-value="LRCX" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">LRCX</td><td aria-label="$141.25" data-value="141.25" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$141.25</td><td aria-label="-2.61%" data-value="-2.61" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.61%</td><td aria-label="$126.07" data-value="126.07" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$126.07</td><td aria-label="$120.40" data-value="120.40" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$120.40</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="INTC"><td data-value="6" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">6</td><td data-value="INTC" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">INTC</td><td aria-label="$36.92" data-value="36.92" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$36.92</td><td aria-label="-3.15%" data-value="-3.15" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-3.15%</td><td aria-label="$30.57" data-value="30.57" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$30.57</td><td aria-label="$207.72" data-value="207.72" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$207.72</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="ORCL"><td data-value="7" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">7</td><td data-value="ORCL" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">ORCL</td><td aria-label="$272.66" data-value="272.66" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$272.66</td><td aria-label="-0.90%" data-value="-0.90" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-0.90%</td><td aria-label="$296.11" data-value="296.11" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$296.11</td><td aria-label="$-79.18" data-value="-79.18" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-79.18</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="KLAC"><td data-value="8" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">8</td><td data-value="KLAC" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">KLAC</td><td aria-label="$1,114.32" data-value="1114.32" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$1,114.32</td><td aria-label="-2.89%" data-value="-2.89" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.89%</td><td aria-label="$1,046.69" data-value="1046.69" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$1,046.69</td><td aria-label="$64.61" data-value="64.61" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$64.61</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="ETSY"><td data-value="9" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">9</td><td data-value="ETSY" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">ETSY</td><td aria-label="$73.25" data-value="73.25" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$73.25</td><td aria-label="+1.82%" data-value="1.82" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+1.82%</td><td aria-label="$64.85" data-value="64.85" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$64.85</td><td aria-label="$129.53" data-value="129.53" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$129.53</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="TSLA"><td data-value="10" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">10</td><td data-value="TSLA" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">TSLA</td><td aria-label="$438.97" data-value="438.97" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$438.97</td><td aria-label="-0.82%" data-value="-0.82" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-0.82%</td><td aria-label="$416.85" data-value="416.85" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$416.85</td><td aria-label="$53.06" data-value="53.06" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$53.06</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="AMAT"><td data-value="11" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">11</td><td data-value="AMAT" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">AMAT</td><td aria-label="$220.56" data-value="220.56" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$220.56</td><td aria-label="-2.41%" data-value="-2.41" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.41%</td><td aria-label="$189.76" data-value="189.76" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$189.76</td><td aria-label="$162.31" data-value="162.31" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$162.31</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="GLW"><td data-value="12" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">12</td><td data-value="GLW" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">GLW</td><td aria-label="$84.14" data-value="84.14" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$84.14</td><td aria-label="-2.22%" data-value="-2.22" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.22%</td><td aria-label="$79.62" data-value="79.62" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$79.62</td><td aria-label="$56.77" data-value="56.77" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$56.77</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="NEM"><td data-value="13" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">13</td><td data-value="NEM" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">NEM</td><td aria-label="$87.01" data-value="87.01" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$87.01</td><td aria-label="+0.80%" data-value="0.80" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+0.80%</td><td aria-label="$78.32" data-value="78.32" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$78.32</td><td aria-label="$110.96" data-value="110.96" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$110.96</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="SMCI"><td data-value="14" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">14</td><td data-value="SMCI" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">SMCI</td><td aria-label="$52.50" data-value="52.50" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$52.50</td><td aria-label="-4.23%" data-value="-4.23" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-4.23%</td><td aria-label="$45.94" data-value="45.94" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$45.94</td><td aria-label="$142.79" data-value="142.79" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$142.79</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="APH"><td data-value="15" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">15</td><td data-value="APH" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">APH</td><td aria-label="$128.93" data-value="128.93" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$128.93</td><td aria-label="+3.61%" data-value="3.61" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+3.61%</td><td aria-label="$122.07" data-value="122.07" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$122.07</td><td aria-label="$56.20" data-value="56.20" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$56.20</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="GEV"><td data-value="16" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">16</td><td data-value="GEV" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">GEV</td><td aria-label="$576.00" data-value="576.00" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$576.00</td><td aria-label="-1.59%" data-value="-1.59" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.59%</td><td aria-label="$610.75" data-value="610.75" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$610.75</td><td aria-label="$-56.89" data-value="-56.89" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-56.89</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="AVGO"><td data-value="17" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">17</td><td data-value="AVGO" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">AVGO</td><td aria-label="$340.30" data-value="340.30" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$340.30</td><td aria-label="-0.69%" data-value="-0.69" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-0.69%</td><td aria-label="$344.76" data-value="344.76" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$344.76</td><td aria-label="$-12.93" data-value="-12.93" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$-12.93</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="EA"><td data-value="18" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">18</td><td data-value="EA" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">EA</td><td aria-label="$200.75" data-value="200.75" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$200.75</td><td aria-label="+0.10%" data-value="0.10" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px;">+0.10%</td><td aria-label="$173.17" data-value="173.17" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$173.17</td><td aria-label="$159.27" data-value="159.27" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$159.27</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="CAT"><td data-value="19" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">19</td><td data-value="CAT" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">CAT</td><td aria-label="$513.91" data-value="513.91" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$513.91</td><td aria-label="-2.05%" data-value="-2.05" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-2.05%</td><td aria-label="$465.62" data-value="465.62" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$465.62</td><td aria-label="$103.71" data-value="103.71" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$103.71</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr><tr data-ticker="TPR"><td data-value="20" data-col="rank" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">20</td><td data-value="TPR" data-col="ticker" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">TPR</td><td aria-label="$115.33" data-value="115.33" data-col="current_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$115.33</td><td aria-label="-1.55%" data-value="-1.55" data-col="daily_change" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(255, 107, 107); border: 1px solid rgb(68, 68, 68); font-size: 13px;">-1.55%</td><td aria-label="$113.30" data-value="113.30" data-col="month_start_price" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(224, 224, 224); border: 1px solid rgb(68, 68, 68); font-size: 13px;">$113.30</td><td aria-label="$17.92" data-value="17.92" data-col="profit_loss" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(76, 175, 80); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-weight: bold;">$17.92</td><td data-value="yfinance" data-col="data_source" style="padding: 12px; background-color: rgb(44, 44, 44); color: rgb(102, 102, 102); border: 1px solid rgb(68, 68, 68); font-size: 13px; font-style: italic; text-align: right;">yfinance</td></tr></tbody></table></div></div></div></div></div><div role="tabpanel" id="react-aria8131239890-:r0:-tabpane-market_trends" aria-labelledby="react-aria8131239890-:r0:-tab-market_trends" class="fade tab-pane active show"><div><div><div id="tab-visibility-indicator" style="display: none; padding: 8px; background-color: rgb(254, 243, 199); color: rgb(146, 64, 14); border-radius: 4px; margin-bottom: 8px; font-size: 12px;">Tab not active yet.</div><div style="display: flex; align-items: center;"><h3>Market Trends</h3><span data-trend-label="Unknown" data-testid="market-trend-badge" style="background-color: rgb(148, 163, 184); color: white; padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: bold; display: inline-block; margin-left: 12px;">Market Trend: Unknown</span></div><div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;"><label>Tickers (comma separated)</label><div style="flex: 1 1 auto; display: flex;"><textarea id="tickers-input" rows="2" style="width: 100%; min-width: 720px; max-width: 95vw; resize: vertical;">NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA,INTC,AMD,AVGO,NTCL,SPY,QQQ,XLK,LZMH</textarea></div><button id="run-btn" style="margin-left: 8px;">Run Full Analysis</button></div><div style="margin-bottom: 8px;"><label style="margin-right: 8px;">Period (e.g. 6mo,1y)</label><input class="dash-input" type="text" step="any" id="period-input" value="1y" style="width: 120px;"></div><div style="margin-bottom: 8px;"><label>Analysis options</label><div id="analysis-options"><label class="" style="display: block;"><input class="" type="checkbox" checked="">Include options enrichment</label><label class="" style="display: block;"><input class="" type="checkbox" checked="">Include news enrichment</label><label class="" style="display: block;"><input class="" type="checkbox">Use cache only</label></div></div><div id="status" style="margin-top: 6px; display: none;"></div><button id="reload-model">Reload Model</button><button id="refresh-cached" style="margin-left: 8px;">Refresh cached display</button><button id="backtest-btn" style="margin-left: 8px; background-color: rgb(16, 185, 129); color: white;">Backtest Trend Signals</button><div id="model-status" style="font-size: 12px; color: rgb(203, 213, 225); margin-top: 6px;">Model ready.</div><button id="toggle-brief" style="margin-top: 8px;">Toggle full brief</button><div id="full-brief" style="display: none; margin-top: 8px; padding: 10px; border-radius: 6px; background-color: rgb(7, 16, 40); color: rgb(230, 238, 248); border: 1px solid rgb(17, 34, 51);"></div><div id="compact-brief-wrapper" style="margin-top: 8px; max-width: 1200px;"><div>No brief available.</div></div><div style="margin-top: 16px; margin-bottom: 16px; max-width: 1200px;"><div class="mb-4 card"><div class="card-header"><h6 class="mb-0">🔔 Recent Critical Events</h6><small class="text-muted float-end">5 events</small></div><div class="card-body"><ul class="list-group list-group-flush"><li class="list-group-item"><div class="row"><div class="col-12"><div class="mb-2"><span class="me-2 badge bg-secondary">NVDA</span><span class="me-2 badge bg-primary">earnings_beat</span><span class="badge bg-danger">🔴 HIGH</span></div><p class="mb-1" style="font-size: 14px;">NVIDIA beats earnings expectations by 15%</p><small class="text-muted">Oct 22, 08:58 PM • Reuters</small></div></div></li><li class="list-group-item"><div class="row"><div class="col-12"><div class="mb-2"><span class="me-2 badge bg-secondary">AAPL</span><span class="me-2 badge bg-primary">product_launch</span><span class="badge bg-danger">🔴 HIGH</span></div><p class="mb-1" style="font-size: 14px;">Apple announces new iPhone with breakthrough battery</p><small class="text-muted">Oct 22, 05:58 PM • Bloomberg</small></div></div></li><li class="list-group-item"><div class="row"><div class="col-12"><div class="mb-2"><span class="me-2 badge bg-secondary">TSLA</span><span class="me-2 badge bg-primary">regulatory</span><span class="badge bg-danger">🔴 HIGH</span></div><p class="mb-1" style="font-size: 14px;">Tesla receives full self-driving approval in California</p><small class="text-muted">Oct 22, 02:58 PM • Wall Street Journal</small></div></div></li><li class="list-group-item"><div class="row"><div class="col-12"><div class="mb-2"><span class="me-2 badge bg-secondary">META</span><span class="me-2 badge bg-primary">partnership</span><span class="badge bg-danger">🔴 HIGH</span></div><p class="mb-1" style="font-size: 14px;">Meta partners with OpenAI for AI integration</p><small class="text-muted">Oct 21, 07:58 PM • TechCrunch</small></div></div></li><li class="list-group-item"><div class="row"><div class="col-12"><div class="mb-2"><span class="me-2 badge bg-secondary">MSFT</span><span class="me-2 badge bg-primary">acquisition</span><span class="badge bg-danger">🔴 HIGH</span></div><p class="mb-1" style="font-size: 14px;">Microsoft acquires leading cybersecurity firm</p><small class="text-muted">Oct 21, 03:58 PM • CNBC</small></div></div></li></ul></div></div></div><div style="margin-top: 16px; margin-bottom: 16px; max-width: 1200px;"><h4 style="margin-bottom: 12px; color: rgb(224, 224, 224);">Recent Headlines</h4><div><div data-testid="news-panel" style="padding: 12px; background-color: rgb(44, 44, 44); border-radius: 6px; color: rgb(148, 163, 184); font-style: italic; text-align: center;">News Unavailable</div></div></div><div style="position: relative;"><div style=""><div id="results-area" style="width: 100%; max-width: 100%; overflow-x: auto; margin-top: 12px;"><div style="padding: 20px; text-align: center; color: rgb(156, 163, 175);">No cached data. Click 'Run Full Analysis' to generate results.</div></div></div><div id="loading" style=""></div></div><div id="job-history" style="margin-top: 12px;"></div><button id="mt-download-btn">Download CSV (latest)</button><div style="margin-top: 20px; border: 1px solid rgb(204, 204, 204); padding: 10px;"><h4>Debug Console</h4><textarea id="debug-input" style="width: 100%; height: 100px;"></textarea><button id="debug-log-btn">Log to Console</button><div id="debug-output"></div></div><div id="backtest-modal" style="display: none;"><div style="position: fixed; inset: 0px; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; overflow-y: auto;"><div style="background-color: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: 50px auto; position: relative; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;"><h3 style="margin-bottom: 10px;">Backtest Results</h3><button id="close-backtest-modal" style="float: right; border: none; background: transparent; font-size: 24px; cursor: pointer; color: rgb(102, 102, 102);">✕</button><div id="backtest-results-content"></div><div style="margin-top: 20px; padding: 10px; background-color: rgb(240, 249, 255); border-radius: 6px;"><span style="cursor: help; color: rgb(59, 130, 246); font-size: 16px; font-weight: bold;">(?) </span><span style="font-weight: bold; margin-left: 5px;">Metrics Explained:</span><ul style="font-size: 12px; color: rgb(102, 102, 102);"><li>Total P&amp;L: Total profit/loss from all trades</li><li>Total Return: Percentage return on initial capital</li><li>Sharpe Ratio: Risk-adjusted return (&gt;1 is good, &gt;2 is excellent)</li><li>Max Drawdown: Largest peak-to-trough decline</li><li>Win Rate: Percentage of profitable trades</li><li>Number of Trades: Total trades executed during backtest</li></ul></div></div></div></div></div></div></div></div></div></div><div style="display: none;"><div class="tab-parent " id="tabs-parent"><div id="tabs" class="jsx-4017309047 tab-container "></div><div class="jsx-4017309047 tab-content "></div></div></div><div id="chatbot-container" style="display: none;"><div id="chatbot-window" class="card" style="position: fixed; bottom: 100px; right: 30px; width: 400px; max-height: 600px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 32px; border-radius: 16px; overflow: hidden;"><div class="card-header" style="background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%); color: white; padding: 16px; border-bottom: none;"><div style="display: flex; justify-content: space-between; align-items: center;"><div><i class="fas fa-robot" style="margin-right: 10px; font-size: 20px;"></i><span style="font-size: 18px; font-weight: 600;">AI Financial Assistant</span></div><button id="chatbot-close-btn" style="background: transparent; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0px; outline: none;"><i class="fas fa-times"></i></button></div></div><div class="card-body" id="chatbot-messages-container" style="height: 400px; overflow-y: auto; padding: 20px; background-color: rgb(248, 249, 250);"><div id="chatbot-messages"><div style="display: flex; justify-content: flex-start;"><div style="max-width: 85%; margin-bottom: 16px; padding: 12px 16px; border-radius: 16px 16px 16px 4px; overflow-wrap: break-word; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px; animation: 0.3s ease 0s 1 normal none running slideIn; margin-right: auto; background-color: white; color: rgb(51, 51, 51);"><div style="white-space: pre-wrap;">Hello! I'm your AI financial assistant. How can I help you today?</div></div></div></div></div><div class="card-footer" style="padding: 16px; background-color: white; border-top: 1px solid rgb(224, 224, 224);"><div style="display: flex; gap: 10px;"><input type="text" class="form-control" id="chatbot-input" placeholder="Ask me anything about stocks, markets, or your portfolio..." step="any" style="flex: 1 1 0%; border-radius: 24px; padding: 12px 20px; border: 1px solid rgb(221, 221, 221);"><button id="chatbot-send-btn" class="btn btn-primary" style="border-radius: 50%; width: 48px; height: 48px; padding: 0px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button></div></div></div><div style="position: relative;"><div style=""><div id="chatbot-loading-output"></div></div><div id="chatbot-loading" style=""></div></div></div><div id="chatbot-fab"><button id="chatbot-toggle-btn" class="btn btn-primary" style="position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; border-radius: 50%; z-index: 9998; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 16px; display: flex; align-items: center; justify-content: center; border: none; background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%); cursor: pointer; transition: transform 0.3s;"><i class="fas fa-comments" style="font-size: 28px;"></i></button></div></div></div>
+
+        <footer>
+            <script id="_dash-config" type="application/json">{"url_base_pathname":"\u002f","requests_pathname_prefix":"\u002f","ui":false,"props_check":false,"disable_version_check":false,"show_undo_redo":false,"suppress_callback_exceptions":true,"update_title":"Updating...","children_props":{"dash_core_components":{"Checklist":["options[].label"],"Clipboard":[],"ConfirmDialog":[],"ConfirmDialogProvider":[],"DatePickerRange":[],"DatePickerSingle":[],"Download":[],"Dropdown":["options[].label"],"Geolocation":[],"Graph":[],"Input":[],"Interval":[],"Link":[],"Loading":["custom_spinner"],"Location":[],"Markdown":[],"RadioItems":["options[].label"],"RangeSlider":[],"Slider":[],"Store":[],"Tab":[],"Tabs":[],"Textarea":[],"Tooltip":[],"Upload":[]},"dash_html_components":{"A":[],"Abbr":[],"Acronym":[],"Address":[],"Area":[],"Article":[],"Aside":[],"Audio":[],"B":[],"Base":[],"Basefont":[],"Bdi":[],"Bdo":[],"Big":[],"Blink":[],"Blockquote":[],"Br":[],"Button":[],"Canvas":[],"Caption":[],"Center":[],"Cite":[],"Code":[],"Col":[],"Colgroup":[],"Content":[],"Data":[],"Datalist":[],"Dd":[],"Del":[],"Details":[],"Dfn":[],"Dialog":[],"Div":[],"Dl":[],"Dt":[],"Em":[],"Embed":[],"Fieldset":[],"Figcaption":[],"Figure":[],"Font":[],"Footer":[],"Form":[],"Frame":[],"Frameset":[],"H1":[],"H2":[],"H3":[],"H4":[],"H5":[],"H6":[],"Header":[],"Hgroup":[],"Hr":[],"I":[],"Iframe":[],"Img":[],"Ins":[],"Kbd":[],"Keygen":[],"Label":[],"Legend":[],"Li":[],"Link":[],"Main":[],"MapEl":[],"Mark":[],"Marquee":[],"Meta":[],"Meter":[],"Nav":[],"Nobr":[],"Noscript":[],"ObjectEl":[],"Ol":[],"Optgroup":[],"Option":[],"Output":[],"P":[],"Param":[],"Picture":[],"Plaintext":[],"Pre":[],"Progress":[],"Q":[],"Rb":[],"Rp":[],"Rt":[],"Rtc":[],"Ruby":[],"S":[],"Samp":[],"Script":[],"Section":[],"Select":[],"Shadow":[],"Slot":[],"Small":[],"Source":[],"Spacer":[],"Span":[],"Strike":[],"Strong":[],"Sub":[],"Summary":[],"Sup":[],"Table":[],"Tbody":[],"Td":[],"Template":[],"Textarea":[],"Tfoot":[],"Th":[],"Thead":[],"Time":[],"Title":[],"Tr":[],"Track":[],"U":[],"Ul":[],"Var":[],"Video":[],"Wbr":[],"Xmp":[]},"dash_table":{"DataTable":[]},"dash_extensions":{"BeforeAfter":[],"CycleBreaker":[],"DeferScript":[],"EventListener":[],"EventSource":[],"Keyboard":[],"Loading":[],"Lottie":[],"Mermaid":[],"Purify":[],"SSE":[],"WebSocket":[]},"dash_bootstrap_components":{"Accordion":[],"AccordionItem":["title"],"Alert":[],"Badge":[],"Breadcrumb":[],"Button":[],"ButtonGroup":[],"Card":[],"CardBody":[],"CardFooter":[],"CardGroup":[],"CardHeader":[],"CardImg":[],"CardImgOverlay":[],"CardLink":[],"Carousel":[],"Collapse":[],"DropdownMenu":["label"],"DropdownMenuItem":[],"Fade":[],"Form":[],"FormFeedback":[],"FormFloating":[],"FormText":[],"Label":[],"Checkbox":["label"],"Checklist":["options[].label"],"Input":[],"InputGroup":[],"InputGroupText":[],"RadioButton":["label"],"RadioItems":["options[].label"],"Select":[],"Switch":["label"],"Textarea":[],"Col":[],"Container":[],"Row":[],"Stack":[],"ListGroup":[],"ListGroupItem":[],"Modal":[],"ModalBody":[],"ModalFooter":[],"ModalHeader":[],"ModalTitle":[],"Nav":[],"NavItem":[],"NavLink":[],"Navbar":[],"NavbarBrand":[],"NavbarSimple":["brand"],"NavbarToggler":[],"Offcanvas":["title"],"Pagination":[],"Placeholder":[],"Popover":[],"PopoverBody":[],"PopoverHeader":[],"Progress":[],"Spinner":[],"Table":[],"Tab":[],"Tabs":[],"Toast":["header"],"Tooltip":[]}},"serve_locally":true,"dash_version":"3.2.0","python_version":"3.10.19 (main, Oct  9 2025, 22:46:17) [GCC 14.2.0]","dash_version_url":"https:\u002f\u002fdash-version.plotly.com:8080\u002fcurrent_version","ddk_version":null,"plotly_version":"6.3.1"}</script>
+            <script src="/_dash-component-suites/dash/deps/polyfill@7.v3_2_0m1760853593.12.1.min.js"></script>
+<script src="/_dash-component-suites/dash/deps/react@18.v3_2_0m1760853593.3.1.min.js"></script>
+<script src="/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1760853593.3.1.min.js"></script>
+<script src="/_dash-component-suites/dash/deps/prop-types@15.v3_2_0m1760853593.8.1.min.js"></script>
+<script src="/_dash-component-suites/dash_extensions/dash_extensions.v1_0_20m1760853598.min.js"></script>
+<script src="/_dash-component-suites/dash_bootstrap_components/_components/dash_bootstrap_components.v2_0_4m1760853598.min.js"></script>
+<script src="/assets/accessibility_fixes.js?m=1761088690.0267692"></script>
+<script src="/assets/analysis_hub_tab_fix.js?m=1760485141.0"></script>
+<script src="/assets/analysis_tab_diag.js?m=1759977262.0"></script>
+<script src="/assets/compat_legacy_ids.js?m=1760971627.0"></script>
+<script src="/assets/force_trends_inline_styles.js?m=1759516596.0"></script>
+<script src="/assets/pa_calc_results.js?m=1761007583.7293475"></script>
+<script src="/assets/portfolio_tab_fix.js?m=1760485141.0"></script>
+<script src="/assets/research_lab_tab_fix.js?m=1760485141.0"></script>
+<script src="/assets/table_paste.js?m=1759536680.0"></script>
+<script src="/assets/test_helpers.js?m=1760641242.0"></script>
+<script src="/assets/unhide_pa_calc.js?m=1761008206.7048123"></script>
+<script src="/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js"></script>
+<script src="/_dash-component-suites/dash/dcc/dash_core_components.v3_2_0m1760853593.js"></script>
+<script src="/_dash-component-suites/dash/dcc/dash_core_components-shared.v3_2_0m1760853593.js"></script>
+<script src="/_dash-component-suites/dash/html/dash_html_components.v3_0_4m1760853593.min.js"></script>
+<script src="/_dash-component-suites/dash/dash_table/bundle.v6_0_4m1760853593.js"></script>
+<script>
+(function() {
+    var clientside = window.dash_clientside = window.dash_clientside || {};
+    var ns = clientside["_dashprivate_clientside_funcs"] = clientside["_dashprivate_clientside_funcs"] || {};
+    ns["d794782b645bd18f71446bdef12f729a266a13573f07e26b365854f4c405c990"] = 
+        function(n_clicks, text) {
+            if (n_clicks > 0 && text) {
+                fetch('/log-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+            }
+            return '';
+        }
+        ;
+})();
+</script>
+            <script id="_dash-renderer" type="application/javascript">var renderer = new DashRenderer();</script>
+        </footer>
+    
+<div id="portfolio-root" aria-hidden="true" style="width: 0px; height: 0px; overflow: hidden;"></div></body></html>

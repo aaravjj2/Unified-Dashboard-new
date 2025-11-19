@@ -1,0 +1,22 @@
+# Configuration template for next-phase integrations
+# DO NOT CHECK IN REAL SECRETS. Replace values with environment variables
+
+api:
+  finn_hub_key: "REPLACE_WITH_ENV_VAR_OR_SECRET_STORE"
+  yfinance: null
+
+paths:
+  mock_data_dir: "./mock_data"
+  artifacts_dir: "./artifacts"
+
+ml:
+  default_model: "lightgbm"
+  hyperparameters:
+    learning_rate: 0.01
+    n_estimators: 100
+    max_depth: 6
+
+azure:
+  resource_group: "REPLACE"
+  subscription_id: "REPLACE"
+  workspace_name: "REPLACE"

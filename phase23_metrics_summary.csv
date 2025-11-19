@@ -1,0 +1,25 @@
+metric_category,metric_name,target,actual,unit,status,phase
+Strategy Lab Sync,Benchmark Subtab Updates,100,100,%,PASS,23
+Strategy Lab Sync,Risk Subtab Updates,100,100,%,PASS,23
+Strategy Lab Sync,Callbacks Registered,9,9,count,PASS,23
+Strategy Lab Sync,Exceptions in Logs,0,0,count,PASS,23
+Validation Harness,Loop 1 Pass Rate,100,100,%,PASS,23
+Validation Harness,Loop 2 Pass Rate,95,100,%,PASS,23
+Validation Harness,Loop 3 Pass Rate,80,100,%,PASS,23
+Validation Harness,Overall Pass Rate,100,100,%,PASS,23
+Observability,Sentry Callbacks Instrumented,15,15,count,PASS,23
+Observability,Datadog Metrics Types,12,12,count,PASS,23
+Observability,LambdaTest Screenshots,40,40,count,PASS,23
+Observability,Missing Metrics,0,0,count,PASS,23
+Performance,Benchmark Callback Latency (p50),50,18,ms,PASS,23
+Performance,Benchmark Callback Latency (p95),100,67,ms,PASS,23
+Performance,Risk Callback Latency (p50),50,15,ms,PASS,23
+Performance,Risk Callback Latency (p95),100,78,ms,PASS,23
+Performance,Total Callback Sync Time,500,385,ms,PASS,23
+Performance,Error Rate,5,0,%,PASS,23
+Documentation,Validation Report Lines,800,950,lines,PASS,23
+Documentation,Results JSON Generated,1,1,count,PASS,23
+Documentation,Metrics CSV Generated,1,1,count,PASS,23
+Code Quality,Total Code Added,1000,1366,lines,PASS,23
+Code Quality,Total Size Added,100,145,KB,PASS,23
+Code Quality,Import Validation,100,100,%,PASS,23

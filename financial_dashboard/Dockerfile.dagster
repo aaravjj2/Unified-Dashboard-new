@@ -1,0 +1,39 @@
+# ============================================================================
+# Dagster Orchestration Service - Extends Optimized Base Image
+# ============================================================================
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# Install Dagster-specific Python packages (small, changes more frequently)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir \
+    dagster==1.5.5 \
+    dagster-webserver==1.5.5 \
+    dagster-postgres==0.21.5 \
+    dagster-pandas==0.21.5 \
+    dagit==1.5.5
+
+# Ensure a compatible pendulum version for Dagster (fixes AttributeError)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir pendulum==2.1.2
+
+# Copy application code (most frequently changing, keep last)
+COPY . .
+
+# Expose Dagit webserver port
+EXPOSE 3000
+
+# Set environment variables
+ENV DAGSTER_HOME=/app/dagster_project
+ENV PYTHONPATH=/app:$PYTHONPATH
+
+# Create dagster directories
+RUN mkdir -p /app/dagster_project/storage /app/dagster_project/logs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/server_info || exit 1
+
+# Start Dagit webserver
+CMD ["dagit", "-h", "0.0.0.0", "-p", "3000", "-w", "/app/dagster_project/workspace.yaml"]

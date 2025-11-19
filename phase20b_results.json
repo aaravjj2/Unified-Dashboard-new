@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-10-31T17:15:46.425900",
+  "loops": {
+    "debug": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "callback": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "e2e": {
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1
+    }
+  },
+  "total": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 1
+  },
+  "success": false
+}

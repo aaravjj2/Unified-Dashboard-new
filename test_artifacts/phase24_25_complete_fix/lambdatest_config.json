@@ -1,0 +1,17 @@
+{
+  "username": "your_username",
+  "access_key": "your_access_key",
+  "hub_url": "https://hub.lambdatest.com/wd/hub",
+  "capabilities": {
+    "browserName": "Chrome",
+    "browserVersion": "latest",
+    "platform": "Windows 10",
+    "resolution": "1920x1080",
+    "build": "Phase 24-25 Critical Fix Validation",
+    "name": "Dashboard UI Validation",
+    "network": true,
+    "visual": true,
+    "video": true,
+    "console": true
+  }
+}

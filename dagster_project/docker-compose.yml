@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  dagster_dev:
+    build: .
+    container_name: dagster_dev
+    volumes:
+      - ./:/opt/dagster_project
+      # mount the entire financial_dashboard parent directory (read-only) so we can access models/, outputs/, picks/
+      - ../financial_dashboard:/opt/dagster_project/financial_dashboard:ro
+    ports:
+      - "3000:3000"
+    environment:
+      # Set DATABASE_URL in your environment when running to point to your Postgres
+      # e.g. postgresql+psycopg2://postgres:password@postgres_db:5432/market_data
+      - DATABASE_URL
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      - unified-dashboard_shared-network
+
+networks:
+  unified-dashboard_shared-network:
+    external: true

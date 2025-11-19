@@ -1,0 +1,7 @@
+No research_lab files found yet
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='SPY, QQQ, IWM, AAPL, MSFT',
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='All sectors',
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='SPY',
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='SPY, QQQ, IWM, TLT',
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='SPY:0.6,QQQ:0.4',
+financial_dashboard/tabs/research_lab/layout.py:                            placeholder='Enter your research notes here...',

@@ -1,0 +1,124 @@
+"""
+Strategy Lab - Benchmark Comparison Subtab
+
+Compare strategy performance vs benchmarks:
+- SPY (S&P 500)
+- QQQ (NASDAQ 100)
+- Custom benchmark
+- Relative performance metrics
+"""
+
+import logging
+from dash_extensions.enrich import html, dcc
+import dash_bootstrap_components as dbc
+
+logger = logging.getLogger(__name__)
+
+def layout():
+    """
+    Benchmark Comparison subtab layout.
+    
+    Returns:
+        dbc.Container: Benchmark comparison display
+    """
+    return dbc.Container([
+        # Description
+        dcc.Markdown("""
+**📊 Benchmark Comparison:**
+
+Compare your strategy vs market indices to measure skill:
+- **SPY (S&P 500)**: Large-cap US stocks benchmark
+- **QQQ (NASDAQ 100)**: Tech-heavy benchmark
+- **IWM (Russell 2000)**: Small-cap benchmark
+
+**💡 Understanding Alpha:**
+- **Positive Alpha**: Your strategy beats the benchmark (good!)
+- **Negative Alpha**: Market index would've been better (needs improvement)
+- **Beta**: How closely you track the benchmark (1.0 = identical moves)
+
+**🎯 What to Look For:**
+- Consistently higher returns than SPY
+- Lower drawdowns than benchmark
+- Sharpe ratio > benchmark Sharpe
+        """, className="small mb-4", style={
+            'backgroundColor': '#f5f5ff',
+            'padding': '15px',
+            'borderRadius': '8px',
+            'color': '#000000'
+        }),
+        
+        # Benchmark Selection
+        dbc.Row([
+            dbc.Col([
+                html.Label("Select Benchmark", className="fw-bold"),
+                dcc.Dropdown(
+                    id='sl-benchmark-selector',
+                    options=[
+                        {'label': 'S&P 500 (SPY)', 'value': 'SPY'},
+                        {'label': 'NASDAQ 100 (QQQ)', 'value': 'QQQ'},
+                        {'label': 'Russell 2000 (IWM)', 'value': 'IWM'},
+                        {'label': 'Total Market (VTI)', 'value': 'VTI'},
+                    ],
+                    value='SPY',
+                    clearable=False,
+                    className="mb-3"
+                )
+            ], md=6),
+        ], className="mb-3"),
+        
+        # Comparison Metrics
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Strategy CAGR", className="text-muted mb-1", style={'color': '#000000'}),
+                        html.H4(id='sl-strategy-cagr', children="--", className="mb-0 text-success")
+                    ])
+                ], className="text-center mb-3")
+            ], md=4),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Benchmark CAGR", className="text-muted mb-1", style={'color': '#000000'}),
+                        html.H4(id='sl-benchmark-cagr', children="--", className="mb-0")
+                    ])
+                ], className="text-center mb-3")
+            ], md=4),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Alpha (Excess Return)", className="text-muted mb-1", style={'color': '#000000'}),
+                        html.H4(id='sl-alpha-value', children="--", className="mb-0")
+                    ])
+                ], className="text-center mb-3")
+            ], md=4),
+        ], className="mb-4"),
+        
+        # Cumulative Returns Comparison
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H6("📈 Cumulative Returns Comparison", className="mb-0")),
+                    dbc.CardBody([
+                        dcc.Graph(id='sl-benchmark-comparison-chart', config={'displayModeBar': False})
+                    ])
+                ])
+            ], md=12),
+        ], className="mb-3"),
+        
+        # Side-by-Side Metrics
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H6("📊 Performance Metrics", className="mb-0")),
+                    dbc.CardBody([
+                        html.Div(id='sl-benchmark-metrics-table')
+                    ])
+                ])
+            ], md=12),
+        ]),
+        
+    ], fluid=True, className="p-3")
+
+
+logger.info("✓ Strategy Lab Benchmark subtab loaded")

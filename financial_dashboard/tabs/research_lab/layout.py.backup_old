@@ -1,0 +1,472 @@
+"""
+Research Lab Layout
+
+5 Subtabs:
+1. Market Scan - Screening and filtering
+2. Factor Analysis - Factor exposures and regression
+3. Correlation Explorer - Correlation matrices and heatmaps
+4. Strategy Backtest Preview - Simple portfolio simulation
+5. Research Notes - Custom notes and export
+"""
+
+from dash import dcc, html
+import dash_bootstrap_components as dbc
+
+# ============================================================================
+# MAIN LAYOUT
+# ============================================================================
+
+layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            html.H2("🔬 Research Lab", className="text-white mb-3"),
+            html.P(
+                "Multi-asset research, factor analysis, and strategy prototyping",
+                className="mb-3",
+                style={'color': '#000000'}
+            ),
+            
+            # Beginner-Friendly Overview
+            dbc.Accordion([
+                dbc.AccordionItem([
+                    dcc.Markdown("""
+**🔬 What This Lab Does:**
+
+The Research Lab is your **data exploration workspace** for analyzing stocks, ETFs, and market trends before building strategies or making trades. Think of it as your investment research command center where you can:
+- **Screen thousands of stocks** for specific criteria (market cap, sector, momentum)
+- **Analyze factor exposures** to understand what drives returns (value, growth, momentum, quality)
+- **Explore correlations** between assets to build diversified portfolios
+- **Prototype strategies** with quick backtests before full implementation
+
+**💡 Key Features:**
+
+- **Market Scan**: Filter 500+ tickers by market cap, sector, volatility, and price momentum
+- **Factor Analysis**: Run regressions to see which Fama-French factors explain asset returns
+- **Correlation Explorer**: Visualize how assets move together (diversification finder)
+- **Strategy Backtest Preview**: Quick 30-day simulations to test ideas before deeper analysis
+- **Research Notes**: Save findings, export results, and track your research workflow
+
+**🎯 How to Use:**
+
+1. **Start with Market Scan**: Enter tickers (e.g., "AAPL, MSFT, GOOGL") or use filters to discover stocks
+2. **Run Factor Analysis**: Select tickers → click "Analyze" → review factor exposures (Market, SMB, HML, MOM)
+3. **Check Correlations**: Build a basket of 5-10 tickers → generate correlation matrix → look for low correlations (<0.3)
+4. **Prototype Strategy**: Test simple rules (e.g., "buy when RSI < 30") with quick backtest
+5. **Save Notes**: Document your findings for later reference or export to CSV/JSON
+
+**📊 Understanding Factor Analysis:**
+
+Factor analysis helps you understand **WHY** an asset goes up or down. Instead of just seeing returns, you'll see:
+- **Market Beta**: How much the stock moves with the overall market (1.0 = matches S&P 500)
+- **SMB (Size)**: Exposure to small-cap vs large-cap stocks
+- **HML (Value)**: Exposure to value stocks (low P/E) vs growth stocks (high P/E)
+- **MOM (Momentum)**: Exposure to recent winners vs losers
+
+**Example**: If AAPL shows Market=1.2, SMB=-0.3, HML=-0.5, MOM=0.4, it means:
+- 20% more volatile than market
+- Favors large-cap (negative SMB)
+- Growth-oriented (negative HML)
+- Momentum-driven (positive MOM)
+
+**💡 Quick Tips:**
+
+- Green values = positive factor exposure
+- Red values = negative factor exposure
+- R² > 0.70 = factors explain 70%+ of returns (good model fit)
+- Low correlation (<0.3) = good diversification candidates
+
+**🎓 Pro Tips:**
+
+- Use Market Scan to find high-momentum stocks (ret_5d > 5%)
+- Check factor analysis before adding to portfolio (avoid redundant exposures)
+- Correlation <0.5 = good diversification, >0.8 = redundant holdings
+- Backtest preview helps validate ideas quickly (30-day window)
+                    """, style={'color': '#000000', 'fontSize': '14px'})
+                ], title="📚 Beginner's Guide to Research Lab", className="mb-3")
+            ], start_collapsed=True, className="mb-4")
+        ])
+    ]),
+    
+    # Tabs
+    dbc.Tabs(
+        id='research-lab-tabs',
+        active_tab='market-scan',
+        children=[
+            dbc.Tab(label='📊 Market Scan', tab_id='market-scan'),
+            dbc.Tab(label='📈 Factor Analysis', tab_id='factor-analysis'),
+            dbc.Tab(label='🔗 Correlation Explorer', tab_id='correlation-explorer'),
+            dbc.Tab(label='⚙️ Strategy Backtest', tab_id='strategy-backtest'),
+            dbc.Tab(label='📝 Research Notes', tab_id='research-notes'),
+        ],
+        className='mb-4'
+    ),
+    
+    # Content area
+    html.Div(id='research-lab-content')
+    
+], fluid=True, style={'backgroundColor': '#1e1e1e', 'minHeight': '100vh', 'padding': '20px'})
+
+
+# ============================================================================
+# SUBTAB 1: MARKET SCAN
+# ============================================================================
+
+def create_market_scan_layout():
+    """Market screening and filtering interface."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H5("🔍 Screening Filters", className='text-white mb-0')),
+                    dbc.CardBody([
+                        # Ticker input
+                        dbc.Label("Tickers (comma-separated)", style={'color': '#ffffff'}),
+                        dcc.Input(
+                            id='market-scan-tickers',
+                            type='text',
+                            placeholder='SPY, QQQ, IWM, AAPL, MSFT',
+                            value='SPY,QQQ,IWM',
+                            style={'width': '100%', 'marginBottom': '15px', 'backgroundColor': '#ffffff', 'color': '#000000'}
+                        ),
+                        
+                        # Market cap filter
+                        dbc.Label("Market Cap Range (Billions)", style={'color': '#ffffff'}),
+                        dcc.RangeSlider(
+                            id='market-scan-market-cap',
+                            min=0,
+                            max=3000,
+                            step=100,
+                            value=[0, 3000],
+                            marks={0: '$0B', 1000: '$1T', 2000: '$2T', 3000: '$3T+'},
+                            tooltip={"placement": "bottom", "always_visible": False}
+                        ),
+                        html.Div(style={'marginBottom': '15px'}),
+                        
+                        # Sector filter
+                        dbc.Label("Sectors", style={'color': '#ffffff'}),
+                        dcc.Dropdown(
+                            id='market-scan-sectors',
+                            options=[
+                                {'label': 'Technology', 'value': 'Technology'},
+                                {'label': 'Healthcare', 'value': 'Healthcare'},
+                                {'label': 'Finance', 'value': 'Finance'},
+                                {'label': 'Energy', 'value': 'Energy'},
+                                {'label': 'Consumer', 'value': 'Consumer'},
+                                {'label': 'Industrial', 'value': 'Industrial'},
+                            ],
+                            multi=True,
+                            placeholder='All sectors',
+                            style={'backgroundColor': '#ffffff', 'color': '#000000'}
+                        ),
+                        html.Div(style={'marginBottom': '15px'}),
+                        
+                        # P/E ratio filter
+                        dbc.Label("P/E Ratio Range", style={'color': '#ffffff'}),
+                        dcc.RangeSlider(
+                            id='market-scan-pe-ratio',
+                            min=0,
+                            max=100,
+                            step=5,
+                            value=[0, 100],
+                            marks={0: '0', 25: '25', 50: '50', 75: '75', 100: '100+'},
+                            tooltip={"placement": "bottom", "always_visible": False}
+                        ),
+                        html.Div(style={'marginBottom': '15px'}),
+                        
+                        # Beta filter
+                        dbc.Label("Beta Range", style={'color': '#ffffff'}),
+                        dcc.RangeSlider(
+                            id='market-scan-beta',
+                            min=0,
+                            max=3,
+                            step=0.1,
+                            value=[0, 3],
+                            marks={0: '0', 1: '1.0', 2: '2.0', 3: '3.0+'},
+                            tooltip={"placement": "bottom", "always_visible": False}
+                        ),
+                        html.Div(style={'marginBottom': '15px'}),
+                        
+                        # Run button
+                        dbc.Button(
+                            "🔍 Run Screen",
+                            id='market-scan-run-button',
+                            color='primary',
+                            className='w-100',
+                            style={'marginTop': '10px'}
+                        ),
+                    ])
+                ], className='bg-dark text-white', style={'marginBottom': '20px'})
+            ], width=4),
+            
+            dbc.Col([
+                # Results table
+                dbc.Card([
+                    dbc.CardHeader(html.H5("📋 Screening Results", className='text-white mb-0')),
+                    dbc.CardBody([
+                        html.Div(id='market-scan-results-container')
+                    ])
+                ], className='bg-dark text-white')
+            ], width=8)
+        ])
+    ], fluid=True)
+
+
+# ============================================================================
+# SUBTAB 2: FACTOR ANALYSIS
+# ============================================================================
+
+def create_factor_analysis_layout():
+    """Factor exposure analysis interface."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H5("⚙️ Factor Settings", className='text-white mb-0')),
+                    dbc.CardBody([
+                        # Ticker input
+                        dbc.Label("Ticker", style={'color': '#ffffff'}),
+                        dcc.Input(
+                            id='factor-analysis-ticker',
+                            type='text',
+                            placeholder='SPY',
+                            value='SPY',
+                            style={'width': '100%', 'marginBottom': '15px', 'backgroundColor': '#ffffff', 'color': '#000000'}
+                        ),
+                        
+                        # Date range
+                        dbc.Label("Date Range", style={'color': '#ffffff'}),
+                        dcc.DatePickerRange(
+                            id='factor-analysis-date-range',
+                            start_date='2023-01-01',
+                            end_date='2024-01-01',
+                            display_format='YYYY-MM-DD',
+                            style={'marginBottom': '15px'}
+                        ),
+                        
+                        # Factor model selection
+                        dbc.Label("Factor Model", style={'color': '#ffffff'}),
+                        dcc.Dropdown(
+                            id='factor-analysis-model',
+                            options=[
+                                {'label': 'Fama-French 3-Factor', 'value': 'ff3'},
+                                {'label': 'Fama-French 5-Factor', 'value': 'ff5'},
+                                {'label': 'CAPM', 'value': 'capm'},
+                            ],
+                            value='ff5',
+                            style={'backgroundColor': '#ffffff', 'color': '#000000', 'marginBottom': '15px'}
+                        ),
+                        
+                        # Run button
+                        dbc.Button(
+                            "📊 Calculate Exposures",
+                            id='factor-analysis-run-button',
+                            color='primary',
+                            className='w-100',
+                            style={'marginTop': '10px'}
+                        ),
+                    ])
+                ], className='bg-dark text-white', style={'marginBottom': '20px'})
+            ], width=4),
+            
+            dbc.Col([
+                # Results
+                dbc.Card([
+                    dbc.CardHeader(html.H5("📈 Factor Exposures", className='text-white mb-0')),
+                    dbc.CardBody([
+                        html.Div(id='factor-analysis-results-container')
+                    ])
+                ], className='bg-dark text-white')
+            ], width=8)
+        ])
+    ], fluid=True)
+
+
+# ============================================================================
+# SUBTAB 3: CORRELATION EXPLORER
+# ============================================================================
+
+def create_correlation_explorer_layout():
+    """Correlation matrix and heatmap interface."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H5("⚙️ Correlation Settings", className='text-white mb-0')),
+                    dbc.CardBody([
+                        # Ticker input
+                        dbc.Label("Tickers (comma-separated)", style={'color': '#ffffff'}),
+                        dcc.Input(
+                            id='correlation-tickers',
+                            type='text',
+                            placeholder='SPY, QQQ, IWM, TLT',
+                            value='SPY,QQQ,IWM,TLT',
+                            style={'width': '100%', 'marginBottom': '15px', 'backgroundColor': '#ffffff', 'color': '#000000'}
+                        ),
+                        
+                        # Date range
+                        dbc.Label("Date Range", style={'color': '#ffffff'}),
+                        dcc.DatePickerRange(
+                            id='correlation-date-range',
+                            start_date='2023-01-01',
+                            end_date='2024-01-01',
+                            display_format='YYYY-MM-DD',
+                            style={'marginBottom': '15px'}
+                        ),
+                        
+                        # Correlation method
+                        dbc.Label("Method", style={'color': '#ffffff'}),
+                        dcc.Dropdown(
+                            id='correlation-method',
+                            options=[
+                                {'label': 'Pearson', 'value': 'pearson'},
+                                {'label': 'Spearman', 'value': 'spearman'},
+                                {'label': 'Kendall', 'value': 'kendall'},
+                            ],
+                            value='pearson',
+                            style={'backgroundColor': '#ffffff', 'color': '#000000', 'marginBottom': '15px'}
+                        ),
+                        
+                        # Run button
+                        dbc.Button(
+                            "🔗 Calculate Correlations",
+                            id='correlation-run-button',
+                            color='primary',
+                            className='w-100',
+                            style={'marginTop': '10px'}
+                        ),
+                    ])
+                ], className='bg-dark text-white', style={'marginBottom': '20px'})
+            ], width=4),
+            
+            dbc.Col([
+                # Heatmap
+                dbc.Card([
+                    dbc.CardHeader(html.H5("🔥 Correlation Heatmap", className='text-white mb-0')),
+                    dbc.CardBody([
+                        dcc.Graph(id='correlation-heatmap')
+                    ])
+                ], className='bg-dark text-white')
+            ], width=8)
+        ])
+    ], fluid=True)
+
+
+# ============================================================================
+# SUBTAB 4: STRATEGY BACKTEST PREVIEW
+# ============================================================================
+
+def create_strategy_backtest_layout():
+    """Simple portfolio simulation interface."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H5("⚙️ Portfolio Settings", className='text-white mb-0')),
+                    dbc.CardBody([
+                        # Ticker input
+                        dbc.Label("Tickers & Weights (e.g., SPY:0.6,QQQ:0.4)", style={'color': '#ffffff'}),
+                        dcc.Input(
+                            id='backtest-portfolio',
+                            type='text',
+                            placeholder='SPY:0.6,QQQ:0.4',
+                            value='SPY:0.6,QQQ:0.4',
+                            style={'width': '100%', 'marginBottom': '15px', 'backgroundColor': '#ffffff', 'color': '#000000'}
+                        ),
+                        
+                        # Date range
+                        dbc.Label("Date Range", style={'color': '#ffffff'}),
+                        dcc.DatePickerRange(
+                            id='backtest-date-range',
+                            start_date='2023-01-01',
+                            end_date='2024-01-01',
+                            display_format='YYYY-MM-DD',
+                            style={'marginBottom': '15px'}
+                        ),
+                        
+                        # Rebalance frequency
+                        dbc.Label("Rebalance Frequency", style={'color': '#ffffff'}),
+                        dcc.Dropdown(
+                            id='backtest-rebalance-freq',
+                            options=[
+                                {'label': 'Daily', 'value': 'daily'},
+                                {'label': 'Weekly', 'value': 'weekly'},
+                                {'label': 'Monthly', 'value': 'monthly'},
+                                {'label': 'Quarterly', 'value': 'quarterly'},
+                            ],
+                            value='monthly',
+                            style={'backgroundColor': '#ffffff', 'color': '#000000', 'marginBottom': '15px'}
+                        ),
+                        
+                        # Run button
+                        dbc.Button(
+                            "⚙️ Run Backtest",
+                            id='backtest-run-button',
+                            color='primary',
+                            className='w-100',
+                            style={'marginTop': '10px'}
+                        ),
+                    ])
+                ], className='bg-dark text-white', style={'marginBottom': '20px'})
+            ], width=4),
+            
+            dbc.Col([
+                # Results
+                dbc.Card([
+                    dbc.CardHeader(html.H5("📊 Performance", className='text-white mb-0')),
+                    dbc.CardBody([
+                        html.Div(id='backtest-results-container')
+                    ])
+                ], className='bg-dark text-white')
+            ], width=8)
+        ])
+    ], fluid=True)
+
+
+# ============================================================================
+# SUBTAB 5: RESEARCH NOTES
+# ============================================================================
+
+def create_research_notes_layout():
+    """Research notes interface."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H5("📝 Research Notes", className='text-white mb-0')),
+                    dbc.CardBody([
+                        dcc.Textarea(
+                            id='research-notes-text',
+                            placeholder='Enter your research notes here...',
+                            style={
+                                'width': '100%',
+                                'height': '400px',
+                                'backgroundColor': '#2d2d2d',
+                                'color': '#ffffff',
+                                'border': '1px solid #444',
+                                'padding': '10px',
+                                'fontFamily': 'monospace'
+                            }
+                        ),
+                        
+                        html.Div([
+                            dbc.Button(
+                                "💾 Save Notes",
+                                id='research-notes-save-button',
+                                color='success',
+                                className='me-2',
+                                style={'marginTop': '10px'}
+                            ),
+                            dbc.Button(
+                                "📥 Export",
+                                id='research-notes-export-button',
+                                color='primary',
+                                style={'marginTop': '10px'}
+                            ),
+                        ]),
+                        
+                        html.Div(id='research-notes-status', className='mt-3')
+                    ])
+                ], className='bg-dark text-white')
+            ], width=12)
+        ])
+    ], fluid=True)

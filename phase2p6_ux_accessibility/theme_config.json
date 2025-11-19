@@ -1,0 +1,35 @@
+{
+  "themes": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#F2F4F7",
+      "text": "#000000",
+      "muted": "#6B7280",
+      "accent": "#2563EB",
+      "success": "#16A34A",
+      "danger": "#DC2626",
+      "focus": "#FBBF24"
+    },
+    "dark": {
+      "background": "#0B1220",
+      "surface": "#111827",
+      "text": "#FFFFFF",
+      "muted": "#9CA3AF",
+      "accent": "#60A5FA",
+      "success": "#34D399",
+      "danger": "#F87171",
+      "focus": "#F59E0B"
+    }
+  },
+  "fonts": {
+    "base_family": "Inter, Arial, sans-serif",
+    "base_size_px": 14,
+    "heading_weight": 600,
+    "body_weight": 400
+  },
+  "breakpoints": {
+    "mobile": 480,
+    "tablet": 768,
+    "desktop": 1200
+  }
+}

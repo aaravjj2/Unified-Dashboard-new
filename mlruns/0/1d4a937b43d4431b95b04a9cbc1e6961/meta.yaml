@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Aarav/fin_env/unified-dashboard/mlruns/0/1d4a937b43d4431b95b04a9cbc1e6961/artifacts
+end_time: 1761167684626
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1d4a937b43d4431b95b04a9cbc1e6961
+run_name: covered_call_test_backtest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761167683891
+status: 3
+tags: []
+user_id: aarav

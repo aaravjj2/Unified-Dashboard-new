@@ -1,0 +1,48 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/c/Aarav/fin_env/.venv_local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/c/Aarav/fin_env/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.10.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 6 items
+
+tests/test_navigation.py::test_navigation_bar_is_rendered_correctly 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:94 ✅ Loaded keys.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded doppler.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded .env
+INFO     utils.load_env:load_env.py:150 ✅ All 5 required keys present
+PASSED                                                                   [ 16%]
+tests/test_market_trends_ui.py::test_table_renders_all_rows[chromium] PASSED [ 33%]
+tests/test_market_trends_ui.py::test_key_tickers_display[chromium] PASSED [ 50%]
+tests/test_market_trends_ui.py::test_recent_news_live[chromium] FAILED   [ 66%]
+tests/test_market_trends_ui.py::test_no_updating_spinner_stuck[chromium] PASSED [ 83%]
+tests/test_market_trends_ui.py::test_table_has_data_attributes[chromium] PASSED [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_recent_news_live[chromium] ________________________
+tests/test_market_trends_ui.py:147: in test_recent_news_live
+    news_section.wait_for(state="visible", timeout=5000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:17975: in wait_for
+    self._sync(self._impl_obj.wait_for(timeout=timeout, state=state))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_locator.py:692: in wait_for
+    await self._frame.wait_for_selector(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.
+E   Call log:
+E     - waiting for locator("[data-testid*=\"news\"], [id*=\"news\"], .news-section, div:has-text(\"Recent News\")").first to be visible
+E       14 × locator resolved to hidden <div id="news-container" data-testid="news-panel">Loading news...</div>
+---------------------------- Captured stdout setup -----------------------------
+⚠️ WARNING: Could not find Market Trends tab to click
+=========================== short test summary info ============================
+FAILED tests/test_market_trends_ui.py::test_recent_news_live[chromium] - playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("[data-testid*=\"news\"], [id*=\"news\"], .news-section, div:has-text(\"Recent News\")").first to be visible
+    14 × locator resolved to hidden <div id="news-container" data-testid="news-panel">Loading news...</div>
+=================== 1 failed, 5 passed in 258.83s (0:04:18) ====================

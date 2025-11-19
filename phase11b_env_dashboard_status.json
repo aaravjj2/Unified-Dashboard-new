@@ -1,0 +1,9 @@
+{
+  "env_vars_total": 99,
+  "api_key_vars": 26,
+  "critical_vars_loaded": 7,
+  "critical_vars_total": 7,
+  "missing_critical": [],
+  "dashboard_ready": true,
+  "env_load_percentage": 100.0
+}

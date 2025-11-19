@@ -1,0 +1,18 @@
+[Unit]
+Description=Weekly Picks Update (fetch open prices)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Set the user to run the job (update before installing)
+User=youruser
+WorkingDirectory=/path/to/Dash
+# Load environment variables (create this file with permissions 600)
+EnvironmentFile=/path/to/Dash/scripts/weekly_picks.env
+# Wrapper script will source env and run the Python script
+ExecStart=/path/to/Dash/scripts/run_weekly_update.sh
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

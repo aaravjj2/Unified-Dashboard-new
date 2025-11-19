@@ -1,0 +1,13 @@
+{
+  "phase": 3,
+  "timestamp": "2025-10-26T14:39:42.230593",
+  "issues_found": 2,
+  "issues": [
+    "Market Trends snapshot test failed or errored",
+    "Portfolio snapshot test failed"
+  ],
+  "recommended_remediations": [
+    "Check Market Trends tab callbacks and data sources",
+    "Check Portfolio subtab callbacks and data store population"
+  ]
+}

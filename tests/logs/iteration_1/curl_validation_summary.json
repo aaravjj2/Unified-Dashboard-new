@@ -1,0 +1,19 @@
+{
+  "weekly": {
+    "success": true,
+    "filepath": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/logs/iteration_1/weekly_picks_curl.json",
+    "pick_type": "weekly",
+    "errors": [],
+    "ticker_count": 20,
+    "failing_tickers": []
+  },
+  "monthly": {
+    "success": true,
+    "filepath": "/mnt/c/Aarav/fin_env/unified-dashboard/tests/logs/iteration_1/monthly_picks_curl.json",
+    "pick_type": "monthly",
+    "errors": [],
+    "ticker_count": 20,
+    "failing_tickers": []
+  },
+  "overall_success": true
+}

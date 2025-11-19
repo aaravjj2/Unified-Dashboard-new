@@ -1,0 +1,60 @@
+
+            /* Phase 24-25 Critical UI Color Fixes */
+            
+            /* Input elements - force white background, black text */
+            input[type="text"], input[type="number"], input[type="email"], 
+            input[type="password"], input[type="search"], textarea, select,
+            .form-control, .dash-input {
+                background-color: white !important;
+                color: #000000 !important;
+                border: 1px solid #ccc !important;
+            }
+            
+            /* Dash dropdown fixes */
+            .dash-dropdown .Select-control,
+            .dash-dropdown .Select-menu-outer,
+            .dash-dropdown .Select-option {
+                background-color: white !important;
+                color: #000000 !important;
+            }
+            
+            /* Table fixes */
+            .dash-table-container,
+            .dash-table-container *,
+            .dash-table-container .dash-cell,
+            .dash-table-container .dash-cell div {
+                color: #000000 !important;
+                background-color: white !important;
+            }
+            
+            /* Button fixes */
+            .btn, button, .dash-button {
+                color: #000000 !important;
+                background-color: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+            }
+            
+            /* Focus states */
+            input:focus, textarea:focus, select:focus,
+            .form-control:focus, .dash-input:focus {
+                background-color: white !important;
+                color: #000000 !important;
+                border-color: #007bff !important;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+            }
+            
+            /* General text elements */
+            p, span, div, label, h1, h2, h3, h4, h5, h6 {
+                color: #000000 !important;
+            }
+            
+            /* Container backgrounds */
+            .card, .card-body, .container-fluid, .row, .col {
+                background-color: white !important;
+            }
+            
+            /* Ensure visibility */
+            * {
+                visibility: visible !important;
+            }
+            

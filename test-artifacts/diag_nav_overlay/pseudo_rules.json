@@ -1,0 +1,228 @@
+[
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show::before { content: \"\"; display: block; position: absolute; }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__bottomRight::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__bottomRight::before { border-top: 26px solid transparent; border-right: 33px solid rgb(0, 166, 153); bottom: 0px; right: 0px; }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__bottomRight:hover::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__bottomRight:hover::before { border-right: 33px solid rgb(0, 132, 137); }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__topRight::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__topRight::before { border-bottom: 26px solid transparent; border-right: 33px solid rgb(0, 166, 153); top: 0px; right: 0px; }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__topRight:hover::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__topRight:hover::before { border-right: 33px solid rgb(0, 132, 137); }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__topLeft::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__topLeft::before { border-bottom: 26px solid transparent; border-left: 33px solid rgb(0, 166, 153); top: 0px; left: 0px; }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerKeyboardShortcuts_show__topLeft:hover::before",
+    "cssText": ".DayPickerKeyboardShortcuts_show__topLeft:hover::before { border-left: 33px solid rgb(0, 132, 137); }"
+  },
+  {
+    "href": null,
+    "selector": ".DayPickerNavigation__bottomDefault",
+    "cssText": ".DayPickerNavigation__bottomDefault { -webkit-box-pack: justify; display: flex; justify-content: space-between; }"
+  },
+  {
+    "href": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css",
+    "selector": null,
+    "cssText": null,
+    "note": "cannot access rules (maybe cross-origin)"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(1) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(1) .nav-link::before { content: \"Market Trends\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(2) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(2) .nav-link::before { content: \"Market Forecast\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(3) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(3) .nav-link::before { content: \"Monthly Picks\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(4) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(4) .nav-link::before { content: \"Weekly Picks\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(5) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(5) .nav-link::before { content: \"Analysis Hub\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(6) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(6) .nav-link::before { content: \"Portfolio Tracker\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?v=v2025100803",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(7) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(7) .nav-link::before { content: \"Research Lab\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(1) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(1) .nav-link::before { content: \"Market Trends\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(2) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(2) .nav-link::before { content: \"Market Forecast\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(3) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(3) .nav-link::before { content: \"Monthly Picks\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(4) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(4) .nav-link::before { content: \"Weekly Picks\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(5) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(5) .nav-link::before { content: \"Analysis Hub\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(6) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(6) .nav-link::before { content: \"Portfolio Tracker\"; }"
+  },
+  {
+    "href": "http://localhost:8050/assets/custom.css?m=1759965497.0",
+    "selector": "#dashboard-tabs > .nav-item:nth-child(7) .nav-link::before",
+    "cssText": "#dashboard-tabs > .nav-item:nth-child(7) .nav-link::before { content: \"Research Lab\"; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-tooltip[data-attr-anchor=\"top\"]::after, .dash-tooltip[data-attr-anchor=\"top\"]::before",
+    "cssText": ".dash-tooltip[data-attr-anchor=\"top\"]::after, .dash-tooltip[data-attr-anchor=\"top\"]::before { bottom: 100%; left: 50%; border: solid transparent; content: \" \"; height: 0px; width: 0px; position: absolute; pointer-events: none; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-tooltip[data-attr-anchor=\"top\"]::before",
+    "cssText": ".dash-tooltip[data-attr-anchor=\"top\"]::before { border-color: transparent transparent rgb(228, 228, 228); border-width: 9px; margin-left: -9px; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-tooltip[data-attr-anchor=\"bottom\"]::after, .dash-tooltip[data-attr-anchor=\"bottom\"]::before",
+    "cssText": ".dash-tooltip[data-attr-anchor=\"bottom\"]::after, .dash-tooltip[data-attr-anchor=\"bottom\"]::before { top: 100%; left: 50%; border: solid transparent; content: \" \"; height: 0px; width: 0px; position: absolute; pointer-events: none; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-tooltip[data-attr-anchor=\"bottom\"]::before",
+    "cssText": ".dash-tooltip[data-attr-anchor=\"bottom\"]::before { border-color: rgb(228, 228, 228) transparent transparent; border-width: 9px; margin-left: -9px; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-table-container .dash-spreadsheet-container th > div:not(.cell-markdown) q::before, .dash-table-container .dash-spreadsheet-container td > div:not(.cell-markdown) q::before, .dash-table-container .dash-spreadsheet-container th > div:not(.cell-markdown) q::after, .dash-table-container .dash-spreadsheet-container td > div:not(.cell-markdown) q::after",
+    "cssText": ".dash-table-container .dash-spreadsheet-container th > div:not(.cell-markdown) q::before, .dash-table-container .dash-spreadsheet-container td > div:not(.cell-markdown) q::before, .dash-table-container .dash-spreadsheet-container th > div:not(.cell-markdown) q::after, .dash-table-container .dash-spreadsheet-container td > div:not(.cell-markdown) q::after { content: \"\"; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner *, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner ::after, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner ::before",
+    "cssText": ".dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner *, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner ::after, .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner ::before { box-sizing: inherit; }"
+  },
+  {
+    "href": null,
+    "selector": ".dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .Select-value",
+    "cssText": ".dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .Select-value { display: flex; flex-direction: column; justify-content: center; margin-top: -2px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after",
+    "cssText": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after { content: \"\"; cursor: pointer; position: absolute; background-image: url(\"data:image/svg+xml;charset=utf-8,%3Csvg viewBox=\\\"0 0 20 20\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"%3E %3Cpath fill=\\\"%23333333\\\" fill-rule=\\\"evenodd\\\" d=\\\"M4,10a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M9,7a1,1 0 1,0 2,0a1,1 0 1,0 -2,0 M9,10a1,1 0 1,1 2,0l0,3a1,1 0 1,1 -2,0\\\"/%3E %3C/svg%3E\"); background-color: rgba(255, 255, 255, 0.5); width: 24px; height: 24px; box-sizing: border-box; border-radius: 12px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after",
+    "cssText": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after { content: \"\"; cursor: pointer; position: absolute; background-image: url(\"data:image/svg+xml;charset=utf-8,%3Csvg viewBox=\\\"0 0 20 20\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"%3E %3Cpath fill=\\\"%23333333\\\" fill-rule=\\\"evenodd\\\" d=\\\"M4,10a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M9,7a1,1 0 1,0 2,0a1,1 0 1,0 -2,0 M9,10a1,1 0 1,1 2,0l0,3a1,1 0 1,1 -2,0\\\"/%3E %3C/svg%3E\"); background-color: rgba(255, 255, 255, 0.5); width: 24px; height: 24px; box-sizing: border-box; border-radius: 12px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after",
+    "cssText": ".js-plotly-plot .plotly .mapboxgl-ctrl-attrib.mapboxgl-compact::after { content: \"\"; cursor: pointer; position: absolute; background-image: url(\"data:image/svg+xml;charset=utf-8,%3Csvg viewBox=\\\"0 0 20 20\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"%3E %3Cpath fill=\\\"%23333333\\\" fill-rule=\\\"evenodd\\\" d=\\\"M4,10a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M9,7a1,1 0 1,0 2,0a1,1 0 1,0 -2,0 M9,10a1,1 0 1,1 2,0l0,3a1,1 0 1,1 -2,0\\\"/%3E %3C/svg%3E\"); background-color: rgba(255, 255, 255, 0.5); width: 24px; height: 24px; box-sizing: border-box; border-radius: 12px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .vertical [data-title]::before",
+    "cssText": ".js-plotly-plot .plotly .vertical [data-title]::before { border-width: 6px; border-style: solid; border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgb(105, 115, 138); border-image: initial; margin-top: 8px; margin-right: -30px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .vertical [data-title]::before, .js-plotly-plot .plotly .vertical [data-title]::after",
+    "cssText": ".js-plotly-plot .plotly .vertical [data-title]::before, .js-plotly-plot .plotly .vertical [data-title]::after { top: 0%; right: 200%; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly [data-title]::after",
+    "cssText": ".js-plotly-plot .plotly [data-title]::after { content: attr(data-title); background: rgb(105, 115, 138); color: rgb(255, 255, 255); padding: 8px 10px; font-size: 12px; line-height: 12px; white-space: nowrap; margin-right: -18px; border-radius: 2px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly [data-title]::before",
+    "cssText": ".js-plotly-plot .plotly [data-title]::before { content: \"\"; position: absolute; background: rgba(0, 0, 0, 0); border-width: 6px; border-style: solid; border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgb(105, 115, 138); border-image: initial; z-index: 1002; margin-top: -12px; margin-right: -6px; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly [data-title]:hover::before, .js-plotly-plot .plotly [data-title]:hover::after",
+    "cssText": ".js-plotly-plot .plotly [data-title]:hover::before, .js-plotly-plot .plotly [data-title]:hover::after { display: block; opacity: 1; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly [data-title]::before, .js-plotly-plot .plotly [data-title]::after",
+    "cssText": ".js-plotly-plot .plotly [data-title]::before, .js-plotly-plot .plotly [data-title]::after { position: absolute; transform: translate3d(0px, 0px, 0px); display: none; opacity: 0; z-index: 1001; pointer-events: none; top: 110%; right: 50%; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .modebar.vertical",
+    "cssText": ".js-plotly-plot .plotly .modebar.vertical { display: flex; flex-flow: column wrap; align-content: flex-end; max-height: 100%; }"
+  },
+  {
+    "href": null,
+    "selector": ".js-plotly-plot .plotly .modebar-group a",
+    "cssText": ".js-plotly-plot .plotly .modebar-group a { display: grid; place-content: center; }"
+  },
+  {
+    "href": null,
+    "selector": ".maplibregl-user-location-dot, .maplibregl-user-location-dot::before",
+    "cssText": ".maplibregl-user-location-dot, .maplibregl-user-location-dot::before { background-color: rgb(29, 161, 242); border-radius: 50%; height: 15px; width: 15px; }"
+  },
+  {
+    "href": null,
+    "selector": ".maplibregl-user-location-dot::before",
+    "cssText": ".maplibregl-user-location-dot::before { animation: 2s ease 0s infinite normal none running maplibregl-user-location-dot-pulse; content: \"\"; position: absolute; }"
+  },
+  {
+    "href": null,
+    "selector": ".maplibregl-user-location-dot::after",
+    "cssText": ".maplibregl-user-location-dot::after { border: 2px solid rgb(255, 255, 255); border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 3px; box-sizing: border-box; content: \"\"; height: 19px; left: -2px; position: absolute; top: -2px; width: 19px; }"
+  },
+  {
+    "href": null,
+    "selector": ".maplibregl-cooperative-gesture-screen",
+    "cssText": ".maplibregl-cooperative-gesture-screen { align-items: center; background: rgba(0, 0, 0, 0.4); color: rgb(255, 255, 255); display: flex; font-size: 1.4em; inset: 0px; justify-content: center; line-height: 1.2; opacity: 0; padding: 1rem; pointer-events: none; position: absolute; transition: opacity 1s 1s; z-index: 99999; }"
+  }
+]

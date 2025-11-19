@@ -1,0 +1,51 @@
+{
+  "ticker": "AAPL",
+  "shap_values": {
+    "momentum_20d": 0.05,
+    "volatility_20d": -0.03,
+    "sharpe_20d": 0.02,
+    "pe_ratio": 0.01,
+    "market_cap": 0.00,
+    "beta": -0.01,
+    "dividend_yield": 0.01,
+    "roe": 0.03,
+    "debt_to_equity": -0.02,
+    "current_ratio": 0.00
+  },
+  "feature_importance": [
+    {
+      "feature": "momentum_20d",
+      "shap_value": 0.05,
+      "abs_importance": 0.05,
+      "rank": 1
+    },
+    {
+      "feature": "roe",
+      "shap_value": 0.03,
+      "abs_importance": 0.03,
+      "rank": 2
+    },
+    {
+      "feature": "volatility_20d",
+      "shap_value": -0.03,
+      "abs_importance": 0.03,
+      "rank": 3
+    },
+    {
+      "feature": "sharpe_20d",
+      "shap_value": 0.02,
+      "abs_importance": 0.02,
+      "rank": 4
+    },
+    {
+      "feature": "debt_to_equity",
+      "shap_value": -0.02,
+      "abs_importance": 0.02,
+      "rank": 5
+    }
+  ],
+  "base_value": 0.0,
+  "expected_value": 0.05,
+  "timestamp": "2025-10-29T00:00:00",
+  "description": "Mock SHAP values for AAPL - top 5 features by importance"
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=Weekly Picks Order Placement (dry-run by default)
+Wants=network-online.target
+After=weekly-picks-update.service
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=youruser
+WorkingDirectory=/path/to/Dash
+EnvironmentFile=/path/to/Dash/scripts/weekly_picks.env
+ExecStart=/path/to/Dash/scripts/run_weekly_order.sh
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

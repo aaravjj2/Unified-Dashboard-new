@@ -1,0 +1,3 @@
+Python path: /home/aarav/unified-dashboard/.test_venv/bin/python
+
+Virtual env: /mnt/c/Aarav/fin_env/.venv_local

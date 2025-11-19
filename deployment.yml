@@ -1,0 +1,10 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: blue
+endpoint_name: portfolio-prediction-v1
+model: azureml:portfolio-predictor:1
+environment: azureml:portfolio-env-v6:1
+code_configuration:
+  code: scoring
+  scoring_script: score.py
+instance_type: Standard_DS2_v2
+instance_count: 1

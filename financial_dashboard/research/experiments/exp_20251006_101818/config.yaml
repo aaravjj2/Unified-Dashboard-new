@@ -1,0 +1,13 @@
+created_at: '2025-10-06T10:18:18.711042'
+description: a
+end_date: '2025-10-06'
+features:
+- momentum
+- sentiment
+- technical
+horizon: 1m
+model: lgb
+name: a
+start_date: '2018-01-01'
+status: running
+universe: top200

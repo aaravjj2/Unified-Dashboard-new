@@ -1,0 +1,17 @@
+{
+  "..home-portfolio-value.children...home-portfolio-change.children..": {
+    "inputs": [
+      {
+        "id": "interval-component",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "outputs_indices": [
+      0,
+      1
+    ],
+    "inputs_state_indices": 0,
+    "background": null,
+    "output": [
+      

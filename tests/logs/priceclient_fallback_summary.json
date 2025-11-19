@@ -1,0 +1,109 @@
+{
+  "timestamp": "2025-10-22T20:15:00Z",
+  "mission": "A2-FIX-YFINANCE-TSLA-AND-STABILIZE-UI",
+  "summary": "PriceClient Fallback Summary - Mission A2",
+  "total_tickers_requested": 5,
+  "provider_distribution": {
+    "alpaca": 0,
+    "alpaca_note": "All requests returned 404 - paper trading endpoint unavailable",
+    "finnhub": 0,
+    "finnhub_note": "All requests returned 403 Forbidden - rate limit or API key issue",
+    "yfinance": 5,
+    "yfinance_note": "ALL tickers successfully fetched via yfinance fallback",
+    "Local": 0,
+    "local_note": "No tickers failed completely"
+  },
+  "yfinance_performance": {
+    "success_rate": "100%",
+    "retry_attempts_needed": 0,
+    "batch_size_used": 5,
+    "threads_disabled": true,
+    "single_ticker_fallback_used": false
+  },
+  "ticker_details": {
+    "TSLA": {
+      "source": "yfinance",
+      "current_price": 439.67,
+      "daily_change": 0.75,
+      "start_price": 453.33,
+      "profit_loss": -30.13,
+      "fetch_status": "SUCCESS",
+      "retries_needed": 0
+    },
+    "AAPL": {
+      "source": "yfinance",
+      "current_price": 262.77,
+      "daily_change": 1.72,
+      "start_price": 258.45,
+      "profit_loss": 16.72,
+      "fetch_status": "SUCCESS",
+      "retries_needed": 0
+    },
+    "MSFT": {
+      "source": "yfinance",
+      "current_price": 517.66,
+      "daily_change": 1.84,
+      "start_price": 508.45,
+      "profit_loss": 18.13,
+      "fetch_status": "SUCCESS",
+      "retries_needed": 0
+    },
+    "NVDA": {
+      "source": "yfinance",
+      "current_price": 180.28,
+      "daily_change": -0.49,
+      "start_price": 176.24,
+      "profit_loss": 22.92,
+      "fetch_status": "SUCCESS",
+      "retries_needed": 0
+    },
+    "GOOG": {
+      "source": "yfinance",
+      "current_price": 252.53,
+      "daily_change": 0.47,
+      "start_price": 252.33,
+      "profit_loss": 0.79,
+      "fetch_status": "SUCCESS",
+      "retries_needed": 0
+    }
+  },
+  "error_examples": {
+    "alpaca_errors": [
+      "404 Client Error: Not Found for url: https://paper-api.alpaca.markets/v2/stocks/TSLA/bars",
+      "404 Client Error: Not Found for url: https://paper-api.alpaca.markets/v2/stocks/AAPL/bars"
+    ],
+    "finnhub_errors": [
+      "403 Client Error: Forbidden for url: https://finnhub.io/api/v1/stock/candle?symbol=TSLA",
+      "403 Client Error: Forbidden for url: https://finnhub.io/api/v1/stock/candle?symbol=AAPL"
+    ],
+    "yfinance_errors": []
+  },
+  "fallback_policy_confirmed": {
+    "primary_attempt": "Alpaca → Finnhub",
+    "fallback": "yfinance ONLY",
+    "final_fallback": "Local (with None values and 'Data Unavailable' display)",
+    "no_other_providers": true
+  },
+  "enhancements_implemented": {
+    "retry_logic": {
+      "enabled": true,
+      "max_retries": 3,
+      "backoff_strategy": "exponential (0.5s, 1s, 2s)"
+    },
+    "batching": {
+      "enabled": true,
+      "max_batch_size": 50,
+      "current_batch_size": 5
+    },
+    "single_ticker_fallback": {
+      "enabled": true,
+      "uses_yf_ticker_history": true
+    },
+    "metadata_tracking": {
+      "source_field": "Every ticker includes 'source' metadata",
+      "logging": "Summary logged after each fetch"
+    }
+  },
+  "test_verification": "All 5 key tickers (TSLA, AAPL, MSFT, NVDA, GOOG) successfully fetch data via yfinance",
+  "logs_reference": "See tests/logs/priceclient_tsla_verify.json for full output"
+}

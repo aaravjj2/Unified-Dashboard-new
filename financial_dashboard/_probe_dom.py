@@ -1,0 +1,26 @@
+import os
+from playwright.sync_api import sync_playwright
+
+def main():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        port = os.environ.get('DASH_PORT', os.environ.get('PORT', '8050'))
+        page.goto(f'http://127.0.0.1:{port}')
+        page.wait_for_load_state('networkidle', timeout=15000)
+        exists = page.evaluate("() => document.querySelector('#results-area') !== null")
+        outer = page.evaluate("() => { const el = document.querySelector('#results-area'); return el ? el.outerHTML.length : 0 }")
+        inner = page.evaluate("() => { const el = document.querySelector('#results-area'); return el ? el.innerHTML : '' }")
+        has_h4 = page.evaluate("() => !!document.querySelector('#results-area h4')")
+        h4_text = page.evaluate("() => { const el = document.querySelector('#results-area h4'); return el ? el.innerText : '' }")
+        body_len = page.evaluate("() => document.body.innerHTML.length")
+        print('exists:', exists)
+        print('outer_len:', outer)
+        print('body_len:', body_len)
+        print('has_h4:', has_h4)
+        print('h4_text:', repr(h4_text))
+        print('inner_preview:', inner[:1000])
+        browser.close()
+
+if __name__ == '__main__':
+    main()

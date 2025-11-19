@@ -1,0 +1,35 @@
+# ============================================================================
+# News Analysis Service (Sprint 3) - Extends Optimized Base Image
+# ============================================================================
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# Install News Analysis-specific Python packages with pinned versions for stability
+# Note: FastAPI==0.104.1 and uvicorn==0.24.0 are already in fin-dash-base
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir \
+    beautifulsoup4==4.12.2 \
+    lxml==4.9.3 \
+    nltk==3.8.1 \
+    newspaper3k==0.2.8
+
+# Download NLTK data (VADER lexicon for sentiment analysis)
+RUN python3 -c "import nltk; nltk.download('vader_lexicon', quiet=True); nltk.download('punkt', quiet=True)"
+
+# Copy application code
+COPY services/news_analysis_service.py ./services/
+COPY _shared.py ./
+
+# Create necessary directories
+RUN mkdir -p logs cache
+
+# Expose port 8006
+EXPOSE 8006
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8006/health || exit 1
+
+# Run the service
+CMD ["python3", "-m", "uvicorn", "services.news_analysis_service:app", "--host", "0.0.0.0", "--port", "8006"]

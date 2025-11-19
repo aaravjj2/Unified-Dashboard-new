@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer to run weekly-picks-order.service one minute after update
+
+[Timer]
+OnCalendar=Mon *-*-* 09:31:00
+TimeZone=America/New_York
+Persistent=true
+
+[Install]
+WantedBy=timers.target

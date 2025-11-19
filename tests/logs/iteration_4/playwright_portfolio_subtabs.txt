@@ -1,0 +1,147 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/c/Aarav/fin_env/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.10.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 8 items
+
+tests/test_browser_e2e_comprehensive.py::TestVolatilityLabE2E::test_volatility_lab_tab_visible 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:94 ✅ Loaded keys.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded doppler.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded .env
+INFO     utils.load_env:load_env.py:150 ✅ All 5 required keys present
+
+[conftest] Environment loaded: 5 keys present
+PASSED
+tests/test_browser_e2e_comprehensive.py::TestVolatilityLabE2E::test_volatility_lab_custom_ticker_input FAILED
+tests/test_browser_e2e_comprehensive.py::TestVolatilityLabE2E::test_volatility_lab_charts_render FAILED
+tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_tab_visible FAILED
+tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_tab_components_present FAILED
+tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_shap_explanations_check FAILED
+tests/test_browser_e2e_comprehensive.py::TestDashboardIntegration::test_navigate_between_volatility_and_portfolio FAILED
+tests/test_browser_e2e_comprehensive.py::TestDashboardIntegration::test_dashboard_has_all_enabled_tabs FAILED
+
+=================================== FAILURES ===================================
+_________ TestVolatilityLabE2E.test_volatility_lab_custom_ticker_input _________
+tests/test_browser_e2e_comprehensive.py:50: in test_volatility_lab_custom_ticker_input
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+____________ TestVolatilityLabE2E.test_volatility_lab_charts_render ____________
+tests/test_browser_e2e_comprehensive.py:87: in test_volatility_lab_charts_render
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+________________ TestPortfolioTabE2E.test_portfolio_tab_visible ________________
+tests/test_browser_e2e_comprehensive.py:117: in test_portfolio_tab_visible
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+__________ TestPortfolioTabE2E.test_portfolio_tab_components_present ___________
+tests/test_browser_e2e_comprehensive.py:133: in test_portfolio_tab_components_present
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+__________ TestPortfolioTabE2E.test_portfolio_shap_explanations_check __________
+tests/test_browser_e2e_comprehensive.py:168: in test_portfolio_shap_explanations_check
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+___ TestDashboardIntegration.test_navigate_between_volatility_and_portfolio ____
+tests/test_browser_e2e_comprehensive.py:202: in test_navigate_between_volatility_and_portfolio
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+_________ TestDashboardIntegration.test_dashboard_has_all_enabled_tabs _________
+tests/test_browser_e2e_comprehensive.py:233: in test_dashboard_has_all_enabled_tabs
+    page.wait_for_selector(".tab-btn", timeout=10000)
+../.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+../.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.
+E   Call log:
+E     - waiting for locator(".tab-btn") to be visible
+=========================== short test summary info ============================
+FAILED tests/test_browser_e2e_comprehensive.py::TestVolatilityLabE2E::test_volatility_lab_custom_ticker_input
+FAILED tests/test_browser_e2e_comprehensive.py::TestVolatilityLabE2E::test_volatility_lab_charts_render
+FAILED tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_tab_visible
+FAILED tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_tab_components_present
+FAILED tests/test_browser_e2e_comprehensive.py::TestPortfolioTabE2E::test_portfolio_shap_explanations_check
+FAILED tests/test_browser_e2e_comprehensive.py::TestDashboardIntegration::test_navigate_between_volatility_and_portfolio
+FAILED tests/test_browser_e2e_comprehensive.py::TestDashboardIntegration::test_dashboard_has_all_enabled_tabs
+=================== 7 failed, 1 passed in 171.02s (0:02:51) ====================

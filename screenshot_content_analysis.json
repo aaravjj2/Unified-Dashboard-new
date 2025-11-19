@@ -1,0 +1,165 @@
+[
+  {
+    "tab_name": "Weekly Picks",
+    "tab_index": 5,
+    "dom_elements": {
+      "total_divs": 1808,
+      "charts": 18,
+      "tables": 8,
+      "table_rows": 85,
+      "buttons": 147,
+      "inputs": 95,
+      "headers_h1": 2,
+      "headers_h2": 10,
+      "headers_h3": 21,
+      "headers_h4": 30,
+      "cards": 187,
+      "dropdowns": 22
+    },
+    "text_content": [],
+    "visible_sections": [
+      "Financial Dashboard",
+      "\ud83c\udfe0 Command Center",
+      "\ud83c\udfaf System Summary",
+      "Welcome to Financial Dashboard",
+      "\ud83d\udccaAttribution Lab",
+      "\u26a1Volatility Lab",
+      "\ud83d\udd2cResearch Lab",
+      "\u26a1Strategy Lab",
+      "\ud83d\udcbc Portfolio Snapshot",
+      "$95,179.36"
+    ],
+    "found_phrases": [
+      "Pick",
+      "Forecast",
+      "Strategy"
+    ],
+    "potential_tickers": [
+      "SNDK",
+      "INOD",
+      "QS",
+      "SYM",
+      "ASTS",
+      "JNJ",
+      "AVAV",
+      "RGTI",
+      "HUT",
+      "DIS",
+      "ML",
+      "CIFR",
+      "PLUG",
+      "UNH",
+      "BE",
+      "ARWR",
+      "AAPL",
+      "CGON",
+      "HOOD",
+      "BEAM"
+    ],
+    "sample_text": "Financial Dashboard\n\n\n\ud83c\udfe0 Command Center\n\ud83d\udd2c Research Lab\n\ud83d\udcca Attribution Lab\n\u26a1 Strategy Lab\n\ud83e\udd16 Azure ML Lab\nWeekly Picks\nMonthly Picks\nMarket Trends\nMarket Forecast\n\u26a1 Volatility Lab\nPortfolio\n\ud83d\udcb9 Options Lab\n\ud83d\udcca Weekly Picks Dashboard\nDEV: Weekly picks template updated 2025-10-07 \u2014 refresh to see live prices\n\ud83d\udd04 Refresh Prices\nExport\nRank\n\t\nTicker\n\t\nCurrent Price\n\t\nDaily Change\n\t\nWeek Start\n\t\nProfit/Loss\n\n\n\t\n\t\n\t\n\t\n\t\n\n1\tASTS\t$73.74\t+2.85%\t$95.68\t$-57.33\n2\tSNDK\t$186.17\t+11.39%\t$144.31\t$+72.52\n3\tRGTI\t$38.81\t-2"
+  },
+  {
+    "tab_name": "Monthly Picks",
+    "tab_index": 6,
+    "dom_elements": {
+      "total_divs": 1808,
+      "charts": 18,
+      "tables": 8,
+      "table_rows": 85,
+      "buttons": 147,
+      "inputs": 95,
+      "headers_h1": 2,
+      "headers_h2": 10,
+      "headers_h3": 21,
+      "headers_h4": 30,
+      "cards": 187,
+      "dropdowns": 22
+    },
+    "text_content": [],
+    "visible_sections": [
+      "Financial Dashboard",
+      "\ud83c\udfe0 Command Center",
+      "\ud83c\udfaf System Summary",
+      "Welcome to Financial Dashboard",
+      "\ud83d\udccaAttribution Lab",
+      "\u26a1Volatility Lab",
+      "\ud83d\udd2cResearch Lab",
+      "\u26a1Strategy Lab",
+      "\ud83d\udcbc Portfolio Snapshot",
+      "$95,179.36"
+    ],
+    "found_phrases": [
+      "Pick",
+      "Forecast",
+      "Strategy"
+    ],
+    "potential_tickers": [
+      "GEV",
+      "NEM",
+      "ETSY",
+      "SMCI",
+      "TPR",
+      "ORCL",
+      "INTC",
+      "EA",
+      "AMAT",
+      "GLW",
+      "WBD",
+      "AVGO",
+      "ML",
+      "CAT",
+      "APH",
+      "MU",
+      "LRCX",
+      "KLAC",
+      "STX",
+      "WDC"
+    ],
+    "sample_text": "Financial Dashboard\n\n\n\ud83c\udfe0 Command Center\n\ud83d\udd2c Research Lab\n\ud83d\udcca Attribution Lab\n\u26a1 Strategy Lab\n\ud83e\udd16 Azure ML Lab\nWeekly Picks\nMonthly Picks\nMarket Trends\nMarket Forecast\n\u26a1 Volatility Lab\nPortfolio\n\ud83d\udcb9 Options Lab\n\ud83d\udcca Monthly Stock Picks\nDEV: Monthly picks template updated 2025-10-08 \u2014 refresh to see live prices\n\ud83d\udd04 Refresh Prices\nExport\nRank\n\t\nTicker\n\t\nCurrent Price\n\t\nDaily Change\n\t\nMonth Start\n\t\nProfit/Loss\n\n\n\t\n\t\n\t\n\t\n\t\n\n1\tWDC\t$129.45\t+2.96%\t$112.41\t$+151.59\n2\tWBD\t$21.14\t-0.42%\t$19.62\t$+77.47\n3\tSTX\t$234.12\t+3.38"
+  },
+  {
+    "tab_name": "Market Forecast",
+    "tab_index": 8,
+    "dom_elements": {
+      "total_divs": 1808,
+      "charts": 18,
+      "tables": 8,
+      "table_rows": 85,
+      "buttons": 147,
+      "inputs": 95,
+      "headers_h1": 2,
+      "headers_h2": 10,
+      "headers_h3": 21,
+      "headers_h4": 30,
+      "cards": 187,
+      "dropdowns": 22
+    },
+    "text_content": [],
+    "visible_sections": [
+      "Financial Dashboard",
+      "\ud83c\udfe0 Command Center",
+      "\ud83c\udfaf System Summary",
+      "Welcome to Financial Dashboard",
+      "\ud83d\udccaAttribution Lab",
+      "\u26a1Volatility Lab",
+      "\ud83d\udd2cResearch Lab",
+      "\u26a1Strategy Lab",
+      "\ud83d\udcbc Portfolio Snapshot",
+      "$95,179.36"
+    ],
+    "found_phrases": [
+      "Select",
+      "Choose",
+      "Pick",
+      "Forecast",
+      "Prediction",
+      "Analysis",
+      "Strategy"
+    ],
+    "potential_tickers": [
+      "INTC",
+      "ML"
+    ],
+    "sample_text": "Financial Dashboard\n\n\n\ud83c\udfe0 Command Center\n\ud83d\udd2c Research Lab\n\ud83d\udcca Attribution Lab\n\u26a1 Strategy Lab\n\ud83e\udd16 Azure ML Lab\nWeekly Picks\nMonthly Picks\nMarket Trends\nMarket Forecast\n\u26a1 Volatility Lab\nPortfolio\n\ud83d\udcb9 Options Lab\nMarket Forecast\n\nForward-looking forecasts for 1 portfolio tickers with ML-powered predictions\n\n\ud83d\udcca What This Tab Does:\n\nThis tool projects expected price movements based on:\n\nRecent volatility patterns\nTrend momentum analysis\nStatistical regression modeling\n\n\ud83c\udfaf How to Use: 1. Select tickers from your"
+  }
+]

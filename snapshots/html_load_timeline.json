@@ -1,0 +1,58 @@
+{
+  "start_time": "2025-10-27T18:04:57.617432",
+  "base_url": "http://localhost:8050",
+  "elements_tracked": 9,
+  "events": [],
+  "summary": {},
+  "end_time": "2025-10-27T18:06:57.977873",
+  "total_elapsed": 120.36,
+  "elements_found": 0,
+  "elements_missing": 9,
+  "missing_elements": [
+    {
+      "element_id": "market_forecast_tab",
+      "selector": "#tab-market_forecast",
+      "description": "Market Forecast tab"
+    },
+    {
+      "element_id": "vol_hv_chart",
+      "selector": "#vl-hv-price",
+      "description": "HV price chart"
+    },
+    {
+      "element_id": "volatility_lab_tab",
+      "selector": "#tab-volatility_lab",
+      "description": "Volatility Lab tab"
+    },
+    {
+      "element_id": "mf_returns_chart",
+      "selector": "#mf-returns-chart",
+      "description": "Market Forecast returns chart"
+    },
+    {
+      "element_id": "vol_iv_chart",
+      "selector": "#vl-iv-surface",
+      "description": "IV surface chart"
+    },
+    {
+      "element_id": "vol_corr_chart",
+      "selector": "#vl-corr-heat",
+      "description": "Correlation heatmap"
+    },
+    {
+      "element_id": "mf_volatility_chart",
+      "selector": "#mf-volatility-chart",
+      "description": "Market Forecast volatility chart"
+    },
+    {
+      "element_id": "tab_content",
+      "selector": "div.tab-content",
+      "description": "Main tab container"
+    },
+    {
+      "element_id": "vol_hv_subtab",
+      "selector": "#vl-tabs",
+      "description": "Volatility subtabs container"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-10-27T17:34:16.905907",
+  "base_url": "http://localhost:8050",
+  "tests": [
+    {
+      "test": "dashboard_accessibility",
+      "status": "PASS",
+      "http_code": 200,
+      "load_time": 0.081,
+      "content_length": 11060
+    },
+    {
+      "test": "attribution_lab_presence",
+      "status": "FAIL",
+      "tab_id_found": false,
+      "attribution_text_found": false,
+      "html_size_kb": 10.8
+    },
+    {
+      "test": "dash_dependencies",
+      "status": "PASS",
+      "total_callbacks": 63,
+      "attribution_callbacks": 0,
+      "load_time": 0.003
+    },
+    {
+      "test": "dash_layout",
+      "status": "PASS",
+      "has_attribution_lab": true,
+      "layout_size_kb": 158.16,
+      "load_time": 0.012
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "warned": 0,
+    "pass_rate": 75.0
+  }
+}

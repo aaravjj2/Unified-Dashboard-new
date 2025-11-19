@@ -1,0 +1,473 @@
+"""
+Research Lab Callbacks
+
+Isolated callbacks for each subtab:
+1. Market Scan - Screening callback
+2. Factor Analysis - Factor exposure calculation
+3. Correlation Explorer - Correlation matrix and heatmap
+4. Strategy Backtest - Portfolio simulation
+5. Research Notes - Save/export functionality
+"""
+
+from dash import callback, Input, Output, State, html, dash_table, dcc
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
+import plotly.express as px
+from datetime import datetime
+import pandas as pd
+import logging
+
+from . import data_loader
+from .layout import (
+    create_market_scan_layout,
+    create_factor_analysis_layout,
+    create_correlation_explorer_layout,
+    create_strategy_backtest_layout,
+    create_research_notes_layout
+)
+
+logger = logging.getLogger(__name__)
+
+# ============================================================================
+# TAB SWITCHING
+# ============================================================================
+
+@callback(
+    Output('research-lab-content', 'children'),
+    Input('research-lab-tabs', 'active_tab')
+)
+def switch_research_lab_tabs(active_tab):
+    """Switch between Research Lab subtabs."""
+    if active_tab == 'market-scan':
+        return create_market_scan_layout()
+    elif active_tab == 'factor-analysis':
+        return create_factor_analysis_layout()
+    elif active_tab == 'correlation-explorer':
+        return create_correlation_explorer_layout()
+    elif active_tab == 'strategy-backtest':
+        return create_strategy_backtest_layout()
+    elif active_tab == 'research-notes':
+        return create_research_notes_layout()
+    else:
+        return html.Div("Invalid tab", className='text-white')
+
+
+# ============================================================================
+# SUBTAB 1: MARKET SCAN CALLBACKS
+# ============================================================================
+
+@callback(
+    Output('market-scan-results-container', 'children'),
+    Input('market-scan-run-button', 'n_clicks'),
+    State('market-scan-tickers', 'value'),
+    State('market-scan-market-cap', 'value'),
+    State('market-scan-sectors', 'value'),
+    State('market-scan-pe-ratio', 'value'),
+    State('market-scan-beta', 'value'),
+    prevent_initial_call=True
+)
+def run_market_scan(n_clicks, tickers_str, market_cap_range, sectors, pe_range, beta_range):
+    """Run market screening with filters."""
+    if not n_clicks or not tickers_str:
+        return html.Div("Enter tickers and click 'Run Screen'", className='text-muted')
+    
+    try:
+        # Parse tickers
+        tickers = [t.strip().upper() for t in tickers_str.split(',')]
+        logger.info(f"🔍 Market scan: {tickers}")
+        
+        # Fetch ticker info
+        ticker_info = data_loader.fetch_ticker_info(tickers)
+        
+        # Apply filters
+        filtered = data_loader.apply_market_filters(
+            ticker_info,
+            min_market_cap=market_cap_range[0] * 1e9,
+            max_market_cap=market_cap_range[1] * 1e9,
+            sectors=sectors if sectors else None,
+            min_pe=pe_range[0] if pe_range else None,
+            max_pe=pe_range[1] if pe_range else None,
+            min_beta=beta_range[0] if beta_range else None,
+            max_beta=beta_range[1] if beta_range else None
+        )
+        
+        if filtered.empty:
+            return html.Div("❌ No tickers passed the filters", className='text-warning')
+        
+        # Format for display
+        display_df = filtered.copy()
+        display_df['market_cap'] = display_df['market_cap'].apply(lambda x: f"${x/1e9:.2f}B")
+        display_df['pe_ratio'] = display_df['pe_ratio'].apply(lambda x: f"{x:.2f}" if pd.notna(x) else 'N/A')
+        display_df['beta'] = display_df['beta'].apply(lambda x: f"{x:.2f}" if pd.notna(x) else 'N/A')
+        display_df['dividend_yield'] = display_df['dividend_yield'].apply(lambda x: f"{x*100:.2f}%" if pd.notna(x) else '0.00%')
+        
+        # Create table
+        table = dash_table.DataTable(
+            data=display_df.to_dict('records'),
+            columns=[
+                {'name': 'Ticker', 'id': 'ticker'},
+                {'name': 'Name', 'id': 'name'},
+                {'name': 'Sector', 'id': 'sector'},
+                {'name': 'Market Cap', 'id': 'market_cap'},
+                {'name': 'P/E Ratio', 'id': 'pe_ratio'},
+                {'name': 'Beta', 'id': 'beta'},
+                {'name': 'Div Yield', 'id': 'dividend_yield'},
+            ],
+            style_table={'overflowX': 'auto'},
+            style_header={
+                'backgroundColor': '#343a40',
+                'color': 'white',
+                'fontWeight': 'bold',
+                'textAlign': 'center'
+            },
+            style_cell={
+                'backgroundColor': '#ffffff',
+                'color': '#000000',
+                'textAlign': 'left',
+                'padding': '10px'
+            },
+            style_data_conditional=[
+                {
+                    'if': {'row_index': 'odd'},
+                    'backgroundColor': '#f8f9fa'
+                }
+            ]
+        )
+        
+        summary = html.Div([
+            html.P(f"✅ {len(filtered)} / {len(ticker_info)} tickers passed filters", className='text-success mb-2'),
+            table
+        ])
+        
+        return summary
+        
+    except Exception as e:
+        logger.error(f"❌ Market scan error: {e}")
+        return html.Div(f"❌ Error: {str(e)}", className='text-danger')
+
+
+# ============================================================================
+# SUBTAB 2: FACTOR ANALYSIS CALLBACKS
+# ============================================================================
+
+@callback(
+    Output('factor-analysis-results-container', 'children'),
+    Input('factor-analysis-run-button', 'n_clicks'),
+    State('factor-analysis-ticker', 'value'),
+    State('factor-analysis-date-range', 'start_date'),
+    State('factor-analysis-date-range', 'end_date'),
+    State('factor-analysis-model', 'value'),
+    prevent_initial_call=True
+)
+def run_factor_analysis(n_clicks, ticker, start_date, end_date, model):
+    """Calculate factor exposures."""
+    if not n_clicks or not ticker:
+        return html.Div("Enter ticker and click 'Calculate Exposures'", className='text-muted')
+    
+    try:
+        logger.info(f"📊 Factor analysis: {ticker} ({model})")
+        
+        # Fetch price data
+        price_data = data_loader.fetch_price_data([ticker], start_date, end_date)
+        if ticker not in price_data or price_data[ticker].empty:
+            return html.Div(f"❌ No data for {ticker}", className='text-danger')
+        
+        # Calculate returns
+        returns = price_data[ticker]['Close'].pct_change().dropna()
+        
+        # Load factor data
+        factors = data_loader.load_fama_french_factors(start_date, end_date)
+        
+        # Select factors based on model
+        if model == 'ff3':
+            factor_cols = ['Mkt-RF', 'SMB', 'HML']
+        elif model == 'ff5':
+            factor_cols = ['Mkt-RF', 'SMB', 'HML', 'RMW', 'CMA']
+        else:  # CAPM
+            factor_cols = ['Mkt-RF']
+        
+        factors_subset = factors[factor_cols]
+        
+        # Calculate exposures
+        exposures = data_loader.calculate_factor_exposures(returns, factors_subset)
+        
+        if 'error' in exposures:
+            return html.Div(f"❌ {exposures['error']}", className='text-danger')
+        
+        # Format results
+        results_list = []
+        results_list.append(html.H6(f"📊 {ticker} Factor Exposures", className='text-white mb-3'))
+        results_list.append(html.P(f"Alpha: {exposures['alpha']:.4f}", className='text-info'))
+        results_list.append(html.P(f"R²: {exposures['r_squared']:.4f}", className='text-info'))
+        
+        for key, value in exposures.items():
+            if key.startswith('beta_'):
+                factor_name = key.replace('beta_', '')
+                results_list.append(html.P(f"{factor_name}: {value:.4f}", className='text-success'))
+        
+        # Create bar chart
+        beta_keys = [k for k in exposures.keys() if k.startswith('beta_')]
+        beta_values = [exposures[k] for k in beta_keys]
+        beta_labels = [k.replace('beta_', '') for k in beta_keys]
+        
+        fig = go.Figure(data=[
+            go.Bar(x=beta_labels, y=beta_values, marker_color='lightblue')
+        ])
+        fig.update_layout(
+            title=f"{ticker} Factor Loadings",
+            xaxis_title="Factor",
+            yaxis_title="Beta",
+            template='plotly_dark',
+            paper_bgcolor='#1e1e1e',
+            plot_bgcolor='#2d2d2d'
+        )
+        
+        results_list.append(dcc.Graph(figure=fig))
+        
+        return html.Div(results_list)
+        
+    except Exception as e:
+        logger.error(f"❌ Factor analysis error: {e}")
+        return html.Div(f"❌ Error: {str(e)}", className='text-danger')
+
+
+# ============================================================================
+# SUBTAB 3: CORRELATION EXPLORER CALLBACKS
+# ============================================================================
+
+@callback(
+    Output('correlation-heatmap', 'figure'),
+    Input('correlation-run-button', 'n_clicks'),
+    State('correlation-tickers', 'value'),
+    State('correlation-date-range', 'start_date'),
+    State('correlation-date-range', 'end_date'),
+    State('correlation-method', 'value'),
+    prevent_initial_call=True
+)
+def calculate_correlation(n_clicks, tickers_str, start_date, end_date, method):
+    """Calculate and visualize correlation matrix."""
+    if not n_clicks or not tickers_str:
+        # Return empty figure
+        return go.Figure().update_layout(template='plotly_dark')
+    
+    try:
+        # Parse tickers
+        tickers = [t.strip().upper() for t in tickers_str.split(',')]
+        logger.info(f"🔗 Correlation: {tickers} ({method})")
+        
+        # Fetch price data
+        price_data = data_loader.fetch_price_data(tickers, start_date, end_date)
+        
+        # Calculate correlation
+        corr_matrix = data_loader.calculate_correlation_matrix(price_data, method=method)
+        
+        if corr_matrix.empty:
+            fig = go.Figure()
+            fig.add_annotation(
+                text="❌ No data available",
+                xref="paper", yref="paper",
+                x=0.5, y=0.5, showarrow=False,
+                font={'size': 20, 'color': 'red'}
+            )
+            fig.update_layout(template='plotly_dark')
+            return fig
+        
+        # Create heatmap
+        fig = px.imshow(
+            corr_matrix,
+            labels=dict(color="Correlation"),
+            x=corr_matrix.columns,
+            y=corr_matrix.index,
+            color_continuous_scale='RdBu_r',
+            zmin=-1, zmax=1,
+            text_auto='.2f'
+        )
+        
+        fig.update_layout(
+            title=f"Correlation Matrix ({method.capitalize()})",
+            template='plotly_dark',
+            paper_bgcolor='#1e1e1e',
+            plot_bgcolor='#2d2d2d',
+            xaxis={'side': 'bottom'},
+            height=600
+        )
+        
+        return fig
+        
+    except Exception as e:
+        logger.error(f"❌ Correlation error: {e}")
+        fig = go.Figure()
+        fig.add_annotation(
+            text=f"❌ Error: {str(e)}",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font={'size': 16, 'color': 'red'}
+        )
+        fig.update_layout(template='plotly_dark')
+        return fig
+
+
+# ============================================================================
+# SUBTAB 4: STRATEGY BACKTEST CALLBACKS
+# ============================================================================
+
+@callback(
+    Output('backtest-results-container', 'children'),
+    Input('backtest-run-button', 'n_clicks'),
+    State('backtest-portfolio', 'value'),
+    State('backtest-date-range', 'start_date'),
+    State('backtest-date-range', 'end_date'),
+    State('backtest-rebalance-freq', 'value'),
+    prevent_initial_call=True
+)
+def run_backtest(n_clicks, portfolio_str, start_date, end_date, rebalance_freq):
+    """Run simple portfolio backtest."""
+    if not n_clicks or not portfolio_str:
+        return html.Div("Enter portfolio and click 'Run Backtest'", className='text-muted')
+    
+    try:
+        # Parse portfolio: "SPY:0.6,QQQ:0.4"
+        portfolio_items = portfolio_str.split(',')
+        weights = {}
+        tickers = []
+        
+        for item in portfolio_items:
+            ticker, weight = item.split(':')
+            ticker = ticker.strip().upper()
+            weight = float(weight.strip())
+            weights[ticker] = weight
+            tickers.append(ticker)
+        
+        logger.info(f"⚙️ Backtest: {weights}")
+        
+        # Fetch price data
+        price_data = data_loader.fetch_price_data(tickers, start_date, end_date)
+        
+        # Simulate returns
+        portfolio_returns = data_loader.simulate_portfolio_returns(
+            price_data, weights, rebalance_freq
+        )
+        
+        if portfolio_returns.empty:
+            return html.Div("❌ No data available", className='text-danger')
+        
+        # Calculate metrics
+        metrics = data_loader.calculate_performance_metrics(portfolio_returns)
+        
+        # Create cumulative return chart
+        cumulative = (1 + portfolio_returns).cumprod()
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=cumulative.index,
+            y=cumulative.values,
+            mode='lines',
+            name='Portfolio Value',
+            line={'color': 'lightgreen', 'width': 2}
+        ))
+        
+        fig.update_layout(
+            title="Portfolio Cumulative Returns",
+            xaxis_title="Date",
+            yaxis_title="Cumulative Return",
+            template='plotly_dark',
+            paper_bgcolor='#1e1e1e',
+            plot_bgcolor='#2d2d2d',
+            height=400
+        )
+        
+        # Metrics display
+        metrics_div = html.Div([
+            html.H6("📊 Performance Metrics", className='text-white mb-3'),
+            html.P(f"Cumulative Return: {metrics['cumulative_return']*100:.2f}%", className='text-success'),
+            html.P(f"Annual Return: {metrics['annual_return']*100:.2f}%", className='text-info'),
+            html.P(f"Annual Volatility: {metrics['annual_volatility']*100:.2f}%", className='text-warning'),
+            html.P(f"Sharpe Ratio: {metrics['sharpe_ratio']:.2f}", className='text-primary'),
+            html.P(f"Max Drawdown: {metrics['max_drawdown']*100:.2f}%", className='text-danger'),
+        ])
+        
+        return html.Div([
+            metrics_div,
+            dcc.Graph(figure=fig)
+        ])
+        
+    except Exception as e:
+        logger.error(f"❌ Backtest error: {e}")
+        return html.Div(f"❌ Error: {str(e)}", className='text-danger')
+
+
+# ============================================================================
+# SUBTAB 5: RESEARCH NOTES CALLBACKS
+# ============================================================================
+
+@callback(
+    Output('research-notes-status', 'children'),
+    Input('research-notes-save-button', 'n_clicks'),
+    Input('research-notes-export-button', 'n_clicks'),
+    State('research-notes-text', 'value'),
+    prevent_initial_call=True
+)
+def handle_research_notes(save_clicks, export_clicks, notes_text):
+    """Handle save/export of research notes."""
+    from dash import callback_context
+    
+    if not callback_context.triggered:
+        return ""
+    
+    button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+    
+    if button_id == 'research-notes-save-button':
+        # Save to file
+        try:
+            filename = f"research_notes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+            with open(filename, 'w') as f:
+                f.write(notes_text or '')
+            
+            return dbc.Alert(
+                f"✅ Notes saved to {filename}",
+                color='success',
+                duration=3000
+            )
+        except Exception as e:
+            return dbc.Alert(
+                f"❌ Error saving: {str(e)}",
+                color='danger',
+                duration=3000
+            )
+    
+    elif button_id == 'research-notes-export-button':
+        # Export (for now, same as save)
+        try:
+            filename = f"research_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+            with open(filename, 'w') as f:
+                f.write(f"# Research Notes Export\n\n")
+                f.write(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                f.write(notes_text or '')
+            
+            return dbc.Alert(
+                f"✅ Exported to {filename}",
+                color='success',
+                duration=3000
+            )
+        except Exception as e:
+            return dbc.Alert(
+                f"❌ Error exporting: {str(e)}",
+                color='danger',
+                duration=3000
+            )
+    
+    return ""
+
+
+# ============================================================================
+# REGISTER CALLBACKS
+# ============================================================================
+
+def register_callbacks(app):
+    """
+    Register all Research Lab callbacks.
+    
+    Note: Callbacks are already registered via @callback decorator.
+    This function exists for consistency with other tabs.
+    """
+    logger.info("✅ Research Lab callbacks registered successfully")

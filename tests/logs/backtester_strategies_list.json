@@ -1,0 +1,1 @@
+{"strategies":[{"name":"CoveredCallScreener","module":"financial_dashboard.services.options_service.strategies.covered_call_screener","description":"Screen stocks for covered call opportunities based on volatility and returns."}],"count":1}

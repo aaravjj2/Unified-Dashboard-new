@@ -1,0 +1,158 @@
+{
+  "total_uploads": 12,
+  "successful_uploads": 12,
+  "failed_uploads": 0,
+  "success_rate": 1.0,
+  "upload_details": [
+    {
+      "upload_id": "mock_upload_1762038985",
+      "image_path": "test_artifacts/lambdatest_phase24_25/home_validation.png",
+      "tags": {
+        "tab_name": "Home",
+        "timestamp": "2025-11-01T19:16:25.466294",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:16:25.466315",
+      "file_size": 94102
+    },
+    {
+      "upload_id": "mock_upload_1762038993",
+      "image_path": "test_artifacts/lambdatest_phase24_25/command_center_validation.png",
+      "tags": {
+        "tab_name": "Command Center",
+        "timestamp": "2025-11-01T19:16:33.593242",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:16:33.593252",
+      "file_size": 75971
+    },
+    {
+      "upload_id": "mock_upload_1762039004",
+      "image_path": "test_artifacts/lambdatest_phase24_25/strategy_lab_validation.png",
+      "tags": {
+        "tab_name": "Strategy Lab",
+        "timestamp": "2025-11-01T19:16:44.010025",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:16:44.010039",
+      "file_size": 48828
+    },
+    {
+      "upload_id": "mock_upload_1762039012",
+      "image_path": "test_artifacts/lambdatest_phase24_25/options_lab_validation.png",
+      "tags": {
+        "tab_name": "Options Lab",
+        "timestamp": "2025-11-01T19:16:52.188439",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:16:52.188457",
+      "file_size": 69614
+    },
+    {
+      "upload_id": "mock_upload_1762039020",
+      "image_path": "test_artifacts/lambdatest_phase24_25/weekly_picks_validation.png",
+      "tags": {
+        "tab_name": "Weekly Picks",
+        "timestamp": "2025-11-01T19:17:00.434879",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:00.434891",
+      "file_size": 67630
+    },
+    {
+      "upload_id": "mock_upload_1762039028",
+      "image_path": "test_artifacts/lambdatest_phase24_25/monthly_picks_validation.png",
+      "tags": {
+        "tab_name": "Monthly Picks",
+        "timestamp": "2025-11-01T19:17:08.284577",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:08.284590",
+      "file_size": 66863
+    },
+    {
+      "upload_id": "mock_upload_1762039038",
+      "image_path": "test_artifacts/lambdatest_phase24_25/home_validation.png",
+      "tags": {
+        "tab_name": "Home",
+        "timestamp": "2025-11-01T19:17:18.463539",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:18.463555",
+      "file_size": 94313
+    },
+    {
+      "upload_id": "mock_upload_1762039046",
+      "image_path": "test_artifacts/lambdatest_phase24_25/command_center_validation.png",
+      "tags": {
+        "tab_name": "Command Center",
+        "timestamp": "2025-11-01T19:17:26.219246",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:26.219258",
+      "file_size": 75971
+    },
+    {
+      "upload_id": "mock_upload_1762039053",
+      "image_path": "test_artifacts/lambdatest_phase24_25/strategy_lab_validation.png",
+      "tags": {
+        "tab_name": "Strategy Lab",
+        "timestamp": "2025-11-01T19:17:33.938589",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:33.938603",
+      "file_size": 48828
+    },
+    {
+      "upload_id": "mock_upload_1762039061",
+      "image_path": "test_artifacts/lambdatest_phase24_25/options_lab_validation.png",
+      "tags": {
+        "tab_name": "Options Lab",
+        "timestamp": "2025-11-01T19:17:41.689193",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:41.689224",
+      "file_size": 69614
+    },
+    {
+      "upload_id": "mock_upload_1762039071",
+      "image_path": "test_artifacts/lambdatest_phase24_25/weekly_picks_validation.png",
+      "tags": {
+        "tab_name": "Weekly Picks",
+        "timestamp": "2025-11-01T19:17:51.944995",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:51.945009",
+      "file_size": 67630
+    },
+    {
+      "upload_id": "mock_upload_1762039079",
+      "image_path": "test_artifacts/lambdatest_phase24_25/monthly_picks_validation.png",
+      "tags": {
+        "tab_name": "Monthly Picks",
+        "timestamp": "2025-11-01T19:17:59.594885",
+        "phase": "phase24_25"
+      },
+      "status": "success",
+      "timestamp": "2025-11-01T19:17:59.594899",
+      "file_size": 66863
+    }
+  ],
+  "summary": {
+    "authentication_method": "placeholder",
+    "total_file_size": 846227,
+    "average_file_size": 70518.91666666667
+  },
+  "generated_at": "2025-11-01T19:18:00.177912"
+}

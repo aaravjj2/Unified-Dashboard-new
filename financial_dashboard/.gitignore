@@ -1,0 +1,150 @@
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class$
+
+# Virtual environments
+.venv*/
+.venv_local/
+venv/
+ENV/
+
+# Distribution / build artifacts
+.Python
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Secrets (CRITICAL)
+.env
+*.env
+keys.env
+secrets.*
+*.pem
+*.key
+
+# Logs, databases, and temporary files
+*.log
+*.sqlite
+*.db
+*.pid
+*.out
+*.zip
+*.har
+logs/
+run_logs/
+
+# Caches and temporary directories from your file list
+.cache/
+.chat_archive/
+.coverage
+.tmp.driveupload/
+.gradio/
+.ipynb_checkpoints/
+.pytest_cache/
+.streamlit/
+.tmp_convert_venv/
+tmp/
+output/
+outputs/
+outputs_test2/
+cache/
+cache_forecast/
+checkpoints/
+debug_outputs/
+forecast_outputs/
+hf_cache/
+lightning_logs/
+mini_out/
+mini_repo/
+nasdaq_cache/
+tmp_forecast_out/
+Google/
+
+# Data files (CRITICAL: Keep large data out of Git)
+Financial_Data/
+data/
+*.csv
+*.npy
+!sp500_companies*.csv # Example: un-ignore a specific file if needed
+!Weekly ticker list.csv # Example: un-ignore a specific file if needed
+# Generic large data
+*.tsv
+*.npy
+*.npz
+*.h5
+
+# Model artifacts (very large — keep out)
+*.pt
+*.pth
+*.joblib
+*.pkl
+*.model
+models/
+
+# Attribution and heavy parquet data
+attribution/
+*.parquet
+*.parq
+*.par
+*.arrow
+*.feather
+
+# File-system backend artifacts
+file_system_backend/
+
+# Archives and large blobs
+*.zip
+*.tar.gz
+*.tgz
+
+# Generated reports, screenshots, and test artifacts
+*.html
+*.json
+*.png
+*.txt
+*.md
+
+# Re-include essential files that were excluded by the broad rules above
+# These files ARE your source code or config
+!Dockerfile
+!Dockerfile.*
+!docker-compose.yml
+!*.py
+!*.sh
+!*.ps1
+!*.yaml
+!pytest.ini
+!requirements.txt
+!requirements.lock.txt
+!requirements.optional.txt
+!base_requirements.txt
+!.dockerignore
+!.gitignore
+!.env.example
+!.env.template
+!README.md
+!ROADMAP.md
+!UNIFIED_ROADMAP.md
+!arch_roadmap.md
+!DOCKER.md
+!options_roadmap.md
+# Add back any OTHER specific .md or .txt files you wrote yourself
+
+# IDE Files
+.idea/
+.vscode/keys.env

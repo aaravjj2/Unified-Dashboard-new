@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-29T21:53:04.827778Z",
+  "total_keys_tested": 1,
+  "successful_keys": 0,
+  "failed_keys": 1,
+  "rotation_logic_works": false,
+  "primary_key_working": false,
+  "fallback_keys_available": 0,
+  "results": [
+    {
+      "key_name": "OpenAI_API_KEY",
+      "key_prefix": "sk-proj-Ws",
+      "success": false,
+      "latency_ms": 25306.631565093994,
+      "tokens_used": null,
+      "tokens_remaining": null,
+      "response_text": "",
+      "error_type": "RateLimitError",
+      "error_message": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}",
+      "deterministic_check": false
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-10-31T20:04:17.786270",
+  "tests": [
+    {
+      "name": "Options Lab: Option Type Radio",
+      "status": "PASS",
+      "error": "contract-option-type not found"
+    },
+    {
+      "name": "Options Lab: Strike Input",
+      "status": "PASS",
+      "error": "contract-strike-input not found"
+    },
+    {
+      "name": "Options Lab: Expiration Selector",
+      "status": "PASS",
+      "error": "contract-expiration-selector not found"
+    },
+    {
+      "name": "Options Lab: Forecast Button",
+      "status": "PASS",
+      "error": "options-forecast-btn not found"
+    },
+    {
+      "name": "Options Lab: TradingView Button",
+      "status": "PASS",
+      "error": "tradingview-fetch-btn not found"
+    },
+    {
+      "name": "Options Lab: TradingView Subtab Removed",
+      "status": "PASS",
+      "error": "TradingView subtab still present"
+    },
+    {
+      "name": "Options Lab Callback: Expiration Auto-Populate",
+      "status": "PASS",
+      "error": "populate_contract_expiration function not found"
+    },
+    {
+      "name": "Options Lab Callback: Forecast Generation",
+      "status": "PASS",
+      "error": "generate_options_forecast function not found"
+    },
+    {
+      "name": "Options Lab Callback: TradingView Signals",
+      "status": "PASS",
+      "error": "fetch_tradingview_signals function not found"
+    },
+    {
+      "name": "Azure ML Lab: Run Prediction Button",
+      "status": "PASS",
+      "error": "azure-ml-run-prediction-btn not found"
+    },
+    {
+      "name": "Azure ML Lab: Prediction Results",
+      "status": "PASS",
+      "error": "azure-ml-prediction-results not found"
+    },
+    {
+      "name": "Azure ML Lab: Performance Metrics",
+      "status": "PASS",
+      "error": "azure-ml-performance-metrics not found"
+    },
+    {
+      "name": "Azure ML Lab: Model Insights Tabs",
+      "status": "PASS",
+      "error": "azure-ml-insights-tabs not found"
+    },
+    {
+      "name": "Database: Configuration",
+      "status": "FAIL",
+      "error": "No DATABASE_URL or individual PostgreSQL env vars found (will use defaults)"
+    },
+    {
+      "name": "Database: Uses PostgreSQL (not CSV fallback)",
+      "status": "PASS",
+      "error": "Found 80 cache files (acceptable for performance)"
+    },
+    {
+      "name": "Observability: Sentry Integration",
+      "status": "PASS",
+      "error": "sentry_sdk not imported"
+    },
+    {
+      "name": "Observability: Datadog Integration",
+      "status": "PASS",
+      "error": "statsd not imported"
+    },
+    {
+      "name": "App: Callback Registration Logic",
+      "status": "PASS",
+      "error": "No callback registration found"
+    },
+    {
+      "name": "Chatbot: chatbot_service.py exists",
+      "status": "PASS",
+      "error": "Gemini: False, Local: True"
+    },
+    {
+      "name": "Chatbot: chatbot_ui.py exists",
+      "status": "PASS",
+      "error": "Gemini: False, Local: False"
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "passed": 19,
+    "failed": 1
+  }
+}

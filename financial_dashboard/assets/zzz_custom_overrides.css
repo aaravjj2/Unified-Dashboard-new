@@ -1,0 +1,184 @@
+/* ========================================
+   UNIFIED FINANCIAL DASHBOARD - CUSTOM OVERRIDES
+   Phase 3 Component-Specific Fix (No Global Hacks)
+   ======================================== */
+
+/* ─────────────────────────────────────────
+   TEXT VISIBILITY - Component Targeting
+   ───────────────────────────────────────── */
+
+/* Override Bootstrap text-muted ONLY for dashboard content areas 
+   (avoid breaking Bootstrap modal/tooltip native styles) */
+.tab-content .text-muted,
+.card-body .text-muted,
+.table .text-muted,
+.container .text-muted,
+.row .text-muted {
+    color: #212529 !important; /* Bootstrap's default dark gray */
+    opacity: 0.85;
+}
+
+/* ─────────────────────────────────────────
+   TABLE TEXT - Ensure Readability
+   ───────────────────────────────────────── */
+
+/* DataTables and standard tables */
+.dash-table-container table,
+.table,
+table {
+    color: #212529; /* Dark text on light backgrounds */
+}
+
+.dash-table-container .dash-cell,
+.dash-table-container td,
+.dash-table-container th {
+    color: #212529 !important;
+}
+
+/* Portfolio tables specifically */
+#portfolio-table td,
+#portfolio-table th,
+#home-portfolio-table td,
+#home-portfolio-table th {
+    color: #212529 !important;
+}
+
+/* Market trends, weekly/monthly picks */
+.market-trends-table td,
+.market-trends-table th,
+.weekly-picks-table td,
+.weekly-picks-table th,
+.monthly-picks-table td,
+.monthly-picks-table th {
+    color: #212529 !important;
+}
+
+/* ─────────────────────────────────────────
+   METRICS & CARDS
+   ───────────────────────────────────────── */
+
+.metric-card,
+.kpi-card,
+.stat-box {
+    color: #212529;
+}
+
+.metric-value,
+.kpi-value {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+/* ─────────────────────────────────────────
+   STRATEGY LAB SUBTABS
+   ───────────────────────────────────────── */
+
+#strategy-lab-content .text-muted,
+#strategy-setup-tab .text-muted,
+#strategy-backtest-tab .text-muted,
+#strategy-execution-tab .text-muted,
+#strategy-results-tab .text-muted,
+#strategy-benchmark-tab .text-muted,
+#strategy-risk-tab .text-muted {
+    color: #212529 !important;
+}
+
+/* Accordion and collapse content */
+.accordion-body,
+.accordion-body *,
+.accordion-item .accordion-body,
+.accordion-item .accordion-body *,
+.collapse-content,
+.collapse-content *,
+.alert,
+.card-text,
+p,
+small,
+.small {
+    color: #212529 !important;
+}
+
+/* ─────────────────────────────────────────
+   TOOLTIPS & HELP TEXT
+   ───────────────────────────────────────── */
+
+.tooltip-inner,
+.help-text,
+.info-text,
+.beginner-guide,
+.markdown,
+.markdown *,
+.dcc-markdown,
+.dcc-markdown *,
+dcc-markdown,
+dcc-markdown *,
+[class*="markdown"],
+[class*="markdown"] *,
+[class*="guide"],
+[class*="guide"] *,
+[class*="help"],
+[class*="help"] *,
+[class*="info"],
+[class*="info"] *,
+[class*="description"],
+[class*="description"] * {
+    color: #212529 !important;
+}
+
+/* Beginner Guide Accordion - Force ALL children to dark text */
+.accordion-item:has([title*="Beginner"]) .accordion-body,
+.accordion-item:has([title*="Beginner"]) .accordion-body *,
+.accordion-item:has([title*="beginner"]) .accordion-body,
+.accordion-item:has([title*="beginner"]) .accordion-body *,
+.accordion-item:has([title*="Guide"]) .accordion-body,
+.accordion-item:has([title*="Guide"]) .accordion-body * {
+    color: #212529 !important;
+}
+
+/* Preserve Bootstrap tooltip white text on dark background */
+.tooltip .tooltip-inner {
+    background-color: #000000;
+    color: #ffffff !important;
+}
+
+/* ─────────────────────────────────────────
+   FORM CONTROLS (Minimal Changes)
+   ───────────────────────────────────────── */
+
+/* Keep inputs readable without forcing dark theme */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+    color: #212529;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+}
+
+/* ─────────────────────────────────────────
+   UTILITY CLASSES
+   ───────────────────────────────────────── */
+
+.text-dark-override {
+    color: #000000 !important;
+}
+
+.bg-light-safe {
+    background-color: #f8f9fa !important;
+}
+
+/* ─────────────────────────────────────────
+   RESPONSIVE TABLE FIXES
+   ───────────────────────────────────────── */
+
+/* Prevent text wrapping in compact tables */
+.dash-table-container .dash-spreadsheet-container .cell,
+.dash-table-container .cell-table td,
+.dash-table-container .cell-table th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========================================
+   END CUSTOM OVERRIDES
+   ======================================== */

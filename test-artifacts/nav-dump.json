@@ -1,0 +1,52 @@
+[
+  {
+    "index": 0,
+    "text": "\ud83c\udfe0 Home",
+    "html": "\ud83c\udfe0 Home"
+  },
+  {
+    "index": 1,
+    "text": "Market Trends",
+    "html": "Market Trends"
+  },
+  {
+    "index": 2,
+    "text": "Market Forecast",
+    "html": "Market Forecast"
+  },
+  {
+    "index": 3,
+    "text": "\u26a1 Volatility Lab",
+    "html": "\u26a1 Volatility Lab"
+  },
+  {
+    "index": 4,
+    "text": "Monthly Picks",
+    "html": "Monthly Picks"
+  },
+  {
+    "index": 5,
+    "text": "Weekly Picks",
+    "html": "Weekly Picks"
+  },
+  {
+    "index": 6,
+    "text": "Analysis Hub",
+    "html": "Analysis Hub"
+  },
+  {
+    "index": 7,
+    "text": "Portfolio",
+    "html": "Portfolio"
+  },
+  {
+    "index": 8,
+    "text": "\ud83d\udcb9 Options Lab",
+    "html": "\ud83d\udcb9 Options Lab"
+  },
+  {
+    "index": 9,
+    "text": "\ud83d\udcca Backtesting Lab",
+    "html": "\ud83d\udcca Backtesting Lab"
+  }
+]

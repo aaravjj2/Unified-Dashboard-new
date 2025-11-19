@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# PyCharm
+.idea
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.venv*
+.venv*/
+
+# Data - CRITICAL: Do not include data in the image
+Financial_Data/
+
+# Archives
+*.zip
+
+# Test reports and logs
+remediation_log.md
+bug_report_log.md
+# Data - CRITICAL: Do not include data in the image
+models/

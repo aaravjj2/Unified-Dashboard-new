@@ -1,0 +1,24 @@
+time="2025-10-22T14:55:28-04:00" level=warning msg="/mnt/c/Aarav/fin_env/unified-dashboard/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+============================= test session starts ==============================
+platform linux -- Python 3.10.19, pytest-8.4.2, pluggy-1.6.0 -- /usr/local/bin/python3.10
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pytest.ini
+plugins: asyncio-1.2.0, playwright-0.7.1, base-url-2.1.0, dash-3.2.0, anyio-3.7.1, timeout-2.4.0
+asyncio: mode=auto, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 12 items
+
+tests/test_market_trends.py::test_market_trends_page_loads[chromium] PASSED [  8%]
+tests/test_market_trends.py::test_market_trends_badge_present[chromium] PASSED [ 16%]
+tests/test_market_trends.py::test_market_trends_table_loads_with_data[chromium] SKIPPED [ 25%]
+tests/test_market_trends.py::test_market_trends_all_rows_have_required_columns[chromium] PASSED [ 33%]
+tests/test_market_trends.py::test_market_trends_numeric_columns_have_valid_data_values[chromium] PASSED [ 41%]
+tests/test_market_trends.py::test_market_trends_no_na_or_placeholder_text[chromium] PASSED [ 50%]
+tests/test_market_trends.py::test_market_trends_run_analysis_button_exists[chromium] PASSED [ 58%]
+tests/test_market_trends.py::test_market_trends_backtest_button_exists[chromium] PASSED [ 66%]
+tests/test_market_trends.py::test_market_trends_refresh_button_exists[chromium] PASSED [ 75%]
+tests/test_market_trends.py::test_market_trends_snapshot_full_page[chromium] PASSED [ 83%]
+tests/test_market_trends.py::test_market_trends_snapshot[chromium] PASSED [ 91%]
+tests/test_market_trends.py::test_market_trends_ui_elements[chromium] PASSED [100%]
+
+================== 11 passed, 1 skipped in 109.52s (0:01:49) ===================

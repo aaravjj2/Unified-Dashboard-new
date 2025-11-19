@@ -1,0 +1,17 @@
+{
+  "weekly_picks": {
+    "count": 20,
+    "issues": [],
+    "valid": true
+  },
+  "monthly_picks": {
+    "count": 20,
+    "issues": [],
+    "valid": true
+  },
+  "portfolio": {
+    "value": 90532.13,
+    "positions": 1,
+    "valid": true
+  }
+}

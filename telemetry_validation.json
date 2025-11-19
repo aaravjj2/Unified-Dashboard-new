@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-10-29T21:58:40.443977Z",
+  "database_exists": false,
+  "database_path": "telemetry.db",
+  "database_created": true,
+  "test_events_written": 5,
+  "test_events_read": 5,
+  "validation_success": true,
+  "recent_events": [
+    {
+      "id": 5,
+      "timestamp": "2025-10-29T21:58:40.411737Z",
+      "event_type": "test_completion",
+      "details": "Telemetry validation completed",
+      "module": "validation"
+    },
+    {
+      "id": 4,
+      "timestamp": "2025-10-29T21:58:40.370579Z",
+      "event_type": "test_query_performance",
+      "details": "Database query performance tested",
+      "module": "validation"
+    },
+    {
+      "id": 3,
+      "timestamp": "2025-10-29T21:58:40.327633Z",
+      "event_type": "test_data_write",
+      "details": "Test data written to database",
+      "module": "validation"
+    },
+    {
+      "id": 2,
+      "timestamp": "2025-10-29T21:58:40.292940Z",
+      "event_type": "test_openai_call",
+      "details": "OpenAI key rotation validated",
+      "module": "validation"
+    },
+    {
+      "id": 1,
+      "timestamp": "2025-10-29T21:58:40.269120Z",
+      "event_type": "test_startup",
+      "details": "Telemetry validation started",
+      "module": "validation"
+    }
+  ],
+  "error_message": ""
+}

@@ -1,0 +1,23 @@
+{
+  "error_type": "React Error #31",
+  "description": "Objects are not valid as a React child",
+  "common_causes": [
+    "Passing an object directly to a component that expects a string/number",
+    "Returning an object from a callback instead of a valid React element",
+    "Invalid prop types being passed to components",
+    "Circular references in component props",
+    "Undefined or null values being treated as objects"
+  ],
+  "investigation_steps": [
+    "Check callback return values for objects",
+    "Validate component prop types",
+    "Look for undefined/null handling",
+    "Check for circular references"
+  ],
+  "potential_fixes": [
+    "Ensure callbacks return valid React elements or primitives",
+    "Add proper null/undefined checks",
+    "Validate prop types before passing to components",
+    "Use JSON.stringify() for debugging object values"
+  ]
+}

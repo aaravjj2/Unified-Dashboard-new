@@ -1,0 +1,1030 @@
+{
+  "..home-portfolio-value.children...home-portfolio-change.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "interval-component",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..market-sp500-value.children...market-sp500-pct.children...market-nasdaq-value.children...market-nasdaq-pct.children...market-dow-value.children...market-dow-pct.children...{\"index\":[\"ALL\"],\"type\":\"watch-price\"}.children...{\"index\":[\"ALL\"],\"type\":\"watch-change\"}.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "interval-component",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..home-action-result.children...home-last-job.children...home-last-analysis-job.children...home-last-hedge-job.children...home-action-alert.children...home-action-alert.is_open...home-nav.href..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "home-scan-market",
+        "property": "n_clicks"
+      },
+      {
+        "id": "home-analyze",
+        "property": "n_clicks"
+      },
+      {
+        "id": "home-hedge-finder",
+        "property": "n_clicks"
+      },
+      {
+        "id": "home-settings",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "watchlist-items-container.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "interval-component",
+        "property": "n_intervals"
+      },
+      {
+        "id": "watch-add-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "{\"index\":[\"ALL\"],\"type\":\"watch-remove\"}",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "watch-add-input",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..mf-forecast-store.data...mf-loading-output.children...mf-summary-cards.children...mf-returns-chart.figure...mf-volatility-chart.figure...mf-details-table.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "mf-generate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "mf-ticker-selector",
+        "property": "value"
+      },
+      {
+        "id": "mf-ticker-input",
+        "property": "value"
+      },
+      {
+        "id": "mf-horizon-selector",
+        "property": "value"
+      },
+      {
+        "id": "mf-confidence-selector",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..vl-hv-price.figure...vl-hv-vol.figure...vl-hv-status.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "vl-hv-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "vl-hv-tickers",
+        "property": "value"
+      },
+      {
+        "id": "vl-hv-dates",
+        "property": "start_date"
+      },
+      {
+        "id": "vl-hv-dates",
+        "property": "end_date"
+      },
+      {
+        "id": "vl-hv-window",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..vl-iv-exp.options...vl-iv-exp.value...vl-iv-status.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "vl-iv-load",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "vl-iv-ticker",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "vl-iv-surface.figure": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "vl-iv-gen",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "vl-iv-ticker",
+        "property": "value"
+      },
+      {
+        "id": "vl-iv-exp",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..vl-corr-heat.figure...vl-corr-status.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "vl-corr-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "vl-corr-tickers",
+        "property": "value"
+      },
+      {
+        "id": "vl-corr-dates",
+        "property": "start_date"
+      },
+      {
+        "id": "vl-corr-dates",
+        "property": "end_date"
+      }
+    ],
+    "background": null
+  },
+  "..sl-validation-result.children...sl-validation-status.data..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-validate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "sl-strategy-type",
+        "property": "value"
+      },
+      {
+        "id": "sl-tickers-input",
+        "property": "value"
+      },
+      {
+        "id": "sl-entry-condition",
+        "property": "value"
+      },
+      {
+        "id": "sl-exit-condition",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..sl-tickers-input.value...sl-entry-condition.value...sl-exit-condition.value...sl-position-size.value...sl-max-positions.value..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-reset-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..sl-execution-status.children...sl-backtest-results.data..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-run-backtest-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "sl-strategy-type",
+        "property": "value"
+      },
+      {
+        "id": "sl-tickers-input",
+        "property": "value"
+      },
+      {
+        "id": "sl-start-date",
+        "property": "date"
+      },
+      {
+        "id": "sl-end-date",
+        "property": "date"
+      },
+      {
+        "id": "sl-initial-capital",
+        "property": "value"
+      },
+      {
+        "id": "sl-transaction-cost",
+        "property": "value"
+      },
+      {
+        "id": "sl-slippage",
+        "property": "value"
+      },
+      {
+        "id": "sl-position-size",
+        "property": "value"
+      },
+      {
+        "id": "sl-max-positions",
+        "property": "value"
+      },
+      {
+        "id": "sl-entry-condition",
+        "property": "value"
+      },
+      {
+        "id": "sl-exit-condition",
+        "property": "value"
+      },
+      {
+        "id": "sl-validation-status",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "..sl-metric-cagr.children...sl-metric-sharpe.children...sl-metric-maxdd.children...sl-metric-winrate.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-backtest-results",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "sl-equity-curve.figure": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-backtest-results",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "sl-vs-benchmark.figure": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-backtest-results",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "sl-factor-attribution.figure": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-backtest-results",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "sl-exposure-breakdown.figure": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sl-backtest-results",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..mp-data-store.data...mp-content.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "mp-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "mp-auto-refresh",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "mp-content.children@99845ff3fa7f60a69baca1e03784bb480f802e5346d8828ab9a4a22c80d3aa9b": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "mp-regenerate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..wp-content.children...wp-data-store.data..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "wp-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "wp-auto-refresh",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..wp-status-message.children...wp-content.children@d712a8bd909950a22168a6ce00b2a616d17433039a15cd5e66f08579395a9210...wp-data-store.data@d712a8bd909950a22168a6ce00b2a616d17433039a15cd5e66f08579395a9210..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "wp-regenerate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..portfolio-value.children...portfolio-invested.children...portfolio-unrealized-pl.children...portfolio-buying-power.children...portfolio-data-store.data...portfolio-alpaca-alert.children...portfolio-alpaca-alert.is_open..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "portfolio-interval",
+        "property": "n_intervals"
+      },
+      {
+        "id": "portfolio-load-trigger",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "shap-regen-status.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "regen-shap-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "portfolio-positions-table.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-tracker-subtabs",
+        "property": "active_tab"
+      },
+      {
+        "id": "portfolio-positions-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "portfolio-interval",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "..inspect-modal.is_open...inspect-modal-title.children...inspect-modal-body.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "positions-datatable",
+        "property": "active_cell"
+      },
+      {
+        "id": "inspect-modal-close",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "positions-datatable",
+        "property": "data"
+      },
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      },
+      {
+        "id": "inspect-modal",
+        "property": "is_open"
+      }
+    ],
+    "background": null
+  },
+  "news-prefetch-status.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-tracker-subtabs",
+        "property": "active_tab"
+      },
+      {
+        "id": "portfolio-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "portfolio-interval",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "portfolio-orders-table.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-refresh-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "order-filter",
+        "property": "value"
+      },
+      {
+        "id": "order-date-range",
+        "property": "start_date"
+      },
+      {
+        "id": "order-date-range",
+        "property": "end_date"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..portfolio-analytics-content.children...portfolio-var.children...portfolio-cvar.children...portfolio-sharpe.children...portfolio-beta.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "analytics-period",
+        "property": "value"
+      },
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      },
+      {
+        "id": "portfolio-tracker-subtabs",
+        "property": "active_tab"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "monte-carlo-results.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "monte-carlo-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      },
+      {
+        "id": "analytics-period",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "portfolio-factor-exposure-content.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "opt-tickers-input.value": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "opt-results-container.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "opt-run-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "opt-tickers-input",
+        "property": "value"
+      },
+      {
+        "id": "opt-strategy",
+        "property": "value"
+      },
+      {
+        "id": "opt-period-slider",
+        "property": "value"
+      },
+      {
+        "id": "portfolio-data-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "..options-chain-store.data...options-status-message.children...chain-expiration-dropdown.options...chain-expiration-dropdown.value..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-load-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "options-mock-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "options-ticker-input",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..chain-spot-price.children...chain-total-volume.children...chain-total-oi.children...chain-pcr.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "chain-table-container.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      },
+      {
+        "id": "chain-type-radio",
+        "property": "value"
+      },
+      {
+        "id": "chain-moneyness-radio",
+        "property": "value"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "chain-download.data": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "chain-export-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      },
+      {
+        "id": "options-ticker-input",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..greeks-delta-chart.figure...greeks-gamma-chart.figure...greeks-theta-chart.figure...greeks-vega-chart.figure...greeks-iv-smile.figure..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..vol-surface-3d.figure...options-surface-store.data..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-ticker-input",
+        "property": "value"
+      },
+      {
+        "id": "surface-angle-slider",
+        "property": "value"
+      },
+      {
+        "id": "surface-colorscale-dropdown",
+        "property": "value"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "..sim-max-profit.children...sim-max-loss.children...sim-breakeven.children...sim-pnl-chart.figure..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "sim-calculate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "sim-strategy-dropdown",
+        "property": "value"
+      },
+      {
+        "id": "sim-quantity-input",
+        "property": "value"
+      },
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "tradingview-preview.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "tradingview-interval",
+        "property": "n_intervals"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "options-forecast-results.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-forecast-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "options-ticker-input",
+        "property": "value"
+      },
+      {
+        "id": "contract-option-type",
+        "property": "value"
+      },
+      {
+        "id": "contract-strike-selector",
+        "property": "value"
+      },
+      {
+        "id": "contract-expiration-selector",
+        "property": "value"
+      },
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "tradingview-signals-container.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "tradingview-fetch-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "options-ticker-input",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "..contract-strike-selector.options...contract-strike-selector.value...contract-expiration-selector.options...contract-expiration-selector.value..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "options-chain-store",
+        "property": "data"
+      },
+      {
+        "id": "contract-ticker-selector",
+        "property": "value"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-model-status.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-model-type",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-model-features",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-advanced-options",
+        "property": "value"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-prediction-results.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-run-prediction-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "azure-ml-model-type",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-prediction-horizon",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-confidence-threshold",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-prediction-target",
+        "property": "value"
+      },
+      {
+        "id": "azure-ml-universe",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "azure-ml-predictions-table.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-prediction-results",
+        "property": "children"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-performance-metrics.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-prediction-results",
+        "property": "children"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-system-status.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-refresh-diagnostics-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-execution-logs.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-preflight-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-feature-importance.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-prediction-results",
+        "property": "children"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "azure-ml-risk-analysis.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "azure-ml-prediction-results",
+        "property": "children"
+      }
+    ],
+    "state": [],
+    "background": null
+  },
+  "insight-results-container.children": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "insight-generate-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "insight-ticker-selector",
+        "property": "value"
+      },
+      {
+        "id": "insight-top-n-slider",
+        "property": "value"
+      }
+    ],
+    "background": null
+  },
+  "chatbot-container.style": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "chatbot-toggle-btn",
+        "property": "n_clicks"
+      },
+      {
+        "id": "chatbot-close-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "chatbot-container",
+        "property": "style"
+      }
+    ],
+    "background": null
+  },
+  "..chatbot-messages.children...chatbot-input.value..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "chatbot-send-btn",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "chatbot-input",
+        "property": "value"
+      },
+      {
+        "id": "chatbot-messages",
+        "property": "children"
+      },
+      {
+        "id": "chatbot-session-id",
+        "property": "data"
+      }
+    ],
+    "background": null
+  },
+  "..global-search-modal.is_open...global-search-results.children..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "global-search-button",
+        "property": "n_clicks"
+      },
+      {
+        "id": "global-search-close",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "global-search-input",
+        "property": "value"
+      },
+      {
+        "id": "global-search-modal",
+        "property": "is_open"
+      }
+    ],
+    "background": null
+  },
+  "..theme-store.data...theme-icon.className..": {
+    "outputs": null,
+    "inputs": [
+      {
+        "id": "theme-toggle-button",
+        "property": "n_clicks"
+      }
+    ],
+    "state": [
+      {
+        "id": "theme-store",
+        "property": "data"
+      }
+    ],
+    "background": null
+  }
+}

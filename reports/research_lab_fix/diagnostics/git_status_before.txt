@@ -1,0 +1,3 @@
+ M .kiro/specs/market-trends-fix/tasks.md
+?? financial_dashboard/utils/cache_manager.py
+?? reports/research_lab_fix/

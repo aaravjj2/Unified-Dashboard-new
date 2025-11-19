@@ -1,0 +1,77 @@
+{
+  "timestamp": 1761843468.52218,
+  "test_cases": [
+    {
+      "model": "forecast",
+      "input": {
+        "ticker": "AAPL",
+        "prices": [
+          150.0,
+          152.0,
+          151.5,
+          153.0,
+          154.5,
+          153.8,
+          155.0
+        ],
+        "horizon": 1
+      }
+    },
+    {
+      "model": "clustering",
+      "input": {
+        "returns": [
+          0.01,
+          0.02,
+          -0.01,
+          0.03,
+          0.015
+        ],
+        "volatility": 0.15,
+        "sharpe_ratio": 1.5,
+        "beta": 1.1,
+        "alpha": 0.02
+      }
+    },
+    {
+      "model": "strategy",
+      "input": {
+        "rsi": 65.0,
+        "macd": 0.5,
+        "ma_20": 150.0,
+        "ma_50": 148.0,
+        "ma_200": 145.0,
+        "volume_ratio": 1.2
+      }
+    }
+  ],
+  "results": [
+    {
+      "success": false,
+      "model": "forecast",
+      "status_code": 405,
+      "elapsed_ms": 6.3,
+      "error": "<!doctype html>\n<html lang=en>\n<title>405 Method Not Allowed</title>\n<h1>Method Not Allowed</h1>\n<p>The method is not allowed for the requested URL.</p>\n"
+    },
+    {
+      "success": false,
+      "model": "clustering",
+      "status_code": 405,
+      "elapsed_ms": 3.17,
+      "error": "<!doctype html>\n<html lang=en>\n<title>405 Method Not Allowed</title>\n<h1>Method Not Allowed</h1>\n<p>The method is not allowed for the requested URL.</p>\n"
+    },
+    {
+      "success": false,
+      "model": "strategy",
+      "status_code": 405,
+      "elapsed_ms": 2.99,
+      "error": "<!doctype html>\n<html lang=en>\n<title>405 Method Not Allowed</title>\n<h1>Method Not Allowed</h1>\n<p>The method is not allowed for the requested URL.</p>\n"
+    }
+  ],
+  "summary": {
+    "total_tests": 3,
+    "successful": 0,
+    "failed": 3,
+    "success_rate": 0.0
+  }
+}

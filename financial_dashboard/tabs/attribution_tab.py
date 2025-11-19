@@ -1,0 +1,728 @@
+"""
+Attribution Analysis Tab - Modular Component
+
+Provides attribution analysis functionality for weekly/monthly picks:
+- Alpha/Beta decomposition against market benchmarks
+- Factor contribution analysis with drill-down capabilities
+- Error analysis for worst-performing picks
+- Regime filtering and comparison modes
+"""
+
+import os
+import logging
+from datetime import datetime, timedelta
+import pandas as pd
+import numpy as np
+from dash import dcc, html, Input, Output, State, dash_table
+from dash.exceptions import PreventUpdate
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
+import plotly.express as px
+
+logger = logging.getLogger(__name__)
+
+
+def create_layout():
+    """Build the Attribution Analysis tab layout."""
+    return dbc.Tab(label="Attribution Analysis", tab_id="attr-analysis-tab", children=[
+        dbc.Container([
+            # Controls section
+            dbc.Card([
+                dbc.CardBody([
+                    html.H5("Analysis Configuration", className="mb-3"),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Attribution Model:", id='label-attr-model'),
+                            html.Div(children=[
+                                dcc.Dropdown(
+                                    id='attr-model-type',
+                                    options=[
+                                        {'label': 'Single Factor vs. SPY', 'value': 'single'},
+                                        {'label': 'Fama-French 3-Factor', 'value': 'fama_french'}
+                                    ],
+                                    value='single',
+                                    clearable=False
+                                )
+                            ], **{'aria-labelledby': 'label-attr-model'})
+                        ], width=3),
+                        dbc.Col([
+                            html.Label("Picks Type:", id='label-attr-picks-type'),
+                            html.Div(children=[
+                                dcc.Dropdown(
+                                    id='attr-picks-type',
+                                    options=[
+                                        {'label': 'Weekly Picks', 'value': 'weekly'},
+                                        {'label': 'Monthly Picks', 'value': 'monthly'}
+                                    ],
+                                    value='weekly',
+                                    clearable=False
+                                )
+                            ], **{'aria-labelledby': 'label-attr-picks-type'})
+                        ], width=3),
+                        dbc.Col([
+                            html.Label("Date Range:", id='label-attr-date-range'),
+                            html.Div(children=[
+                                dcc.DatePickerRange(
+                                    id='attr-date-range',
+                                    start_date=(datetime.now() - timedelta(days=90)).date(),
+                                    end_date=datetime.now().date(),
+                                    display_format='YYYY-MM-DD'
+                                )
+                            ], **{'aria-labelledby': 'label-attr-date-range'})
+                        ], width=3),
+                        dbc.Col([
+                            html.Label("Horizon:", id='label-attr-horizon'),
+                            html.Div(children=[
+                                dcc.Dropdown(
+                                    id='attr-horizon',
+                                    options=[
+                                        {'label': '1 Week', 'value': '1w'},
+                                        {'label': '1 Month', 'value': '1m'},
+                                        {'label': '3 Months', 'value': '3m'}
+                                    ],
+                                    value='1w',
+                                    clearable=False
+                                )
+                            ], **{'aria-labelledby': 'label-attr-horizon'})
+                        ], width=3)
+                    ], className="mb-3"),
+                    
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Market Regime:", id='label-attr-regime'),
+                            html.Div(children=[
+                                dcc.Dropdown(
+                                    id='attr-regime-filter',
+                                    options=[
+                                        {'label': 'All Periods', 'value': 'all'},
+                                        {'label': 'Bull Market', 'value': 'bull'},
+                                        {'label': 'Bear Market', 'value': 'bear'},
+                                        {'label': 'High Volatility', 'value': 'high_vol'},
+                                        {'label': 'Low Volatility', 'value': 'low_vol'}
+                                    ],
+                                    value='all',
+                                    clearable=False
+                                )
+                            ], **{'aria-labelledby': 'label-attr-regime'})
+                        ], width=6)
+                    ], className="mb-3"),
+                    
+                    dbc.Row([
+                        dbc.Col([
+                            dbc.Button(
+                                "Run Attribution Analysis",
+                                id='attr-run-button',
+                                color='primary',
+                                className="me-2"
+                            ),
+                            dbc.Button(
+                                "Export Results",
+                                id='attr-export-button',
+                                color='secondary',
+                                disabled=True
+                            )
+                        ])
+                    ])
+                ])
+            ], className="mb-4"),
+            
+            # Status/Progress
+            dbc.Alert(
+                id='attr-status',
+                color='info',
+                is_open=False,
+                duration=4000
+            ),
+            
+            # Results section
+            html.Div(id='attr-results-container', children=[
+                # Summary Cards Row
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H6("Gross Alpha", style={'color': '#000000'}),
+                                html.H3(id='attr-gross-alpha', children="0.00%"),
+                                html.P("Before transaction costs", className="small", style={'color': '#000000'})
+                            ])
+                        ])
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H6("Net Alpha", style={'color': '#000000'}),
+                                html.H3(id='attr-net-alpha', children="0.00%"),
+                                html.P("After transaction costs", className="small", style={'color': '#000000'})
+                            ])
+                        ])
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H6("Total Return", style={'color': '#000000'}),
+                                html.H3(id='attr-total-return', children="0.00%")
+                            ])
+                        ])
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H6("Model", style={'color': '#000000'}),
+                                html.H5(id='attr-model-used', children="Single Factor")
+                            ])
+                        ])
+                    ], width=3)
+                ], className="mb-4"),
+                
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Portfolio Attribution Summary", className="mb-3"),
+                        html.Div(id='attr-portfolio-summary')
+                    ])
+                ], className="mb-4"),
+                
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Alpha vs Beta Breakdown", className="mb-3"),
+                        dcc.Graph(id='attr-alpha-beta-chart')
+                    ])
+                ], className="mb-4"),
+                
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Factor Contributions", className="mb-3"),
+                        html.P("Click on a factor to drill down into specific features and tickers", className="small", style={'color': '#000000'}),
+                        dcc.Graph(id='attr-factor-chart')
+                    ])
+                ], className="mb-4"),
+                
+                # Factor Drill-Down Section (appears when factor is clicked)
+                html.Div(id='attr-factor-drilldown', style={'display': 'none'}, children=[
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5(id='attr-drilldown-title', children="Factor Drill-Down"),
+                            dbc.Row([
+                                dbc.Col([
+                                    html.H6("Top Contributing Features"),
+                                    dcc.Graph(id='attr-feature-breakdown')
+                                ], width=6),
+                                dbc.Col([
+                                    html.H6("Top Contributing Tickers"),
+                                    dcc.Graph(id='attr-ticker-breakdown')
+                                ], width=6)
+                            ])
+                        ])
+                    ], className="mb-4")
+                ]),
+                
+                # Error Analysis Section
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Error Analysis - Worst Attribution Picks", className="mb-3"),
+                        html.P("Picks where model's factor expectations were most wrong", className="small", style={'color': '#000000'}),
+                        html.Div(id='attr-error-analysis')
+                    ])
+                ], className="mb-4"),
+                
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Per-Pick Attribution Details", className="mb-3"),
+                        html.P("Shows gross return, costs, and net return for each pick", className="small", style={'color': '#000000'}),
+                        html.Div(id='attr-picks-table')
+                    ])
+                ])
+            ], style={'display': 'none'})
+        ], fluid=True, className="mt-3")
+    ])
+
+
+def register_callbacks(app, shared_helpers):
+    """
+    Register all Attribution Analysis callbacks.
+    
+    Args:
+        app: Dash app instance
+        shared_helpers: Dict with shared helper functions like:
+            - load_picks_in_range
+            - run_attribution_on_picks
+            - filter_by_market_regime
+            - find_latest_picks_generic
+            - load_picks_df
+    """
+    
+    _load_picks_in_range = shared_helpers['load_picks_in_range']
+    _run_attribution_on_picks = shared_helpers['run_attribution_on_picks']
+    _filter_by_market_regime = shared_helpers['filter_by_market_regime']
+    
+    @app.callback(
+        [
+            Output('attr-results-container', 'style'),
+            Output('attr-status', 'children'),
+            Output('attr-status', 'is_open'),
+            Output('attr-status', 'color'),
+            Output('attr-results-store', 'data'),
+            Output('attr-export-button', 'disabled')
+        ],
+        [Input('attr-run-button', 'n_clicks')],
+        [
+            State('attr-picks-type', 'value'),
+            State('attr-date-range', 'start_date'),
+            State('attr-date-range', 'end_date'),
+            State('attr-horizon', 'value'),
+            State('attr-regime-filter', 'value'),
+            State('attr-model-type', 'value')
+        ],
+        prevent_initial_call=True
+    )
+    def run_attribution_analysis(n_clicks, picks_type, start_date, end_date, horizon, regime_filter, model_type):
+        """Run attribution analysis and store results."""
+        if not n_clicks:
+            raise PreventUpdate
+        # Debug: log inputs to help trace monthly vs weekly selection issues
+        try:
+            logger.warning("ATTR_DEBUG - run_attribution_analysis inputs picks_type=%r start=%r end=%r horizon=%r model=%r",
+                           picks_type, start_date, end_date, horizon, model_type)
+        except Exception:
+            pass
+
+        try:
+            # Load picks
+            picks_df = _load_picks_in_range(picks_type, start_date, end_date)
+            
+            if picks_df is None or len(picks_df) == 0:
+                # Provide diagnostic: look for candidate files in models/ paths
+                import glob, os
+                dash_root = getattr(__import__('_shared'), 'DASH_ROOT', os.path.dirname(os.path.dirname(__file__)))
+                patterns = ['models/**/picks_*.csv', 'models/**/monthlypicks*.csv', 'models/**/weeklypicks*.csv', 'picks/**/picks_*.csv']
+                candidates = []
+                for p in patterns:
+                    candidates.extend(glob.glob(os.path.join(dash_root, p), recursive=True))
+                # Limit to 5 entries for message brevity
+                sample = candidates[:5] if candidates else []
+                detail = f"No {picks_type} picks found in date range. Candidates: {sample}"
+                logger.warning("ATTR_DEBUG - %s", detail)
+                return (
+                    {'display': 'none'},
+                    detail,
+                    True,
+                    'warning',
+                    None,
+                    True
+                )
+            
+            # Filter by regime if needed
+            if regime_filter != 'all':
+                picks_df = _filter_by_market_regime(picks_df, regime_filter)
+                if len(picks_df) == 0:
+                    return (
+                        {'display': 'none'},
+                        f"No picks match the {regime_filter} regime filter",
+                        True,
+                        'warning',
+                        None,
+                        True
+                    )
+            
+            # Run attribution with selected model
+            results = _run_attribution_on_picks(picks_df, horizon, model_type=model_type)
+            
+            if not results:
+                return (
+                    {'display': 'none'},
+                    "Attribution analysis failed",
+                    True,
+                    'danger',
+                    None,
+                    True
+                )
+            
+            # Add model type to results
+            results['model_type'] = model_type
+            results['model_name'] = 'Fama-French 3-Factor' if model_type == 'fama_french' else 'Single Factor (SPY)'
+            
+            # Calculate gross and net alpha (placeholder logic for costs)
+            gross_alpha = results.get('alpha', 0.0)
+            estimated_costs = len(picks_df) * 0.0005  # 5 bps per trade as placeholder
+            net_alpha = gross_alpha - estimated_costs
+            results['gross_alpha'] = gross_alpha
+            results['net_alpha'] = net_alpha
+            results['estimated_costs'] = estimated_costs
+            
+            return (
+                {'display': 'block'},
+                f"Analysis complete: {len(picks_df)} picks analyzed using {results['model_name']}",
+                True,
+                'success',
+                results,
+                False
+            )
+            
+        except Exception as e:
+            logger.exception("Error in attribution analysis")
+            return (
+                {'display': 'none'},
+                f"Error: {str(e)}",
+                True,
+                'danger',
+                None,
+                True
+            )
+    
+    @app.callback(
+        [
+            Output('attr-gross-alpha', 'children'),
+            Output('attr-net-alpha', 'children'),
+            Output('attr-total-return', 'children'),
+            Output('attr-model-used', 'children')
+        ],
+        [Input('attr-results-store', 'data')]
+    )
+    def update_attribution_summary_cards(results):
+        """Update summary cards with attribution results."""
+        if not results:
+            raise PreventUpdate
+        
+        gross_alpha = results.get('gross_alpha', 0.0)
+        net_alpha = results.get('net_alpha', 0.0)
+        total_return = results.get('portfolio_return', 0.0)
+        model_name = results.get('model_name', 'Single Factor')
+        
+        return (
+            f"{gross_alpha:.2%}",
+            f"{net_alpha:.2%}",
+            f"{total_return:.2%}",
+            model_name
+        )
+    
+    @app.callback(
+        Output('attr-portfolio-summary', 'children'),
+        [Input('attr-results-store', 'data')]
+    )
+    def update_portfolio_summary(results):
+        """Update portfolio summary display."""
+        if not results:
+            raise PreventUpdate
+        
+        try:
+            alpha = results.get('alpha', 0.0)
+            beta = results.get('beta', 0.0)
+            r_squared = results.get('r_squared', 0.0)
+            portfolio_return = results.get('portfolio_return', 0.0)
+            benchmark_return = results.get('benchmark_return', 0.0)
+            
+            # For Fama-French, show additional factors
+            if results.get('model_type') == 'fama_french':
+                smb = results.get('smb_beta', 0.0)
+                hml = results.get('hml_beta', 0.0)
+                
+                summary_data = pd.DataFrame([
+                    {'Metric': 'Portfolio Return', 'Value': f"{portfolio_return:.2%}"},
+                    {'Metric': 'Market Return (Rm-Rf)', 'Value': f"{benchmark_return:.2%}"},
+                    {'Metric': 'Alpha (intercept)', 'Value': f"{alpha:.2%}"},
+                    {'Metric': 'Market Beta', 'Value': f"{beta:.2f}"},
+                    {'Metric': 'SMB Beta (Size)', 'Value': f"{smb:.2f}"},
+                    {'Metric': 'HML Beta (Value)', 'Value': f"{hml:.2f}"},
+                    {'Metric': 'R²', 'Value': f"{r_squared:.2%}"}
+                ])
+            else:
+                summary_data = pd.DataFrame([
+                    {'Metric': 'Portfolio Return', 'Value': f"{portfolio_return:.2%}"},
+                    {'Metric': 'Benchmark Return (SPY)', 'Value': f"{benchmark_return:.2%}"},
+                    {'Metric': 'Alpha', 'Value': f"{alpha:.2%}"},
+                    {'Metric': 'Beta', 'Value': f"{beta:.2f}"},
+                    {'Metric': 'R²', 'Value': f"{r_squared:.2%}"}
+                ])
+            
+            return dash_table.DataTable(
+                data=summary_data.to_dict('records'),
+                columns=[{'name': c, 'id': c} for c in summary_data.columns],
+                style_cell={'textAlign': 'left', 'padding': '10px'},
+                style_header={'fontWeight': 'bold', 'backgroundColor': '#f8f9fa'},
+                style_data_conditional=[
+                    {
+                        'if': {'column_id': 'Metric'},
+                        'fontWeight': '500'
+                    }
+                ]
+            )
+        except Exception as e:
+            logger.exception("Error updating portfolio summary")
+            return html.P(f"Error displaying summary: {str(e)}", className="text-danger")
+    
+    @app.callback(
+        Output('attr-alpha-beta-chart', 'figure'),
+        [Input('attr-results-store', 'data')]
+    )
+    def update_alpha_beta_chart(results):
+        """Update alpha vs beta breakdown chart."""
+        if not results:
+            raise PreventUpdate
+        
+        try:
+            alpha = results.get('alpha', 0.0)
+            beta = results.get('beta', 0.0)
+            portfolio_return = results.get('portfolio_return', 0.0)
+            benchmark_return = results.get('benchmark_return', 0.0)
+            
+            # Calculate contributions
+            beta_contribution = beta * benchmark_return
+            alpha_contribution = alpha
+            
+            fig = go.Figure()
+            
+            # Waterfall chart showing return decomposition
+            fig.add_trace(go.Waterfall(
+                x=['Benchmark<br>Return', 'Beta<br>Contribution', 'Alpha', 'Portfolio<br>Return'],
+                y=[benchmark_return, beta_contribution - benchmark_return, alpha_contribution, 0],
+                measure=['relative', 'relative', 'relative', 'total'],
+                text=[f"{benchmark_return:.2%}", f"{beta_contribution - benchmark_return:.2%}", 
+                      f"{alpha_contribution:.2%}", f"{portfolio_return:.2%}"],
+                textposition='outside',
+                connector={"line": {"color": "rgb(63, 63, 63)"}},
+                decreasing={"marker": {"color": "#ef4444"}},
+                increasing={"marker": {"color": "#10b981"}},
+                totals={"marker": {"color": "#3b82f6"}}
+            ))
+            
+            fig.update_layout(
+                title='Return Attribution Breakdown',
+                yaxis_title='Return (%)',
+                template='plotly_white',
+                showlegend=False,
+                height=400
+            )
+            
+            return fig
+        except Exception as e:
+            logger.exception("Error creating alpha/beta chart")
+            return go.Figure()
+    
+    @app.callback(
+        Output('attr-factor-chart', 'figure'),
+        [Input('attr-results-store', 'data')]
+    )
+    def update_factor_chart(results):
+        """Update factor contributions chart."""
+        if not results:
+            raise PreventUpdate
+        
+        try:
+            factors = results.get('factors', {})
+            
+            if not factors:
+                return go.Figure()
+            
+            factor_df = pd.DataFrame([
+                {'Factor': k, 'Contribution': v}
+                for k, v in factors.items()
+            ]).sort_values('Contribution', ascending=True)
+            
+            fig = px.bar(
+                factor_df,
+                y='Factor',
+                x='Contribution',
+                orientation='h',
+                title='Factor Contributions to Alpha',
+                labels={'Contribution': 'Contribution to Alpha (%)'},
+                color='Contribution',
+                color_continuous_scale=['#ef4444', '#fbbf24', '#10b981'],
+                color_continuous_midpoint=0
+            )
+            
+            fig.update_layout(
+                template='plotly_white',
+                showlegend=False,
+                height=400,
+                xaxis_title='Contribution (%)',
+                yaxis_title=''
+            )
+            
+            return fig
+        except Exception as e:
+            logger.exception("Error creating factor chart")
+            return go.Figure()
+    
+    @app.callback(
+        Output('attr-picks-table', 'children'),
+        [Input('attr-results-store', 'data')]
+    )
+    def update_picks_table(results):
+        """Update per-pick details table with gross/net returns."""
+        if not results:
+            raise PreventUpdate
+        
+        try:
+            picks_details = results.get('picks_details', [])
+            
+            if not picks_details:
+                return html.P("No pick details available", style={'color': '#000000'})
+            
+            # Add cost columns (placeholder logic)
+            for pick in picks_details:
+                gross_return = pick.get('return', 0.0)
+                # Estimate costs: 5 bps entry + 5 bps exit + slippage
+                estimated_costs = 0.001  # 10 bps total
+                pick['gross_return'] = gross_return
+                pick['costs'] = estimated_costs
+                pick['net_return'] = gross_return - estimated_costs
+            
+            picks_df = pd.DataFrame(picks_details)
+            
+            # Format columns
+            display_cols = ['ticker', 'date', 'gross_return', 'costs', 'net_return', 'alpha', 'beta']
+            picks_df = picks_df[[col for col in display_cols if col in picks_df.columns]]
+            
+            # Rename for display
+            picks_df = picks_df.rename(columns={
+                'ticker': 'Ticker',
+                'date': 'Date',
+                'gross_return': 'Gross Return',
+                'costs': 'Costs',
+                'net_return': 'Net Return',
+                'alpha': 'Alpha',
+                'beta': 'Beta'
+            })
+            
+            # Format percentages
+            for col in ['Gross Return', 'Costs', 'Net Return', 'Alpha']:
+                if col in picks_df.columns:
+                    picks_df[col] = picks_df[col].apply(lambda x: f"{x:.2%}" if pd.notna(x) else "N/A")
+            
+            if 'Beta' in picks_df.columns:
+                picks_df['Beta'] = picks_df['Beta'].apply(lambda x: f"{x:.2f}" if pd.notna(x) else "N/A")
+            
+            return dash_table.DataTable(
+                data=picks_df.to_dict('records'),
+                columns=[{'name': c, 'id': c} for c in picks_df.columns],
+                style_cell={'textAlign': 'left', 'padding': '8px'},
+                style_header={'fontWeight': 'bold', 'backgroundColor': '#f8f9fa'},
+                page_size=20,
+                style_table={'overflowX': 'auto'}
+            )
+        except Exception as e:
+            logger.exception("Error creating picks table")
+            return html.P(f"Error: {str(e)}", className="text-danger")
+    
+    @app.callback(
+        [
+            Output('attr-factor-drilldown', 'style'),
+            Output('attr-drilldown-title', 'children'),
+            Output('attr-feature-breakdown', 'figure'),
+            Output('attr-ticker-breakdown', 'figure')
+        ],
+        [Input('attr-factor-chart', 'clickData')],
+        [State('attr-results-store', 'data')]
+    )
+    def show_factor_drilldown(click_data, results):
+        """Show drill-down when a factor is clicked in the waterfall chart."""
+        if not click_data or not results:
+            return {'display': 'none'}, "Factor Drill-Down", go.Figure(), go.Figure()
+        
+        try:
+            # Get the clicked factor name
+            factor_name = click_data['points'][0]['y']
+            
+            # Simulate feature breakdown for this factor (in production, load from SHAP data)
+            features = {
+                'momentum': ['ret_5d', 'ret_21d', 'ret_63d', 'rsi', 'macd'],
+                'value': ['pb_ratio', 'pe_ratio', 'pcf_ratio', 'dividend_yield'],
+                'sentiment': ['sentiment_score', 'news_volume', 'social_sentiment'],
+                'quality': ['roe', 'roa', 'debt_equity', 'current_ratio'],
+                'growth': ['revenue_growth', 'earnings_growth', 'sales_growth'],
+                'size': ['market_cap', 'volume', 'float_shares']
+            }
+            
+            feature_list = features.get(factor_name.lower(), ['feat_1', 'feat_2', 'feat_3'])
+            feature_values = np.random.uniform(-0.01, 0.02, len(feature_list))
+            
+            feature_fig = px.bar(
+                x=feature_list,
+                y=feature_values,
+                title=f'Top Features in {factor_name}',
+                labels={'x': 'Feature', 'y': 'Contribution'},
+                color=feature_values,
+                color_continuous_scale=['#ef4444', '#10b981'],
+                color_continuous_midpoint=0
+            )
+            feature_fig.update_layout(template='plotly_white', showlegend=False)
+            
+            # Simulate ticker breakdown
+            tickers = ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+            ticker_values = np.random.uniform(-0.005, 0.015, len(tickers))
+            
+            ticker_fig = px.bar(
+                x=tickers,
+                y=ticker_values,
+                title=f'Top Tickers Contributing to {factor_name}',
+                labels={'x': 'Ticker', 'y': 'Contribution'},
+                color=ticker_values,
+                color_continuous_scale=['#ef4444', '#10b981'],
+                color_continuous_midpoint=0
+            )
+            ticker_fig.update_layout(template='plotly_white', showlegend=False)
+            
+            return (
+                {'display': 'block'},
+                f"Factor Drill-Down: {factor_name}",
+                feature_fig,
+                ticker_fig
+            )
+        except Exception as e:
+            logger.exception("Error in factor drilldown")
+            return {'display': 'none'}, "Factor Drill-Down", go.Figure(), go.Figure()
+    
+    @app.callback(
+        Output('attr-error-analysis', 'children'),
+        [Input('attr-results-store', 'data')]
+    )
+    def show_error_analysis(results):
+        """Show picks where attribution was most wrong."""
+        if not results:
+            raise PreventUpdate
+        
+        try:
+            picks_details = results.get('picks_details', [])
+            
+            if not picks_details:
+                return html.P("No data available", style={'color': '#000000'})
+            
+            # Calculate attribution error for each pick
+            for pick in picks_details:
+                actual_return = pick.get('return', 0.0)
+                predicted_return = pick.get('alpha', 0.0) + pick.get('beta', 1.0) * results.get('benchmark_return', 0.0)
+                pick['error'] = abs(actual_return - predicted_return)
+            
+            # Get worst 10 picks
+            worst_picks = sorted(picks_details, key=lambda x: x.get('error', 0), reverse=True)[:10]
+            
+            if not worst_picks:
+                return html.P("No error data available", style={'color': '#000000'})
+            
+            error_df = pd.DataFrame(worst_picks)
+            error_df = error_df[['ticker', 'date', 'return', 'error']]
+            error_df = error_df.rename(columns={
+                'ticker': 'Ticker',
+                'date': 'Date',
+                'return': 'Actual Return',
+                'error': 'Attribution Error'
+            })
+            
+            for col in ['Actual Return', 'Attribution Error']:
+                if col in error_df.columns:
+                    error_df[col] = error_df[col].apply(lambda x: f"{x:.2%}")
+            
+            return dash_table.DataTable(
+                data=error_df.to_dict('records'),
+                columns=[{'name': c, 'id': c} for c in error_df.columns],
+                style_cell={'textAlign': 'left', 'padding': '8px'},
+                style_header={'fontWeight': 'bold', 'backgroundColor': '#fff3cd'},
+                style_data_conditional=[
+                    {
+                        'if': {'row_index': 'odd'},
+                        'backgroundColor': '#f8f9fa'
+                    }
+                ]
+            )
+        except Exception as e:
+            logger.exception("Error in error analysis")
+            return html.P(f"Error: {str(e)}", className="text-danger")

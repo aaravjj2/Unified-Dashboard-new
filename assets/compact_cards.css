@@ -1,0 +1,43 @@
+/* Compact card styling for dashboards to reduce vertical stacking and spacing */
+
+.card {
+  margin-bottom: 0.5rem !important;
+  border-radius: 6px !important;
+}
+
+.card .card-body {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  padding-left: 0.6rem !important;
+  padding-right: 0.6rem !important;
+}
+
+.lab-status-row .card {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+}
+
+.lab-status-row .card h5,
+.lab-status-row .card p,
+.lab-status-row .card small {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Reduce heading sizes in cards across tabs */
+.card h5 {
+  font-size: 1rem !important;
+}
+
+/* Make badges smaller */
+.badge {
+  padding: 0.25rem 0.45rem !important;
+  font-size: 0.72rem !important;
+}
+
+/* Tighter gutters for rows where used */
+.row.g-2 {
+  --bs-gutter-x: 0.5rem;
+  --bs-gutter-y: 0.5rem;
+}

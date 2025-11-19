@@ -1,0 +1,314 @@
+time="2025-10-22T14:36:10-04:00" level=warning msg="/mnt/c/Aarav/fin_env/unified-dashboard/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+============================= test session starts ==============================
+platform linux -- Python 3.10.19, pytest-8.4.2, pluggy-1.6.0 -- /usr/local/bin/python3.10
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pytest.ini
+plugins: asyncio-1.2.0, playwright-0.7.1, base-url-2.1.0, dash-3.2.0, anyio-3.7.1, timeout-2.4.0
+asyncio: mode=auto, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 12 items
+
+tests/test_market_trends.py::test_market_trends_page_loads[chromium] PASSED [  8%]
+tests/test_market_trends.py::test_market_trends_badge_present[chromium] PASSED [ 16%]
+tests/test_market_trends.py::test_market_trends_table_loads_with_data[chromium] FAILED [ 25%]
+tests/test_market_trends.py::test_market_trends_all_rows_have_required_columns[chromium] FAILED [ 33%]
+tests/test_market_trends.py::test_market_trends_numeric_columns_have_valid_data_values[chromium] FAILED [ 41%]
+tests/test_market_trends.py::test_market_trends_no_na_or_placeholder_text[chromium] FAILED [ 50%]
+tests/test_market_trends.py::test_market_trends_run_analysis_button_exists[chromium] PASSED [ 58%]
+tests/test_market_trends.py::test_market_trends_backtest_button_exists[chromium] PASSED [ 66%]
+tests/test_market_trends.py::test_market_trends_refresh_button_exists[chromium] PASSED [ 75%]
+tests/test_market_trends.py::test_market_trends_snapshot_full_page[chromium] FAILED [ 83%]
+tests/test_market_trends.py::test_market_trends_snapshot[chromium] FAILED [ 91%]
+tests/test_market_trends.py::test_market_trends_ui_elements[chromium] PASSED [100%]
+
+=================================== FAILURES ===================================
+______________ test_market_trends_table_loads_with_data[chromium] ______________
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_table_loads_with_data(page: Page):
+        """Test that table loads and has data with correct structure."""
+        page.goto(BASE_URL)
+        page.wait_for_load_state('networkidle')
+    
+        # Navigate to Market Trends
+        page.locator('a:has-text("Market Trends")').click()
+        page.wait_for_selector('h3:has-text("Market Trends")', timeout=10000)
+    
+        # Wait for table container
+        table_container = page.locator('[data-testid="trends-results-table-container"]')
+>       expect(table_container).to_be_visible(timeout=20000)
+E       AssertionError: Locator expected to be visible
+E       Actual value: <element(s) not found> 
+E       Call log:
+E         - Expect "to_be_visible" with timeout 20000ms
+E         - waiting for locator("[data-testid=\"trends-results-table-container\"]")
+
+tests/test_market_trends.py:78: AssertionError
+_________ test_market_trends_all_rows_have_required_columns[chromium] __________
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_all_rows_have_required_columns(page: Page):
+        """
+        Zero-tolerance test: ALL rows must have all required columns with valid data.
+        Required columns: Ticker, Price-related columns
+        """
+        page.goto(BASE_URL)
+        page.wait_for_load_state('networkidle')
+    
+        # Navigate to Market Trends
+        page.locator('a:has-text("Market Trends")').click()
+        page.wait_for_selector('h3:has-text("Market Trends")', timeout=10000)
+    
+        # Wait for table
+>       page.wait_for_selector('table tbody tr[data-ticker]', timeout=20000)
+
+tests/test_market_trends.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7f11b8c105b0>
+cb = <function Channel.send.<locals>.<lambda> at 0x7f11b3e78dc0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("table tbody tr[data-ticker]") to be visible
+E               45 × locator resolved to 40 elements. Proceeding with the first one: <tr data-ticker="ASTS">…</tr>
+
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: TimeoutError
+_____ test_market_trends_numeric_columns_have_valid_data_values[chromium] ______
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_numeric_columns_have_valid_data_values(page: Page):
+        """
+        Test that numeric columns (price, change, etc.) have valid data-value attributes.
+        Either a numeric value or empty string for "Data Unavailable".
+        """
+        page.goto(BASE_URL)
+        page.wait_for_load_state('networkidle')
+    
+        # Navigate to Market Trends
+        page.locator('a:has-text("Market Trends")').click()
+        page.wait_for_selector('h3:has-text("Market Trends")', timeout=10000)
+    
+        # Wait for table
+>       page.wait_for_selector('table tbody tr[data-ticker]', timeout=20000)
+
+tests/test_market_trends.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7f11b8c105b0>
+cb = <function Channel.send.<locals>.<lambda> at 0x7f11b8c27f40>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("table tbody tr[data-ticker]") to be visible
+E               45 × locator resolved to 40 elements. Proceeding with the first one: <tr data-ticker="ASTS">…</tr>
+
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: TimeoutError
+____________ test_market_trends_no_na_or_placeholder_text[chromium] ____________
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_no_na_or_placeholder_text(page: Page):
+        """
+        Zero-tolerance test: The visible table text must not contain raw placeholder strings.
+        'Data Unavailable' should be styled/hidden, not rendered as plain text.
+        """
+        page.goto(BASE_URL)
+        page.wait_for_load_state('networkidle')
+    
+        # Navigate to Market Trends
+        page.locator('a:has-text("Market Trends")').click()
+        page.wait_for_selector('h3:has-text("Market Trends")', timeout=10000)
+    
+        # Wait for table
+>       page.wait_for_selector('table tbody tr[data-ticker]', timeout=20000)
+
+tests/test_market_trends.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7f11b8c105b0>
+cb = <function Channel.send.<locals>.<lambda> at 0x7f11b8c27010>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("table tbody tr[data-ticker]") to be visible
+E               45 × locator resolved to 40 elements. Proceeding with the first one: <tr data-ticker="ASTS">…</tr>
+
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: TimeoutError
+_______________ test_market_trends_snapshot_full_page[chromium] ________________
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_snapshot_full_page(page: Page):
+        """
+        Snapshot test: Capture full visual layout of Market Trends tab.
+        Run LAST after all functional tests pass.
+        """
+        page.goto(BASE_URL)
+        page.wait_for_load_state('networkidle')
+    
+        # Navigate to Market Trends
+        page.locator('a:has-text("Market Trends")').click()
+        page.wait_for_selector('h3:has-text("Market Trends")', timeout=10000)
+    
+        # Wait for table to load
+>       page.wait_for_selector('table tbody tr[data-ticker]', timeout=20000)
+
+tests/test_market_trends.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7f11b8c105b0>
+cb = <function Channel.send.<locals>.<lambda> at 0x7f11b8c26dd0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("table tbody tr[data-ticker]") to be visible
+E               45 × locator resolved to 40 elements. Proceeding with the first one: <tr data-ticker="ASTS">…</tr>
+
+/usr/local/lib/python3.10/site-packages/playwright/_impl/_connection.py:558: TimeoutError
+____________________ test_market_trends_snapshot[chromium] _____________________
+
+page = <Page url='http://localhost:8050/'>
+
+    def test_market_trends_snapshot(page: Page):
+        """
+        PRIORITY 4 - VISUAL REGRESSION TEST
+        Playwright Chromium snapshot: Capture full visual layout of Market Trends tab.
+    
+        This test should be run LAST after all functional tests pass.
+        It serves as a visual regression baseline for future changes.
+        """
+        page.goto('http://localhost:8050', wait_until='networkidle')
+        page.wait_for_selector('#dashboard-tabs', timeout=30000)
+    
+        # Click Market Trends tab
+        page.locator('text=Market Trends').first.click()
+        page.wait_for_timeout(3000)
+    
+        # Take full page snapshot
+        page.screenshot(path='test-artifacts/market_trends_full_snapshot.png', full_page=True)
+    
+        # Verify tab content loaded
+>       expect(page.locator('h1:has-text("Market Trends")')).to_be_visible()
+E       AssertionError: Locator expected to be visible
+E       Actual value: <element(s) not found> 
+E       Call log:
+E         - Expect "to_be_visible" with timeout 5000ms
+E         - waiting for locator("h1:has-text(\"Market Trends\")")
+
+tests/test_market_trends.py:305: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_market_trends.py::test_market_trends_table_loads_with_data[chromium]
+FAILED tests/test_market_trends.py::test_market_trends_all_rows_have_required_columns[chromium]
+FAILED tests/test_market_trends.py::test_market_trends_numeric_columns_have_valid_data_values[chromium]
+FAILED tests/test_market_trends.py::test_market_trends_no_na_or_placeholder_text[chromium]
+FAILED tests/test_market_trends.py::test_market_trends_snapshot_full_page[chromium]
+FAILED tests/test_market_trends.py::test_market_trends_snapshot[chromium] - A...
+=================== 6 failed, 6 passed in 216.08s (0:03:36) ====================

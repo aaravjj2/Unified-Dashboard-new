@@ -1,0 +1,341 @@
+{
+  "timestamp": "2025-10-29T20:13:59.374424",
+  "roadmap_found": false,
+  "mission_complete_files": [
+    {
+      "name": "AGENT1B2_MISSION_COMPLETE.md",
+      "path": "AGENT1B2_MISSION_COMPLETE.md",
+      "size": 5456,
+      "modified": "2025-10-27T09:44:56.492696"
+    },
+    {
+      "name": "MISSION_1B_UNBLOCK_COMPLETE.md",
+      "path": "MISSION_1B_UNBLOCK_COMPLETE.md",
+      "size": 10365,
+      "modified": "2025-10-25T14:01:50.702444"
+    },
+    {
+      "name": "MISSION_A1B_CACHE_FIX_COMPLETE.md",
+      "path": "MISSION_A1B_CACHE_FIX_COMPLETE.md",
+      "size": 9664,
+      "modified": "2025-10-23T14:58:20.521490"
+    },
+    {
+      "name": "MISSION_A1_COMPLETION_REPORT.md",
+      "path": "MISSION_A1_COMPLETION_REPORT.md",
+      "size": 9956,
+      "modified": "2025-10-25T11:18:16.614986"
+    },
+    {
+      "name": "MISSION_A2_FINAL_TAB_FIX.md",
+      "path": "MISSION_A2_FINAL_TAB_FIX.md",
+      "size": 9734,
+      "modified": "2025-10-22T22:12:00.397855"
+    },
+    {
+      "name": "MISSION_A2_PIPELINE_FOUNDATION.md",
+      "path": "MISSION_A2_PIPELINE_FOUNDATION.md",
+      "size": 20163,
+      "modified": "2025-10-22T22:42:02.989378"
+    },
+    {
+      "name": "MISSION_A2_REVISION_ENV_AND_SOURCES.md",
+      "path": "MISSION_A2_REVISION_ENV_AND_SOURCES.md",
+      "size": 10593,
+      "modified": "2025-10-23T00:17:02.888785"
+    },
+    {
+      "name": "MISSION_A2_STATUS.md",
+      "path": "MISSION_A2_STATUS.md",
+      "size": 8271,
+      "modified": "2025-10-22T22:12:00.497077"
+    },
+    {
+      "name": "MISSION_A3_COMPLETE.md",
+      "path": "MISSION_A3_COMPLETE.md",
+      "size": 5655,
+      "modified": "2025-10-23T00:17:03.341957"
+    },
+    {
+      "name": "MISSION_A3_ENV_HOTFIX.md",
+      "path": "MISSION_A3_ENV_HOTFIX.md",
+      "size": 11936,
+      "modified": "2025-10-23T00:17:06.176797"
+    },
+    {
+      "name": "MISSION_A3_UI_RESPONSIVENESS_COMPLETE.md",
+      "path": "MISSION_A3_UI_RESPONSIVENESS_COMPLETE.md",
+      "size": 12162,
+      "modified": "2025-10-24T15:39:15.107476"
+    },
+    {
+      "name": "MISSION_A4_RUN_ANALYSIS_FIX.md",
+      "path": "MISSION_A4_RUN_ANALYSIS_FIX.md",
+      "size": 5800,
+      "modified": "2025-10-23T16:37:20.566956"
+    },
+    {
+      "name": "MISSION_CALLBACK_FIX_COMPLETE.md",
+      "path": "MISSION_CALLBACK_FIX_COMPLETE.md",
+      "size": 8538,
+      "modified": "2025-10-26T18:09:16.710084"
+    },
+    {
+      "name": "MISSION_COMPLETE_ATTRIBUTION_LAB.md",
+      "path": "MISSION_COMPLETE_ATTRIBUTION_LAB.md",
+      "size": 19298,
+      "modified": "2025-10-27T12:59:25.000215"
+    },
+    {
+      "name": "MISSION_COMPLETE_UI_FIX.md",
+      "path": "MISSION_COMPLETE_UI_FIX.md",
+      "size": 8501,
+      "modified": "2025-10-25T14:01:26.167320"
+    },
+    {
+      "name": "MISSION_FINNHUB_VERIFICATION_COMPLETE.md",
+      "path": "MISSION_FINNHUB_VERIFICATION_COMPLETE.md",
+      "size": 8001,
+      "modified": "2025-10-23T14:58:20.701934"
+    },
+    {
+      "name": "MISSION_OPTIONS_LAB_COMPLETE.md",
+      "path": "MISSION_OPTIONS_LAB_COMPLETE.md",
+      "size": 10207,
+      "modified": "2025-10-27T17:10:18.530470"
+    },
+    {
+      "name": "MISSION_PHASE2_COMPLETE.md",
+      "path": "MISSION_PHASE2_COMPLETE.md",
+      "size": 12547,
+      "modified": "2025-10-23T16:37:20.638142"
+    },
+    {
+      "name": "MISSION_PHASE_4_BRIEFING.md",
+      "path": "MISSION_PHASE_4_BRIEFING.md",
+      "size": 8464,
+      "modified": "2025-10-23T17:48:12.672479"
+    },
+    {
+      "name": "MISSION_REVALIDATE_SUMMARY.md",
+      "path": "MISSION_REVALIDATE_SUMMARY.md",
+      "size": 5300,
+      "modified": "2025-10-23T10:13:16.075216"
+    },
+    {
+      "name": "PHASE2_MISSION_COMPLETE.md",
+      "path": "PHASE2_MISSION_COMPLETE.md",
+      "size": 7437,
+      "modified": "2025-10-28T01:03:31.098673"
+    },
+    {
+      "name": "PHASE7_MISSION_COMPLETE.md",
+      "path": "PHASE7_MISSION_COMPLETE.md",
+      "size": 14895,
+      "modified": "2025-10-29T11:15:32.714809"
+    },
+    {
+      "name": "SUPER_AGENT_MISSION_COMPLETE.md",
+      "path": "SUPER_AGENT_MISSION_COMPLETE.md",
+      "size": 17778,
+      "modified": "2025-10-25T14:01:44.054218"
+    },
+    {
+      "name": "VOLATILITY_LAB_MISSION_COMPLETE.md",
+      "path": "VOLATILITY_LAB_MISSION_COMPLETE.md",
+      "size": 5566,
+      "modified": "2025-10-27T11:19:29.216445"
+    },
+    {
+      "name": "MISSION_PHASE2_COMPLETE.md",
+      "path": "MISSION_PHASE2_COMPLETE.md",
+      "size": 12547,
+      "modified": "2025-10-23T16:37:20.638142"
+    },
+    {
+      "name": "PHASE10_VALIDATION_COMPLETE.md",
+      "path": "PHASE10_VALIDATION_COMPLETE.md",
+      "size": 11460,
+      "modified": "2025-10-29T18:46:56.898015"
+    },
+    {
+      "name": "PHASE2_MISSION_COMPLETE.md",
+      "path": "PHASE2_MISSION_COMPLETE.md",
+      "size": 7437,
+      "modified": "2025-10-28T01:03:31.098673"
+    },
+    {
+      "name": "PHASE3_STRATEGY_LAB_COMPLETE.md",
+      "path": "PHASE3_STRATEGY_LAB_COMPLETE.md",
+      "size": 9602,
+      "modified": "2025-10-28T16:40:28.479114"
+    },
+    {
+      "name": "PHASE5_E2E_COMPLETE.md",
+      "path": "PHASE5_E2E_COMPLETE.md",
+      "size": 9844,
+      "modified": "2025-10-29T04:12:54.489159"
+    },
+    {
+      "name": "PHASE7_MISSION_COMPLETE.md",
+      "path": "PHASE7_MISSION_COMPLETE.md",
+      "size": 14895,
+      "modified": "2025-10-29T11:15:32.714809"
+    },
+    {
+      "name": "PHASE9C_DASHBOARD_DEPLOYMENT_COMPLETE.md",
+      "path": "PHASE9C_DASHBOARD_DEPLOYMENT_COMPLETE.md",
+      "size": 18673,
+      "modified": "2025-10-29T17:51:34.677905"
+    },
+    {
+      "name": "PHASE_3_COMPLETE.md",
+      "path": "PHASE_3_COMPLETE.md",
+      "size": 7949,
+      "modified": "2025-10-23T16:37:20.892924"
+    },
+    {
+      "name": "PHASE_4_DEEP_DIAGNOSTIC_COMPLETE.md",
+      "path": "PHASE_4_DEEP_DIAGNOSTIC_COMPLETE.md",
+      "size": 16818,
+      "modified": "2025-10-23T17:48:13.342597"
+    },
+    {
+      "name": "PHASE_4_SYNC_FOUNDATION_COMPLETE.md",
+      "path": "PHASE_4_SYNC_FOUNDATION_COMPLETE.md",
+      "size": 18095,
+      "modified": "2025-10-23T16:37:21.007923"
+    },
+    {
+      "name": "RESEARCH_LAB_E2E_PHASE1_COMPLETE.md",
+      "path": "RESEARCH_LAB_E2E_PHASE1_COMPLETE.md",
+      "size": 8841,
+      "modified": "2025-10-28T16:40:24.010763"
+    }
+  ],
+  "phase_deliverables": {
+    "Phase 0": {
+      "expected": [
+        "PHASE_0_7_8_MISSION_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 1": {
+      "expected": [
+        "PHASE1_COMPLETE.md",
+        "MISSION_PHASE1_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 2": {
+      "expected": [
+        "PHASE2_MISSION_COMPLETE.md",
+        "MISSION_PHASE2_COMPLETE.md"
+      ],
+      "found": [
+        "PHASE2_MISSION_COMPLETE.md",
+        "MISSION_PHASE2_COMPLETE.md"
+      ],
+      "complete": true
+    },
+    "Phase 3": {
+      "expected": [
+        "PHASE3_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 4": {
+      "expected": [
+        "MISSION_PHASE_4_BRIEFING.md"
+      ],
+      "found": [
+        "MISSION_PHASE_4_BRIEFING.md"
+      ],
+      "complete": true
+    },
+    "Phase 5": {
+      "expected": [
+        "PHASE5_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 6": {
+      "expected": [
+        "PHASE6_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 7": {
+      "expected": [
+        "PHASE7_MISSION_COMPLETE.md"
+      ],
+      "found": [
+        "PHASE7_MISSION_COMPLETE.md"
+      ],
+      "complete": true
+    },
+    "Phase 8": {
+      "expected": [
+        "PHASE8_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 9": {
+      "expected": [
+        "PHASE9_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    },
+    "Phase 10": {
+      "expected": [
+        "PHASE10_COMPLETE.md"
+      ],
+      "found": [],
+      "complete": false
+    }
+  },
+  "missing_phases": [
+    "Phase 0",
+    "Phase 1",
+    "Phase 3",
+    "Phase 5",
+    "Phase 6",
+    "Phase 8",
+    "Phase 9",
+    "Phase 10"
+  ],
+  "component_status": {
+    "Dashboard Entry": {
+      "found": 2,
+      "total": 2,
+      "complete": true
+    },
+    "Tab Modules": {
+      "found": 1,
+      "total": 2,
+      "complete": true
+    },
+    "Data Pipeline": {
+      "found": 0,
+      "total": 2,
+      "complete": false
+    },
+    "API Integration": {
+      "found": 0,
+      "total": 1,
+      "complete": false
+    },
+    "Environment Config": {
+      "found": 2,
+      "total": 2,
+      "complete": true
+    }
+  }
+}

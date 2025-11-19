@@ -1,0 +1,339 @@
+// UI Normalization JavaScript Injection
+// Applies CSS fixes and ensures proper styling
+
+function applyUIFixes() {
+    console.log("Applying Phase 24-25 UI normalization fixes...");
+    
+    // Remove existing style if present
+    const existingStyle = document.getElementById('phase24-25-ui-fixes');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    // Create and inject CSS
+    const styleElement = document.createElement('style');
+    styleElement.id = 'phase24-25-ui-fixes';
+    styleElement.textContent = `/* Phase 24-25 UI Color Normalization - WCAG 2.1 AA Compliant */
+
+/* Global visibility and text color reset */
+* {
+    visibility: visible !important;
+}
+
+/* Input Elements - Critical for accessibility */
+input[type="text"],
+input[type="number"], 
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="time"],
+textarea,
+select,
+.form-control,
+.dash-input,
+.dash-input input {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Dash Dropdown Components */
+.dash-dropdown,
+.dash-dropdown .Select-control,
+.dash-dropdown .Select-input,
+.dash-dropdown .Select-value,
+.dash-dropdown .Select-placeholder,
+.dash-dropdown .Select-single-value {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #cccccc !important;
+}
+
+.dash-dropdown .Select-menu-outer,
+.dash-dropdown .Select-menu,
+.dash-dropdown .Select-option {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+}
+
+.dash-dropdown .Select-option:hover,
+.dash-dropdown .Select-option.is-focused,
+.dash-dropdown .Select-option.is-selected {
+    background-color: #f8f9fa !important;
+    color: #000000 !important;
+}
+
+/* Button Elements */
+button,
+.btn,
+.dash-button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+    background-color: #f8f9fa !important;
+    color: #000000 !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+}
+
+button:hover,
+.btn:hover,
+.dash-button:hover {
+    background-color: #e9ecef !important;
+    color: #000000 !important;
+    border-color: #adb5bd !important;
+}
+
+button:focus,
+.btn:focus,
+.dash-button:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: none !important;
+}
+
+/* Table Elements */
+table,
+.dash-table-container,
+.dash-table-container .dash-spreadsheet-container,
+.dash-table-container .dash-spreadsheet,
+.dash-table-container .dash-cell,
+.dash-table-container .dash-cell div,
+.dash-table-container .dash-header,
+.dash-table-container .dash-header div {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #dee2e6 !important;
+}
+
+.dash-table-container .dash-cell.focused {
+    background-color: #e3f2fd !important;
+    color: #000000 !important;
+}
+
+/* Text Elements */
+p, span, div, label, 
+h1, h2, h3, h4, h5, h6,
+.text, .label, .title,
+li, td, th {
+    color: #000000 !important;
+}
+
+/* Focus States for Accessibility */
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus,
+.dash-input:focus,
+.dash-dropdown:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: none !important;
+}
+
+/* Container Backgrounds */
+.card,
+.card-body,
+.container,
+.container-fluid,
+.row,
+.col,
+.tab-content,
+.tab-pane,
+body,
+html {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Navigation and Tabs */
+.nav-tabs .nav-link {
+    color: #000000 !important;
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    border-color: #dee2e6 #dee2e6 #ffffff !important;
+}
+
+/* Plotly and Chart Elements */
+.plotly-graph-div,
+.js-plotly-plot,
+.plot-container {
+    background-color: #ffffff !important;
+}
+
+/* Loading and Spinner States */
+.dash-loading,
+.dash-spinner {
+    color: #007bff !important;
+}
+
+/* Alert and Message States */
+.alert {
+    color: #000000 !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+.alert-success {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+.alert-danger,
+.error-message {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border-color: #f5c6cb !important;
+}
+
+.alert-warning {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border-color: #ffeaa7 !important;
+}
+
+.alert-info {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border-color: #bee5eb !important;
+}
+
+/* Ensure all Dash components are visible and readable */
+.dash-component,
+.dash-component *,
+._dash-component,
+._dash-component * {
+    color: #000000 !important;
+}
+
+/* Special handling for specific dashboard sections */
+.strategy-lab-container,
+.options-lab-container,
+.weekly-picks-container,
+.monthly-picks-container,
+.command-center-container,
+.home-container {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    padding: 20px !important;
+}
+
+/* Ensure proper contrast for all interactive elements */
+a, a:hover, a:focus {
+    color: #007bff !important;
+    text-decoration: underline !important;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    * {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        border-color: #000000 !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    * {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+}
+
+/* Responsive design considerations */
+@media (max-width: 768px) {
+    input, textarea, select, button {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 12px !important;
+    }
+}
+`;
+    document.head.appendChild(styleElement);
+    
+    // Force immediate style application
+    setTimeout(() => {
+        // Apply styles to all input elements
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.style.setProperty('background-color', '#ffffff', 'important');
+            input.style.setProperty('color', '#000000', 'important');
+            input.style.setProperty('border', '1px solid #cccccc', 'important');
+        });
+        
+        // Apply styles to all buttons
+        const buttons = document.querySelectorAll('button, .btn');
+        buttons.forEach(button => {
+            button.style.setProperty('background-color', '#f8f9fa', 'important');
+            button.style.setProperty('color', '#000000', 'important');
+            button.style.setProperty('border', '1px solid #dee2e6', 'important');
+        });
+        
+        // Apply styles to all text elements
+        const textElements = document.querySelectorAll('p, span, div, label, h1, h2, h3, h4, h5, h6');
+        textElements.forEach(element => {
+            if (element.style.color === 'rgb(255, 255, 255)' || element.style.color === 'white' || !element.style.color) {
+                element.style.setProperty('color', '#000000', 'important');
+            }
+        });
+        
+        // Ensure body and html have proper background
+        document.body.style.setProperty('background-color', '#ffffff', 'important');
+        document.documentElement.style.setProperty('background-color', '#ffffff', 'important');
+        
+        console.log("✅ UI normalization fixes applied successfully");
+    }, 100);
+}
+
+// Apply fixes immediately
+applyUIFixes();
+
+// Apply fixes when DOM changes (for dynamic content)
+const observer = new MutationObserver((mutations) => {
+    let shouldReapply = false;
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            shouldReapply = true;
+        }
+    });
+    
+    if (shouldReapply) {
+        setTimeout(applyUIFixes, 50);
+    }
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+});
+
+// Apply fixes on various events
+document.addEventListener('DOMContentLoaded', applyUIFixes);
+window.addEventListener('load', applyUIFixes);
+window.addEventListener('resize', applyUIFixes);
+
+// Export for manual use
+window.applyUIFixes = applyUIFixes;

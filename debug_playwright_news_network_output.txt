@@ -1,0 +1,64 @@
+#tab-market_trends not found, trying alternative
+Wait 1s: news_items count = 0
+Wait 2s: news_items count = 0
+Wait 3s: news_items count = 0
+Wait 4s: news_items count = 0
+Wait 5s: news_items count = 0
+Wait 6s: news_items count = 0
+Wait 7s: news_items count = 0
+Wait 8s: news_items count = 0
+Wait 9s: news_items count = 0
+Wait 10s: news_items count = 0
+Wait 11s: news_items count = 0
+Wait 12s: news_items count = 0
+Wait 13s: news_items count = 0
+Wait 14s: news_items count = 0
+Wait 15s: news_items count = 0
+news count: 1
+news inner_text: Loading news...
+news inner_html (first 1000): Loading news...
+
+Captured network requests (last 30):
+GET http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js
+GET http://localhost:8050/_dash-component-suites/dash/dcc/dash_core_components.v3_2_0m1760853593.js
+GET http://localhost:8050/_dash-component-suites/dash/dcc/dash_core_components-shared.v3_2_0m1760853593.js
+GET http://localhost:8050/_dash-component-suites/dash/html/dash_html_components.v3_0_4m1760853593.min.js
+GET http://localhost:8050/_dash-component-suites/dash/dash_table/bundle.v6_0_4m1760853593.js
+GET http://localhost:8050/_dash-layout
+GET http://localhost:8050/_dash-dependencies
+GET http://localhost:8050/_dash-component-suites/dash/dcc/async-datepicker.js
+GET http://localhost:8050/_dash-component-suites/dash/dcc/async-slider.js
+GET http://localhost:8050/_dash-component-suites/dash/dcc/async-dropdown.js
+GET http://localhost:8050/_dash-component-suites/dash/dcc/async-graph.js
+GET http://localhost:8050/_dash-component-suites/plotly/package_data/plotly.min.js
+GET http://localhost:8050/_dash-component-suites/dash/dash_table/async-highlight.js
+GET http://localhost:8050/_dash-component-suites/dash/dash_table/async-table.js
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+POST http://localhost:8050/_dash-update-component
+
+Console messages (last 20):
+log: [Analysis Hub] Tab activation script loaded
+log: [Analysis Hub] Skipping - not on Analysis Hub/Unified Dashboard
+log: [Portfolio Fix] Skipping - not on Portfolio/Unified Dashboard
+log: [Research Lab Fix] Skipping - not on Research Lab
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] DataTable paste module loaded
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] Paste listener attached to DataTable
+Saved screenshot to test-artifacts/debug_news_network.png

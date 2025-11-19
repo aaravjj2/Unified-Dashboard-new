@@ -1,0 +1,21 @@
+{
+  "test_run": {
+    "timestamp": "2025-10-29T08:50:29.699665",
+    "offline_mode": true,
+    "portfolio_size": 10
+  },
+  "sla_results": {
+    "single_shap_ms": 2750.0,
+    "batch_shap_ms": 8800.0,
+    "options_ms": 3300.0000000000005
+  },
+  "reproducibility": {
+    "single_shap": "PASS",
+    "batch_shap": "PASS",
+    "options_forecast": "PASS"
+  },
+  "contract_compliance": {
+    "explainability_contract": "PASS",
+    "forecast_contract": "PASS"
+  }
+}

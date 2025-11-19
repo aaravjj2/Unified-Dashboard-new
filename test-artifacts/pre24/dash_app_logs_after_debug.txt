@@ -1,0 +1,201 @@
+time="2025-11-01T02:28:51-04:00" level=warning msg="/mnt/c/Aarav/fin_env/unified-dashboard/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+dash_app  | 2025-11-01 06:28:28,795 - INFO - Startup Cache Validation Report
+dash_app  | 2025-11-01 06:28:28,796 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:28,796 - INFO - Total tickers in cache: 59
+dash_app  | 2025-11-01 06:28:28,796 - INFO - Valid Market Trends tickers: 3/5
+dash_app  | 2025-11-01 06:28:28,796 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+dash_app  | 2025-11-01 06:28:28,796 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+dash_app  | 2025-11-01 06:28:28,796 - WARNING -      AAPL: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:28,796 - WARNING -      TSLA: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:28,796 - INFO - Overall status: ❌ INCOMPLETE
+dash_app  | 2025-11-01 06:28:28,796 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:28,881 - INFO - ✓ Loaded _shared.py
+dash_app  | 2025-11-01 06:28:28,900 - INFO - ✓ Chatbot UI available
+dash_app  | 2025-11-01 06:28:28,960 - INFO - ✓ Home Lab helpers loaded
+dash_app  | 2025-11-01 06:28:28,960 - INFO - ✓ Home Lab layout module loaded
+dash_app  | 2025-11-01 06:28:28,960 - INFO - ✓ Home Lab module initialized
+dash_app  | 2025-11-01 06:28:28,960 - INFO - ✓ Loaded tab: 🏠 Command Center
+dash_app  | 2025-11-01 06:28:28,971 - INFO - ✓ Loaded tab: 🏠 Home
+dash_app  | 2025-11-01 06:28:28,999 - INFO - ✅ Preloaded 59 weekly prices from cache
+dash_app  | [_shared.py] ✅ Preloaded 59 weekly prices
+dash_app  | 2025-11-01 06:28:29,005 - INFO - ✅ Preloaded 59 total prices (including monthly)
+dash_app  | 2025-11-01 06:28:29,006 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'TSLA']
+dash_app  | 2025-11-01 06:28:29,006 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+dash_app  | 2025-11-01 06:28:29,006 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,006 - INFO - Startup Cache Validation Report
+dash_app  | 2025-11-01 06:28:29,006 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,006 - INFO - Total tickers in cache: 59
+dash_app  | 2025-11-01 06:28:29,006 - INFO - Valid Market Trends tickers: 3/5
+dash_app  | 2025-11-01 06:28:29,006 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+dash_app  | 2025-11-01 06:28:29,006 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+dash_app  | 2025-11-01 06:28:29,006 - WARNING -      AAPL: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:29,006 - WARNING -      TSLA: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:29,006 - INFO - Overall status: ❌ INCOMPLETE
+dash_app  | 2025-11-01 06:28:29,006 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,006 - WARNING - [_shared] SH id: 134729325165232, RESULTS_CACHE id: 134729459191680, SH.__file__: /app/financial_dashboard/_shared.py
+dash_app  | [_shared] SH id: 134729325165232, RESULTS_CACHE id: 134729459191680, SH.__file__: /app/financial_dashboard/_shared.py
+dash_app  | [_shared.py] ✅ Preloaded 59 weekly prices
+dash_app  | 2025-11-01 06:28:29,225 - INFO - ✅ Preloaded 59 weekly prices from cache
+dash_app  | 2025-11-01 06:28:29,234 - INFO - ✅ Preloaded 59 total prices (including monthly)
+dash_app  | [_shared] SH id: 134729333052880, RESULTS_CACHE id: 134729319056512, SH.__file__: /app/financial_dashboard/_shared.py
+dash_app  | 2025-11-01 06:28:29,235 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'TSLA']
+dash_app  | 2025-11-01 06:28:29,235 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+dash_app  | 2025-11-01 06:28:29,235 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,235 - INFO - Startup Cache Validation Report
+dash_app  | 2025-11-01 06:28:29,235 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,235 - INFO - Total tickers in cache: 59
+dash_app  | 2025-11-01 06:28:29,235 - INFO - Valid Market Trends tickers: 3/5
+dash_app  | 2025-11-01 06:28:29,235 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+dash_app  | 2025-11-01 06:28:29,235 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+dash_app  | 2025-11-01 06:28:29,236 - WARNING -      AAPL: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:29,236 - WARNING -      TSLA: missing week_start_price, month_start_price
+dash_app  | 2025-11-01 06:28:29,236 - INFO - Overall status: ❌ INCOMPLETE
+dash_app  | 2025-11-01 06:28:29,236 - INFO - ============================================================
+dash_app  | 2025-11-01 06:28:29,236 - WARNING - [_shared] SH id: 134729333052880, RESULTS_CACHE id: 134729319056512, SH.__file__: /app/financial_dashboard/_shared.py
+dash_app  | 2025-11-01 06:28:29,389 - DEBUG - Injected server run_full_analysis into tabs.market_trends (overwrite if existed)
+dash_app  | 2025-11-01 06:28:29,393 - INFO - ✓ Loaded tab: Market Trends
+dash_app  | 2025-11-01 06:28:29,430 - INFO - ✓ Loaded tab: Market Forecast
+dash_app  | 2025-11-01 06:28:30,448 - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+dash_app  | 2025-11-01 06:28:30,497 - INFO - ✓ Loaded tab: 📊 Attribution Lab
+dash_app  | 2025-11-01 06:28:30,553 - INFO - ✓ Strategy Lab Setup subtab loaded
+dash_app  | 2025-11-01 06:28:30,564 - INFO - ✓ Strategy Lab Execution subtab loaded
+dash_app  | 2025-11-01 06:28:30,577 - INFO - ✓ Strategy Lab Results subtab loaded
+dash_app  | 2025-11-01 06:28:30,587 - INFO - ✓ Strategy Lab Benchmark subtab loaded (enhanced with Beta, IR, Tracking Error)
+dash_app  | 2025-11-01 06:28:30,599 - INFO - ✓ Strategy Lab Risk & Factor Analysis subtab loaded
+dash_app  | 2025-11-01 06:28:30,599 - INFO - ✓ Strategy Lab modular layout loaded (6 subtabs)
+dash_app  | 2025-11-01 06:28:30,618 - INFO - ✓ Loaded tab: ⚡ Strategy Lab
+dash_app  | 2025-11-01 06:28:30,625 - INFO - ✓ Loaded tab: Monthly Picks
+dash_app  | 2025-11-01 06:28:30,765 - INFO - ✓ Loaded tab: Weekly Picks
+dash_app  | 2025-11-01 06:28:30,814 - WARNING - diskcache not available - caching disabled
+dash_app  | 2025-11-01 06:28:30,829 - INFO - ✓ Loaded tab: Portfolio
+dash_app  | 2025-11-01 06:28:30,874 - INFO - ✓ Loaded tab: 💹 Options Lab
+dash_app  | 2025-11-01 06:28:30,919 - INFO - ✓ Loaded tab: 🔬 Research Lab
+dash_app  | 2025-11-01 06:28:30,949 - INFO - ✓ Azure ML Lab layout loaded (Phase 3 Scaffold)
+dash_app  | 2025-11-01 06:28:31,005 - INFO - Azure ML Config initialized: workspace=unified-dashboard-ml, mock_fallback=True
+dash_app  | 2025-11-01 06:28:31,005 - INFO - ✓ Azure ML configuration module loaded
+dash_app  | 2025-11-01 06:28:31,005 - INFO - ✅ Azure ML config loaded
+dash_app  | 2025-11-01 06:28:31,005 - INFO - ✅ yfinance loaded for real market data
+dash_app  | 2025-11-01 06:28:31,014 - INFO - 📊 ML Metrics Collector initialized
+dash_app  | 2025-11-01 06:28:31,015 - INFO - 🚨 ML Exception Tracker initialized
+dash_app  | 2025-11-01 06:28:31,015 - INFO - ✓ Azure ML observability layer loaded (Phase 20A)
+dash_app  | 2025-11-01 06:28:31,015 - INFO - ✅ Observability layer loaded
+dash_app  | 2025-11-01 06:28:31,015 - INFO - ✓ Azure ML Lab helpers loaded (Phase 3 Scaffold)
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ Azure ML database layer loaded (Phase 20A + 20B extensions)
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✅ Phase 20A: ML database and observability layers loaded
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ Azure ML Lab callbacks module loaded (Phase 20B)
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ Azure ML Lab package loaded (Phase 4 - Production Ready)
+dash_app  | 2025-11-01 06:28:31,028 - INFO -   Version: 1.0.0
+dash_app  | 2025-11-01 06:28:31,028 - INFO -   Status: production_ready
+dash_app  | 2025-11-01 06:28:31,028 - INFO -   Features: Real Azure ML API + Mock fallback
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ Loaded tab: 🤖 Azure ML Lab
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ index.py initialization complete
+dash_app  | 2025-11-01 06:28:31,028 - INFO - ✓ index.py layout ready
+dash_app  | 2025-11-01 06:28:31,029 - INFO - 🔵 create_layout() called!
+dash_app  | 2025-11-01 06:28:31,029 - INFO - 🔍 ENABLED_TABS = ['home_lab', 'research_lab', 'attribution_lab', 'strategy_lab', 'azure_ml_lab', 'weekly_picks', 'monthly_picks', 'market_trends', 'market_forecast', 'volatility_lab', 'portfolio', 'options_lab']
+dash_app  | 2025-11-01 06:28:31,029 - INFO - 🔍 loaded_tabs keys = ['home_lab', 'home', 'market_trends', 'market_forecast', 'volatility_lab', 'attribution_lab', 'strategy_lab', 'monthly_picks', 'weekly_picks', 'portfolio', 'options_lab', 'research_lab', 'azure_ml_lab']
+dash_app  | 2025-11-01 06:28:31,029 - INFO - 🔍 Processing tab: home_lab
+dash_app  | 2025-11-01 06:28:31,029 - INFO - Creating Home Lab layout...
+dash_app  | 2025-11-01 06:28:31,452 - INFO - ✅ Loaded portfolio from Alpaca API: 3 positions, $92,202.63
+dash_app  | 2025-11-01 06:28:31,497 - INFO -   ✅ Created layout for home_lab
+dash_app  | 2025-11-01 06:28:31,497 - INFO - 🔍 Processing tab: research_lab
+dash_app  | 2025-11-01 06:28:31,497 - INFO -   ✅ Created layout for research_lab
+dash_app  | 2025-11-01 06:28:31,497 - INFO - 🔍 Processing tab: attribution_lab
+dash_app  | 2025-11-01 06:28:31,499 - INFO -   ✅ Created layout for attribution_lab
+dash_app  | 2025-11-01 06:28:31,499 - INFO - 🔍 Processing tab: strategy_lab
+dash_app  | 2025-11-01 06:28:31,499 - INFO - Creating Strategy Lab layout with 5 modular subtabs (Backtest+Execute merged)...
+dash_app  | 2025-11-01 06:28:31,552 - INFO -   ✅ Created layout for strategy_lab
+dash_app  | 2025-11-01 06:28:31,553 - INFO - 🔍 Processing tab: azure_ml_lab
+dash_app  | 2025-11-01 06:28:31,553 - INFO - 📐 Creating Azure ML Lab layout (Phase 3 Scaffold)
+dash_app  | 2025-11-01 06:28:31,554 - INFO -   ✅ Created layout for azure_ml_lab
+dash_app  | 2025-11-01 06:28:31,555 - INFO - 🔍 Processing tab: weekly_picks
+dash_app  | 2025-11-01 06:28:31,555 - INFO - ⏳ CACHE MISS: Fetching fresh weekly picks data from DB/CSV + live prices...
+dash_app  | 2025-11-01 06:28:32,063 - INFO - Selected weekly picks file: /app/financial_dashboard/models/weekly_run/picks_20251021_top20.csv
+dash_app  | 2025-11-01 06:28:32,063 - INFO - Loading weekly picks from: /app/financial_dashboard/models/weekly_run/picks_20251021_top20.csv
+dash_app  | 2025-11-01 06:28:32,072 - INFO - ✅ All 20 tickers have complete cached prices, skipping fetch
+dash_app  | 2025-11-01 06:28:32,072 - INFO - [ENRICH] cached_results type: <class 'dict'>, cached_prices len: 59, keys sample: ['AAPL', 'MSFT', 'ASTS', 'SNDK', 'RGTI']
+dash_app  | 2025-11-01 06:28:32,074 - INFO - ✅ CACHED: Weekly picks data (CSV source) saved for 300s
+dash_app  | 2025-11-01 06:28:32,081 - INFO -   ✅ Created layout for weekly_picks
+dash_app  | 2025-11-01 06:28:32,081 - INFO - 🔍 Processing tab: monthly_picks
+dash_app  | 2025-11-01 06:28:32,081 - INFO - ⏳ CACHE MISS: Fetching fresh monthly picks data with API calls...
+dash_app  | 2025-11-01 06:28:32,481 - INFO - Selected monthly picks file: /app/financial_dashboard/models/full_run/picks_20251001.csv
+dash_app  | 2025-11-01 06:28:32,481 - INFO - Loading monthly picks from: /app/financial_dashboard/models/full_run/picks_20251001.csv
+dash_app  | 2025-11-01 06:28:32,488 - INFO - ✅ PHASE 18B: Mapped CSV composite score to ML schema (combined_score, momentum_score, sentiment_score, fundamental_score)
+dash_app  | 2025-11-01 06:28:32,491 - INFO - ✅ All 20 tickers have complete cached prices, skipping fetch
+dash_app  | 2025-11-01 06:28:32,492 - INFO - ✅ CACHED: Monthly picks data saved for 300s
+dash_app  | 2025-11-01 06:28:32,498 - INFO -   ✅ Created layout for monthly_picks
+dash_app  | 2025-11-01 06:28:32,498 - INFO - 🔍 Processing tab: market_trends
+dash_app  | 2025-11-01 06:28:32,530 - INFO - ✅ Layout cache load: SUCCESS - 15 tickers
+dash_app  | 2025-11-01 06:28:32,593 - INFO - 🎨 _render_initial_table_from_cache called with: <class 'dict'> - True
+dash_app  | 2025-11-01 06:28:32,593 - INFO - 📊 Attempting to render table from 15 tickers
+dash_app  | 2025-11-01 06:28:32,716 - INFO - ✅ Rendering table with 15 rows
+dash_app  | 2025-11-01 06:28:32,723 - INFO -   ✅ Created layout for market_trends
+dash_app  | 2025-11-01 06:28:32,723 - INFO - 🔍 Processing tab: market_forecast
+dash_app  | 2025-11-01 06:28:32,725 - INFO -   ✅ Created layout for market_forecast
+dash_app  | 2025-11-01 06:28:32,725 - INFO - 🔍 Processing tab: volatility_lab
+dash_app  | 2025-11-01 06:28:32,726 - INFO -   ✅ Created layout for volatility_lab
+dash_app  | 2025-11-01 06:28:32,727 - INFO - 🔍 Processing tab: portfolio
+dash_app  | 2025-11-01 06:28:32,735 - INFO - Loaded portfolio cache for layout preload: /app/financial_dashboard/cache/portfolio_data.json
+dash_app  | 2025-11-01 06:28:32,742 - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+dash_app  | 2025-11-01 06:28:32,746 - INFO - ✅ Server-side positions table rendered successfully
+dash_app  | 2025-11-01 06:28:32,747 - INFO -   ✅ Created layout for portfolio
+dash_app  | 2025-11-01 06:28:32,748 - INFO - 🔍 Processing tab: options_lab
+dash_app  | 2025-11-01 06:28:32,749 - INFO -   ✅ Created layout for options_lab
+dash_app  | 2025-11-01 06:28:32,749 - INFO - ✅ Created 12 tabs total
+dash_app  | 2025-11-01 06:28:32,767 - INFO - ✅ [create_app()] Set app.layout with 12 tabs (eager loading)
+dash_app  | 2025-11-01 06:28:32,767 - INFO - 🔵 Registering callbacks...
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Starting callback registration. app object id: 134730426022208, type: <class 'dash_extensions.enrich.DashProxy'>
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🏠 Home
+dash_app  | 2025-11-01 06:28:32,775 - INFO - ✓ Registered callbacks for 🏠 Home
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🏠 Home
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+dash_app  | 2025-11-01 06:28:32,775 - INFO - ✓ Registered callbacks for Market Trends
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Forecast
+dash_app  | 2025-11-01 06:28:32,775 - INFO - ✓ Registered callbacks for Market Forecast
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Forecast
+dash_app  | 2025-11-01 06:28:32,775 - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Volatility Lab
+dash_app  | 2025-11-01 06:28:32,775 - INFO - ✓ Registered callbacks for ⚡ Volatility Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Volatility Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Strategy Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - ✅ Strategy Lab callbacks registered successfully (8 callbacks)
+dash_app  | 2025-11-01 06:28:32,776 - INFO - ✓ Registered callbacks for ⚡ Strategy Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Strategy Lab
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - ✓ Registered callbacks for Monthly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - ✓ Registered callbacks for Weekly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+dash_app  | 2025-11-01 06:28:32,776 - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+dash_app  | 2025-11-01 06:28:32,776 - INFO - Portfolio database initialized
+dash_app  | 2025-11-01 06:28:32,777 - INFO - SHAP_DEBUG - Registering factor_exposure callback
+dash_app  | 2025-11-01 06:28:32,777 - INFO - Portfolio tracker callbacks registered (modular architecture)
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✓ Registered callbacks for Portfolio
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✅ Options Lab callbacks registered successfully
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✓ Registered callbacks for 💹 Options Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✅ Research Lab callbacks registered successfully
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✓ Registered callbacks for 🔬 Research Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🤖 Azure ML Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - 📌 Registering Azure ML Lab callbacks (Phase 20B Complete)
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✅ Azure ML Lab callbacks registered (9 callbacks)
+dash_app  | 2025-11-01 06:28:32,777 - INFO - ✓ Registered callbacks for 🤖 Azure ML Lab
+dash_app  | 2025-11-01 06:28:32,777 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🤖 Azure ML Lab
+dash_app  | 2025-11-01 06:28:32,802 - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+dash_app  | 2025-11-01 06:28:32,802 - INFO - ✅ Registered 0 tab callbacks
+dash_app  | 2025-11-01 06:28:32,807 - INFO - 🔵 Registering global callbacks (search, theme, chatbot)...
+dash_app  | 2025-11-01 06:28:32,807 - INFO - ✅ Registered 3 global callbacks
+dash_app  | 2025-11-01 06:28:32,807 - INFO - ✅ Registered 3 global callbacks
+dash_app  | 2025-11-01 06:28:32,807 - INFO - 🔵 Forcing DashProxy to register pending callbacks...
+dash_app  | 2025-11-01 06:28:32,807 - INFO - 📊 Callback map BEFORE registration: 0 entries
+dash_app  | 2025-11-01 06:28:32,810 - INFO - 📊 Callback map AFTER registration: 72 entries
+dash_app  | 2025-11-01 06:28:32,810 - INFO - 🔧 Deduplicated callback_map: 72 → 69 callbacks (3 duplicates removed)
+dash_app  | 2025-11-01 06:28:32,810 - INFO - ✅ Successfully registered 69 callbacks
+dash_app  | 2025-11-01 06:28:32,810 - INFO - 📋 Sample callback IDs: ['..home-portfolio-value.children...home-portfolio-change.children..', '..market-sp500-value.children...market-sp500-pct.children...market-nasdaq-value.children...market-nasdaq-pct.children...market-dow-value.children...market-dow-pct.children...{"index":["ALL"],"type":"watch-price"}.children...{"index":["ALL"],"type":"watch-change"}.children..', '..home-action-result.children...home-last-job.children...home-last-analysis-job.children...home-last-hedge-job.children...home-action-alert.children...home-action-alert.is_open...home-nav.href..', 'watchlist-items-container.children', '..results-area.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...tab-visibility-indicator.children...tab-visibility-indicator.style...news-container.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...trends-last-cached.data@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d..']

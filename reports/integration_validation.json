@@ -1,0 +1,51 @@
+{
+  "validation_timestamp": "2025-11-01T19:15:33.203547",
+  "summary": {
+    "lambdatest_status": "missing_credentials",
+    "sentry_status": "missing_dsn",
+    "datadog_status": "missing_api_key",
+    "overall_status": "partial"
+  },
+  "detailed_results": {
+    "lambdatest": {
+      "status": "missing_credentials",
+      "details": {
+        "username_set": false,
+        "access_key_set": false,
+        "message": "Environment variables LAMBDATEST_USERNAME and LAMBDATEST_ACCESS_KEY not set"
+      }
+    },
+    "sentry": {
+      "status": "missing_dsn",
+      "details": {
+        "dsn_set": false,
+        "message": "Environment variable SENTRY_DSN not set"
+      }
+    },
+    "datadog": {
+      "status": "missing_api_key",
+      "details": {
+        "api_key_set": false,
+        "app_key_set": false,
+        "message": "Environment variable DATADOG_API_KEY not set"
+      }
+    }
+  },
+  "recommendations": [
+    {
+      "service": "LambdaTest",
+      "issue": "Authentication failed or credentials missing",
+      "solution": "Set LAMBDATEST_USERNAME and LAMBDATEST_ACCESS_KEY environment variables"
+    },
+    {
+      "service": "Sentry",
+      "issue": "Not configured or DSN missing",
+      "solution": "Set SENTRY_DSN environment variable and install sentry-sdk"
+    },
+    {
+      "service": "Datadog",
+      "issue": "API key missing or invalid",
+      "solution": "Set DATADOG_API_KEY and optionally DATADOG_APP_KEY environment variables"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+/* Portfolio Tracker specific fixes */
+
+/* Force black text in all card bodies (portfolio summary cards) */
+.card-body h3, .card-body h6, .card-body h4, .card-body h5 {
+    color: #000000 !important;
+}
+
+/* Specifically target portfolio value cards */
+#portfolio-value, #portfolio-invested, #portfolio-unrealized-pl, #portfolio-buying-power {
+    color: #000000 !important;
+}
+
+/* Target the muted text labels in cards */
+.card-body .text-muted {
+    color: #6c757d !important;
+}
+
+/* Analytics metrics cards */
+#portfolio-var, #portfolio-cvar, #portfolio-sharpe, #portfolio-beta {
+    color: #000000 !important;
+}
+
+/* Ensure DataTable text is black */
+.dash-table-container {
+    color: #000000 !important;
+}
+
+.dash-table-container .dash-cell {
+    color: #000000 !important;
+}
+
+/* Plotly charts text should be black */
+.js-plotly-plot .plotly text {
+    fill: #000000 !important;
+}

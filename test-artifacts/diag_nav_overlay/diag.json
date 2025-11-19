@@ -1,0 +1,347 @@
+{
+  "screenshot": "test-artifacts/diag_nav_overlay/nav_screenshot_1761085802.png",
+  "nav_info": [
+    {
+      "index": 0,
+      "text": "\ud83c\udfe0 Home",
+      "html": "\ud83c\udfe0 Home",
+      "rect": {
+        "x": 32,
+        "y": 172,
+        "width": 219.390625,
+        "height": 48
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Market Trends\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 1,
+      "text": "Market Trends",
+      "html": "Market Trends",
+      "rect": {
+        "x": 296.390625,
+        "y": 172,
+        "width": 259.859375,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Market Forecast\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 2,
+      "text": "Market Forecast",
+      "html": "Market Forecast",
+      "rect": {
+        "x": 601.25,
+        "y": 172,
+        "width": 256.296875,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Monthly Picks\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 3,
+      "text": "\u26a1 Volatility Lab",
+      "html": "\u26a1 Volatility Lab",
+      "rect": {
+        "x": 902.546875,
+        "y": 172,
+        "width": 251.125,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Weekly Picks\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 4,
+      "text": "Monthly Picks",
+      "html": "Monthly Picks",
+      "rect": {
+        "x": 32,
+        "y": 243,
+        "width": 234.078125,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Analysis Hub\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 5,
+      "text": "Weekly Picks",
+      "html": "Weekly Picks",
+      "rect": {
+        "x": 311.078125,
+        "y": 243,
+        "width": 253.328125,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Portfolio Tracker\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 6,
+      "text": "Analysis Hub",
+      "html": "Analysis Hub",
+      "rect": {
+        "x": 609.40625,
+        "y": 243,
+        "width": 235,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "\"Research Lab\"",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 7,
+      "text": "Portfolio",
+      "html": "Portfolio",
+      "rect": {
+        "x": 889.40625,
+        "y": 243,
+        "width": 100.703125,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 8,
+      "text": "\ud83d\udcb9 Options Lab",
+      "html": "\ud83d\udcb9 Options Lab",
+      "rect": {
+        "x": 1035.109375,
+        "y": 243,
+        "width": 152.734375,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    },
+    {
+      "index": 9,
+      "text": "\ud83d\udcca Backtesting Lab",
+      "html": "\ud83d\udcca Backtesting Lab",
+      "rect": {
+        "x": 32,
+        "y": 312,
+        "width": 180.296875,
+        "height": 46
+      },
+      "computed": {
+        "whiteSpace": "normal",
+        "overflow": "visible",
+        "display": "inline-block",
+        "position": "static"
+      },
+      "pseudo_before": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      },
+      "pseudo_after": {
+        "content": "none",
+        "display": "inline",
+        "width": "auto",
+        "height": "auto",
+        "left": "auto",
+        "right": "auto"
+      }
+    }
+  ],
+  "container_before": {
+    "content": "none",
+    "display": "block",
+    "width": "auto",
+    "height": "auto"
+  },
+  "container_after": {
+    "content": "none",
+    "display": "block",
+    "width": "auto",
+    "height": "auto"
+  }
+}

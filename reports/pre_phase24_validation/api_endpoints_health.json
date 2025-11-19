@@ -1,0 +1,50 @@
+{
+  "/api/weekly_picks": {
+    "status_code": 200,
+    "response_time_ms": 76.969,
+    "content_type": "application/json",
+    "content_length": 18686,
+    "valid_json": true,
+    "response_type": "dict",
+    "keys": [
+      "count",
+      "data",
+      "source",
+      "status",
+      "tickers",
+      "timestamp",
+      "week_start_date"
+    ]
+  },
+  "/api/monthly_picks": {
+    "status_code": 200,
+    "response_time_ms": 274.599,
+    "content_type": "application/json",
+    "content_length": 6619,
+    "valid_json": true,
+    "response_type": "dict",
+    "keys": [
+      "count",
+      "data",
+      "status",
+      "tickers",
+      "timestamp"
+    ]
+  },
+  "/api/jobs": {
+    "status_code": 200,
+    "response_time_ms": 12.290000000000001,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": 8028,
+    "valid_json": false,
+    "response_preview": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n      <meta charset=\"UTF-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+  },
+  "/health": {
+    "status_code": 200,
+    "response_time_ms": 12.444,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": 8028,
+    "valid_json": false,
+    "response_preview": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n      <meta charset=\"UTF-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+  }
+}

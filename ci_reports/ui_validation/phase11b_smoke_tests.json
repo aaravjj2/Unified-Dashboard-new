@@ -1,0 +1,50 @@
+{
+  "total": 4,
+  "passed": 4,
+  "failed": 0,
+  "tests": [
+    {
+      "tab": "Market Trends",
+      "status": "PASSED",
+      "duration_ms": 2443,
+      "error": null,
+      "elements_found": [
+        "market-trends-table",
+        "market-trends-sentinel-table"
+      ],
+      "screenshot": "ci_reports/ui_validation/phase11b_market_trends.png"
+    },
+    {
+      "tab": "Portfolio",
+      "status": "PASSED",
+      "duration_ms": 2303,
+      "error": null,
+      "elements_found": [
+        "portfolio-value",
+        "portfolio-positions"
+      ],
+      "screenshot": "ci_reports/ui_validation/phase11b_portfolio.png"
+    },
+    {
+      "tab": "Options Lab",
+      "status": "PASSED",
+      "duration_ms": 2355,
+      "error": null,
+      "elements_found": [
+        "options"
+      ],
+      "screenshot": "ci_reports/ui_validation/phase11b_options_lab.png"
+    },
+    {
+      "tab": "Volatility Lab",
+      "status": "PASSED",
+      "duration_ms": 2352,
+      "error": null,
+      "elements_found": [
+        "volatility",
+        "vol"
+      ],
+      "screenshot": "ci_reports/ui_validation/phase11b_volatility_lab.png"
+    }
+  ]
+}
