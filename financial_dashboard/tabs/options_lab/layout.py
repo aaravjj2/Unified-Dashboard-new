@@ -272,11 +272,11 @@ def _create_chain_viewer_subtab():
                     ], width=3),
                     dbc.Col([
                         dbc.Label("Strike", className="small"),
-                        dcc.Input(
+                        dcc.Dropdown(
                             id='contract-strike-selector',
-                            type='number',
-                            placeholder="Strike price",
-                            className="form-control form-control-sm"
+                            options=[],
+                            placeholder="Select strike",
+                            className="mb-2"
                         )
                     ], width=3),
                     dbc.Col([

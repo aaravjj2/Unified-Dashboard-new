@@ -36,8 +36,8 @@ from .components import (
 logger = logging.getLogger(__name__)
 
 # API configuration from environment
-# Note: API runs on same port as dashboard (8050), not separate port 8090
-API_BASE = os.getenv('VOLLAB_API_BASE', 'http://localhost:8050/api/volsurface')
+# Note: API runs on same port as dashboard (8051), not separate port 8090
+API_BASE = os.getenv('VOLLAB_API_BASE', 'http://localhost:8051/api/volsurface')
 DETERMINISTIC_MODE = os.getenv('VOLLAB_DETERMINISTIC', '0') == '1'
 
 # Idempotent registration guard

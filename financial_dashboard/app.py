@@ -7,6 +7,9 @@ import os
 import sys
 import json
 import logging
+import subprocess
+import atexit
+import time
 import dash
 from dash import html as _dash_html_compat
 
@@ -58,6 +61,72 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 
+# Global chatbot process handle
+_chatbot_process = None
+
+def start_chatbot_service():
+    """
+    Launch chatbot service as subprocess if not already running.
+    Returns True if chatbot is available, False otherwise.
+    """
+    global _chatbot_process
+    
+    # Check if already running
+    try:
+        import requests
+        resp = requests.get("http://localhost:8062/health", timeout=2)
+        if resp.status_code == 200:
+            logger.info("✅ Chatbot service already running on port 8062")
+            return True
+    except:
+        pass
+    
+    # Launch subprocess
+    logger.info("🚀 Starting chatbot service...")
+    try:
+        _chatbot_process = subprocess.Popen([
+            sys.executable, "-m", "uvicorn",
+            "financial_dashboard.services.chatbot_service:app",
+            "--host", "0.0.0.0",
+            "--port", "8062"
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.path.dirname(APP_DIR))
+        
+        # Wait for service to be ready (max 30 seconds)
+        import requests
+        for i in range(30):
+            try:
+                resp = requests.get("http://localhost:8062/health", timeout=1)
+                if resp.status_code == 200:
+                    logger.info("✅ Chatbot service ready on port 8062")
+                    return True
+            except:
+                time.sleep(1)
+        
+        logger.warning("⚠️ Chatbot service started but health check failed")
+        return False
+    except Exception as e:
+        logger.error(f"❌ Failed to start chatbot service: {e}")
+        return False
+
+def cleanup_chatbot():
+    """Terminate chatbot service on shutdown"""
+    global _chatbot_process
+    if _chatbot_process:
+        logger.info("🛑 Stopping chatbot service...")
+        try:
+            _chatbot_process.terminate()
+            _chatbot_process.wait(timeout=5)
+            logger.info("✅ Chatbot service stopped")
+        except Exception as e:
+            logger.warning(f"Error stopping chatbot: {e}")
+            try:
+                _chatbot_process.kill()
+            except:
+                pass
+
+# Register cleanup handler
+atexit.register(cleanup_chatbot)
+
 
 def create_app():
     """
@@ -77,6 +146,16 @@ def create_app():
     logger.info("=" * 70)
     logger.info("Creating Financial Dashboard Application")
     logger.info("=" * 70)
+    
+    # ========================================================================
+    # STEP 0: Start Chatbot Service
+    # ========================================================================
+    logger.info("Step 0: Starting chatbot service...")
+    chatbot_available = start_chatbot_service()
+    if chatbot_available:
+        logger.info("✅ Chatbot service is available")
+    else:
+        logger.warning("⚠️ Chatbot service not available - chatbot features may not work")
     
     # ========================================================================
     # STEP 1: Create Flask Server
@@ -430,7 +509,7 @@ def create_app():
     
     # Register Volatility Surface API Blueprint (Agent-1B)
     try:
-        from .api.volsurface import register_blueprints as register_vol_blueprints
+        from financial_dashboard.api.volsurface import register_blueprints as register_vol_blueprints
         register_vol_blueprints(server)
         logger.info("✅ Registered Volatility Surface API: /api/volsurface/*, /admin/vollab/*")
     except Exception as e:

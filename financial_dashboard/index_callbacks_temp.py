@@ -95,80 +95,10 @@ def register_global_callbacks(app, loaded_tabs, CHATBOT_AVAILABLE):
         icon_class = "bi bi-sun-fill" if new_theme == "light" else "bi bi-moon-fill"
         return {"theme": new_theme}, icon_class
 
-    # Sprint 7: AI Chatbot Callbacks
-    if CHATBOT_AVAILABLE:
-        import httpx
-        from components.chatbot_ui import create_message_bubble
-        
-        @app.callback(
-            Output("chatbot-container", "style"),
-            Input("chatbot-toggle-btn", "n_clicks"),
-            Input("chatbot-close-btn", "n_clicks"),
-            State("chatbot-container", "style"),
-            prevent_initial_call=True
-        )
-        def toggle_chatbot(toggle_clicks, close_clicks, current_style):
-            """Toggle chatbot window visibility."""
-            ctx = dash.callback_context
-            if not ctx.triggered:
-                return current_style or {"display": "none"}
-            
-            trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
-            
-            if trigger_id == "chatbot-toggle-btn":
-                is_hidden = current_style.get("display") == "none" if current_style else True
-                return {"display": "block"} if is_hidden else {"display": "none"}
-            elif trigger_id == "chatbot-close-btn":
-                return {"display": "none"}
-            
-            return current_style or {"display": "none"}
-        
-        @app.callback(
-            Output("chatbot-messages", "children"),
-            Output("chatbot-input", "value"),
-            Input("chatbot-send-btn", "n_clicks"),
-            State("chatbot-input", "value"),
-            State("chatbot-messages", "children"),
-            State("chatbot-session-id", "data"),
-            prevent_initial_call=True
-        )
-        def send_message(n_clicks, message, current_messages, session_id):
-            """Send message to chatbot and display response."""
-            if not message or not message.strip():
-                return current_messages, ""
-            
-            from components.chatbot_ui import create_message_bubble
-            user_bubble = create_message_bubble(message, is_user=True)
-            current_messages.append(user_bubble)
-            
-            try:
-                # Direct call to chatbot service (bypass gateway for local testing)
-                chatbot_url = os.getenv("CHATBOT_SERVICE_URL", "http://localhost:8062")
-                response = httpx.post(
-                    f"{chatbot_url}/api/chat",
-                    json={"message": message, "session_id": session_id},
-                    timeout=30.0
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    ai_message = data.get("response", "Sorry, I couldn't process that request.")
-                    sources = data.get("sources", [])
-                    ai_bubble = create_message_bubble(ai_message, is_user=False, sources=sources)
-                    current_messages.append(ai_bubble)
-                else:
-                    error_bubble = create_message_bubble(
-                        f"Error: Unable to get response (Status {response.status_code})",
-                        is_user=False
-                    )
-                    current_messages.append(error_bubble)
-            except Exception as e:
-                logger.error(f"Error calling chatbot service: {e}")
-                error_bubble = create_message_bubble(f"Error: {str(e)}", is_user=False)
-                current_messages.append(error_bubble)
-            
-            return current_messages, ""
+    # Sprint 7: AI Chatbot Callbacks - MOVED to callbacks/chatbot_callbacks.py
+    # We do NOT register them here anymore to avoid DuplicateCallbackOutputError
+    # and conflict with the full RAG implementation.
     
-    callback_count = 3 if CHATBOT_AVAILABLE else 2
+    callback_count = 2
     logger.info(f"✅ Registered {callback_count} global callbacks")
     return callback_count

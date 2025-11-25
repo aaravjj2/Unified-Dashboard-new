@@ -102,7 +102,7 @@ def get_job(job_id):
     return jobs.get(job_id)
 
 
-@volsurface_bp.route('/compute', methods=['POST'])
+@volsurface_bp.route('/compute', methods=['POST', 'GET'])
 def compute_surface():
     """
     POST /api/volsurface/compute

@@ -210,27 +210,9 @@ def register_callbacks(app):
             return "--", "--", "--", "--"
     
     
-    # Callback 2a: Populate contract expiration selector
-    @app.callback(
-        Output('contract-expiration-selector', 'options'),
-        [Input('options-chain-store', 'data')]
-    )
-    def update_expiration_selector(chain_data):
-        """Populate expiration dropdown from chain data."""
-        if not chain_data or 'expirations' not in chain_data:
-            return []
-        
-        from datetime import datetime
-        exp_options = []
-        for exp in chain_data['expirations']:
-            try:
-                exp_date = datetime.strptime(exp, '%Y-%m-%d')
-                formatted_label = exp_date.strftime('%b %d, %Y')
-                exp_options.append({'label': formatted_label, 'value': exp})
-            except:
-                exp_options.append({'label': exp, 'value': exp})
-        
-        return exp_options
+    # Callback 2a: Populate contract expiration selector - REMOVED (Duplicate)
+    # This logic is now handled by populate_contract_selectors (Phase 22B)
+    # to avoid duplicate callback outputs for 'contract-expiration-selector'
     
     
     # Callback 3: Render Chain Table

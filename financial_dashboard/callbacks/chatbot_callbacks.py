@@ -175,29 +175,34 @@ def register_chatbot_callbacks(app):
     # ========================================================================
     # CALLBACK 1: Toggle Chatbot Visibility
     # ========================================================================
-    @app.callback(
+    # ========================================================================
+    # CALLBACK 1: Toggle Chatbot Visibility (Client-side for speed/reliability)
+    # ========================================================================
+    app.clientside_callback(
+        """
+        function(toggle_clicks, close_clicks, current_style) {
+            var ctx = dash_clientside.callback_context;
+            if (!ctx.triggered || ctx.triggered.length === 0) {
+                return window.dash_clientside.no_update;
+            }
+            
+            var trigger_id = ctx.triggered[0].prop_id.split('.')[0];
+            
+            if (trigger_id === 'chatbot-toggle-btn') {
+                return {'display': 'block'};
+            } else if (trigger_id === 'chatbot-close-btn') {
+                return {'display': 'none'};
+            }
+            
+            return window.dash_clientside.no_update;
+        }
+        """,
         Output('chatbot-container', 'style'),
         Input('chatbot-toggle-btn', 'n_clicks'),
         Input('chatbot-close-btn', 'n_clicks'),
         State('chatbot-container', 'style'),
         prevent_initial_call=True
     )
-    def toggle_chatbot(toggle_clicks, close_clicks, current_style):
-        """Show/hide chatbot window"""
-        ctx = callback_context
-        if not ctx.triggered:
-            return no_update
-        
-        trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        
-        if trigger_id == 'chatbot-toggle-btn':
-            # Show chatbot
-            return {"display": "block"}
-        elif trigger_id == 'chatbot-close-btn':
-            # Hide chatbot
-            return {"display": "none"}
-        
-        return no_update
     
     # ========================================================================
     # CALLBACK 2: Handle Chat Message Submission

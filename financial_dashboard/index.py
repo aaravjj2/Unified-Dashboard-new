@@ -556,6 +556,7 @@ def create_layout():
             dcc.Store(id='options-surface-store'),
             dcc.Store(id='ol-backtest-store'),
             dcc.Store(id='ol-settings-store'),
+            dcc.Store(id='active-tab-store'),
             # NOTE: 'tabs' is defined in market_dashboard.py (removed duplicate for legacy compatibility)
         ], style={'display': 'none'}),
         # Centralized placeholders (stores, intervals, hidden divs)
@@ -567,6 +568,18 @@ def create_layout():
     
     # Return the layout (callbacks will be registered by app.py before setting layout)
     return layout
+
+# Callback to track active tab (Fix for navigation issue)
+# This ensures the dashboard-tabs component is registered in the callback graph
+def register_tab_callback(app):
+    @app.callback(
+        Output('active-tab-store', 'data'),
+        Input('dashboard-tabs', 'active_tab')
+    )
+    def update_active_tab_store(active_tab):
+        if active_tab:
+            logger.info(f"🔘 Tab switched to: {active_tab}")
+        return active_tab
 
 # ============================================================================
 # APP INITIALIZATION (AFTER create_layout is defined)
@@ -590,6 +603,10 @@ def initialize_app():
     from app_init import setup_callbacks_and_layout
     import sys
     setup_callbacks_and_layout(app, sys.modules[__name__])
+    
+    # Register local tab callback
+    register_tab_callback(app)
+    
     logger.info("✅ Callbacks and layout registered")
     
     return app

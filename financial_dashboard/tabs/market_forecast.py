@@ -64,18 +64,19 @@ def create_inputs_panel():
             # Ticker selection
             dbc.Row([
                 dbc.Col([
-                    html.Label("Ticker", className="small fw-bold"),
-                    dcc.Dropdown(
+                    html.Label("Ticker Symbol", className="small fw-bold"),
+                    dcc.Input(
                         id=COMPONENT_IDS['ticker_input'],
-                        options=[
-                            {'label': 'AAPL - Apple', 'value': 'AAPL'},
-                            {'label': 'MSFT - Microsoft', 'value': 'MSFT'},
-                            {'label': 'GOOGL - Google', 'value': 'GOOGL'},
-                            {'label': 'NVDA - NVIDIA', 'value': 'NVDA'},
-                        ],
+                        type='text',
+                        placeholder='Enter ticker (e.g., AAPL, MSFT, TSLA)',
                         value='AAPL',
-                        clearable=False,
-                        className="form-select-sm"
+                        className="form-control form-control-sm",
+                        style={
+                            'textTransform': 'uppercase',
+                            'fontFamily': 'monospace',
+                            'fontWeight': '500'
+                        },
+                        debounce=True
                     )
                 ], width=6),
                 dbc.Col([
