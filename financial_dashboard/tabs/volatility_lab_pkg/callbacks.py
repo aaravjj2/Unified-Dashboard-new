@@ -256,40 +256,40 @@ def register_callbacks(app):
             error_msg = html.P(f"❌ Error: {str(e)}", className="text-danger")
             return error_msg, no_update, no_update
     
-    # ========================================================================
-    # Callback 4: Load Explorer Surfaces
-    # ========================================================================
-    @app.callback(
-        Output('explorer-surface-display', 'children', allow_duplicate=True),
-        Input(COMPONENT_IDS['explorer_load_btn'], 'n_clicks'),
-        State(COMPONENT_IDS['explorer_date_slider'], 'value'),
-        prevent_initial_call=True
-    )
-    def load_explorer_surfaces(n_clicks, date_range):
-        """
-        Call GET /api/volsurface/history and load surfaces.
-        
-        Returns:
-            Surface comparison display
-        """
-        if not n_clicks:
-            raise PreventUpdate
-        
-        logger.info(f"Loading surfaces for date range: {date_range}")
-        
-        try:
-            response = requests.get(f"{API_BASE}/history", params={'days': date_range[1]}, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            
-            from dash import html
-            surfaces = data.get('surfaces', [])
-            return html.P(f"Found {len(surfaces)} surfaces", className="text-success")
-            
-        except Exception as e:
-            logger.exception("Error loading surfaces")
-            from dash import html
-            return html.P(f"❌ Error: {str(e)}", className="text-danger")
+#     # ========================================================================
+#     # Callback 4: Load Explorer Surfaces
+#     # ========================================================================
+#     @app.callback(
+#         Output('explorer-surface-display', 'children', allow_duplicate=True),
+#         Input(COMPONENT_IDS['explorer_load_btn'], 'n_clicks'),
+#         State(COMPONENT_IDS['explorer_date_slider'], 'value'),
+#         prevent_initial_call=True
+#     )
+#     def load_explorer_surfaces(n_clicks, date_range):
+#         """
+#         Call GET /api/volsurface/history and load surfaces.
+#         
+#         Returns:
+#             Surface comparison display
+#         """
+#         if not n_clicks:
+#             raise PreventUpdate
+#         
+#         logger.info(f"Loading surfaces for date range: {date_range}")
+#         
+#         try:
+#             response = requests.get(f"{API_BASE}/history", params={'days': date_range[1]}, timeout=30)
+#             response.raise_for_status()
+#             data = response.json()
+#             
+#             from dash import html
+#             surfaces = data.get('surfaces', [])
+#             return html.P(f"Found {len(surfaces)} surfaces", className="text-success")
+#             
+#         except Exception as e:
+#             logger.exception("Error loading surfaces")
+#             from dash import html
+#             return html.P(f"❌ Error: {str(e)}", className="text-danger")
     
     _callbacks_registered = True
     logger.info("✅ Volatility Lab callbacks registered successfully (Phase 34)")
