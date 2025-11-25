@@ -145,7 +145,7 @@ def create_iv_surface_tab():
                         id=COMPONENT_IDS['iv_diagnostics'],
                         children=[html.P("Run calculation to see diagnostics", className="text-muted")]
                     ),
-                    card_id="diagnostics-card"
+                    card_id="vl-diagnostics-card"
                 )
             ], width=3)
         ])
@@ -236,7 +236,7 @@ def create_signals_tab():
                                 {'label': 'Straddle Candidates', 'value': 'straddle'}
                             ],
                             value='iv_rank',
-                            id="signal-strategy-select"
+                            id="vl-signal-strategy-select"
                         ),
                         dbc.Button(
                             "🔍 Generate Signals",
@@ -253,7 +253,7 @@ def create_signals_tab():
                     "Trading Signals",
                     html.Div([
                         dcc.Loading(
-                            html.Div(id='signal-table-container', children=[create_signal_table()]),
+                            html.Div(id='vl-signal-table-container', children=[create_signal_table()]),
                             type="default"
                         ),
                         html.Div([
@@ -302,7 +302,7 @@ def create_backtest_tab():
                                 {'label': '6 Months', 'value': '6m'}
                             ],
                             value='1m',
-                            id="backtest-period-select"
+                            id="vl-backtest-period-select"
                         ),
                         dbc.Button(
                             "▶ Run Backtest",

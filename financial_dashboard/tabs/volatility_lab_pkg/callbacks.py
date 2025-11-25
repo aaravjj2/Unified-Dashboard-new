@@ -161,7 +161,7 @@ def register_callbacks(app):
     # Callback 2: Generate Signals
     # ========================================================================
     @app.callback(
-        Output('signal-table-container', 'children'),
+        Output('vl-signal-table-container', 'children'),
         Input(COMPONENT_IDS['signal_run_btn'], 'n_clicks'),
         State(COMPONENT_IDS['surface_store'], 'data'),
         prevent_initial_call=True
