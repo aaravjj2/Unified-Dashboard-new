@@ -1,0 +1,20 @@
+{
+  "message": "Safe mode enabled - showing mock data",
+  "positions": [
+    {
+      "current_price": 175.5,
+      "market_value": 1755,
+      "qty": 10,
+      "symbol": "AAPL"
+    },
+    {
+      "current_price": 380.25,
+      "market_value": 1901.25,
+      "qty": 5,
+      "symbol": "MSFT"
+    }
+  ],
+  "status": "mock",
+  "timestamp": "2025-11-24T04:05:27Z",
+  "total_value": 3656.25
+}

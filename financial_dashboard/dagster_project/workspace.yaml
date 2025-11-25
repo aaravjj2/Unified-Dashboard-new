@@ -1,0 +1,5 @@
+# Dagster Workspace Configuration
+load_from:
+  - python_package:
+      package_name: dagster_project
+      working_directory: /app

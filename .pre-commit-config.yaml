@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.241
+    hooks:
+      - id: ruff
+  - repo: https://github.com/psf/black
+    rev: 24.1.0
+    hooks:
+      - id: black
+  - repo: local
+    hooks:
+      - id: precommit-analyzer
+        name: precommit-analyzer
+        entry: python3 tools/precommit_analyzer.py
+        language: system
+        stages: [commit]

@@ -1,0 +1,41 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Docker
+docker-compose.override.yml
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite3
+keys.env
+secrets/
+.test_venv/
+.test_venv/
+__pycache__/
+*.parquet
+models/
+chat.json
+outputs/
+*.tar.gz
+reports/command_center/logs/
+__pycache__/
+

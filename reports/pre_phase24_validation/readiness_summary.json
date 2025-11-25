@@ -1,0 +1,23 @@
+{
+  "environment": "PASS",
+  "containers": {
+    "app": "running",
+    "db": "running",
+    "ollama": "unknown"
+  },
+  "root_http": "200",
+  "dash_layout": "PASS",
+  "dash_dependencies": "PASS",
+  "dash_update_component_test": "SKIP",
+  "per_tab": {},
+  "db_tables_present": [],
+  "missing_tables": [],
+  "observability": {
+    "sentry": "not_tested",
+    "datadog": "not_tested",
+    "prometheus": "not_tested"
+  },
+  "ollama_llm": "not_tested",
+  "overall_readiness": "READY_FOR_PHASE_24",
+  "blocking_failures": []
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "type": "log",
+    "text": "[Analysis Hub] Tab activation script loaded"
+  },
+  {
+    "type": "debug",
+    "text": "[Portfolio Fix] Skipping - not on Portfolio/Unified Dashboard"
+  },
+  {
+    "type": "debug",
+    "text": "[Research Lab Fix] Skipping - not on Research Lab"
+  },
+  {
+    "type": "log",
+    "text": "\u2705 Duplicate callback warnings suppressed"
+  },
+  {
+    "type": "debug",
+    "text": "[Paste] DataTable not found yet, will retry..."
+  },
+  {
+    "type": "debug",
+    "text": "[Paste] DataTable paste module loaded"
+  },
+  {
+    "type": "error",
+    "text": "{message: Invalid prop for this component, html: Property \"data\" was used with component ID:\n  \"res\u2026detail-modal.is_open, modal-content-body.children}"
+  },
+  {
+    "type": "error",
+    "text": "{message: Invalid prop for this component, html: Property \"options\" was used with component ID:\n  \"\u2026da55a12281068, contract-expiration-selector.value}"
+  },
+  {
+    "type": "error",
+    "text": "{message: Invalid prop for this component, html: Property \"active_cell\" was used with component ID:\u2026detail-modal.is_open, modal-content-body.children}"
+  },
+  {
+    "type": "debug",
+    "text": "[Analysis Hub] Found 40 tab panes"
+  },
+  {
+    "type": "log",
+    "text": "[Analysis Hub] Active tab already exists"
+  },
+  {
+    "type": "debug",
+    "text": "[Analysis Hub] Found 40 tab panes"
+  },
+  {
+    "type": "log",
+    "text": "[Analysis Hub] Active tab already exists"
+  },
+  {
+    "type": "log",
+    "text": "[Analysis Hub] Tab activation succeeded after 1 attempts"
+  },
+  {
+    "type": "debug",
+    "text": "[Paste] Paste listener attached to DataTable"
+  }
+]

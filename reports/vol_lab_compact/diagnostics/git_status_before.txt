@@ -1,0 +1,9 @@
+ M .gitignore
+ M dashboard.pid
+ M financial_dashboard/tabs/market_trends.py
+ M financial_dashboard/tabs/weekly_picks.py
+?? data/research/
+?? reports/research_lab_fix/diagnostics/dashboard.log.tail.txt
+?? reports/research_lab_fix/diagnostics/dashboard_start.txt
+?? reports/research_lab_fix/diagnostics/snapshot_tests_output.txt
+?? reports/vol_lab_compact/

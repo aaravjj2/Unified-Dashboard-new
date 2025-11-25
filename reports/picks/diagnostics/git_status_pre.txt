@@ -1,0 +1,26 @@
+ M data/picks/monthly_cache.json
+ M data/picks/weekly_cache.json
+ M financial_dashboard/app.py
+ M financial_dashboard/assets/zzz_custom_overrides.css
+ M financial_dashboard/components/chatbot_ui.py
+ M financial_dashboard/tabs/market_trends.py
+ M reports/chat_agent/network.har
+ M reports/picks/diagnostics/git_status_pre.txt
+ M test_mt_p1_p2_complete.py
+?? PICKS_PIPELINE_VALIDATION_FINAL.md
+?? PIPELINE_EXECUTION_SUMMARY.txt
+?? create_test_picks_data.py
+?? data/picks_input/
+?? financial_dashboard/assets/e2e_chat_toggle.js
+?? financial_dashboard/tabs/monthly_picks_pkg/
+?? financial_dashboard/tabs/weekly_picks_pkg/
+?? reports/chat_agent/videos/39884b8ec14dd26bc282a276ed1e042e.webm
+?? reports/chat_agent/videos/b40cfd0cdcf7eaaab22686e03766530b.webm
+?? reports/chat_agent/videos/d8c9e26c6087484267bedb98957b2298.webm
+?? reports/chat_agent/videos/d98db7fc8e8a8ee0c12ea0135bb0e5aa.webm
+?? reports/picks/diagnostics/git_head_final.txt
+?? reports/picks/patches/step7_api_endpoints_1763918201.diff
+?? reports/picks/runs/
+?? screenshots/market_trends_validation/
+?? scripts/playwright_debug.py
+?? tmp/

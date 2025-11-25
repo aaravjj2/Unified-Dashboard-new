@@ -1,0 +1,33 @@
+{
+  "signals": [
+    {
+      "id": "sig_001",
+      "ticker": "SPY",
+      "strategy": "iv_rank",
+      "confidence": 0.82,
+      "risk": "low",
+      "notes": "IV rank at 82nd percentile - favorable for selling premium"
+    },
+    {
+      "id": "sig_002",
+      "ticker": "SPY",
+      "strategy": "term_structure",
+      "confidence": 0.67,
+      "risk": "medium",
+      "notes": "Inverted term structure detected - potential mean reversion"
+    },
+    {
+      "id": "sig_003",
+      "ticker": "SPY",
+      "strategy": "skew_arbitrage",
+      "confidence": 0.55,
+      "risk": "high",
+      "notes": "Volatility skew suggests put spread opportunities"
+    }
+  ],
+  "meta": {
+    "timestamp": "2025-11-18T00:00:00",
+    "count": 3,
+    "source": "deterministic_fixture"
+  }
+}

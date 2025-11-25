@@ -1,0 +1,10 @@
+name: azureml-toy-env
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - scikit-learn
+  - pip:
+    - joblib
+    - azure-ai-ml
+    - azureml-inference-server-http  W

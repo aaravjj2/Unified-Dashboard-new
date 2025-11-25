@@ -1,0 +1,14 @@
+artifact_uri: file:///mnt/c/Aarav/fin_env/unified-dashboard/mlruns/0/1e4b33b85cce463c9542f637a4d4a38f/artifacts
+end_time: 1761167683838
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1e4b33b85cce463c9542f637a4d4a38f
+run_name: test_mlflow_backtest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761167683192
+status: 3
+tags: []
+user_id: aarav

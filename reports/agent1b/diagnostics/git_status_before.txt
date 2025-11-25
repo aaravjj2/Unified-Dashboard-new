@@ -1,0 +1,14 @@
+ M reports/agent1b/diagnostics/py_compile.txt
+ M reports/options_validation/diagnostics/greeks_inject_results.json
+ M reports/options_validation/screenshots/greeks_inject_1_home.png
+ M reports/options_validation/screenshots/greeks_inject_2_options_tab.png
+ M reports/options_validation/screenshots/greeks_inject_3_after_load.png
+ M reports/options_validation/screenshots/greeks_inject_4_final.png
+?? reports/agent1b/diagnostics/console_errors_parsed.json
+?? reports/agent1b/diagnostics/console_errors_raw.txt
+?? reports/agent1b/diagnostics/git_status_before.txt
+?? reports/options_validation/greeks_validation_results.txt
+?? reports/options_validation/patches/fix_critical_duplicate_ids_batch_1763700390.patch
+?? reports/options_validation/screenshots/console_check_1_home.png
+?? reports/options_validation/screenshots/console_check_2_options_lab.png
+?? validate_console_clean.py

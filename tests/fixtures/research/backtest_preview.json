@@ -1,0 +1,84 @@
+{
+  "type": "backtest_preview",
+  "timestamp": "2025-11-18T18:00:00Z",
+  "metrics": {
+    "total_return": 0.287,
+    "sharpe": 1.42,
+    "max_drawdown": -0.158,
+    "win_rate": 0.64,
+    "num_trades": 45,
+    "avg_trade_return": 0.0064
+  },
+  "sample_trades": [
+    {
+      "date": "2025-10-01",
+      "ticker": "NVDA",
+      "action": "BUY",
+      "price": 428.50,
+      "return": 0.089
+    },
+    {
+      "date": "2025-10-05",
+      "ticker": "AMD",
+      "action": "BUY",
+      "price": 145.20,
+      "return": 0.072
+    },
+    {
+      "date": "2025-10-08",
+      "ticker": "AVGO",
+      "action": "BUY",
+      "price": 172.80,
+      "return": 0.054
+    },
+    {
+      "date": "2025-10-12",
+      "ticker": "AAPL",
+      "action": "BUY",
+      "price": 178.30,
+      "return": 0.031
+    },
+    {
+      "date": "2025-10-15",
+      "ticker": "MSFT",
+      "action": "BUY",
+      "price": 412.70,
+      "return": 0.028
+    },
+    {
+      "date": "2025-10-18",
+      "ticker": "GOOGL",
+      "action": "SELL",
+      "price": 142.50,
+      "return": -0.024
+    },
+    {
+      "date": "2025-10-22",
+      "ticker": "META",
+      "action": "BUY",
+      "price": 498.60,
+      "return": 0.042
+    },
+    {
+      "date": "2025-10-25",
+      "ticker": "TSLA",
+      "action": "SELL",
+      "price": 238.90,
+      "return": -0.038
+    },
+    {
+      "date": "2025-10-29",
+      "ticker": "NFLX",
+      "action": "BUY",
+      "price": 645.20,
+      "return": 0.067
+    },
+    {
+      "date": "2025-11-01",
+      "ticker": "ADBE",
+      "action": "BUY",
+      "price": 523.40,
+      "return": 0.045
+    }
+  ]
+}

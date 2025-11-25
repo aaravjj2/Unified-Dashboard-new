@@ -1,0 +1,69 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, hypothesis-6.148.2, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 9 items
+
+tests/playwright/cc_headed_smoke.py::test_command_center_tab_loads 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+INFO     utils.load_env:load_env.py:162 ✅ All 5 required keys present
+
+[conftest] Environment loaded: 5 keys present
+
+🧪 TEST 1: Command Center tab loads
+📸 Screenshot saved: reports/command_center/screenshots/01_dashboard_loaded_1763954978.png
+📸 Screenshot saved: reports/command_center/screenshots/02_cc_tab_clicked_1763954982.png
+📄 DOM saved: reports/command_center/dom/02_cc_tab_dom_1763954983.html
+✅ TEST 1 PASSED: Command Center tab loads
+PASSED
+tests/playwright/cc_headed_smoke.py::test_system_status_banner 
+🧪 TEST 2: System status banner
+📸 Screenshot saved: reports/command_center/screenshots/03_system_status_1763954992.png
+✅ TEST 2 PASSED: System status banner displays
+PASSED
+tests/playwright/cc_headed_smoke.py::test_smoke_test_button 
+🧪 TEST 3: Smoke test button
+📸 Screenshot saved: reports/command_center/screenshots/04_smoke_button_1763955001.png
+✅ TEST 3 PASSED: Smoke test button functional
+PASSED
+tests/playwright/cc_headed_smoke.py::test_sentiment_widget_visible 
+🧪 TEST 4: Sentiment widget
+📸 Screenshot saved: reports/command_center/screenshots/05_sentiment_widget_1763955014.png
+✅ TEST 4 PASSED: Sentiment widget displays
+PASSED
+tests/playwright/cc_headed_smoke.py::test_portfolio_snapshot_visible 
+🧪 TEST 5: Portfolio snapshot
+📸 Screenshot saved: reports/command_center/screenshots/06_portfolio_snapshot_1763955024.png
+✅ TEST 5 PASSED: Portfolio snapshot visible
+PASSED
+tests/playwright/cc_headed_smoke.py::test_picks_widget_visible 
+🧪 TEST 6: Picks widget
+📸 Screenshot saved: reports/command_center/screenshots/07_picks_widget_1763955034.png
+✅ TEST 6 PASSED: Picks widget displays
+PASSED
+tests/playwright/cc_headed_smoke.py::test_chat_widget_interactive 
+🧪 TEST 7: Chat widget
+📸 Screenshot saved: reports/command_center/screenshots/08_chat_widget_1763955046.png
+✅ TEST 7 PASSED: Chat widget interactive
+PASSED
+tests/playwright/cc_headed_smoke.py::test_admin_tools_visible 
+🧪 TEST 8: Admin tools
+📸 Screenshot saved: reports/command_center/screenshots/09_admin_tools_1763955055.png
+📄 DOM saved: reports/command_center/dom/09_admin_dom_1763955055.html
+✅ TEST 8 PASSED: Admin tools visible
+PASSED
+tests/playwright/cc_headed_smoke.py::test_full_smoke_suite 
+======================================================================
+🔥 COMMAND CENTER SMOKE TEST SUITE - HEADED MODE
+======================================================================
+
+✅ All smoke tests completed!
+📊 Run 'pytest tests/playwright/cc_headed_smoke.py -v' to see detailed results
+PASSED
+
+======================== 9 passed in 112.18s (0:01:52) =========================

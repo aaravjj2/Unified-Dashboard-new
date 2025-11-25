@@ -1,0 +1,21 @@
+{
+    "generator": {
+        "available": true,
+        "model": "orca-mini-3b-gguf2-q4_0.gguf",
+        "response_time_ms": 1076.0300159454346,
+        "status": "healthy",
+        "test_tokens": 10
+    },
+    "status": "healthy",
+    "timestamp": "2025-11-23T23:17:11Z",
+    "vector_index": {
+        "embedding_dim": 384,
+        "has_faiss": true,
+        "index_exists": true,
+        "index_type": "Flat",
+        "metadata_entries": 24,
+        "metadata_exists": true,
+        "size": 24,
+        "status": "healthy"
+    }
+}

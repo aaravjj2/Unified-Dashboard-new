@@ -1,0 +1,885 @@
+{
+  "count": 20,
+  "data": [
+  {
+    "ticker": "KO",
+    "last_price": 72.94999694824219,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 15412720,
+    "marketcap": 313952501760,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928887,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928887,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928887,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.118021",
+    "combined_score": 0.771676714115101,
+    "momentum_score": 0.9985225638970662,
+    "fundamental_score": 0.8234598246511544,
+    "sentiment_score": 0.7813977543708508,
+    "sector": "Industrial",
+    "rank_combined_score": 0.631578947368421,
+    "rank_momentum_score": 1.0,
+    "rank_fundamental_score": 0.8596491228070176,
+    "rank_sentiment_score": 0.9298245614035088,
+    "final_score": 0.8175438596491227,
+    "rank": 1
+  },
+  {
+    "ticker": "JPM",
+    "last_price": 298.0199890136719,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 8191670,
+    "marketcap": 819481608192,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117333",
+    "combined_score": 0.9014808054671803,
+    "momentum_score": 0.8107685505939248,
+    "fundamental_score": 0.7575064800450908,
+    "sentiment_score": 0.45863070944382656,
+    "sector": "Finance",
+    "rank_combined_score": 0.9473684210526315,
+    "rank_momentum_score": 0.7192982456140351,
+    "rank_fundamental_score": 0.7543859649122807,
+    "rank_sentiment_score": 0.40350877192982454,
+    "final_score": 0.7859649122807019,
+    "rank": 2
+  },
+  {
+    "ticker": "HON",
+    "last_price": 190.02000427246094,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 4120050,
+    "marketcap": 128048726016,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928906,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928906,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928906,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.118790",
+    "combined_score": 0.9214945644706223,
+    "momentum_score": 0.9255117642269164,
+    "fundamental_score": 0.7013866669777684,
+    "sentiment_score": 0.23429916374448986,
+    "sector": "Industrial",
+    "rank_combined_score": 0.9649122807017544,
+    "rank_momentum_score": 0.8421052631578947,
+    "rank_fundamental_score": 0.7017543859649122,
+    "rank_sentiment_score": 0.03508771929824561,
+    "final_score": 0.7824561403508772,
+    "rank": 3
+  },
+  {
+    "ticker": "COP",
+    "last_price": 87.37000274658203,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 6794810,
+    "marketcap": 109120094208,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117550",
+    "combined_score": 0.7924479970007854,
+    "momentum_score": 0.9657458286010326,
+    "fundamental_score": 0.8272331266939106,
+    "sentiment_score": 0.4035815632369779,
+    "sector": "Energy",
+    "rank_combined_score": 0.7368421052631579,
+    "rank_momentum_score": 0.9122807017543859,
+    "rank_fundamental_score": 0.8947368421052632,
+    "rank_sentiment_score": 0.2807017543859649,
+    "final_score": 0.775438596491228,
+    "rank": 4
+  },
+  {
+    "ticker": "NVDA",
+    "last_price": 178.8800048828125,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 224837820,
+    "marketcap": 4362446307328,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928866,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928866,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928866,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117146",
+    "combined_score": 0.7877420593060477,
+    "momentum_score": 0.8374760787702096,
+    "fundamental_score": 0.8475767036068924,
+    "sentiment_score": 0.5426258559951708,
+    "sector": "Technology",
+    "rank_combined_score": 0.7017543859649122,
+    "rank_momentum_score": 0.7543859649122807,
+    "rank_fundamental_score": 0.9298245614035088,
+    "rank_sentiment_score": 0.5964912280701754,
+    "final_score": 0.7526315789473684,
+    "rank": 5
+  },
+  {
+    "ticker": "BA",
+    "last_price": 179.6999969482422,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 8490320,
+    "marketcap": 136589156352,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928877,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928877,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928877,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117574",
+    "combined_score": 0.7452236662714475,
+    "momentum_score": 0.9258205758836013,
+    "fundamental_score": 0.7989993176167077,
+    "sentiment_score": 0.7170035218116748,
+    "sector": "Industrial",
+    "rank_combined_score": 0.5614035087719298,
+    "rank_momentum_score": 0.8596491228070176,
+    "rank_fundamental_score": 0.8070175438596491,
+    "rank_sentiment_score": 0.8421052631578947,
+    "final_score": 0.7280701754385965,
+    "rank": 6
+  },
+  {
+    "ticker": "MA",
+    "last_price": 540.4000244140625,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 2609480,
+    "marketcap": 488528019456,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928884,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928884,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928884,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117901",
+    "combined_score": 0.9307458824930515,
+    "momentum_score": 0.5576449651137612,
+    "fundamental_score": 0.7595006575841927,
+    "sentiment_score": 0.7168094628570985,
+    "sector": "Industrial",
+    "rank_combined_score": 0.9824561403508771,
+    "rank_momentum_score": 0.24561403508771928,
+    "rank_fundamental_score": 0.7719298245614035,
+    "rank_sentiment_score": 0.8245614035087719,
+    "final_score": 0.7035087719298246,
+    "rank": 7
+  },
+  {
+    "ticker": "ACN",
+    "last_price": 251.85000610351562,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 3428460,
+    "marketcap": 156865445888,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928894,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928894,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928894,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.118314",
+    "combined_score": 0.8732320989138477,
+    "momentum_score": 0.6532959800798104,
+    "fundamental_score": 0.897089613996537,
+    "sentiment_score": 0.23518123998330737,
+    "sector": "Industrial",
+    "rank_combined_score": 0.8947368421052632,
+    "rank_momentum_score": 0.43859649122807015,
+    "rank_fundamental_score": 1.0,
+    "rank_sentiment_score": 0.05263157894736842,
+    "final_score": 0.6947368421052631,
+    "rank": 8
+  },
+  {
+    "ticker": "JNJ",
+    "last_price": 203.89999389648438,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 10325350,
+    "marketcap": 491255267328,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928869,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928869,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928869,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117262",
+    "combined_score": 0.8314120463738055,
+    "momentum_score": 0.7839998559124557,
+    "fundamental_score": 0.6653821268629034,
+    "sentiment_score": 0.3142459486171266,
+    "sector": "Healthcare",
+    "rank_combined_score": 0.8245614035087719,
+    "rank_momentum_score": 0.6491228070175439,
+    "rank_fundamental_score": 0.631578947368421,
+    "rank_sentiment_score": 0.15789473684210525,
+    "final_score": 0.6666666666666667,
+    "rank": 12
+  },
+  {
+    "ticker": "WFC",
+    "last_price": 83.11000061035156,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 14279800,
+    "marketcap": 266238001152,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928872,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928872,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928872,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117403",
+    "combined_score": 0.6898648188583717,
+    "momentum_score": 0.8655999469277469,
+    "fundamental_score": 0.767175887178335,
+    "sentiment_score": 0.480214800822005,
+    "sector": "Finance",
+    "rank_combined_score": 0.5087719298245614,
+    "rank_momentum_score": 0.7719298245614035,
+    "rank_fundamental_score": 0.7894736842105263,
+    "rank_sentiment_score": 0.47368421052631576,
+    "final_score": 0.6403508771929826,
+    "rank": 14
+  },
+  {
+    "ticker": "UNH",
+    "last_price": 319.9700012207031,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 8289030,
+    "marketcap": 289841184768,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117236",
+    "combined_score": 0.6004448321669702,
+    "momentum_score": 0.9937140103819572,
+    "fundamental_score": 0.6833696969196031,
+    "sentiment_score": 0.6844981986599861,
+    "sector": "Healthcare",
+    "rank_combined_score": 0.2982456140350877,
+    "rank_momentum_score": 0.9649122807017544,
+    "rank_fundamental_score": 0.6666666666666666,
+    "rank_sentiment_score": 0.7543859649122807,
+    "final_score": 0.6175438596491228,
+    "rank": 16
+  },
+  {
+    "ticker": "META",
+    "last_price": 594.25,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 20706520,
+    "marketcap": 1497823576064,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928881,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928881,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928881,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117690",
+    "combined_score": 0.8626186633247634,
+    "momentum_score": 0.6753111115524393,
+    "fundamental_score": 0.35139207124072724,
+    "sentiment_score": 0.3671270868001643,
+    "sector": "Technology",
+    "rank_combined_score": 0.8421052631578947,
+    "rank_momentum_score": 0.49122807017543857,
+    "rank_fundamental_score": 0.12280701754385964,
+    "rank_sentiment_score": 0.24561403508771928,
+    "final_score": 0.5333333333333332,
+    "rank": 23
+  },
+  {
+    "ticker": "PFE",
+    "last_price": 25.040000915527344,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 94576550,
+    "marketcap": 142370127872,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928870,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928870,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928870,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117296",
+    "combined_score": 0.8045147693403101,
+    "momentum_score": 0.7341698462647878,
+    "fundamental_score": 0.3917035611297809,
+    "sentiment_score": 0.258158488537294,
+    "sector": "Healthcare",
+    "rank_combined_score": 0.7543859649122807,
+    "rank_momentum_score": 0.5789473684210527,
+    "rank_fundamental_score": 0.19298245614035087,
+    "rank_sentiment_score": 0.07017543859649122,
+    "final_score": 0.5210526315789474,
+    "rank": 24
+  },
+  {
+    "ticker": "TSLA",
+    "last_price": 391.0899963378906,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 88869720,
+    "marketcap": 1300694564864,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928882,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928882,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928882,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117713",
+    "combined_score": 0.8141627277447021,
+    "momentum_score": 0.5589280998988315,
+    "fundamental_score": 0.5915942779899683,
+    "sentiment_score": 0.34988386872926036,
+    "sector": "Consumer",
+    "rank_combined_score": 0.7719298245614035,
+    "rank_momentum_score": 0.2807017543859649,
+    "rank_fundamental_score": 0.5087719298245614,
+    "rank_sentiment_score": 0.21052631578947367,
+    "final_score": 0.5157894736842105,
+    "rank": 25
+  },
+  {
+    "ticker": "GOOGL",
+    "last_price": 299.6600036621094,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 44136930,
+    "marketcap": 3629518422016,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928880,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928880,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928880,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117667",
+    "combined_score": 0.5029244418551274,
+    "momentum_score": 0.9487285538443261,
+    "fundamental_score": 0.8681696671787966,
+    "sentiment_score": 0.45312898390064255,
+    "sector": "Technology",
+    "rank_combined_score": 0.017543859649122806,
+    "rank_momentum_score": 0.8947368421052632,
+    "rank_fundamental_score": 0.9824561403508771,
+    "rank_sentiment_score": 0.3508771929824561,
+    "final_score": 0.5070175438596491,
+    "rank": 26
+  },
+  {
+    "ticker": "BAC",
+    "last_price": 51.560001373291016,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 33812800,
+    "marketcap": 381902225408,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928871,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117359",
+    "combined_score": 0.5391224746832373,
+    "momentum_score": 0.9057111521138858,
+    "fundamental_score": 0.6236274180717755,
+    "sentiment_score": 0.4541471738119525,
+    "sector": "Finance",
+    "rank_combined_score": 0.12280701754385964,
+    "rank_momentum_score": 0.8070175438596491,
+    "rank_fundamental_score": 0.5789473684210527,
+    "rank_sentiment_score": 0.38596491228070173,
+    "final_score": 0.4456140350877193,
+    "rank": 36
+  },
+  {
+    "ticker": "MSFT",
+    "last_price": 472.1199951171875,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 25909050,
+    "marketcap": 3509346369536,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928868,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117210",
+    "combined_score": 0.6237631932661036,
+    "momentum_score": 0.6276732650545886,
+    "fundamental_score": 0.47906687486917976,
+    "sentiment_score": 0.6707716545744521,
+    "sector": "Technology",
+    "rank_combined_score": 0.3684210526315789,
+    "rank_momentum_score": 0.3684210526315789,
+    "rank_fundamental_score": 0.3684210526315789,
+    "rank_sentiment_score": 0.7368421052631579,
+    "final_score": 0.4052631578947368,
+    "rank": 45
+  },
+  {
+    "ticker": "CVX",
+    "last_price": 149.97999572753906,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 8691090,
+    "marketcap": 302183055360,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928876,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117527",
+    "combined_score": 0.5894769428089918,
+    "momentum_score": 0.5265897061517959,
+    "fundamental_score": 0.8574591697587703,
+    "sentiment_score": 0.4415727692613613,
+    "sector": "Energy",
+    "rank_combined_score": 0.22807017543859648,
+    "rank_momentum_score": 0.17543859649122806,
+    "rank_fundamental_score": 0.9473684210526315,
+    "rank_sentiment_score": 0.3333333333333333,
+    "final_score": 0.3666666666666667,
+    "rank": 48
+  },
+  {
+    "ticker": "AAPL",
+    "last_price": 271.489990234375,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 46868060,
+    "marketcap": 4029017227264,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928867,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928867,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928867,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117182",
+    "combined_score": 0.5112548398502001,
+    "momentum_score": 0.49804149625715705,
+    "fundamental_score": 0.8223111419020601,
+    "sentiment_score": 0.48360261578707653,
+    "sector": "Technology",
+    "rank_combined_score": 0.03508771929824561,
+    "rank_momentum_score": 0.14035087719298245,
+    "rank_fundamental_score": 0.8421052631578947,
+    "rank_sentiment_score": 0.49122807017543857,
+    "final_score": 0.2736842105263158,
+    "rank": 54
+  },
+  {
+    "ticker": "XOM",
+    "last_price": 117.08000183105469,
+    "last_price_timestamp": "2025-11-21T00:00:00-05:00",
+    "avg_daily_volume": 15510280,
+    "marketcap": 499140984832,
+    "price_provenance": "yfinance",
+    "last_news": [
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928875,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928875,
+        "summary": ""
+      },
+      {
+        "headline": "",
+        "source": "Yahoo Finance",
+        "url": "",
+        "datetime": 1763928875,
+        "summary": ""
+      }
+    ],
+    "news_count_24h": 10,
+    "fetched_at": "2025-11-23T15:15:09.117504",
+    "combined_score": 0.5119411863577387,
+    "momentum_score": 0.5606445255854217,
+    "fundamental_score": 0.31168604543149936,
+    "sentiment_score": 0.25905072269117535,
+    "sector": "Energy",
+    "rank_combined_score": 0.05263157894736842,
+    "rank_momentum_score": 0.3157894736842105,
+    "rank_fundamental_score": 0.03508771929824561,
+    "rank_sentiment_score": 0.08771929824561403,
+    "final_score": 0.13157894736842102,
+    "rank": 57
+  }
+  ]
+}

@@ -1,0 +1,21 @@
+Total console errors/warnings: 201
+Duplicate callback warnings: 201
+
+Sample duplicate warnings:
+  [error] {message: Duplicate callback outputs, html: In the callback for output(s):
+  backtest-modal.st…er
+by using `dash.callback_context` if necessary.}
+  [error] {message: Duplicate callback outputs, html: In the callback for output(s):
+  backtest-modal.st…er
+by using `dash.callback_context` if necessary.}
+  [error] {message: Duplicate callback outputs, html: In the callback for output(s):
+  debug-logs-modal.…er
+by using `dash.callback_context` if necessary.}
+  [error] {message: Duplicate callback outputs, html: In the callback for output(s):
+  debug-logs-modal.…er
+by using `dash.callback_context` if necessary.}
+  [error] {message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+✅ Saved to: reports/duplicates_fix/diagnostics/runtime_console_errors.json

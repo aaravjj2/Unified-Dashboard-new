@@ -1,0 +1,26 @@
+service: "service:ForecastService"
+name: forecast_service
+labels:
+  owner: unified-dashboard
+  project: market-forecast
+description: "Market forecast service with LSTM/Prophet models"
+
+include:
+  - "service.py"
+  - "requirements.txt"
+
+python:
+  packages:
+    - numpy
+    - pandas
+    - bentoml
+    # TODO: Add model-specific deps
+    # - torch  # for LSTM
+    # - prophet  # for Prophet
+    # - shap  # for explainability
+
+docker:
+  distro: debian
+  python_version: "3.10"
+  env:
+    BENTOML_PORT: "5001"

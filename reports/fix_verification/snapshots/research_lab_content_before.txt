@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/home/aarav/unified-dashboard/financial_dashboard/tabs/research_lab/layout.py", line 103, in create_layout
+    dbc.Table([
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/development/base_component.py", line 475, in wrapper
+    return func(*args, **kwargs)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash_bootstrap_components/_components/Table.py", line 107, in __init__
+    super(Table, self).__init__(children=children, **args)
+  File "/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/dash/development/base_component.py", line 174, in __init__
+    raise TypeError(
+TypeError: The `dash_bootstrap_components.Table` component (version 2.0.4) received an unexpected keyword argument: `dark`
+Allowed arguments: bordered, borderless, children, className, class_name, color, hover, id, key, responsive, size, striped, style

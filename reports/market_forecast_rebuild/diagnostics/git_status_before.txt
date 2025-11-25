@@ -1,0 +1,75 @@
+ M financial_dashboard/assets/analysis_hub_tab_fix.js
+ M financial_dashboard/tabs/research_lab/callbacks.py
+ M financial_dashboard/tabs/research_lab/layout.py
+ M reports/agent2a/architecture_report.json
+ M reports/agent2a/architecture_report.md
+ M reports/agent2a/diagnostics/git_head.txt
+ M reports/agent2a/diagnostics/modified_files_list.txt
+ M reports/agent2a/diagnostics/modified_files_sha256.json
+ M reports/agent2a/tab_isolation_report.md
+ M reports/market_forecast_rebuild/diagnostics/git_status_before.txt
+ M reports/market_forecast_rebuild/diagnostics/py_compile.txt
+ M test_market_trends_comprehensive.py
+?? BUTTON_CLICK_FAILURE_REPORT.md
+?? CONSOLE_WARNINGS_REMOVED_FINAL_REPORT.md
+?? MARKET_TRENDS_BUTTON_FIX_SUMMARY.md
+?? MARKET_TRENDS_BUTTON_FIX_VERIFICATION.md
+?? TAB_STATUS_VERIFICATION_REPORT.md
+?? check_callback_map.py
+?? check_js_errors.py
+?? check_research_lab_dom.py
+?? click_and_watch_callback.py
+?? diagnose_tab_structure.py
+?? extract_research_lab_ids.py
+?? financial_dashboard/assets/suppress_duplicate_warnings.js
+?? financial_dashboard/tabs/analysis_hub_refactored.py
+?? financial_dashboard/tabs/market_forecast_rebuild.py
+?? financial_dashboard/tabs/market_trends_callbacks_fixed.py
+?? financial_dashboard/tabs/market_trends_refactored.py
+?? financial_dashboard/tabs/monthly_picks_new.py
+?? financial_dashboard/tabs/scenario_analysis.py
+?? financial_dashboard/tabs/scenario_tab.py
+?? find_research_lab_selector.py
+?? monitor_active_tab.py
+?? reports/agent2a/diagnostics/admin_callback_map.json
+?? reports/agent2a/diagnostics/admin_info.json
+?? reports/agent2a/diagnostics/admin_tab_health_market_trends.json
+?? reports/agent2a/diagnostics/artifact_list.txt
+?? reports/agent2a/diagnostics/black_check.txt
+?? reports/agent2a/diagnostics/ci_duplicate_check.txt
+?? reports/agent2a/diagnostics/ci_duplicate_check_alt.txt
+?? reports/agent2a/diagnostics/ci_duplicate_check_alt2.txt
+?? reports/agent2a/diagnostics/dash_with_admin_pid.txt
+?? reports/agent2a/diagnostics/dash_with_admin_tail.txt
+?? reports/agent2a/diagnostics/ids_registry_check.txt
+?? reports/agent2a/diagnostics/mock_bento_explain.json
+?? reports/agent2a/diagnostics/mock_bento_info.json
+?? reports/agent2a/diagnostics/mock_bento_pid.txt
+?? reports/agent2a/diagnostics/mock_bento_predict.json
+?? reports/agent2a/diagnostics/mock_bento_tail.txt
+?? reports/agent2a/diagnostics/precommit_all_files.txt
+?? reports/agent2a/diagnostics/root_index.html
+?? reports/agent2a/diagnostics/ruff.txt
+?? reports/agent2a/patches/admin_registration_report_1763601253.diff
+?? reports/agent2a/patches/agent2a_followup_1763598321.diff
+?? reports/agent2a/patches/integration_bundle_1763602652.diff
+?? reports/agent2a/patches/register_admin_runfile_1763598667.diff
+?? reports/agent2a/patches/run_mock_bento_1763602158.diff
+?? test_correct_button.py
+?? test_inline_content.py
+?? test_portfolio_refresh.py
+?? test_research_lab_callback.py
+?? test_research_lab_simple.py
+?? test_screenshots/01_dashboard_loaded.png
+?? test_screenshots/02_market_trends_tab.png
+?? test_screenshots/03a_before_reload.png
+?? test_screenshots/03b_after_reload.png
+?? test_screenshots/04a_before_toggle.png
+?? test_screenshots/04b_after_toggle.png
+?? test_screenshots/05a_before_download.png
+?? test_screenshots/06_tab_navigation_test.png
+?? test_screenshots/diagnostic_market_forecast.png
+?? test_screenshots/diagnostic_market_trends.png
+?? test_screenshots/diagnostic_research_lab.png
+?? test_screenshots/diagnostic_strategy_lab.png
+?? test_screenshots/diagnostic_volatility_lab.png

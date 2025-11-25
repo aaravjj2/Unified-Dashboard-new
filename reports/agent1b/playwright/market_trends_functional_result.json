@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-11-21T01:56:11.581233",
+  "test": "market_trends_functional",
+  "verdicts": {
+    "job_queued_message": "FAIL - no queue confirmation",
+    "results_displayed": "FAIL - No visible change after 30s"
+  },
+  "artifacts": [
+    "reports/agent1b/screenshots/mt_func_01_before.png",
+    "reports/agent1b/screenshots/mt_func_02_after_click.png",
+    "reports/agent1b/screenshots/mt_func_03_after_wait.png"
+  ],
+  "failures": [
+    "No job queue confirmation shown to user",
+    "No visible output change after clicking Run Analysis"
+  ]
+}

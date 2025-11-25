@@ -1,0 +1,42 @@
+{
+  "timestamp": "2025-11-21T01:37:07.826601",
+  "test": "full_smoke_phase8",
+  "tabs_tested": [
+    {
+      "tab_id": "home_lab",
+      "tab_name": "Command Center",
+      "verdict": "PASS - Content loaded"
+    },
+    {
+      "tab_id": "market_trends",
+      "tab_name": "Market Trends",
+      "verdict": "PASS - Content loaded"
+    },
+    {
+      "tab_id": "market_forecast",
+      "tab_name": "Market Forecast",
+      "verdict": "PASS - Content loaded"
+    },
+    {
+      "tab_id": "volatility_lab",
+      "tab_name": "Volatility Lab",
+      "verdict": "PASS - Content loaded"
+    },
+    {
+      "tab_id": "portfolio",
+      "tab_name": "Portfolio",
+      "verdict": "PASS - Content loaded"
+    }
+  ],
+  "overall_verdict": "PASS",
+  "artifacts": [
+    "reports/agent1b/screenshots/smoke/00_initial_load.png",
+    "reports/agent1b/screenshots/smoke/01_home_lab.png",
+    "reports/agent1b/screenshots/smoke/02_market_trends.png",
+    "reports/agent1b/screenshots/smoke/03_market_forecast.png",
+    "reports/agent1b/screenshots/smoke/04_volatility_lab.png",
+    "reports/agent1b/screenshots/smoke/05_portfolio.png",
+    "reports/agent1b/screenshots/smoke/99_final.png",
+    "reports/agent1b/playwright/full_smoke_console.json"
+  ]
+}

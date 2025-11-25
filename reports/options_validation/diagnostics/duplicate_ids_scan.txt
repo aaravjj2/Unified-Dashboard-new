@@ -1,0 +1,923 @@
+================================================================================
+SCANNING FOR DUPLICATE COMPONENT IDs
+================================================================================
+
+❌ Found 170 DUPLICATE IDs:
+
+
+🔴 ID: '_dash-app-content'
+   Appears in 4 files:
+     - financial_dashboard/app_minimal.py (1x)
+     - financial_dashboard/app_standalone_ssr.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/app_simplified.py (1x)
+
+🔴 ID: 'analysis-options'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'chain-download'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-expiration-dropdown'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-export-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-moneyness-radio'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-pcr'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-spot-price'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-table-container'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-total-oi'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-total-volume'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-type-radio'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'chain-viewer'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'compact-brief'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'compact-brief-wrapper'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'contract-expiration-selector'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'contract-option-type'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'contract-strike-selector'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'contract-ticker-selector'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'correlation-heatmap'
+   Appears in 2 files:
+     - financial_dashboard/tabs/research_lab/layout.py (1x)
+     - financial_dashboard/components/portfolio_health.py (1x)
+
+🔴 ID: 'current-job'
+   Appears in 2 files:
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'debug-input'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'debug-log-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'debug-output'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'detail-modal'
+   Appears in 2 files:
+     - financial_dashboard/modules/market_trends_new.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'download-btn'
+   Appears in 2 files:
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'factors'
+   Appears in 3 files:
+     - financial_dashboard/tabs/portfolio_tracker_refactored.py (1x)
+     - financial_dashboard/tabs/attribution_lab/layout.py (1x)
+     - financial_dashboard/legacy_tabs/volatility_lab.py (1x)
+
+🔴 ID: 'full-brief'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'global-search-close'
+   Appears in 2 files:
+     - financial_dashboard/components/global_search.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'global-search-input'
+   Appears in 2 files:
+     - financial_dashboard/components/global_search.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'global-search-modal'
+   Appears in 2 files:
+     - financial_dashboard/components/global_search.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'global-search-results'
+   Appears in 2 files:
+     - financial_dashboard/components/global_search.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'greeks-dashboard'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'greeks-delta-chart'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'greeks-gamma-chart'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'greeks-iv-smile'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'greeks-theta-chart'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'greeks-vega-chart'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'job-history'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'loading'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'mf-confidence-selector'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-details-table'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-download'
+   Appears in 2 files:
+     - financial_dashboard/market_dashboard.py (2x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'mf-forecast-store'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_forecast.py (1x)
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-generate-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-horizon-selector'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-loading'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-loading-output'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-params-store'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-ping-output'
+   Appears in 2 files:
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'mf-returns-chart'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-summary-cards'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-ticker-input'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_forecast.py (1x)
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-ticker-selector'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'mf-volatility-chart'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_forecast_backup_1763604187.py (1x)
+     - financial_dashboard/tabs/market_forecast_old_backup.py (1x)
+
+🔴 ID: 'modal-content'
+   Appears in 2 files:
+     - financial_dashboard/modules/market_trends_new.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'mp-content'
+   Appears in 2 files:
+     - financial_dashboard/tabs/monthly_picks.py (1x)
+     - financial_dashboard/tabs/monthly_picks_new.py (1x)
+
+🔴 ID: 'mp-data-store'
+   Appears in 2 files:
+     - financial_dashboard/tabs/monthly_picks.py (1x)
+     - financial_dashboard/tabs/monthly_picks_new.py (1x)
+
+🔴 ID: 'mp-prices-json'
+   Appears in 2 files:
+     - financial_dashboard/tabs/monthly_picks.py (6x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'mp-refresh-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/monthly_picks.py (1x)
+     - financial_dashboard/tabs/monthly_picks_new.py (1x)
+
+🔴 ID: 'mp-results-area'
+   Appears in 2 files:
+     - financial_dashboard/layout_placeholders.py (1x)
+     - financial_dashboard/monthly_picks_app.py (1x)
+
+🔴 ID: 'nav-command'
+   Appears in 2 files:
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'nav-home'
+   Appears in 3 files:
+     - financial_dashboard/dashboard_clean_fixed.py (1x)
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'nav-monthly'
+   Appears in 3 files:
+     - financial_dashboard/dashboard_clean_fixed.py (1x)
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'nav-options'
+   Appears in 2 files:
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'nav-strategy'
+   Appears in 3 files:
+     - financial_dashboard/dashboard_clean_fixed.py (1x)
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'nav-weekly'
+   Appears in 3 files:
+     - financial_dashboard/dashboard_clean_fixed.py (1x)
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'ol-backtest-capital'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-download'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-equity-chart'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-export-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-lookback'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-results'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-run-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-store'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-strategy'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-backtest-trades-table'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-forecast-results'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-forecast-run-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-settings-datasource'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-settings-paper-enabled'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-settings-refresh-interval'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'ol-settings-save-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-backtest-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-chain-store'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-chain-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-forecast-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-forecast-results'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-greeks-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-load-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-manual-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-mock-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-refresh-interval'
+   Appears in 2 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-settings-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'options-status-message'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-subtabs'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-surface-store'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-ticker-input'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'options-vol-tab'
+   Appears in 2 files:
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_phase31_step1_1763668109.py (1x)
+
+🔴 ID: 'page-content'
+   Appears in 3 files:
+     - financial_dashboard/app_fixed.py (2x)
+     - financial_dashboard/index_full.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'performance'
+   Appears in 2 files:
+     - financial_dashboard/legacy_tabs/azure_ml_lab/layout.py (1x)
+     - financial_dashboard/tabs/attribution_lab/layout.py (1x)
+
+🔴 ID: 'period-input'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'poll-interval'
+   Appears in 2 files:
+     - financial_dashboard/index.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+
+🔴 ID: 'react-entry-point'
+   Appears in 4 files:
+     - financial_dashboard/app_minimal.py (1x)
+     - financial_dashboard/app_standalone_ssr.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/app_simplified.py (1x)
+
+🔴 ID: 'refresh-cached'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'reload-model'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'results-area'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'results-table'
+   Appears in 2 files:
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'results-table-client'
+   Appears in 5 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/market_trends_dash.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+
+🔴 ID: 'run-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/layout_placeholders.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'scenario-preset'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-results'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-run-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-spy-change'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-type'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-universe'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-vix-change'
+   Appears in 2 files:
+     - financial_dashboard/tabs/scenario_analysis.py (1x)
+     - financial_dashboard/tabs/scenario_tab.py (1x)
+
+🔴 ID: 'sim-breakeven'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-calculate-btn'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-max-loss'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-max-profit'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-pnl-chart'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-quantity-input'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sim-strategy-dropdown'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'sl-backtest-progress'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-backtest-results'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-end-date'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-entry-condition'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-equity-curve'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-exit-condition'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-exposure-breakdown'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'sl-factor-attribution'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'sl-initial-capital'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-max-positions'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-metric-cagr'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-maxdd'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-sharpe'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-winrate'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-position-size'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-run-backtest-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-slippage'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-start-date'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-strategy-config'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-strategy-type'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-tickers-input'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-transaction-cost'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/subtabs/execution.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+
+🔴 ID: 'sl-universe-type'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validate-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validation-result'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validation-status'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-vs-benchmark'
+   Appears in 2 files:
+     - financial_dashboard/tabs/strategy_lab/layout.py (1x)
+     - financial_dashboard/tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'status'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'surface-angle-slider'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'surface-colorscale-dropdown'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'tab-content'
+   Appears in 4 files:
+     - financial_dashboard/app_debug.py (1x)
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/app_simplified.py (1x)
+
+🔴 ID: 'tabs'
+   Appears in 3 files:
+     - financial_dashboard/app_debug.py (1x)
+     - financial_dashboard/market_dashboard.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'tabs-container'
+   Appears in 2 files:
+     - financial_dashboard/app_refactored.py (1x)
+     - financial_dashboard/app_simplified.py (1x)
+
+🔴 ID: 'test-dropdown'
+   Appears in 2 files:
+     - financial_dashboard/app_fixed.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'test-input'
+   Appears in 2 files:
+     - financial_dashboard/app_fixed.py (1x)
+     - financial_dashboard/index_clean.py (1x)
+
+🔴 ID: 'theme-icon'
+   Appears in 2 files:
+     - financial_dashboard/components/theme_toggle.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'theme-store'
+   Appears in 2 files:
+     - financial_dashboard/components/theme_toggle.py (1x)
+     - financial_dashboard/index.py (1x)
+
+🔴 ID: 'tickers-input'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'toggle-brief'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'trade-simulator'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'tradingview-fetch-btn'
+   Appears in 2 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'tradingview-signals-container'
+   Appears in 2 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'trends-composite-results'
+   Appears in 3 files:
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+     - financial_dashboard/tabs/market_trends.py (2x)
+     - financial_dashboard/tabs/market_trends_callbacks_fixed.py (1x)
+
+🔴 ID: 'trends-results-table-container'
+   Appears in 2 files:
+     - financial_dashboard/tabs/market_trends.py (1x)
+     - financial_dashboard/tabs/market_trends_refactored.py (1x)
+
+🔴 ID: 'vol-surface'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+🔴 ID: 'vol-surface-3d'
+   Appears in 3 files:
+     - financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py (1x)
+     - financial_dashboard/tabs/options_lab/layout.py (1x)
+     - financial_dashboard/tabs/legacy/options_lab_layout_old.py (1x)
+
+📊 Total unique IDs: 811
+================================================================================

@@ -1,0 +1,47 @@
+{
+  "test": "strategy_lab_snapshot_clicker_fixed",
+  "timestamp": "2025-10-31 22:22:05",
+  "steps": [
+    {
+      "step": 1,
+      "action": "navigate_to_root",
+      "status": "success"
+    },
+    {
+      "step": 2,
+      "action": "activate_strategy_lab",
+      "status": "success"
+    },
+    {
+      "step": 4,
+      "action": "enter_tickers",
+      "status": "success",
+      "tickers": "AAPL,MSFT"
+    },
+    {
+      "step": 5,
+      "action": "verify_button",
+      "status": "success",
+      "button_count": 1,
+      "visible": false,
+      "enabled": true
+    }
+  ],
+  "snapshots": [
+    {
+      "name": "setup_section",
+      "path": "test_screenshots/strategy_lab_fixed_01_setup.png"
+    },
+    {
+      "name": "button_area",
+      "path": "test_screenshots/strategy_lab_fixed_02_button_area.png"
+    }
+  ],
+  "validations": [
+    {
+      "validation": "button_clickable",
+      "status": "failed",
+      "reason": "button_not_visible"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "test": "FIX A - Greeks Graphs Repair Attempt 1",
+  "timestamp": 1763684093.1036773,
+  "url": "http://localhost:8050",
+  "greeks_charts": {
+    "greeks-gamma-chart": {
+      "found": true,
+      "has_plot_data": true,
+      "is_empty": true,
+      "text_length": 30,
+      "status": "\u274c EMPTY"
+    },
+    "greeks-theta-chart": {
+      "found": true,
+      "has_plot_data": true,
+      "is_empty": true,
+      "text_length": 30,
+      "status": "\u274c EMPTY"
+    },
+    "greeks-vega-chart": {
+      "found": true,
+      "has_plot_data": true,
+      "is_empty": true,
+      "text_length": 30,
+      "status": "\u274c EMPTY"
+    }
+  },
+  "success": false,
+  "message": "\u274c Only 0/3 Greeks charts show data",
+  "greeks_with_data_count": 0,
+  "total_greeks_charts": 3,
+  "screenshot": "/home/aarav/unified-dashboard/reports/options_validation/diagnostics/greeks_fix_attempt1_screenshot_1763684151.png"
+}

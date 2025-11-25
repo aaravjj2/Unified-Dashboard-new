@@ -1,0 +1,22 @@
+diff --git a/reports/agent1b/diagnostics/git_head.txt b/reports/agent1b/diagnostics/git_head.txt
+index fee3166..2f13d8a 100644
+--- a/reports/agent1b/diagnostics/git_head.txt
++++ b/reports/agent1b/diagnostics/git_head.txt
+@@ -1 +1 @@
+-942fc44de2ada0d9e4b6c5523f47bf832cff1e6c
++eb08b29df4b544278e621d93eddc47a6d791914c
+diff --git a/reports/agent1b/diagnostics/py_compile_after.txt b/reports/agent1b/diagnostics/py_compile_after.txt
+index 52a9da7..de91571 100644
+--- a/reports/agent1b/diagnostics/py_compile_after.txt
++++ b/reports/agent1b/diagnostics/py_compile_after.txt
+@@ -1,6 +1,2 @@
+ *** Error compiling './tests/test_full_system_validation.py'...
+-  File "./tests/test_full_system_validation.py", line 101
+-    except Exception as e:        ]
+-                                  ^
+-SyntaxError: closing parenthesis ']' does not match opening parenthesis '{' on line 85
+-
++Sorry: IndentationError: unexpected indent (test_full_system_validation.py, line 12)
+diff --git a/reports/agent1b/patches/disable_malformed_test_1763699197.diff b/reports/agent1b/patches/disable_malformed_test_1763699197.diff
+new file mode 100644
+index 0000000..e69de29

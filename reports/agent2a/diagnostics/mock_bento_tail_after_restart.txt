@@ -1,0 +1,12 @@
+nohup: ignoring input
+INFO:__main__:Starting Mock Bento Forecast Service on http://localhost:5001
+INFO:__main__:Fixture path: /home/aarav/unified-dashboard/tests/fixtures/forecast/forecast_fixture.json
+INFO:__main__:Fixture exists: True
+ * Serving Flask app 'app'
+ * Debug mode: on
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.28.84.22:5001
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with watchdog (inotify)

@@ -1,0 +1,18 @@
+# Recorded development pins for optional heavy deps used during embedding experiments
+# These were recorded on a Linux x86_64 CPU environment on 2025-09-13. If you reproduce on
+# a different OS or with GPU-enabled torch, adjust the torch wheel accordingly.
+
+ts2vec==0.1
+pyarrow==11.0.0
+fastparquet==0.8.1
+scikit-learn==1.2.2
+ngboost==0.3.12
+
+# Note: Torch CPU wheel used during development (replace with a CUDA build if you have GPUs)
+# The exact wheel string may vary per Python minor version; use pip install --index-url ... when needed.
+torch==2.2.0+cpu
+torchvision==0.15.2+cpu
+torchaudio==2.2.2+cpu
+
+# torch-geometric (meta-package) - see project install guide for exact subpackages and versions
+torch-geometric==2.3.0

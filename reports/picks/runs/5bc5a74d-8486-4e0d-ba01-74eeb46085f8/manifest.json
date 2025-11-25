@@ -1,0 +1,30 @@
+{
+  "run_id": "5bc5a74d-8486-4e0d-ba01-74eeb46085f8",
+  "run_type": "weekly",
+  "git_sha": "0be230f9383f072c5a95d09c086d7cc991f9ee68",
+  "params": {
+    "top_n": 20,
+    "min_avg_volume": 0,
+    "max_per_sector": 3,
+    "max_sector_share": 0.5,
+    "w1": 0.4,
+    "w2": 0.3,
+    "w3": 0.2,
+    "w4": 0.1
+  },
+  "mode": "dryrun",
+  "seed": "5bc5a74d-8486-4e0d-ba01-74eeb46085f8",
+  "started_at": "2025-11-23T18:24:20.341194",
+  "inputs_count": 7,
+  "inputs_checksum": {
+    "input_csv": "8174f0ef5ccfaa7b1ea1c0b74d58d93188d0b8dfe77960a0a5c1ff1882bcb1f3",
+    "normalized_csv": "8174f0ef5ccfaa7b1ea1c0b74d58d93188d0b8dfe77960a0a5c1ff1882bcb1f3"
+  },
+  "validation": {
+    "passed": false,
+    "errors": [
+      "Sector concentration exceeds threshold"
+    ]
+  },
+  "finished_at": "2025-11-23T18:24:20.373597"
+}

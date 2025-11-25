@@ -1,0 +1,89 @@
+diff --git a/reports/market_forecast_rebuild/diagnostics/modified_files_sha256.json b/reports/market_forecast_rebuild/diagnostics/modified_files_sha256.json
+new file mode 100644
+index 0000000..5cd51c8
+--- /dev/null
++++ b/reports/market_forecast_rebuild/diagnostics/modified_files_sha256.json
+@@ -0,0 +1,5 @@
++{
++  "financial_dashboard/tabs/market_forecast_rebuild.py": "87b110e26cd750f8dab2d5af76b3400b427df989faae53371bad2cab9a230ea1",
++  "tests/fixtures/market_trends/news_fixtures.json": "d585e72f70ac463b4e577e9e53b5b758a098ebc094d544731bc09ad0eba05f3d",
++  "tests/fixtures/market_trends/sample_brief.json": "1d14865879f7b3fb0058fa43f367bb44dbb49de2462ee599ccfdade88681091a"
++}
+diff --git a/reports/market_trends_fix/diagnostics/git_head.txt b/reports/market_trends_fix/diagnostics/git_head.txt
+index aad5cec..6a8854c 100644
+--- a/reports/market_trends_fix/diagnostics/git_head.txt
++++ b/reports/market_trends_fix/diagnostics/git_head.txt
+@@ -1 +1 @@
+-e11edeaddd4758f6e982f93b51a11c0657ddda77
++0a3ebea8f7a27053379a45d5fd7354de3d3c2642
+diff --git a/reports/market_trends_fix/patches/03_callbacks_enhanced_logging_1763523505.diff b/reports/market_trends_fix/patches/03_callbacks_enhanced_logging_1763523505.diff
+new file mode 100644
+index 0000000..6cab041
+--- /dev/null
++++ b/reports/market_trends_fix/patches/03_callbacks_enhanced_logging_1763523505.diff
+@@ -0,0 +1,65 @@
++diff --git a/financial_dashboard/tabs/market_trends_callbacks_fixed.py b/financial_dashboard/tabs/market_trends_callbacks_fixed.py
++index 9ebc4f7..2f426cc 100644
++--- a/financial_dashboard/tabs/market_trends_callbacks_fixed.py
+++++ b/financial_dashboard/tabs/market_trends_callbacks_fixed.py
++@@ -5,6 +5,7 @@ This module contains refactored, working callbacks for all Market Trends buttons
++ Import and use these to replace the broken callbacks in market_trends.py.
++ 
++ Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7
+++Agent-1B: Enhanced with comprehensive logging to callbacks.log
++ """
++ 
++ import os
++@@ -18,21 +19,48 @@ import pandas as pd
++ 
++ logger = logging.getLogger(__name__)
++ 
+++# Enhanced logging to diagnostics directory
+++_callbacks_log_file = os.path.join(
+++    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+++    'reports/market_trends_fix/diagnostics/callbacks.log'
+++)
+++os.makedirs(os.path.dirname(_callbacks_log_file), exist_ok=True)
+++_callbacks_file_handler = logging.FileHandler(_callbacks_log_file)
+++_callbacks_file_handler.setFormatter(logging.Formatter(
+++    '%(asctime)s [%(levelname)s] %(name)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
+++))
+++logger.addHandler(_callbacks_file_handler)
+++logger.setLevel(logging.INFO)
+++
++ 
++ def create_safe_callback(callback_name):
++     """
++-    Decorator to wrap callbacks with comprehensive error handling.
+++    Decorator to wrap callbacks with comprehensive error handling and logging.
+++    
+++    Logs entry, exit, duration, and exceptions to callbacks.log.
++     
++     Requirements: 4.1, 4.2
++     """
++     def decorator(func):
++         def wrapper(*args, **kwargs):
+++            start_time = time.time()
+++            logger.info(f"▶️  CALLBACK [{callback_name}] ENTRY - args={len(args)}, kwargs={list(kwargs.keys())}")
+++            
++             try:
++-                return func(*args, **kwargs)
++-            except PreventUpdate:
+++                result = func(*args, **kwargs)
+++                duration = time.time() - start_time
+++                logger.info(f"✅ CALLBACK [{callback_name}] SUCCESS - duration={duration:.3f}s")
+++                return result
+++            
+++            except PreventUpdate as e:
+++                duration = time.time() - start_time
+++                logger.debug(f"⏸️  CALLBACK [{callback_name}] PREVENT_UPDATE - duration={duration:.3f}s")
++                 raise
+++            
++             except Exception as e:
++-                logger.exception(f"Callback {callback_name} failed: {e}")
+++                duration = time.time() - start_time
+++                logger.exception(f"❌ CALLBACK [{callback_name}] FAILED - duration={duration:.3f}s - error={str(e)[:200]}")
+++                
++                 return html.Div(
++                     f"Error in {callback_name}: {str(e)[:200]}",
++                     style={

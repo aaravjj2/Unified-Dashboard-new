@@ -1,0 +1,58 @@
+{
+  "phase": "Phase 24-25 Real Debug & Validation",
+  "execution_time": "2025-11-01T14:03:30.687928",
+  "server_health": {
+    "has_critical_errors": true,
+    "react_errors": false,
+    "callback_500_errors": false,
+    "callback_endpoint_health": {
+      "/_dash-dependencies": {
+        "status_code": 200,
+        "success": true,
+        "response_size": 4947,
+        "content_type": "application/json"
+      },
+      "/_dash-layout": {
+        "status_code": 200,
+        "success": true,
+        "response_size": 318814,
+        "content_type": "application/json"
+      },
+      "/_dash-update-component": {
+        "status_code": 500,
+        "success": false,
+        "response_size": 265,
+        "content_type": "text/html; charset=utf-8",
+        "error_content": "<!doctype html>\n<html lang=en>\n<title>500 Internal Server Error</title>\n<h1>Internal Server Error</h1>\n<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>\n"
+      }
+    },
+    "overall_interaction_success": 0
+  },
+  "error_analysis": null,
+  "callback_endpoint_results": {
+    "/_dash-dependencies": {
+      "status_code": 200,
+      "success": true,
+      "response_size": 4947,
+      "content_type": "application/json"
+    },
+    "/_dash-layout": {
+      "status_code": 200,
+      "success": true,
+      "response_size": 318814,
+      "content_type": "application/json"
+    },
+    "/_dash-update-component": {
+      "status_code": 500,
+      "success": false,
+      "response_size": 265,
+      "content_type": "text/html; charset=utf-8",
+      "error_content": "<!doctype html>\n<html lang=en>\n<title>500 Internal Server Error</title>\n<h1>Internal Server Error</h1>\n<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>\n"
+    }
+  },
+  "clicker_test_results": {},
+  "recommendations": [
+    "Improve interactive element functionality - many buttons/inputs are not working",
+    "Fix callback endpoint issues - dash update components failing"
+  ]
+}

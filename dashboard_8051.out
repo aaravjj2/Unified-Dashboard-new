@@ -1,0 +1,291 @@
+nohup: ignoring input
+2025-11-23 19:42:14,825 - __main__ - INFO - ============================================================
+2025-11-23 19:42:14,826 - __main__ - INFO - Financial Dashboard - Starting
+2025-11-23 19:42:14,826 - __main__ - INFO - ============================================================
+2025-11-23 19:42:14,826 - __main__ - INFO - Host: 0.0.0.0
+2025-11-23 19:42:14,826 - __main__ - INFO - Port: 8051
+2025-11-23 19:42:14,826 - __main__ - INFO - Debug: False
+2025-11-23 19:42:14,826 - __main__ - INFO - ============================================================
+2025-11-23 19:42:14,826 - __main__ - INFO - Importing dashboard application...
+2025-11-23 19:42:36,342 - __main__ - INFO - Creating application instance...
+2025-11-23 19:42:36,342 - financial_dashboard.app - INFO - ======================================================================
+2025-11-23 19:42:36,342 - financial_dashboard.app - INFO - Creating Financial Dashboard Application
+2025-11-23 19:42:36,342 - financial_dashboard.app - INFO - ======================================================================
+2025-11-23 19:42:36,342 - financial_dashboard.app - INFO - Step 1: Creating Flask server...
+2025-11-23 19:42:37,918 - financial_dashboard.utils.load_env - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+2025-11-23 19:42:37,918 - financial_dashboard.utils.load_env - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+2025-11-23 19:42:37,919 - financial_dashboard.utils.load_env - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+2025-11-23 19:42:37,919 - financial_dashboard.utils.load_env - INFO - ✅ All 5 required keys present
+2025-11-23 19:42:37,919 - financial_dashboard.app - INFO - Environment status: valid=True, sources=['dotenv:/home/aarav/unified-dashboard/keys.env', 'dotenv:/home/aarav/unified-dashboard/doppler.env', 'dotenv:/home/aarav/unified-dashboard/.env']
+2025-11-23 19:42:37,919 - financial_dashboard.app - INFO - Step 2: Registering API endpoints...
+2025-11-23 19:42:46,865 - financial_dashboard.app - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks, /api/portfolio_summary
+2025-11-23 19:42:46,866 - financial_dashboard.app - WARNING - Could not register Research API: No module named 'api.research'
+2025-11-23 19:42:46,867 - financial_dashboard.app - WARNING - Could not register Market Forecast API: No module named 'services.forecast_adapter'
+2025-11-23 19:42:46,870 - financial_dashboard.api.volsurface - INFO - ✓ Volatility Surface API blueprints registered
+2025-11-23 19:42:46,870 - financial_dashboard.api.volsurface - INFO -   Deterministic mode: False
+2025-11-23 19:42:46,870 - financial_dashboard.app - INFO - ✅ Registered Volatility Surface API: /api/volsurface/*, /admin/vollab/*
+2025-11-23 19:42:46,871 - financial_dashboard.app - INFO - ✅ Registered Options Forecast API: /api/options/forecast
+2025-11-23 19:42:46,872 - financial_dashboard.app - INFO - ✅ Registered Options Backtest API: /api/options/backtest/*
+2025-11-23 19:42:46,874 - financial_dashboard.api.picks_pipeline_api - INFO - Registered picks API endpoints
+2025-11-23 19:42:46,874 - financial_dashboard.app - INFO - ✅ Registered Picks Pipeline API: /api/picks/*
+2025-11-23 19:42:46,875 - financial_dashboard._shared - INFO - ✅ Preloaded 20 weekly prices from cache
+[_shared.py] ✅ Preloaded 20 weekly prices
+2025-11-23 19:42:46,875 - financial_dashboard._shared - INFO - ✅ Preloaded 39 total prices (including monthly)
+2025-11-23 19:42:46,876 - financial_dashboard._shared - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+2025-11-23 19:42:46,877 - financial_dashboard.utils.price_fetcher - INFO - [PRICE_FETCHER] Initialized
+2025-11-23 19:42:46,877 - financial_dashboard.utils.price_fetcher - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - Startup Cache Validation Report
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - Total tickers in cache: 39
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - Valid Market Trends tickers: 0/5
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO -   ✅ Complete: 
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -   ⚠️  Incomplete: AAPL, MSFT, GOOGL, NVDA, TSLA
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -      AAPL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -      MSFT: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -      GOOGL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -      NVDA: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - Overall status: ❌ INCOMPLETE
+2025-11-23 19:42:46,877 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:46,877 - financial_dashboard._shared - WARNING - [_shared] SH id: 128746959305072, RESULTS_CACHE id: 128746959379840, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 128746959305072, RESULTS_CACHE id: 128746959379840, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+2025-11-23 19:42:46,936 - financial_dashboard.app - WARNING - Could not initialize Market Trends CacheManager; using fallback (in-memory)
+2025-11-23 19:42:46,937 - financial_dashboard.app - INFO - ✅ Registered Market Trends Admin API: /api/market_trends/brief, /refresh, /health
+2025-11-23 19:42:46,939 - financial_dashboard.api.picks_api - INFO - ✅ Picks API routes registered
+2025-11-23 19:42:46,939 - financial_dashboard.app - INFO - ✅ Registered Picks API routes: /api/weekly_picks, /api/monthly_picks, /api/picks/reload, /api/picks/health
+2025-11-23 19:42:46,944 - financial_dashboard.api.chat - INFO - Chat API registered at /api/chat/*
+2025-11-23 19:42:46,944 - financial_dashboard.app - INFO - ✅ Registered Chat API: /api/chat/*
+2025-11-23 19:42:46,944 - financial_dashboard.app - INFO - Step 3: Creating Dash application...
+2025-11-23 19:42:49,323 - financial_dashboard.app - INFO - Instrumenting callback registration tracking...
+2025-11-23 19:42:49,323 - financial_dashboard.app - INFO - ✅ Callback instrumentation active
+2025-11-23 19:42:49,323 - financial_dashboard.app - INFO - ✅ Dash application created
+2025-11-23 19:42:49,323 - financial_dashboard.app - INFO - Step 4: Setting application layout...
+2025-11-23 19:42:49,324 - financial_dashboard.index - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks
+2025-11-23 19:42:49,324 - financial_dashboard.index - INFO - ✓ Loaded keys.env (did not overwrite existing env vars)
+2025-11-23 19:42:49,324 - _shared - INFO - ✅ Preloaded 20 weekly prices from cache
+[_shared.py] ✅ Preloaded 20 weekly prices
+2025-11-23 19:42:49,325 - _shared - INFO - ✅ Preloaded 39 total prices (including monthly)
+2025-11-23 19:42:49,325 - _shared - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+2025-11-23 19:42:49,325 - financial_dashboard.utils.price_fetcher - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - Startup Cache Validation Report
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - Total tickers in cache: 39
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - Valid Market Trends tickers: 0/5
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO -   ✅ Complete: 
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -   ⚠️  Incomplete: AAPL, MSFT, GOOGL, NVDA, TSLA
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -      AAPL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -      MSFT: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -      GOOGL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -      NVDA: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - Overall status: ❌ INCOMPLETE
+2025-11-23 19:42:49,325 - financial_dashboard.utils.keys_manager - INFO - ============================================================
+2025-11-23 19:42:49,328 - financial_dashboard.index - INFO - ✓ Loaded _shared.py
+2025-11-23 19:42:49,329 - financial_dashboard.index - INFO - ✓ Chatbot UI available
+2025-11-23 19:42:49,330 - financial_dashboard.tabs.home_lab.helpers - INFO - ✓ Home Lab helpers loaded
+2025-11-23 19:42:49,330 - financial_dashboard.tabs.home_lab.layout - INFO - ✓ Home Lab layout module loaded
+2025-11-23 19:42:49,330 - financial_dashboard.tabs.home_lab - INFO - ✓ Home Lab module initialized
+2025-11-23 19:42:49,330 - financial_dashboard.index - INFO - ✓ Loaded tab: 🏠 Command Center
+2025-11-23 19:42:49,330 - financial_dashboard.index - INFO - ✓ Loaded tab: 🏠 Home
+2025-11-23 19:42:51,861 - financial_dashboard.utils.cache_manager - INFO - CacheManager initialized: path=/home/aarav/unified-dashboard/financial_dashboard/outputs/market_brief.json, ttl=300s
+2025-11-23 19:42:51,862 - financial_dashboard.utils.news_manager - INFO - NewsManager initialized: ttl=300s, providers=['finnhub', 'alpaca'], deterministic=False
+2025-11-23 19:42:51,862 - financial_dashboard.tabs.market_trends - INFO - Market Trends module initialized with CacheManager and NewsManager
+2025-11-23 19:42:51,862 - financial_dashboard.index - INFO - ✓ Loaded tab: Market Trends
+2025-11-23 19:42:59,074 - financial_dashboard.index - INFO - ✓ Loaded tab: Market Forecast
+2025-11-23 19:42:59,076 - financial_dashboard.index - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+2025-11-23 19:43:00,263 - financial_dashboard.index - INFO - ✓ Loaded tab: 📊 Attribution Lab
+2025-11-23 19:43:00,264 - financial_dashboard.tabs.strategy_lab.subtabs.setup - INFO - ✓ Strategy Lab Setup subtab loaded
+2025-11-23 19:43:00,264 - financial_dashboard.tabs.strategy_lab.subtabs.execution - INFO - ✓ Strategy Lab Execution subtab loaded
+2025-11-23 19:43:00,264 - financial_dashboard.tabs.strategy_lab.subtabs.results - INFO - ✓ Strategy Lab Results subtab loaded
+2025-11-23 19:43:00,265 - financial_dashboard.tabs.strategy_lab.subtabs.benchmark - INFO - ✓ Strategy Lab Benchmark subtab loaded (enhanced with Beta, IR, Tracking Error)
+2025-11-23 19:43:00,265 - financial_dashboard.tabs.strategy_lab.subtabs.risk - INFO - ✓ Strategy Lab Risk & Factor Analysis subtab loaded
+2025-11-23 19:43:00,265 - financial_dashboard.tabs.strategy_lab.layout_modular - INFO - ✓ Strategy Lab modular layout loaded (6 subtabs)
+2025-11-23 19:43:00,266 - financial_dashboard.index - INFO - ✓ Loaded tab: ⚡ Strategy Lab
+2025-11-23 19:43:00,267 - utils.cache_manager - INFO - CacheManager initialized: path=data/picks/monthly_cache.json, ttl=300s
+2025-11-23 19:43:00,268 - financial_dashboard.index - INFO - ✓ Loaded tab: Monthly Picks
+2025-11-23 19:43:00,268 - utils.cache_manager - INFO - CacheManager initialized: path=data/picks/weekly_cache.json, ttl=300s
+2025-11-23 19:43:00,268 - financial_dashboard.index - INFO - ✓ Loaded tab: Weekly Picks
+2025-11-23 19:43:00,384 - financial_dashboard.tabs.portfolio_analytics - INFO - Portfolio analytics caching enabled: /home/aarav/unified-dashboard/financial_dashboard/.cache/portfolio
+2025-11-23 19:43:02,107 - financial_dashboard.index - INFO - ✓ Loaded tab: Portfolio
+2025-11-23 19:43:02,110 - observability.sentry_config - WARNING - ⚠️ sentry-sdk not installed - exception tracking disabled
+2025-11-23 19:43:02,110 - observability.datadog_config - WARNING - ⚠️ DATADOG_ENABLED=false - metrics disabled
+2025-11-23 19:43:02,110 - financial_dashboard.index - INFO - ✓ Loaded tab: 💹 Options Lab
+2025-11-23 19:43:02,111 - financial_dashboard.index - INFO - ✓ Loaded tab: 🔬 Research Lab
+2025-11-23 19:43:02,111 - financial_dashboard.index - INFO - ✓ index.py initialization complete
+2025-11-23 19:43:02,111 - financial_dashboard.index - INFO - ✓ index.py layout ready
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO - 🔵 create_layout() called!
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO - 🔍 ENABLED_TABS = ['home_lab', 'research_lab', 'attribution_lab', 'strategy_lab', 'weekly_picks', 'monthly_picks', 'market_trends', 'market_forecast', 'volatility_lab', 'portfolio', 'options_lab']
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO - 🔍 loaded_tabs keys = ['home_lab', 'home', 'market_trends', 'market_forecast', 'volatility_lab', 'attribution_lab', 'strategy_lab', 'monthly_picks', 'weekly_picks', 'portfolio', 'options_lab', 'research_lab']
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO - 🔍 Processing tab: home_lab
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO -   📋 Tab info: 🏠 Command Center
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for home_lab
+2025-11-23 19:43:02,112 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:02,112 - financial_dashboard.tabs.home_lab.layout - INFO - Creating Home Lab layout...
+2025-11-23 19:43:05,992 - financial_dashboard.tabs.home_lab.helpers - INFO - ✅ Loaded portfolio from Alpaca API: 4 positions, $99,419.24
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   ✅ Created layout for home_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 🏠 Command Center
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   ✅ Successfully added tab home_lab to tabs list
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO - 🔍 Processing tab: research_lab
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   📋 Tab info: 🔬 Research Lab
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for research_lab
+2025-11-23 19:43:06,001 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,070 - financial_dashboard.index - INFO -   ✅ Created layout for research_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 🔬 Research Lab
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO -   ✅ Successfully added tab research_lab to tabs list
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO - 🔍 Processing tab: attribution_lab
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO -   📋 Tab info: 📊 Attribution Lab
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for attribution_lab
+2025-11-23 19:43:06,071 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,073 - financial_dashboard.index - INFO -   ✅ Created layout for attribution_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,073 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 📊 Attribution Lab
+2025-11-23 19:43:06,073 - financial_dashboard.index - INFO -   ✅ Successfully added tab attribution_lab to tabs list
+2025-11-23 19:43:06,073 - financial_dashboard.index - INFO - 🔍 Processing tab: strategy_lab
+2025-11-23 19:43:06,073 - financial_dashboard.index - INFO -   📋 Tab info: ⚡ Strategy Lab
+2025-11-23 19:43:06,074 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for strategy_lab
+2025-11-23 19:43:06,074 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,074 - financial_dashboard.tabs.strategy_lab.layout_modular - INFO - Creating Strategy Lab layout with 5 modular subtabs (Backtest+Execute merged)...
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   ✅ Created layout for strategy_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: ⚡ Strategy Lab
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   ✅ Successfully added tab strategy_lab to tabs list
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO - 🔍 Processing tab: weekly_picks
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   📋 Tab info: Weekly Picks
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   🔧 Found layout function `create_layout` for weekly_picks
+2025-11-23 19:43:06,076 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   ✅ Created layout for weekly_picks, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Weekly Picks
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   ✅ Successfully added tab weekly_picks to tabs list
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO - 🔍 Processing tab: monthly_picks
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   📋 Tab info: Monthly Picks
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🔧 Found layout function `create_layout` for monthly_picks
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   ✅ Created layout for monthly_picks, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Monthly Picks
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   ✅ Successfully added tab monthly_picks to tabs list
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO - 🔍 Processing tab: market_trends
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   📋 Tab info: Market Trends
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for market_trends
+2025-11-23 19:43:06,077 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,077 - financial_dashboard.tabs.market_trends - INFO - 🎨 layout() called - starting
+2025-11-23 19:43:06,078 - financial_dashboard.utils.cache_manager - INFO - Loaded cache from disk: 7 records
+2025-11-23 19:43:06,078 - financial_dashboard.tabs.market_trends - INFO - Loaded 7 records from cache for layout
+2025-11-23 19:43:06,078 - financial_dashboard.tabs.market_trends - INFO - Rendering initial table...
+2025-11-23 19:43:06,084 - financial_dashboard.tabs.market_trends - INFO - Rendering initial news...
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   ✅ Created layout for market_trends, content type: <class 'dash.html.Div.Div'>
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Market Trends
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   ✅ Successfully added tab market_trends to tabs list
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO - 🔍 Processing tab: market_forecast
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   📋 Tab info: Market Forecast
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for market_forecast
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   ✅ Created layout for market_forecast, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Market Forecast
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO -   ✅ Successfully added tab market_forecast to tabs list
+2025-11-23 19:43:06,085 - financial_dashboard.index - INFO - 🔍 Processing tab: volatility_lab
+2025-11-23 19:43:06,086 - financial_dashboard.index - INFO -   📋 Tab info: ⚡ Volatility Lab
+2025-11-23 19:43:06,086 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for volatility_lab
+2025-11-23 19:43:06,086 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   ✅ Created layout for volatility_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: ⚡ Volatility Lab
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   ✅ Successfully added tab volatility_lab to tabs list
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO - 🔍 Processing tab: portfolio
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   📋 Tab info: Portfolio
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for portfolio
+2025-11-23 19:43:06,174 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,175 - financial_dashboard.tabs.portfolio - INFO - Loaded portfolio cache for layout preload: /home/aarav/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-11-23 19:43:06,175 - financial_dashboard.tabs.portfolio_positions - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-11-23 19:43:06,185 - financial_dashboard.tabs.portfolio_positions - INFO - ✅ Server-side positions table rendered successfully
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   ✅ Created layout for portfolio, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: Portfolio
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   ✅ Successfully added tab portfolio to tabs list
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO - 🔍 Processing tab: options_lab
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   📋 Tab info: 💹 Options Lab
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   🔧 Found layout function `layout` for options_lab
+2025-11-23 19:43:06,187 - financial_dashboard.index - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 19:43:06,190 - financial_dashboard.index - INFO -   ✅ Created layout for options_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 19:43:06,190 - financial_dashboard.index - INFO -   🏷️ Creating tab with label: 💹 Options Lab
+2025-11-23 19:43:06,190 - financial_dashboard.index - INFO -   ✅ Successfully added tab options_lab to tabs list
+2025-11-23 19:43:06,190 - financial_dashboard.index - INFO - ✅ Created 11 tabs total
+2025-11-23 19:43:06,192 - financial_dashboard.app - INFO - Sanitizing layout to prevent React rendering errors...
+2025-11-23 19:43:06,192 - financial_dashboard.utils.component_sanitizer - INFO - Sanitizing layout...
+2025-11-23 19:43:06,194 - financial_dashboard.utils.component_sanitizer - INFO - ✅ Layout sanitization complete
+2025-11-23 19:43:06,194 - financial_dashboard.app - INFO - ✅ Layout set with 11 tabs
+2025-11-23 19:43:06,194 - financial_dashboard.app - INFO - Step 5: Registering callbacks...
+2025-11-23 19:43:06,195 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Starting callback registration. app object id: 128746959800784, type: <class 'dash_extensions.enrich.DashProxy'>
+2025-11-23 19:43:06,195 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Skipping disabled tab: home (🏠 Home)
+2025-11-23 19:43:06,195 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-11-23 19:43:06,195 - financial_dashboard.tabs.market_trends - INFO - 🔵 Registering Market Trends callbacks...
+2025-11-23 19:43:35,091 - financial_dashboard.tabs.market_trends - INFO - ✅ Market Trends callbacks registered successfully!
+2025-11-23 19:43:35,091 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for Market Trends
+2025-11-23 19:43:35,091 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+2025-11-23 19:43:35,091 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Volatility Lab
+2025-11-23 19:43:35,091 - financial_dashboard.tabs.volatility_lab.callbacks - INFO - ✓ Registering Volatility Lab callbacks (modular package version)
+2025-11-23 19:43:35,097 - financial_dashboard.tabs.volatility_lab.callbacks - INFO - ✅ Volatility Lab callbacks registered successfully (5/6 callbacks active - health polling disabled to fix duplicate outputs)
+2025-11-23 19:43:35,097 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for ⚡ Volatility Lab
+2025-11-23 19:43:35,097 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Volatility Lab
+2025-11-23 19:43:35,097 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-11-23 19:43:35,097 - financial_dashboard.tabs.attribution_lab.callbacks - INFO - 📊 Registering Attribution Lab callbacks (first time)...
+2025-11-23 19:43:35,103 - financial_dashboard.tabs.attribution_lab.callbacks - INFO - ✅ Attribution Lab callbacks registered successfully
+2025-11-23 19:43:35,103 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-11-23 19:43:35,103 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+2025-11-23 19:43:35,103 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Strategy Lab
+2025-11-23 19:43:35,104 - financial_dashboard.tabs.strategy_lab.callbacks - INFO - 🎯 Registering Strategy Lab callbacks (first time)...
+2025-11-23 19:43:35,115 - financial_dashboard.tabs.strategy_lab.callbacks - INFO - ✅ Strategy Lab callbacks registered successfully (8 callbacks)
+2025-11-23 19:43:35,115 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for ⚡ Strategy Lab
+2025-11-23 19:43:35,115 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Strategy Lab
+2025-11-23 19:43:35,115 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-11-23 19:43:35,120 - financial_dashboard.tabs.monthly_picks - INFO - ✅ Monthly picks callbacks registered
+2025-11-23 19:43:35,120 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for Monthly Picks
+2025-11-23 19:43:35,120 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+2025-11-23 19:43:35,120 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-11-23 19:43:35,125 - financial_dashboard.tabs.weekly_picks - INFO - ✅ Weekly picks callbacks registered
+2025-11-23 19:43:35,125 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for Weekly Picks
+2025-11-23 19:43:35,125 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+2025-11-23 19:43:35,125 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-11-23 19:43:35,387 - financial_dashboard.tabs.portfolio - INFO - Portfolio database initialized
+2025-11-23 19:43:35,653 - financial_dashboard.tabs.portfolio_factors - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-11-23 19:43:35,661 - financial_dashboard.tabs.portfolio - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-11-23 19:43:35,661 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for Portfolio
+2025-11-23 19:43:35,661 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+2025-11-23 19:43:35,661 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-11-23 19:43:35,661 - financial_dashboard.tabs.options_lab.callbacks - INFO - 📈 Registering Options Lab callbacks (first time)...
+2025-11-23 19:43:35,676 - financial_dashboard.tabs.options_lab.callbacks - INFO - ✅ Options Lab callbacks registered successfully
+2025-11-23 19:43:35,687 - financial_dashboard.tabs.options_lab.callbacks - INFO - ✅ Options Lab callbacks registered successfully (including Backtester)
+2025-11-23 19:43:35,687 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-11-23 19:43:35,687 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+2025-11-23 19:43:35,687 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-11-23 19:43:35,687 - financial_dashboard.tabs.research_lab.callbacks - INFO - 📝 Registering Research Lab callbacks (first time)...
+2025-11-23 19:43:35,687 - financial_dashboard.tabs.research_lab.callbacks - INFO - 🔗 Research API base URL: http://127.0.0.1:8051
+2025-11-23 19:43:35,708 - financial_dashboard.tabs.research_lab.callbacks - INFO - ✅ Research Lab callbacks registered successfully (22 callbacks)
+2025-11-23 19:43:35,708 - financial_dashboard._callbacks_impl - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-11-23 19:43:35,708 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+2025-11-23 19:43:35,708 - financial_dashboard._callbacks_impl - INFO - 🤖 Registering RAG-powered chatbot callbacks...
+2025-11-23 19:43:35,708 - financial_dashboard.callbacks.chatbot_callbacks - INFO - 🤖 Registering chatbot callbacks...
+2025-11-23 19:43:35,715 - financial_dashboard.callbacks.chatbot_callbacks - INFO - ✅ Chatbot callbacks registered successfully
+2025-11-23 19:43:35,715 - financial_dashboard._callbacks_impl - INFO - ✅ RAG chatbot callbacks registered successfully
+2025-11-23 19:43:35,715 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Skipping app.register_callbacks() - DashProxy handles this automatically
+2025-11-23 19:43:35,715 - financial_dashboard._callbacks_impl - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+2025-11-23 19:43:35,715 - financial_dashboard.app - INFO - ✅ Registered 0 callbacks
+2025-11-23 19:43:35,715 - financial_dashboard.app - INFO - ======================================================================
+2025-11-23 19:43:35,715 - financial_dashboard.app - INFO - ✅ Application created successfully!
+2025-11-23 19:43:35,715 - financial_dashboard.app - INFO - ======================================================================
+2025-11-23 19:43:35,715 - __main__ - INFO - Application created successfully!
+2025-11-23 19:43:35,715 - __main__ - INFO - 
+2025-11-23 19:43:35,715 - __main__ - INFO - ============================================================
+2025-11-23 19:43:35,715 - __main__ - INFO - Dashboard is starting on http://0.0.0.0:8051
+2025-11-23 19:43:35,715 - __main__ - INFO - ============================================================
+2025-11-23 19:43:35,715 - __main__ - INFO - 
+2025-11-23 19:43:35,715 - __main__ - INFO - Press CTRL+C to stop the server
+2025-11-23 19:43:35,715 - __main__ - INFO - 
+Dash is running on http://0.0.0.0:8051/
+
+2025-11-23 19:43:35,716 - dash.dash - INFO - Dash is running on http://0.0.0.0:8051/
+
+ * Serving Flask app 'financial_dashboard.app'
+ * Debug mode: off
+2025-11-23 19:43:35,721 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8051
+ * Running on http://172.28.84.22:8051
+2025-11-23 19:43:35,721 - werkzeug - INFO - [33mPress CTRL+C to quit[0m

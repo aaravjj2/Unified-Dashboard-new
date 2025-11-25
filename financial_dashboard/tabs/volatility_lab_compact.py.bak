@@ -1,0 +1,560 @@
+"""
+Volatility Lab - Compact Single-Tab 4-Panel Layout
+==================================================
+
+Agent-1B Implementation: Compact, production-ready volatility analytics.
+
+Architecture:
+- Single tab with 4 panels in 2x2 grid
+- Clean API integration (/api/volsurface/*)
+- Deterministic fixture support (VOLLAB_DETERMINISTIC=1)
+- DB persistence with JSON fallback
+- Newton-Raphson solver with Brent fallback
+
+Panels:
+1. Overview - Quick metrics and last surface summary
+2. IV Surface - Primary calculation canvas with heatmap
+3. Signals + Backtest - Strategy signals and backtesting
+4. Diagnostics - Collapsible solver logs and debug info
+
+Owner: Agent-1B
+Status: Scaffold Complete
+"""
+
+import logging
+import os
+import json
+import requests
+from dash import html, dcc, Input, Output, State, callback_context, no_update
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
+
+# API configuration
+API_BASE = os.getenv('VOLLAB_API_BASE', 'http://localhost:8090/api/volsurface')
+DETERMINISTIC_MODE = os.getenv('VOLLAB_DETERMINISTIC', '0') == '1'
+
+# Stable component IDs per spec
+COMPONENT_IDS = {
+    # Overview panel
+    'overview_last_surface': 'vl-overview-last-surface',
+    'overview_atm_iv': 'vl-overview-atm-iv',
+    'overview_term_30': 'vl-overview-term-30',
+    'overview_term_60': 'vl-overview-term-60',
+    'overview_term_90': 'vl-overview-term-90',
+    'compute_quick_btn': 'vl-compute-quick-btn',
+    'overview_refresh_btn': 'vl-overview-refresh-btn',
+    
+    # IV Surface panel
+    'calc_ticker': 'vl-calc-ticker',
+    'calc_expiry': 'vl-calc-expiry',
+    'calc_strike_range': 'vl-calc-strike-range',
+    'calc_run_btn': 'vl-calc-run-btn',
+    'heatmap': 'vl-heatmap',
+    'iv_metrics_table': 'vl-iv-metrics-table',
+    'iv_export_btn': 'vl-iv-export-btn',
+    'explorer_date_slider': 'vl-explorer-date-slider',
+    
+    # Signals + Backtest panel
+    'signal_run_btn': 'vl-signal-run-btn',
+    'signal_table': 'vl-signal-table',
+    'signal_paper_order_btn': 'vl-signal-paper-order-btn',
+    'backtest_run_btn': 'vl-backtest-run-btn',
+    'backtest_results': 'vl-backtest-results',
+    'backtest_export_btn': 'vl-backtest-export-btn',
+    
+    # Diagnostics panel
+    'diag_solver_log': 'vl-diag-solver-log',
+    'diag_iterations': 'vl-diag-iterations',
+    'diag_last_payload': 'vl-diag-last-payload',
+    'diag_export_log': 'vl-diag-export-log',
+}
+
+
+def create_overview_panel():
+    """Panel 1: Overview - Quick metrics and surface summary"""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.H5("📊 Overview", className="mb-0"),
+            dbc.Button("🔄", id=COMPONENT_IDS['overview_refresh_btn'], 
+                      size="sm", color="link", className="float-end")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div("Last Surface", className="text-muted small"),
+                    html.H6(id=COMPONENT_IDS['overview_last_surface'], 
+                           children="No data", className="mb-0")
+                ], width=6),
+                dbc.Col([
+                    html.Div("ATM IV", className="text-muted small"),
+                    html.H6(id=COMPONENT_IDS['overview_atm_iv'], 
+                           children="--", className="mb-0")
+                ], width=6),
+            ], className="mb-3"),
+            dbc.Row([
+                dbc.Col([
+                    html.Div("30D Term", className="text-muted small"),
+                    html.Span(id=COMPONENT_IDS['overview_term_30'], children="--")
+                ], width=4),
+                dbc.Col([
+                    html.Div("60D Term", className="text-muted small"),
+                    html.Span(id=COMPONENT_IDS['overview_term_60'], children="--")
+                ], width=4),
+                dbc.Col([
+                    html.Div("90D Term", className="text-muted small"),
+                    html.Span(id=COMPONENT_IDS['overview_term_90'], children="--")
+                ], width=4),
+            ], className="mb-3"),
+            dbc.Button("⚡ Quick Compute", 
+                      id=COMPONENT_IDS['compute_quick_btn'],
+                      color="primary", size="sm", className="w-100")
+        ])
+    ], className="h-100")
+
+
+def create_iv_surface_panel():
+    """Panel 2: IV Surface - Primary calculation canvas"""
+    return dbc.Card([
+        dbc.CardHeader(html.H5("📈 IV Surface Calculator", className="mb-0")),
+        dbc.CardBody([
+            # Input controls
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Ticker", className="small"),
+                    dcc.Input(id=COMPONENT_IDS['calc_ticker'], 
+                             type="text", value="SPY",
+                             placeholder="SPY", className="form-control form-control-sm")
+                ], width=3),
+                dbc.Col([
+                    html.Label("Expiry", className="small"),
+                    dcc.Dropdown(id=COMPONENT_IDS['calc_expiry'],
+                                options=[], placeholder="Select...",
+                                className="form-control-sm")
+                ], width=3),
+                dbc.Col([
+                    html.Label("Strike Range", className="small"),
+                    dcc.Input(id=COMPONENT_IDS['calc_strike_range'],
+                             type="text", value="±10%",
+                             placeholder="±10%", className="form-control form-control-sm")
+                ], width=3),
+                dbc.Col([
+                    html.Label(" ", className="small d-block"),
+                    dbc.Button("▶ Run", id=COMPONENT_IDS['calc_run_btn'],
+                              color="success", size="sm", className="w-100")
+                ], width=3),
+            ], className="mb-3"),
+            
+            # Heatmap visualization
+            dcc.Loading(
+                dcc.Graph(id=COMPONENT_IDS['heatmap'],
+                         figure=go.Figure(),
+                         style={'height': '300px'})
+            ),
+            
+            # Metrics table
+            html.Div(id=COMPONENT_IDS['iv_metrics_table'], className="mt-2"),
+            
+            # History slider and export
+            dbc.Row([
+                dbc.Col([
+                    html.Label("History", className="small"),
+                    dcc.Slider(id=COMPONENT_IDS['explorer_date_slider'],
+                              min=0, max=10, value=0, marks={})
+                ], width=9),
+                dbc.Col([
+                    dbc.Button("💾 Export", id=COMPONENT_IDS['iv_export_btn'],
+                              size="sm", color="secondary", className="w-100 mt-4")
+                ], width=3),
+            ])
+        ])
+    ], className="h-100")
+
+
+def create_signals_backtest_panel():
+    """Panel 3: Signals + Quick Backtest"""
+    return dbc.Card([
+        dbc.CardHeader(html.H5("🎯 Signals & Backtest", className="mb-0")),
+        dbc.CardBody([
+            # Signals section
+            html.H6("Trading Signals", className="mb-2"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Button("🔍 Run Signals", id=COMPONENT_IDS['signal_run_btn'],
+                              color="info", size="sm", className="w-100")
+                ], width=6),
+                dbc.Col([
+                    dbc.Button("📋 Paper Order", id=COMPONENT_IDS['signal_paper_order_btn'],
+                              color="warning", size="sm", className="w-100")
+                ], width=6),
+            ], className="mb-2"),
+            html.Div(id=COMPONENT_IDS['signal_table'], 
+                    children=html.P("No signals", className="text-muted small"),
+                    className="mb-3"),
+            
+            html.Hr(),
+            
+            # Backtest section
+            html.H6("Quick Backtest", className="mb-2"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Button("▶ Run Backtest", id=COMPONENT_IDS['backtest_run_btn'],
+                              color="primary", size="sm", className="w-100")
+                ], width=6),
+                dbc.Col([
+                    dbc.Button("💾 Export", id=COMPONENT_IDS['backtest_export_btn'],
+                              color="secondary", size="sm", className="w-100")
+                ], width=6),
+            ], className="mb-2"),
+            html.Div(id=COMPONENT_IDS['backtest_results'],
+                    children=html.P("No results", className="text-muted small"))
+        ])
+    ], className="h-100")
+
+
+def create_diagnostics_panel():
+    """Panel 4: Diagnostics - Collapsible solver logs and debug info"""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.H5("🔧 Diagnostics", className="mb-0 d-inline"),
+            html.Small(" (collapsible)", className="text-muted ms-2")
+        ]),
+        dbc.Collapse([
+            dbc.CardBody([
+                html.Div([
+                    html.Strong("Solver Log", className="small"),
+                    html.Pre(id=COMPONENT_IDS['diag_solver_log'],
+                            children="No solver runs yet",
+                            className="border p-2 small",
+                            style={'maxHeight': '100px', 'overflow': 'auto',
+                                  'backgroundColor': '#f8f9fa'})
+                ], className="mb-2"),
+                
+                html.Div([
+                    html.Strong("Iterations: ", className="small"),
+                    html.Span(id=COMPONENT_IDS['diag_iterations'], children="--")
+                ], className="mb-2"),
+                
+                html.Div([
+                    html.Strong("Last Payload", className="small"),
+                    html.Pre(id=COMPONENT_IDS['diag_last_payload'],
+                            children="{}",
+                            className="border p-2 small",
+                            style={'maxHeight': '80px', 'overflow': 'auto',
+                                  'backgroundColor': '#f8f9fa'})
+                ], className="mb-2"),
+                
+                dbc.Button("📥 Export Log", id=COMPONENT_IDS['diag_export_log'],
+                          size="sm", color="secondary", className="w-100")
+            ])
+        ], id="vl-diag-collapse", is_open=False)
+    ], className="h-100")
+
+
+def layout():
+    """Main Volatility Lab layout - 2x2 grid of panels"""
+    return dbc.Container([
+        # Header
+        dbc.Row([
+            dbc.Col([
+                html.H3([
+                    html.I(className="bi bi-activity me-2"),
+                    "Volatility Lab"
+                ], className="mb-1"),
+                html.P("Compact single-tab IV surface calculator with signals and diagnostics",
+                      className="text-muted small mb-3")
+            ])
+        ]),
+        
+        # 2x2 Grid
+        dbc.Row([
+            # Top row
+            dbc.Col(create_overview_panel(), md=6, className="mb-3"),
+            dbc.Col(create_iv_surface_panel(), md=6, className="mb-3"),
+        ]),
+        dbc.Row([
+            # Bottom row
+            dbc.Col(create_signals_backtest_panel(), md=6, className="mb-3"),
+            dbc.Col(create_diagnostics_panel(), md=6, className="mb-3"),
+        ]),
+        
+        # Hidden stores for state management
+        dcc.Store(id='vl-surface-store', data=None),
+        dcc.Store(id='vl-job-store', data=None),
+        
+        # Interval for diagnostics polling
+        dcc.Interval(id='vl-health-interval', interval=5000, n_intervals=0),
+        
+    ], fluid=True, className="p-4")
+
+
+def register_callbacks(app):
+    """Register Volatility Lab callbacks - wiring UI to API endpoints"""
+    logger.info("✓ Registering Volatility Lab callbacks (UI wiring phase)")
+    
+    # ========== CALLBACK 1: Compute IV Surface ==========
+    @app.callback(
+        [
+            Output(COMPONENT_IDS['heatmap'], 'figure'),
+            Output(COMPONENT_IDS['iv_metrics_table'], 'children'),
+            Output(COMPONENT_IDS['diag_solver_log'], 'children'),
+            Output(COMPONENT_IDS['diag_iterations'], 'children'),
+            Output(COMPONENT_IDS['diag_last_payload'], 'children'),
+            Output('vl-surface-store', 'data'),
+        ],
+        Input(COMPONENT_IDS['calc_run_btn'], 'n_clicks'),
+        [
+            State(COMPONENT_IDS['calc_ticker'], 'value'),
+            State(COMPONENT_IDS['calc_expiry'], 'value'),
+            State(COMPONENT_IDS['calc_strike_range'], 'value'),
+        ],
+        prevent_initial_call=True
+    )
+    def compute_iv_surface(n_clicks, ticker, expiry, strike_range):
+        """Call POST /api/volsurface/compute and render heatmap"""
+        if not n_clicks or not ticker:
+            return no_update, no_update, no_update, no_update, no_update, no_update
+        
+        # Build API payload
+        payload = {
+            'ticker': ticker.upper(),
+            'expiry': expiry or 'auto',
+            'strike_range': strike_range or '±10%',
+            'mode': 'deterministic' if DETERMINISTIC_MODE else 'live'
+        }
+        
+        try:
+            response = requests.post(f"{API_BASE}/compute", json=payload, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Extract grid and diagnostics
+            iv_grid = data.get('iv_grid', [])
+            strikes = data.get('strikes', [])
+            tenors = data.get('tenors', [])
+            diagnostics = data.get('diagnostics', {})
+            
+            # Create heatmap figure
+            heatmap_fig = go.Figure(data=go.Heatmap(
+                z=iv_grid,
+                x=tenors,
+                y=strikes,
+                colorscale='Viridis',
+                hovertemplate='Tenor: %{x}D<br>Strike: $%{y}<br>IV: %{z:.2%}<extra></extra>',
+                colorbar=dict(title="IV", tickformat=".1%")
+            ))
+            heatmap_fig.update_layout(
+                title=f"{ticker} Implied Volatility Surface",
+                xaxis_title="Days to Expiry",
+                yaxis_title="Strike Price",
+                height=300,
+                margin=dict(l=50, r=50, t=50, b=50)
+            )
+            
+            # Build metrics table
+            atm_iv = diagnostics.get('atm_iv', 0.0)
+            avg_iv = sum([sum(row) for row in iv_grid]) / (len(iv_grid) * len(iv_grid[0])) if iv_grid else 0.0
+            metrics_table = dbc.Table([
+                html.Thead(html.Tr([html.Th("Metric"), html.Th("Value")])),
+                html.Tbody([
+                    html.Tr([html.Td("ATM IV"), html.Td(f"{atm_iv:.2%}")]),
+                    html.Tr([html.Td("Avg IV"), html.Td(f"{avg_iv:.2%}")]),
+                    html.Tr([html.Td("Grid Points"), html.Td(f"{len(strikes)} × {len(tenors)}")]),
+                    html.Tr([html.Td("Solver"), html.Td(diagnostics.get('solver', 'unknown'))]),
+                ])
+            ], bordered=True, hover=True, size="sm", className="mt-2")
+            
+            # Diagnostics
+            solver_log = diagnostics.get('log', 'No log available')
+            iterations_total = diagnostics.get('iterations', 0)
+            last_payload = json.dumps(payload, indent=2)
+            
+            return heatmap_fig, metrics_table, solver_log, str(iterations_total), last_payload, data
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"API call failed: {e}")
+            error_fig = go.Figure()
+            error_fig.add_annotation(text=f"❌ API Error: {str(e)}", 
+                                    xref="paper", yref="paper", x=0.5, y=0.5,
+                                    showarrow=False, font=dict(size=14, color="red"))
+            error_table = html.P(f"Error: {str(e)}", className="text-danger")
+            return error_fig, error_table, str(e), "0", json.dumps(payload, indent=2), None
+    
+    
+    # ========== CALLBACK 2: Run Trading Signals ==========
+    @app.callback(
+        Output(COMPONENT_IDS['signal_table'], 'children'),
+        Input(COMPONENT_IDS['signal_run_btn'], 'n_clicks'),
+        State('vl-surface-store', 'data'),
+        prevent_initial_call=True
+    )
+    def run_signals(n_clicks, surface_data):
+        """Call POST /api/volsurface/signal and display results"""
+        if not n_clicks or not surface_data:
+            return html.P("⚠ No surface data - run IV calculation first", className="text-warning small")
+        
+        try:
+            payload = {'surface_id': surface_data.get('surface_id', 'latest')}
+            response = requests.post(f"{API_BASE}/signal", json=payload, timeout=15)
+            response.raise_for_status()
+            signals = response.json().get('signals', [])
+            
+            if not signals:
+                return html.P("No signals detected", className="text-muted small")
+            
+            # Build signal table
+            signal_rows = [
+                html.Tr([
+                    html.Td(s['strike'], className="small"),
+                    html.Td(s['tenor'], className="small"),
+                    html.Td(s['signal'], className="small font-weight-bold"),
+                    html.Td(f"{s['confidence']:.1%}", className="small"),
+                ]) for s in signals[:5]  # Limit to top 5
+            ]
+            
+            return dbc.Table([
+                html.Thead(html.Tr([
+                    html.Th("Strike", className="small"),
+                    html.Th("Tenor", className="small"),
+                    html.Th("Signal", className="small"),
+                    html.Th("Conf", className="small"),
+                ])),
+                html.Tbody(signal_rows)
+            ], bordered=True, hover=True, size="sm")
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Signals API failed: {e}")
+            return html.P(f"❌ Error: {str(e)}", className="text-danger small")
+    
+    
+    # ========== CALLBACK 3: Run Backtest ==========
+    @app.callback(
+        Output(COMPONENT_IDS['backtest_results'], 'children'),
+        Input(COMPONENT_IDS['backtest_run_btn'], 'n_clicks'),
+        State('vl-surface-store', 'data'),
+        prevent_initial_call=True
+    )
+    def run_backtest(n_clicks, surface_data):
+        """Call POST /api/volsurface/backtest and display preview"""
+        if not n_clicks or not surface_data:
+            return html.P("⚠ No surface data - run IV calculation first", className="text-warning small")
+        
+        try:
+            payload = {
+                'surface_id': surface_data.get('surface_id', 'latest'),
+                'period': '30D',
+                'capital': 10000
+            }
+            response = requests.post(f"{API_BASE}/backtest", json=payload, timeout=20)
+            response.raise_for_status()
+            results = response.json()
+            
+            total_return = results.get('total_return', 0.0)
+            sharpe = results.get('sharpe', 0.0)
+            max_dd = results.get('max_drawdown', 0.0)
+            trades = results.get('total_trades', 0)
+            
+            return html.Div([
+                html.P([html.Strong("Total Return: "), f"{total_return:.2%}"], className="mb-1 small"),
+                html.P([html.Strong("Sharpe: "), f"{sharpe:.2f}"], className="mb-1 small"),
+                html.P([html.Strong("Max DD: "), f"{max_dd:.2%}"], className="mb-1 small"),
+                html.P([html.Strong("Trades: "), str(trades)], className="mb-0 small"),
+            ])
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Backtest API failed: {e}")
+            return html.P(f"❌ Error: {str(e)}", className="text-danger small")
+    
+    
+    # ========== CALLBACK 4: Refresh Overview ==========
+    @app.callback(
+        [
+            Output(COMPONENT_IDS['overview_last_surface'], 'children'),
+            Output(COMPONENT_IDS['overview_atm_iv'], 'children'),
+            Output(COMPONENT_IDS['overview_term_30'], 'children'),
+            Output(COMPONENT_IDS['overview_term_60'], 'children'),
+            Output(COMPONENT_IDS['overview_term_90'], 'children'),
+        ],
+        Input(COMPONENT_IDS['overview_refresh_btn'], 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def refresh_overview(n_clicks):
+        """Call GET /api/volsurface/latest and populate overview"""
+        if not n_clicks:
+            return no_update, no_update, no_update, no_update, no_update
+        
+        try:
+            response = requests.get(f"{API_BASE}/latest", timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            last_surface = data.get('timestamp', 'Unknown')
+            atm_iv = data.get('atm_iv', '--')
+            term_structure = data.get('term_structure', {})
+            
+            return (
+                last_surface,
+                f"{atm_iv:.2%}" if isinstance(atm_iv, float) else atm_iv,
+                f"{term_structure.get('30D', 0.0):.2%}",
+                f"{term_structure.get('60D', 0.0):.2%}",
+                f"{term_structure.get('90D', 0.0):.2%}",
+            )
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Overview refresh failed: {e}")
+            return "Error", "--", "--", "--", "--"
+    
+    
+    # ========== CALLBACK 5: Toggle Diagnostics ==========
+    @app.callback(
+        Output('vl-diag-collapse', 'is_open'),
+        Input(COMPONENT_IDS['diag_solver_log'], 'n_clicks'),
+        State('vl-diag-collapse', 'is_open'),
+        prevent_initial_call=True
+    )
+    def toggle_diagnostics(n, is_open):
+        return not is_open if n else is_open
+    
+    
+    # ========== CALLBACK 6: Health Polling ==========
+    @app.callback(
+        [
+            Output(COMPONENT_IDS['diag_solver_log'], 'children'),
+            Output(COMPONENT_IDS['diag_iterations'], 'children'),
+        ],
+        Input('vl-health-interval', 'n_intervals'),
+        prevent_initial_call=False
+    )
+    def poll_health(n_intervals):
+        """Poll /admin/vollab/health every 5s to update diagnostics"""
+        try:
+            admin_api = os.getenv('VOLLAB_API_BASE', 'http://localhost:8090').replace('/api/volsurface', '')
+            response = requests.get(f"{admin_api}/admin/vollab/health", timeout=5)
+            response.raise_for_status()
+            data = response.json()
+            
+            solver_info = data.get('last_solver_info', {})
+            queue_info = data.get('queue', {})
+            
+            log_lines = [
+                f"Status: {data.get('status', 'unknown')}",
+                f"Last Run: {data.get('last_surface_ts', 'Never')}",
+                f"Solver: {solver_info.get('solver_name', 'N/A')}",
+                f"Converged: {solver_info.get('converged', False)}",
+                f"Fallback: {solver_info.get('fallback_used', False)}",
+                f"Queue: {queue_info.get('pending', 0)} pending / {queue_info.get('total', 0)} total"
+            ]
+            
+            solver_log = "\n".join(log_lines)
+            iterations = f"{solver_info.get('iterations', 0)} iterations ({solver_info.get('runtime_ms', 0):.2f}ms)"
+            
+            return solver_log, iterations
+            
+        except Exception as e:
+            logger.debug(f"Health poll failed: {e}")
+            return "Health check unavailable", "0"
+    
+    
+    logger.info("✓ Volatility Lab UI callbacks registered and wired to API")
+

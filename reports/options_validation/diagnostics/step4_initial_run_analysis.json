@@ -1,0 +1,55 @@
+{
+  "step": "STEP 4 - Full Headed Playwright Run (Initial Attempt)",
+  "timestamp": "2025-01-20T21:18:00Z",
+  "status": "FAILED - Browser Crash After Element 6",
+  "results_summary": {
+    "total_elements": 45,
+    "tested": 6,
+    "passed": 4,
+    "failed": 41,
+    "completion_rate": "13.3%"
+  },
+  "passed_elements": [
+    {"id": "chain-expiration-dropdown", "verdict": "Action triggered DOM change (248 bytes)"},
+    {"id": "chain-export-btn", "verdict": "Action triggered DOM change (248 bytes)"},
+    {"id": "chain-moneyness-radio", "verdict": "Action performed, minimal DOM change (0 bytes)"},
+    {"id": "chain-pcr", "verdict": "Action performed, minimal DOM change (0 bytes)"}
+  ],
+  "failed_elements": [
+    {"id": "backtester", "reason": "Element not visible after 45000ms (tab switch issue)"},
+    {"id": "chain-spot-price", "reason": "Target closed (browser crash)"}
+  ],
+  "crash_context": {
+    "crashed_after": "chain-pcr (test 5)",
+    "crash_trigger": "chain-spot-price (test 6)",
+    "error": "Target page, context or browser has been closed",
+    "subtab_switch_attempts": "chain-viewer (all tests showed timeout warnings)"
+  },
+  "artifacts_captured": {
+    "screenshots": "chain-expiration-dropdown, chain-export-btn, chain-moneyness-radio, chain-pcr (pre/post)",
+    "dom_snapshots": "same 4 elements (pre/post)",
+    "har_file": "full_audit.har (8.7MB)",
+    "log_file": "full_audit_step4_1763673306.log (21KB)"
+  },
+  "root_cause_hypothesis": [
+    "Subtab navigation logic failing (all chain-* tests show 'Could not switch to subtab chain-viewer: Timeout 5000ms')",
+    "Browser stability issue with rapid subtab switching (no wait between retries)",
+    "Possible memory leak or tab context leak after 5-6 tests",
+    "Options Lab might not be in correct state (backtester test failed before any chain-* tests)"
+  ],
+  "repair_strategy": {
+    "attempt_1": {
+      "action": "Increase subtab switch timeout from 5000ms to 15000ms",
+      "rationale": "All tests showed timeout warnings for subtab navigation"
+    },
+    "attempt_2": {
+      "action": "Add browser restart every 10 elements",
+      "rationale": "Prevent memory/context leaks"
+    },
+    "attempt_3": {
+      "action": "Skip subtab navigation (test elements in natural order without switching)",
+      "rationale": "Eliminate subtab switching as crash trigger"
+    }
+  },
+  "next_action": "Implement Repair Attempt 1 - Increase subtab timeout to 15000ms"
+}

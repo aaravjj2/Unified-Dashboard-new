@@ -1,0 +1,233 @@
+{
+  "test_metadata": {
+    "suite_name": "Phase 5 E2E Testing Loop",
+    "version": "1.0.0",
+    "description": "Comprehensive end-to-end testing suite for Unified Financial Dashboard with reproducibility validation",
+    "author": "Agent 1B - Lead Engineer",
+    "date_created": "2025-10-29"
+  },
+  
+  "test_execution": {
+    "iterations": 3,
+    "delay_between_iterations_seconds": 5,
+    "retry_on_failure": true,
+    "max_retries_per_test": 2,
+    "continue_on_failure": true,
+    "capture_screenshots": true,
+    "generate_visual_diff": false,
+    "parallel_execution": false
+  },
+  
+  "dashboard_config": {
+    "host": "127.0.0.1",
+    "port": 8050,
+    "base_url": "http://127.0.0.1:8050",
+    "startup_timeout_seconds": 30,
+    "page_load_timeout_seconds": 10,
+    "debug_mode": false,
+    "headless_browser": true
+  },
+  
+  "azure_mock_config": {
+    "AZURE_ML_OFFLINE_MODE": true,
+    "AZURE_SUBSCRIPTION_ID": "mock-subscription-id",
+    "AZURE_RESOURCE_GROUP": "mock-resource-group",
+    "AZURE_ML_WORKSPACE": "unified-dashboard-ml-mock",
+    "AZURE_STORAGE_CONNECTION_STRING": "mock-connection-string"
+  },
+  
+  "tabs_to_test": [
+    {
+      "tab_id": "portfolio-snapshot",
+      "tab_name": "Portfolio Snapshot",
+      "expected_elements": ["portfolio-table", "portfolio-metrics", "portfolio-chart"],
+      "test_interactions": ["refresh-button"],
+      "screenshot_name": "portfolio_snapshot.png"
+    },
+    {
+      "tab_id": "portfolio-allocation",
+      "tab_name": "Portfolio Allocation",
+      "expected_elements": ["allocation-pie-chart", "allocation-table"],
+      "test_interactions": [],
+      "screenshot_name": "portfolio_allocation.png"
+    },
+    {
+      "tab_id": "portfolio-performance",
+      "tab_name": "Portfolio Performance",
+      "expected_elements": ["performance-chart", "performance-metrics"],
+      "test_interactions": [],
+      "screenshot_name": "portfolio_performance.png"
+    },
+    {
+      "tab_id": "market-trends",
+      "tab_name": "Market Trends",
+      "expected_elements": ["trends-chart", "trends-table"],
+      "test_interactions": ["refresh-trends-button"],
+      "screenshot_name": "market_trends.png"
+    },
+    {
+      "tab_id": "market-forecast",
+      "tab_name": "Market Forecast",
+      "expected_elements": ["forecast-table", "forecast-chart"],
+      "test_interactions": [],
+      "screenshot_name": "market_forecast.png"
+    },
+    {
+      "tab_id": "news-sentiment",
+      "tab_name": "News & Sentiment",
+      "expected_elements": ["news-feed", "sentiment-chart"],
+      "test_interactions": [],
+      "screenshot_name": "news_sentiment.png"
+    },
+    {
+      "tab_id": "options-forecast",
+      "tab_name": "Options Forecast",
+      "expected_elements": ["options-table", "options-chart"],
+      "test_interactions": [],
+      "screenshot_name": "options_forecast.png"
+    },
+    {
+      "tab_id": "weekly-picks",
+      "tab_name": "Weekly Picks",
+      "expected_elements": ["weekly-picks-table"],
+      "test_interactions": [],
+      "screenshot_name": "weekly_picks.png"
+    },
+    {
+      "tab_id": "monthly-picks",
+      "tab_name": "Monthly Picks",
+      "expected_elements": ["monthly-picks-table"],
+      "test_interactions": [],
+      "screenshot_name": "monthly_picks.png"
+    },
+    {
+      "tab_id": "explainability",
+      "tab_name": "Explainability",
+      "expected_elements": ["shap-chart", "feature-importance-table"],
+      "test_interactions": [],
+      "screenshot_name": "explainability.png"
+    },
+    {
+      "tab_id": "strategy-lab",
+      "tab_name": "Strategy Lab",
+      "expected_elements": ["strategy-controls", "strategy-results"],
+      "test_interactions": [],
+      "screenshot_name": "strategy_lab.png",
+      "subtabs": [
+        {
+          "subtab_id": "backtest",
+          "subtab_name": "Backtest",
+          "expected_elements": ["backtest-chart", "backtest-metrics"],
+          "screenshot_name": "strategy_lab_backtest.png"
+        },
+        {
+          "subtab_id": "optimization",
+          "subtab_name": "Optimization",
+          "expected_elements": ["optimization-results"],
+          "screenshot_name": "strategy_lab_optimization.png"
+        },
+        {
+          "subtab_id": "risk-analysis",
+          "subtab_name": "Risk Analysis",
+          "expected_elements": ["risk-metrics", "var-chart"],
+          "screenshot_name": "strategy_lab_risk.png"
+        },
+        {
+          "subtab_id": "scenario-testing",
+          "subtab_name": "Scenario Testing",
+          "expected_elements": ["scenario-results"],
+          "screenshot_name": "strategy_lab_scenario.png"
+        },
+        {
+          "subtab_id": "custom-strategy",
+          "subtab_name": "Custom Strategy",
+          "expected_elements": ["strategy-builder"],
+          "screenshot_name": "strategy_lab_custom.png"
+        },
+        {
+          "subtab_id": "performance-comparison",
+          "subtab_name": "Performance Comparison",
+          "expected_elements": ["comparison-chart"],
+          "screenshot_name": "strategy_lab_comparison.png"
+        }
+      ]
+    }
+  ],
+  
+  "performance_targets": {
+    "tab_load_latency_ms": 2000,
+    "chart_render_latency_ms": 1500,
+    "portfolio_refresh_latency_ms": 1000,
+    "explainability_generation_ms": 2500,
+    "forecast_generation_ms": 2000,
+    "cache_hit_rate_percent": 50,
+    "schema_validation_success_rate_percent": 100
+  },
+  
+  "contract_validation": {
+    "validate_input_contracts": true,
+    "validate_output_contracts": true,
+    "validate_schema_versions": true,
+    "allowed_schema_versions": ["0.1"],
+    "strict_validation": true,
+    "log_validation_errors": true
+  },
+  
+  "backend_tests": {
+    "test_portfolio_analytics": true,
+    "test_forecast_engine": true,
+    "test_explainability_engine": true,
+    "test_cache_router": true,
+    "test_hybrid_bridge": true,
+    "test_azure_stubs": true
+  },
+  
+  "visual_validation": {
+    "check_text_color": true,
+    "expected_text_color": "#000000",
+    "check_table_visibility": true,
+    "check_chart_rendering": true,
+    "min_chart_height_px": 200,
+    "min_table_rows": 1
+  },
+  
+  "output_config": {
+    "output_directory": "./outputs/phase5_e2e",
+    "screenshots_directory": "./outputs/phase5_e2e/screenshots",
+    "reports_directory": "./outputs/phase5_e2e/reports",
+    "logs_directory": "./outputs/phase5_e2e/logs",
+    "save_json_report": true,
+    "save_markdown_report": true,
+    "save_csv_metrics": true,
+    "save_html_summary": false
+  },
+  
+  "reproducibility_validation": {
+    "enabled": true,
+    "max_variation_percent": 5,
+    "compare_iterations": true,
+    "flag_discrepancies": true,
+    "hash_data_contracts": true,
+    "verify_cache_consistency": true
+  },
+  
+  "test_data": {
+    "mock_tickers": ["AAPL", "MSFT", "GOOGL", "AMZN", "META"],
+    "mock_features": {
+      "momentum_20d": 0.05,
+      "volatility_20d": 0.15,
+      "sharpe_20d": 1.5,
+      "pe_ratio": 25.0,
+      "market_cap": 2.5e12
+    },
+    "mock_date_range": ["2025-01-01", "2025-12-31"],
+    "mock_forecast_horizon": "monthly"
+  },
+  
+  "alerts": {
+    "alert_on_failure": true,
+    "alert_on_slow_performance": true,
+    "alert_on_reproducibility_issue": true,
+    "performance_threshold_multiplier": 1.5
+  }
+}

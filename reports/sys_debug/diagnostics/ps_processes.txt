@@ -1,0 +1,11 @@
+root         192  0.0  0.0  30104 15040 ?        Ss   Nov18   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         235  0.0  0.0 107176 18880 ?        Ssl  Nov18   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+aarav     323128  0.9  1.6 5522736 397560 ?      Sl   03:26   5:21 python3 index.py
+postgres  324209  0.0  0.0 216884 15472 ?        Ss   03:28   0:00 postgres: 14/main: dashboard_user financial_dashboard 127.0.0.1(51688) idle
+postgres  324210  0.0  0.0 217008 20432 ?        Ss   03:28   0:00 postgres: 14/main: dashboard_user financial_dashboard 127.0.0.1(51692) idle
+aarav     465483  0.0  0.0   7004  2732 pts/0    S+   05:47   0:05 /home/aarav/.vscode-server/extensions/ms-python.python-2025.18.0/python-env-tools/bin/pet server
+aarav     465960  0.0  0.0   2892  1600 pts/20   Ss+  05:47   0:00 /bin/sh -c cd '/home/aarav/unified-dashboard' && /bin/sh
+aarav     468121  4.6  8.9 14783296 2194968 pts/0 Sl+ 05:47  20:11 /home/aarav/.vscode-server/bin/cb1933bbc38d329b3595673a600fab5c7368f0a7/node /home/aarav/.vscode-server/extensions/ms-python.vscode-pylance-2025.9.1/dist/server.bundle.js --cancellationReceive=file:d0cb494c874cc9e5245d7a1258875a9162ef7b2e07 --node-ipc --clientProcessId=465153
+aarav     640948  5.3  1.1 3466144 285192 pts/15 Sl   12:59   0:05 python3 run_dashboard.py
+postgres  641213  0.0  0.0 217772 19472 ?        Ss   12:59   0:00 postgres: 14/main: dashboard_user financial_dashboard 127.0.0.1(51970) idle
+aarav     641712  0.0  0.0    640     0 pts/16   R+   13:01   0:00 grep -E --color=auto dash|gunicorn|uvicorn|waitress|python

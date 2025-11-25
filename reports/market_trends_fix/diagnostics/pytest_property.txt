@@ -1,0 +1,825 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, hypothesis-6.148.2, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/test_cache_manager_properties.py::TestCacheManagerProperties::test_cache_persistence_round_trip 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+INFO     utils.load_env:load_env.py:162 ✅ All 5 required keys present
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpp6dqudjq.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp7ezq2fuo.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpt4ulf20w.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpw5xaeakg.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq1i1itjj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmppf9yefcj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpkqu272de.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnx9v9e5j.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmppzmdgust.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpo7ru9e6l.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpwmtin_0t.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnnt88tck.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsrdx5e3g.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpean99zk1.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpyjctnpbu.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2df8xmso.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpp_vhzmj4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpx46m8bp9.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp9wm2fzes.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcp3vw6ea.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp04r2a2z1.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplul9537k.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmppopy7z2j.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpotfjuos5.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplw4ocw11.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp_05vac8y.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpw_m283ql.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp4nfiu8ya.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpiyunoy_b.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnlqouwzz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsd6pj8ia.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp7doxw_5j.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2ospy2hu.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp0z6f9p5n.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2vq4ikle.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpf5jwxbuj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp5zmkgv6e.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp7tx0mnbj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp_9hpuldr.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpwmsiy77e.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 13 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpn1krlnou.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpw48t7xzk.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpchcomzwo.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpin92rudw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp8d0wc706.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmped0x45rc.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpkllksr_t.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmecy9lmz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpe6ryo7bs.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpug7i1zyi.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpt4uw1_rs.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpd3y6phfn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbe558tsw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp__i0_n8m.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp_v5465rz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmph1_ahhgj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq_hf_94g.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpz18_85dp.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpdn2nok93.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp8pf02t31.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplag6bj7u.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpf7m2ssje.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpucctdr_b.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpqi624nuc.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmperbn7hhh.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmped1n9ab2.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmnelm4pf.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp1o14f1z9.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcxa9rdz3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpn4gtierp.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp81gu62m7.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplqwbp6zm.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2rykcrwd.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp4p2akqnc.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpc6hig5nh.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsndk9r_u.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp7kt3hlzy.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpv3dwhtfn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpw5qv1t86.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsxg4cz91.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpd7ck09ze.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpay9w453a.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpppu0k_te.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmphelkynch.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpdg1arn5z.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpgjmj_lc8.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp1h48yypj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpxsdd711k.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp9ek1e1d7.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 20 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpf9hwcu31.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpv_s3js0k.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpof13tc91.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp6mcnckex.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp0mg5d90b.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnp0k0vqa.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp03jhg6ht.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpaatrs_tq.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpug38vm3x.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpjj0yln9v.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpxtin3nd9.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+PASSED                                                                   [ 33%]
+tests/test_cache_manager_properties.py::TestCacheManagerProperties::test_cache_preserves_none_values 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsaukx45r.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpsowlvkvo.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpeqi46swy.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbvt4uyg4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq902gbw3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmphaol2yny.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp0326pl1j.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpowujfgbn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpajg_8p6o.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2d9mfao0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfy2eptd7.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpjnv_90bf.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp56pzt03y.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpoqbk9hxm.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpm1s349oh.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp58y0owez.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp14i6a678.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp58ml1t04.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpn2q9g7_3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpg8t066df.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpd1isf8wf.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmprguyvnv2.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpj0x7oklz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpawxa1g4a.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpkojb7dak.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpp3pkgb77.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmoi4ef20.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp166o3pab.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbtyhuu2k.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnkbzzru2.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpgp5lmvmm.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmxqkxq5r.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp53icum2n.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpdo80u651.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2l630tdk.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfozy3awd.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp683bzhw3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp00506dnk.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmptohyrqjq.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpwpqkhs1l.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpzrl9e5b0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 8 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmprniun5yt.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpv4knfn0g.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpxv53b3gr.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp_to_s2eo.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpy5286g9s.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpxomg2dnn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmptrva96jn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmiooq8fz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp4zz7j1v3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfncbgnrh.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp46jqjrd4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmprkw3yf4g.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpaur91o4h.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq1lh7h24.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpnmzm723u.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpdobufpqu.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpt0eg6k63.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmph1inlubg.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpu46wd_br.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp86dk4c5m.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcaigxg32.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpeujraoil.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpga8rs9zt.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpur2h00j8.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpr4l4y0nh.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpeut9dq6_.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp5rw48_r6.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcorppq3h.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmprwbt00c0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpyuw0dl3r.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp9smy2zpw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpp9q1yub4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpr_p1zcz8.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpxse6ithn.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp4kbss_yz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmuu3ez7q.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpx0pjk_zp.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq_1ve32s.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpou_bz2lo.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmprxyy4zj4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpli0665u1.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpronlx8ko.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp3g8lkimu.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp21lvrsvp.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcwhual33.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpx4kx7p0j.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpvl6kirba.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpv9hve7wp.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpd21dvv_z.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpps7056vd.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmphkq6yzhz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2zdyclbg.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp9r0cecxb.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp0wulcctx.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpy3xgcsdc.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpauoij3al.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpc07fw2_a.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpeicfwqfw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpugaslsv7.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [ 66%]
+tests/test_cache_manager_properties.py::TestCacheManagerProperties::test_update_cache_syncs_memory_and_disk 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpa5z37u2n.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpr4g08a1p.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbq4sdg54.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpplu6unp2.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp1bq8w4e6.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmphl16h0hj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplez7fb5a.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 6 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcm736v3d.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbmxjay3h.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 11 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 11 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp1fhx0y0k.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpqlqybqbq.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmppod2r512.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 4 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpgkqmg74h.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfcj2q8we.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp2lx1y9hw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpmrqhtapz.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpctio8j37.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpy309j596.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 3 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpkgqhu45e.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpwgpay2z0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp6bus6a9h.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpro0zjaus.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp55p_bpvs.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpjyawnfy0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp8gc_9wgw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpaxxfwm7q.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpe98hk2er.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplnc84igv.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpwpn25esj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpj9uzopjx.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpi5mbi0a3.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpabz0be1m.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpowu11yqk.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq016ljed.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp5756me_w.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp6h_in84f.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 10 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmps7u_dbdi.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp00zd68d2.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp_dbqpd47.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpee4jo2q7.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp4x3gqyri.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpkit7lz3g.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp8jktomih.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 5 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfzr7rfrl.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpcn1ar3ag.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmp0vu_2hp0.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmplv1semn4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpltuwvpoj.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpecnb55rt.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpq53c1o87.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 9 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 9 records
+PASSED                                                                   [100%]
+
+============================== 3 passed in 4.86s ===============================
+Exit code: 0

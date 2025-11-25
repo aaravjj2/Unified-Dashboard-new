@@ -1,0 +1,28 @@
+[
+  {
+    "attempt": 1,
+    "selected_count": 16,
+    "max_per_sector": 3,
+    "max_sector_share": 0.5,
+    "min_avg_volume": 0,
+    "actual_max_share": 0.1875,
+    "action": "Increased max_per_sector to 4"
+  },
+  {
+    "attempt": 2,
+    "selected_count": 18,
+    "max_per_sector": 4,
+    "max_sector_share": 0.5,
+    "min_avg_volume": 0,
+    "actual_max_share": 0.2222222222222222,
+    "action": "Increased max_per_sector to 5"
+  },
+  {
+    "attempt": 3,
+    "selected_count": 20,
+    "max_per_sector": 5,
+    "max_sector_share": 0.5,
+    "min_avg_volume": 0,
+    "actual_max_share": 0.25
+  }
+]

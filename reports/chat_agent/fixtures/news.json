@@ -1,0 +1,38 @@
+[
+  {
+    "headline": "Apple Announces Record iPhone Sales in Q4",
+    "summary": "Apple reported record iPhone sales for Q4, driven by strong demand for iPhone 15 Pro models. Services revenue also exceeded expectations.",
+    "source": "Bloomberg",
+    "ticker": "AAPL",
+    "published_at": "2024-11-21T09:30:00Z",
+    "url": "https://example.com/apple-q4-sales",
+    "sentiment": "positive"
+  },
+  {
+    "headline": "NVIDIA Partners with Microsoft on AI Chip Development",
+    "summary": "NVIDIA and Microsoft announced a strategic partnership to co-develop next-generation AI accelerators for Azure cloud services.",
+    "source": "Reuters",
+    "ticker": "NVDA",
+    "published_at": "2024-11-20T14:20:00Z",
+    "url": "https://example.com/nvidia-msft-partnership",
+    "sentiment": "positive"
+  },
+  {
+    "headline": "Tesla Giga Texas Ramps Production Ahead of Schedule",
+    "summary": "Tesla's Gigafactory in Texas has exceeded production targets, enabling faster delivery times for Cybertruck reservations.",
+    "source": "CNBC",
+    "ticker": "TSLA",
+    "published_at": "2024-11-19T11:00:00Z",
+    "url": "https://example.com/tesla-giga-texas",
+    "sentiment": "positive"
+  },
+  {
+    "headline": "Google Cloud Revenue Growth Accelerates to 32% YoY",
+    "summary": "Alphabet's Google Cloud Platform reported 32% year-over-year revenue growth, outpacing AWS and Azure in enterprise AI adoption.",
+    "source": "TechCrunch",
+    "ticker": "GOOGL",
+    "published_at": "2024-11-18T16:45:00Z",
+    "url": "https://example.com/google-cloud-growth",
+    "sentiment": "positive"
+  }
+]

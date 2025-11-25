@@ -1,0 +1,21 @@
+{
+  "layout_file": "financial_dashboard/tabs/options_lab/layout.py",
+  "callbacks_file": "financial_dashboard/tabs/options_lab/callbacks.py",
+  "exists": true,
+  "files": [
+    "__pycache__",
+    "data_loader.py",
+    "README.md",
+    "callbacks.py",
+    "__init__.py",
+    "tradingview_handler.py",
+    "layout.py",
+    "callbacks_isolated.py.bak"
+  ],
+  "current_subtabs": [
+    "chain-viewer",
+    "greeks-dashboard",
+    "vol-surface",
+    "trade-simulator"
+  ]
+}

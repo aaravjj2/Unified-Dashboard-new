@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/financial_dashboard/utils/picks_fetcher.py
+# hypothesis_version: 6.148.2
+
+[100.0, 150.0, 100, '0', '1', 'AAPL', 'AMD', 'AMZN', 'BAC', 'BUY', 'COST', 'CRM', 'CSCO', 'Company', 'Consumer', 'DIS', 'Finance', 'GOOGL', 'HD', 'HOLD', 'INTC', 'JPM', 'KO', 'MA', 'MCD', 'META', 'MSFT', 'MarketCap', 'NFLX', 'NKE', 'NVDA', 'ORCL', 'PEP', 'Rank', 'Recommendation', 'SBUX', 'Score', 'Sector', 'TSLA', 'TargetPrice', 'Technology', 'Ticker', 'V', 'WMT', '_loaded_at', '_source', '_source_path', '_source_table', 'age_seconds', 'auto', 'count', 'csv', 'currentPrice', 'current_price', 'data', 'database', 'db', 'deterministic', 'fetched_at', 'fixture', 'generated_at', 'pick_type', 'previousClose', 'price', 'price_age_seconds', 'price_client', 'price_fetched_at', 'price_source', 'r', 'regularMarketPrice', 'source', 'w', 'weekly', 'yfinance']

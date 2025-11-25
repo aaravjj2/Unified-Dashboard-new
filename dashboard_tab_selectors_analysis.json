@@ -1,0 +1,155 @@
+{
+  "tabs": [
+    {
+      "index": 0,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "active nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83c\udfe0 Command Center",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 1,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udd2c Research Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 2,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udcca Attribution Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 3,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\u26a1 Strategy Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 4,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83e\udd16 Azure ML Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 5,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "Weekly Picks",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 6,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "Monthly Picks",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 7,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "Market Trends",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 8,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "Market Forecast",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 9,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\u26a1 Volatility Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 10,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "Portfolio",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 11,
+      "id": "react-aria5072939534-:r0:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udcb9 Options Lab",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 12,
+      "id": "react-aria5072939534-:r1:-tab-null",
+      "class": "active nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udcca Market Scan",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 13,
+      "id": "react-aria5072939534-:r1:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udcc8 Factor Analysis",
+      "aria_label": null,
+      "role": "tab"
+    },
+    {
+      "index": 14,
+      "id": "react-aria5072939534-:r1:-tab-null",
+      "class": "nav-link",
+      "data_testid": null,
+      "href": "#",
+      "text": "\ud83d\udd17 Correlation Explorer",
+      "aria_label": null,
+      "role": "tab"
+    }
+  ],
+  "total_found": 48
+}

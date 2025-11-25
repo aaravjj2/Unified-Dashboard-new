@@ -1,0 +1,65 @@
+# Options Trading System Configuration
+# This file controls all options-related settings for the automated trading system
+
+# API Configuration
+api:
+  finnhub:
+    base_url: "https://finnhub.io/api/v1"
+    rate_limit_per_minute: 60
+    cache_ttl_seconds: 300  # 5 minutes
+  
+  alpaca:
+    base_url: "https://paper-api.alpaca.markets"  # Use paper trading by default
+    paper_mode: true
+
+# Strategy Configuration
+strategies:
+  covered_call_screener:
+    enabled: true
+    min_stock_price: 10.0
+    max_stock_price: 500.0
+    min_volume: 100000
+    target_delta: 0.30  # Target delta for call options
+    min_premium: 0.50  # Minimum premium per contract
+    days_to_expiration_min: 7
+    days_to_expiration_max: 45
+
+# Risk Management Configuration
+risk:
+  max_position_size_per_ticker: 1000.0  # Maximum $ exposure per ticker
+  max_total_exposure: 10000.0  # Maximum total $ exposure
+  max_daily_loss: 500.0  # Maximum daily loss limit
+  max_position_concentration: 0.25  # Max % of portfolio in single ticker (25%)
+  max_contracts_per_order: 10
+  require_approval_above: 2000.0  # Require manual approval for trades above this amount
+
+# Alert Configuration
+alerts:
+  log_to_file: true
+  log_file: "logs/alerts.log"
+  email_enabled: false
+  slack_enabled: false
+  telegram_enabled: false
+  
+  # Alert on these events
+  on_trade_execution: true
+  on_trade_failure: true
+  on_risk_limit_breach: true
+  on_api_error: true
+  on_strategy_start: true
+  on_strategy_stop: true
+
+# Backtesting Configuration
+backtesting:
+  default_start_date: "2024-01-01"
+  default_end_date: "2024-12-31"
+  initial_capital: 10000.0
+  commission_per_contract: 0.65
+  slippage_percent: 0.001  # 0.1% slippage
+
+# Service Configuration
+service:
+  host: "0.0.0.0"
+  port: 8060
+  debug: false
+  log_level: "INFO"

@@ -1,0 +1,31 @@
+✅ Callback Compatibility Check:
+  options-forecast-results (Output): MISSING
+  options-forecast-btn (Input): MISSING
+  tradingview-preview (Output): MISSING
+  tradingview-interval (Input): MISSING
+
+✅ Layout IDs Added:
+  options-forecast-btn: RESTORED to Chain Viewer
+  options-forecast-results: RESTORED to Chain Viewer
+  tradingview-preview: RESTORED to Chain Viewer
+  tradingview-interval: RESTORED to Chain Viewer
+
+✅ OL-prefixed IDs for testing: 18 unique
+  id='ol-backtest-capital'
+  id='ol-backtest-download'
+  id='ol-backtest-equity-chart'
+  id='ol-backtest-export-btn'
+  id='ol-backtest-lookback'
+  id='ol-backtest-results'
+  id='ol-backtest-run-btn'
+  id='ol-backtest-store'
+  id='ol-backtest-strategy'
+  id='ol-backtest-trades-table'
+  id='ol-forecast-results'
+  id='ol-forecast-run-btn'
+  id='ol-settings-datasource'
+  id='ol-settings-paper-enabled'
+  id='ol-settings-refresh-interval'
+  id='ol-settings-save-btn'
+  id='ol-settings-store'
+  id='ol-tv-signal-widget'

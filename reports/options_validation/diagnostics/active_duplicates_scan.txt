@@ -1,0 +1,325 @@
+================================================================================
+SCANNING FOR DUPLICATE IDs IN ACTIVE FILES ONLY
+================================================================================
+
+📁 Scanned 556 active files (skipped 34 legacy/backup files)
+
+❌ Found 60 DUPLICATE IDs:
+
+🔴 ID: 'correlation-heatmap'
+   Appears in 2 active files:
+     - components/portfolio_health.py (1x)
+     - tabs/research_lab/layout.py (1x)
+
+🔴 ID: 'current-job'
+   Appears in 2 active files:
+     - index.py (1x)
+     - market_dashboard.py (1x)
+
+🔴 ID: 'factors'
+   Appears in 2 active files:
+     - legacy_tabs/volatility_lab.py (1x)
+     - tabs/attribution_lab/layout.py (1x)
+
+🔴 ID: 'global-search-close'
+   Appears in 2 active files:
+     - components/global_search.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'global-search-input'
+   Appears in 2 active files:
+     - components/global_search.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'global-search-modal'
+   Appears in 2 active files:
+     - components/global_search.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'global-search-results'
+   Appears in 2 active files:
+     - components/global_search.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'mf-download'
+   Appears in 2 active files:
+     - layout_placeholders.py (1x)
+     - market_dashboard.py (2x)
+
+🔴 ID: 'mf-ping-output'
+   Appears in 2 active files:
+     - layout_placeholders.py (1x)
+     - market_dashboard.py (1x)
+
+🔴 ID: 'mp-prices-json'
+   Appears in 2 active files:
+     - index.py (1x)
+     - tabs/monthly_picks.py (6x)
+
+🔴 ID: 'mt-tickers-input'
+   Appears in 2 active files:
+     - test_market_trends_buttons.py (1x)
+     - test_market_trends_diagnostic.py (1x)
+
+🔴 ID: 'performance'
+   Appears in 2 active files:
+     - legacy_tabs/azure_ml_lab/layout.py (1x)
+     - tabs/attribution_lab/layout.py (1x)
+
+🔴 ID: 'results-table'
+   Appears in 2 active files:
+     - layout_placeholders.py (1x)
+     - market_dashboard.py (1x)
+
+🔴 ID: 'results-table-client'
+   Appears in 3 active files:
+     - layout_placeholders.py (1x)
+     - market_dashboard.py (1x)
+     - tabs/market_trends.py (1x)
+
+🔴 ID: 'run-btn'
+   Appears in 2 active files:
+     - layout_placeholders.py (1x)
+     - tabs/market_trends.py (1x)
+
+🔴 ID: 'scenario-compare-mode'
+   Appears in 2 active files:
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-preset'
+   Appears in 3 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-preset2'
+   Appears in 2 active files:
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-realistic-shock'
+   Appears in 2 active files:
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-results'
+   Appears in 3 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-run-btn'
+   Appears in 3 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (2x)
+
+🔴 ID: 'scenario-spy-change'
+   Appears in 3 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-type'
+   Appears in 2 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+
+🔴 ID: 'scenario-universe'
+   Appears in 3 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+     - test_full_system_e2e.py (1x)
+
+🔴 ID: 'scenario-vix-change'
+   Appears in 2 active files:
+     - tabs/scenario_analysis.py (1x)
+     - tabs/scenario_tab.py (1x)
+
+🔴 ID: 'sl-backtest-progress'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-backtest-results'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-end-date'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-entry-condition'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-equity-curve'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-exit-condition'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-exposure-breakdown'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'sl-factor-attribution'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'sl-initial-capital'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-max-positions'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-metric-cagr'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-maxdd'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-sharpe'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-metric-winrate'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/results.py (1x)
+
+🔴 ID: 'sl-position-size'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-rebalance-freq'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+
+🔴 ID: 'sl-reset-btn'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+
+🔴 ID: 'sl-run-backtest-btn'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-slippage'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-start-date'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-strategy-config'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-strategy-type'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-tickers-input'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-transaction-cost'
+   Appears in 3 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/backtest.py (1x)
+     - tabs/strategy_lab/subtabs/execution.py (1x)
+
+🔴 ID: 'sl-universe-type'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validate-btn'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validation-result'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/setup.py (1x)
+
+🔴 ID: 'sl-validation-status'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/layout_modular.py (1x)
+
+🔴 ID: 'sl-vs-benchmark'
+   Appears in 2 active files:
+     - tabs/strategy_lab/layout.py (1x)
+     - tabs/strategy_lab/subtabs/benchmark.py (1x)
+
+🔴 ID: 'tabs'
+   Appears in 2 active files:
+     - index.py (1x)
+     - market_dashboard.py (1x)
+
+🔴 ID: 'theme-icon'
+   Appears in 2 active files:
+     - components/theme_toggle.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'theme-store'
+   Appears in 2 active files:
+     - components/theme_toggle.py (1x)
+     - index.py (1x)
+
+🔴 ID: 'trends-results-table'
+   Appears in 3 active files:
+     - _test_playwright.py (1x)
+     - test_market_trends_buttons.py (3x)
+     - test_market_trends_diagnostic.py (1x)
+
+🔴 ID: 'trends-results-table-container'
+   Appears in 2 active files:
+     - tabs/market_trends.py (1x)
+     - test_market_trends_fix_verification.py (2x)
+
+🔴 ID: 'vix-chart'
+   Appears in 2 active files:
+     - components/volatility_lab.py (1x)
+     - tests/test_volatility_snapshot.py (1x)
+
+================================================================================
+📊 Total duplicate IDs in active files: 60
+================================================================================

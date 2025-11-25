@@ -1,0 +1,75 @@
+{
+  "error": false,
+  "deterministic": true,
+  "ticker": "AAPL",
+  "generated_at": "2025-11-20T00:00:00Z",
+  "model": "mock_deterministic_v1",
+  "result": {
+    "forecast_series": [
+      {
+        "date": "2025-11-21",
+        "predicted_iv": 0.285,
+        "lower_bound": 0.265,
+        "upper_bound": 0.305,
+        "confidence": 0.85
+      },
+      {
+        "date": "2025-11-22",
+        "predicted_iv": 0.288,
+        "lower_bound": 0.268,
+        "upper_bound": 0.308,
+        "confidence": 0.83
+      },
+      {
+        "date": "2025-11-23",
+        "predicted_iv": 0.291,
+        "lower_bound": 0.271,
+        "upper_bound": 0.311,
+        "confidence": 0.81
+      },
+      {
+        "date": "2025-11-24",
+        "predicted_iv": 0.294,
+        "lower_bound": 0.274,
+        "upper_bound": 0.314,
+        "confidence": 0.80
+      },
+      {
+        "date": "2025-11-25",
+        "predicted_iv": 0.297,
+        "lower_bound": 0.277,
+        "upper_bound": 0.317,
+        "confidence": 0.78
+      }
+    ],
+    "term_structure": [
+      {"days_to_expiry": 7, "atm_iv": 0.280, "term": "1w"},
+      {"days_to_expiry": 14, "atm_iv": 0.285, "term": "2w"},
+      {"days_to_expiry": 30, "atm_iv": 0.295, "term": "1m"},
+      {"days_to_expiry": 60, "atm_iv": 0.310, "term": "2m"},
+      {"days_to_expiry": 90, "atm_iv": 0.325, "term": "3m"}
+    ],
+    "surface_grid": {
+      "strikes": [170, 175, 180, 185, 190, 195, 200],
+      "expirations": ["2025-11-28", "2025-12-05", "2025-12-12", "2025-12-19", "2025-12-26"],
+      "iv_matrix": [
+        [0.32, 0.30, 0.28, 0.30, 0.32],
+        [0.31, 0.29, 0.27, 0.29, 0.31],
+        [0.30, 0.28, 0.26, 0.28, 0.30],
+        [0.31, 0.29, 0.27, 0.29, 0.31],
+        [0.32, 0.30, 0.28, 0.30, 0.32],
+        [0.33, 0.31, 0.29, 0.31, 0.33],
+        [0.34, 0.32, 0.30, 0.32, 0.34]
+      ]
+    },
+    "metrics": {
+      "current_atm_iv": 0.285,
+      "30d_avg_iv": 0.295,
+      "iv_rank": 45.2,
+      "iv_percentile": 52.8,
+      "skew_30d": 0.12,
+      "term_structure_slope": 0.015
+    },
+    "explanation": "Deterministic IV forecast for AAPL. ATM IV expected to rise modestly from 0.285 to 0.297 over next 5 days. Surface shows typical smile pattern with ATM strikes near 185-190. Term structure is upward sloping (contango), indicating elevated longer-term uncertainty. IV rank at 45.2 suggests mid-range volatility relative to 52-week range."
+  }
+}

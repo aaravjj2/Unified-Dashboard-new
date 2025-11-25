@@ -1,0 +1,18 @@
+On branch clean-release-candidate
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   financial_dashboard/index.py
+	modified:   reports/options_validation/diagnostics/git_status_before.txt
+	modified:   reports/options_validation/diagnostics/py_compile.txt
+	modified:   reports/vol_lab_rebuild_v2/clicker_snapshots/error_screenshot.png
+	modified:   reports/vol_lab_rebuild_v2/clicker_snapshots/test_log.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	dashboard_restart.out
+	reports/options_validation/diagnostics/git_head_step7.txt
+	reports/options_validation/patches/automated_repair_loop_1763670810.diff
+	reports/vol_lab_rebuild_v2/clicker_snapshots/videos/b8acce9771a9eead6659a5f9e64b39c1.webm
+
+no changes added to commit (use "git add" and/or "git commit -a")

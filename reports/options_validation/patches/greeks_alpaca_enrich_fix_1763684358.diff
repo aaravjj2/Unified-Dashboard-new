@@ -1,0 +1,18 @@
+diff --git a/financial_dashboard/tabs/options_lab/data_loader.py b/financial_dashboard/tabs/options_lab/data_loader.py
+index b658453..499b4ff 100644
+--- a/financial_dashboard/tabs/options_lab/data_loader.py
++++ b/financial_dashboard/tabs/options_lab/data_loader.py
+@@ -177,6 +177,13 @@ def fetch_options_chain_alpaca(ticker: str, expiry: Optional[str] = None) -> Opt
+             logger.warning(f"⚠️ Alpaca: option chain not returned in expected format for {ticker}")
+             return None
+ 
++        # AGENT 1A FIX: Enrich Alpaca data with calculated fields (Greeks, moneyness, etc.)
++        # Same enrichment as yfinance path to ensure consistent data structure
++        if spot_price:
++            calls_df = _enrich_chain_data(calls_df, spot_price, 'call')
++            puts_df = _enrich_chain_data(puts_df, spot_price, 'put')
++            logger.info(f"✅ Alpaca data enriched with Greeks for {ticker}")
++
+         logger.info(f"✅ Alpaca: Retrieved options chain for {ticker} (expiry={first_exp})")
+         return {
+             'ticker': ticker,

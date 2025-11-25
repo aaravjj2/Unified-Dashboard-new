@@ -1,0 +1,5 @@
+{
+  "financial_dashboard/tabs/market_forecast_rebuild.py": "87b110e26cd750f8dab2d5af76b3400b427df989faae53371bad2cab9a230ea1",
+  "tests/fixtures/market_trends/news_fixtures.json": "d585e72f70ac463b4e577e9e53b5b758a098ebc094d544731bc09ad0eba05f3d",
+  "tests/fixtures/market_trends/sample_brief.json": "1d14865879f7b3fb0058fa43f367bb44dbb49de2462ee599ccfdade88681091a"
+}

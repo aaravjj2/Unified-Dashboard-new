@@ -1,0 +1,119 @@
+ M clicker_vol_forecast.py
+ M financial_dashboard/api/volsurface.py
+ M financial_dashboard/app.py
+ M financial_dashboard/assets/analysis_hub_tab_fix.js
+ M financial_dashboard/assets/portfolio_tab_fix.js
+ M financial_dashboard/assets/research_lab_tab_fix.js
+ M financial_dashboard/assets/table_paste.js
+ M financial_dashboard/callbacks.py
+ M financial_dashboard/dashboard_clean_fixed.py
+ M financial_dashboard/index.py
+ M financial_dashboard/layout_placeholders.py
+ M financial_dashboard/tabs/analysis_hub_refactored.py
+ M financial_dashboard/tabs/attribution_analysis.py
+ D financial_dashboard/tabs/azure_ml_lab/__init__.py
+ D financial_dashboard/tabs/azure_ml_lab/azure_ml_config.py
+ D financial_dashboard/tabs/azure_ml_lab/callbacks.py
+ D financial_dashboard/tabs/azure_ml_lab/diagnostics_azure_ml.py
+ D financial_dashboard/tabs/azure_ml_lab/explainability_engine.py
+ D financial_dashboard/tabs/azure_ml_lab/helpers.py
+ D financial_dashboard/tabs/azure_ml_lab/layout.py
+ D financial_dashboard/tabs/azure_ml_lab/ml_database.py
+ D financial_dashboard/tabs/azure_ml_lab/ml_observability.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2_local_integration/__init__.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2_local_integration/batch_explain.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2_local_integration/callbacks_insight.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2_local_integration/mode_router.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2p5_offline_enhancements/insight_comparator.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2p5_offline_enhancements/insight_visuals.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2p5_offline_enhancements/phase2p5_metrics.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2p5_offline_enhancements/phase2p5_performance_diagnostic.py
+ D financial_dashboard/tabs/azure_ml_lab/phase2p5_offline_enhancements/phase2p5_persistent_cache.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/__init__.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/explainability_azure.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/options_forecast_azure.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/phase6_batch_explain.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/phase6_cache_config.py
+ D financial_dashboard/tabs/azure_ml_lab/phase6_azure_integration/phase6_ui_callbacks.py
+ M financial_dashboard/tabs/market_forecast_rebuild.py
+ M financial_dashboard/tabs/market_trends.py
+ M financial_dashboard/tabs/market_trends_callbacks_fixed.py
+ M financial_dashboard/tabs/market_trends_refactored.py
+ M financial_dashboard/tabs/monthly_picks_new.py
+ M financial_dashboard/tabs/picks_helpers.py
+ M financial_dashboard/tabs/portfolio_positions.py
+ M financial_dashboard/tabs/research_lab/callbacks.py
+ M financial_dashboard/tabs/scenario_analysis.py
+ M financial_dashboard/tabs/scenario_tab.py
+ D financial_dashboard/tabs/volatility_lab.py
+ M reports/market_forecast_rebuild/diagnostics/git_head.txt
+ M reports/market_trends_fix/diagnostics/git_status_before.txt
+ M reports/market_trends_fix/diagnostics/py_compile.txt
+ M tests/test_market_trends_fixes.py
+?? .dash_pid
+?? .hypothesis/
+?? CONSOLE_ERROR_FIX_REPORT.md
+?? analyze_callback_duplicates.py
+?? analyze_duplicates.py
+?? data/forecast/
+?? debug_find_tabs.py
+?? diagnose_console_errors.py
+?? diagnose_new_errors.py
+?? error_diagnostic_report.json
+?? final_comprehensive_test.py
+?? financial_dashboard/legacy_tabs/
+?? financial_dashboard/utils/callback_guards.py
+?? inspect_tab_buttons.py
+?? inspect_tab_content.py
+?? quick_console_check.py
+?? reports/callback_output_audit.txt
+?? reports/console_error_diagnostic.json
+?? reports/duplicates_fix/
+?? reports/market_forecast_playwright/
+?? reports/market_forecast_rebuild/diagnostics/unit_test_results.txt
+?? reports/market_forecast_rebuild/patches/api_adapter_1763523924.diff
+?? reports/market_forecast_rebuild/patches/bento_services_1763524061.diff
+?? reports/market_forecast_rebuild/patches/documentation_1763526552.diff
+?? reports/market_forecast_rebuild/patches/fixtures_1763524246.diff
+?? reports/market_forecast_rebuild/patches/persistence_1763524194.diff
+?? reports/market_forecast_rebuild/patches/ui_scaffold_1763523541.diff
+?? reports/market_forecast_rebuild/patches/unit_tests_1763526142.diff
+?? reports/market_trends_fix/diagnostics/dash_server_8050.pid
+?? reports/market_trends_fix/diagnostics/dash_server_8050.ready
+?? reports/market_trends_fix/diagnostics/dash_server_8051.pid
+?? reports/market_trends_fix/diagnostics/git_head_final.txt
+?? reports/market_trends_fix/diagnostics/hypothesis_check.txt
+?? reports/market_trends_fix/diagnostics/hypothesis_check_after.txt
+?? reports/market_trends_fix/diagnostics/inspect_mt_status.txt
+?? reports/market_trends_fix/diagnostics/perf.json
+?? reports/market_trends_fix/diagnostics/pip_install_hypothesis.txt
+?? reports/market_trends_fix/diagnostics/pip_install_log.txt
+?? reports/market_trends_fix/diagnostics/playwright/
+?? reports/market_trends_fix/diagnostics/playwright_install_log.txt
+?? reports/market_trends_fix/diagnostics/pytest_browser.txt
+?? reports/market_trends_fix/diagnostics/pytest_market_trends_headful.txt
+?? reports/market_trends_fix/diagnostics/pytest_reload_model.txt
+?? reports/market_trends_fix/diagnostics/pytest_reload_model_headful.txt
+?? reports/market_trends_fix/diagnostics/root_page.html
+?? reports/missing_ids_report.json
+?? reports/research_lab_fix/diagnostics/research_lab_output_conflicts.txt
+?? reports/sys_debug/
+?? run_dashboard_8050.pid
+?? screenshots/20251119_152307_01_initial_load.png
+?? screenshots/20251119_152709_01_initial_load.png
+?? screenshots/20251119_152709_02_market_trends.png
+?? screenshots/20251119_152709_03_research_lab.png
+?? screenshots/UX_cycle_01_market_forecast.png
+?? screenshots/clicker_execution_log.json
+?? screenshots/debug_page.png
+?? screenshots/final/
+?? screenshots/mt_detailed.png
+?? screenshots/rl_detailed.png
+?? screenshots/test_report_20251119_152307.json
+?? screenshots/test_report_20251119_152709.json
+?? scripts/collect_console.py
+?? test_market_research_tabs.py
+?? tools/capture_callback_map.py
+?? tools/find_missing_ids.py
+?? tools/inspect_mt_status.py
+?? tools/mf_run_playwright.py

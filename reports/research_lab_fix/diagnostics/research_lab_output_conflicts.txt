@@ -1,0 +1,40 @@
+rl-alert|children|3
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:29 allow_duplicate=False
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:226 allow_duplicate=True
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:252 allow_duplicate=True
+rl-alert|color|3
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:30 allow_duplicate=False
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:227 allow_duplicate=True
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:253 allow_duplicate=True
+rl-alert|is_open|3
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:31 allow_duplicate=False
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:228 allow_duplicate=True
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:254 allow_duplicate=True
+rl-briefs-store|data|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:28 allow_duplicate=False
+rl-brief-list|children|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:80 allow_duplicate=False
+rl-selected-brief-id|data|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:101 allow_duplicate=False
+rl-detail-panel|children|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:127 allow_duplicate=False
+rl-brief-modal|is_open|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:141 allow_duplicate=False
+rl-modal-title|children|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:142 allow_duplicate=False
+rl-brief-title-input|value|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:143 allow_duplicate=False
+rl-brief-tags-input|value|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:144 allow_duplicate=False
+rl-brief-summary-input|value|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:145 allow_duplicate=False
+rl-brief-body-input|value|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:146 allow_duplicate=False
+rl-edit-brief-id|data|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:147 allow_duplicate=False
+rl-analysis-results|children|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:280 allow_duplicate=False
+research-lab-content|children|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:325 allow_duplicate=False
+rl-brief-export-btn|href|1
+ - ./financial_dashboard/tabs/research_lab/callbacks.py:356 allow_duplicate=False

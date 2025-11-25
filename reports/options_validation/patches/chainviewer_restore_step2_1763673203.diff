@@ -1,0 +1,70 @@
+diff --git a/financial_dashboard/tabs/options_lab/layout.py b/financial_dashboard/tabs/options_lab/layout.py
+index 9b0584a..fa9d6ad 100644
+--- a/financial_dashboard/tabs/options_lab/layout.py
++++ b/financial_dashboard/tabs/options_lab/layout.py
+@@ -231,6 +231,65 @@ def _create_chain_viewer_subtab():
+         # Chain table
+         html.Div(id='chain-table-container', className="mb-3"),
+ 
++        # RESTORED: Options Forecast Controls (Agent-1A STEP 2)
++        dbc.Card([
++            dbc.CardHeader([
++                html.H6("📈 Options Price Forecast", className="mb-0")
++            ]),
++            dbc.CardBody([
++                dbc.Row([
++                    dbc.Col([
++                        dbc.Label("Contract Selection", className="fw-bold small"),
++                        html.P("Select a contract from the table above, then click Generate Forecast", 
++                               className="text-muted small mb-2")
++                    ], width=12)
++                ], className="mb-2"),
++                dbc.Row([
++                    dbc.Col([
++                        # Using existing callback ID: options-forecast-btn
++                        dbc.Button(
++                            "🔮 Generate Forecast",
++                            id='options-forecast-btn',
++                            color="primary",
++                            size="sm",
++                            className="me-2"
++                        ),
++                        # New OL-prefixed ID for testing (same action)
++                        dbc.Button(
++                            "🔮 Generate Forecast (OL)",
++                            id='ol-forecast-run-btn',
++                            color="primary",
++                            size="sm",
++                            outline=True
++                        )
++                    ], width=12)
++                ], className="mb-3"),
++                # Results container (existing callback ID)
++                html.Div(id='options-forecast-results', className="mb-2"),
++                # OL-prefixed results for testing
++                html.Div(id='ol-forecast-results')
++            ])
++        ], className="mb-3"),
++
++        # RESTORED: TradingView Signals Widget (Agent-1A STEP 2)
++        dbc.Card([
++            dbc.CardHeader([
++                html.H6("📊 TradingView Signals", className="mb-0")
++            ]),
++            dbc.CardBody([
++                # Existing callback ID
++                html.Div(id='tradingview-preview', className="mb-2"),
++                # OL-prefixed widget for testing
++                html.Div(id='ol-tv-signal-widget'),
++                # Hidden interval for polling (existing)
++                dcc.Interval(
++                    id='tradingview-interval',
++                    interval=60000,  # 60 seconds
++                    n_intervals=0
++                )
++            ])
++        ], className="mb-3"),
++
+         # Export button
+         dbc.Button(
+             "📥 Export Chain Data",

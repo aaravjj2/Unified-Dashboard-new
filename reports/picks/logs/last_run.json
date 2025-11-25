@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "duration_seconds": 16.02,
+  "weekly": {
+    "status": "success",
+    "pick_type": "weekly",
+    "total_picks": 20,
+    "prices_updated": 20,
+    "timestamp": "2025-11-23T17:53:31.141111"
+  },
+  "monthly": {
+    "status": "success",
+    "pick_type": "monthly",
+    "total_picks": 20,
+    "prices_updated": 20,
+    "timestamp": "2025-11-23T17:53:37.681650"
+  },
+  "timestamp": "2025-11-23T17:53:37.681698"
+}

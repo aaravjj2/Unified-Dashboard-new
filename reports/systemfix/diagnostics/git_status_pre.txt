@@ -1,0 +1,9 @@
+ M dashboard.out
+ M dashboard.pid
+ M financial_dashboard/index.py
+ M tools/picks_run.py
+?? dashboard_test_run.out
+?? reports/command_center/diagnostics/dashboard_startup_log.txt
+?? reports/command_center/diagnostics/git_head_final.txt
+?? reports/command_center/patches/step9_final_report_runbook_1763952006.diff
+?? reports/systemfix/

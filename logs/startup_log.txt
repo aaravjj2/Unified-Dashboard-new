@@ -1,0 +1,319 @@
+2025-10-27 17:19:50,427 - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks
+2025-10-27 17:19:50,431 - INFO - ✓ Loaded keys.env (did not overwrite existing env vars)
+2025-10-27 17:19:50,447 - INFO - ✅ Preloaded 43 weekly prices from cache
+[_shared.py] ✅ Preloaded 43 weekly prices
+2025-10-27 17:19:50,452 - INFO - ✅ Preloaded 43 total prices (including monthly)
+2025-10-27 17:19:50,491 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'TSLA']
+2025-10-27 17:19:50,492 - INFO - [PRICE_FETCHER] Initialized
+2025-10-27 17:19:50,492 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-10-27 17:19:50,493 - INFO - ============================================================
+2025-10-27 17:19:50,493 - INFO - Startup Cache Validation Report
+2025-10-27 17:19:50,494 - INFO - ============================================================
+2025-10-27 17:19:50,494 - INFO - Total tickers in cache: 43
+2025-10-27 17:19:50,495 - INFO - Valid Market Trends tickers: 3/5
+2025-10-27 17:19:50,495 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+2025-10-27 17:19:50,495 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+2025-10-27 17:19:50,496 - WARNING -      AAPL: missing week_start_price, month_start_price
+2025-10-27 17:19:50,496 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-10-27 17:19:50,497 - INFO - Overall status: ❌ INCOMPLETE
+2025-10-27 17:19:50,497 - INFO - ============================================================
+2025-10-27 17:19:50,564 - INFO - ✓ Loaded _shared.py
+2025-10-27 17:19:50,577 - INFO - ✓ Chatbot UI available
+2025-10-27 17:19:50,580 - INFO - ✓ Loaded tab: 🏠 Home
+2025-10-27 17:19:50,650 - INFO - ✅ Preloaded 43 weekly prices from cache
+[_shared.py] ✅ Preloaded 43 weekly prices
+2025-10-27 17:19:50,653 - INFO - ✅ Preloaded 43 total prices (including monthly)
+2025-10-27 17:19:50,654 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'TSLA']
+2025-10-27 17:19:50,654 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-10-27 17:19:50,654 - INFO - ============================================================
+2025-10-27 17:19:50,654 - INFO - Startup Cache Validation Report
+2025-10-27 17:19:50,654 - INFO - ============================================================
+2025-10-27 17:19:50,654 - INFO - Total tickers in cache: 43
+2025-10-27 17:19:50,655 - INFO - Valid Market Trends tickers: 3/5
+2025-10-27 17:19:50,655 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+2025-10-27 17:19:50,655 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+2025-10-27 17:19:50,655 - WARNING -      AAPL: missing week_start_price, month_start_price
+2025-10-27 17:19:50,655 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-10-27 17:19:50,655 - INFO - Overall status: ❌ INCOMPLETE
+2025-10-27 17:19:50,656 - INFO - ============================================================
+2025-10-27 17:19:50,656 - WARNING - [_shared] SH id: 138967936875904, RESULTS_CACHE id: 138967929240832, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 138967936875904, RESULTS_CACHE id: 138967929240832, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+2025-10-27 17:19:51,348 - DEBUG - Injected server run_full_analysis into tabs.market_trends (overwrite if existed)
+2025-10-27 17:19:51,354 - INFO - ✓ Loaded tab: Market Trends
+2025-10-27 17:19:51,367 - INFO - Using local repo cache dir: /mnt/c/Aarav/fin_env/unified-dashboard/cache
+2025-10-27 17:19:51,369 - INFO - ✓ Loaded tab: Market Forecast
+2025-10-27 17:19:52,630 - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+2025-10-27 17:19:52,666 - INFO - ✓ Loaded tab: 📊 Attribution Lab
+2025-10-27 17:19:52,673 - INFO - ✓ Loaded tab: Monthly Picks
+2025-10-27 17:19:53,546 - INFO - ✓ Loaded tab: Weekly Picks
+2025-10-27 17:19:53,730 - INFO - Portfolio analytics caching enabled: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/.cache/portfolio
+2025-10-27 17:19:53,740 - INFO - ✓ Loaded tab: Portfolio
+2025-10-27 17:19:53,767 - INFO - ✓ Loaded tab: 💹 Options Lab
+2025-10-27 17:19:53,797 - INFO - ✓ Loaded tab: 🔬 Research Lab
+2025-10-27 17:19:53,797 - INFO - ✓ index.py initialization complete
+2025-10-27 17:19:53,797 - INFO - Initializing app at module level...
+2025-10-27 17:19:53,801 - WARNING - Could not pre-load environment in create_app(): attempted relative import with no known parent package
+2025-10-27 17:19:53,802 - INFO - ✅ Pre-registered API endpoints: /api/weekly_picks, /api/monthly_picks, /api/portfolio_summary
+2025-10-27 17:19:54,263 - INFO - ✓ Created Dash application instance
+2025-10-27 17:19:54,263 - INFO - ✅ Installed after_request hook to deduplicate /_dash-dependencies
+2025-10-27 17:19:54,266 - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks
+2025-10-27 17:19:54,268 - INFO - ✓ Loaded keys.env (did not overwrite existing env vars)
+2025-10-27 17:19:54,276 - INFO - ✅ Preloaded 43 weekly prices from cache
+[_shared.py] ✅ Preloaded 43 weekly prices
+2025-10-27 17:19:54,279 - INFO - ✅ Preloaded 43 total prices (including monthly)
+2025-10-27 17:19:54,280 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'TSLA']
+2025-10-27 17:19:54,280 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-10-27 17:19:54,280 - INFO - ============================================================
+2025-10-27 17:19:54,281 - INFO - Startup Cache Validation Report
+2025-10-27 17:19:54,281 - INFO - ============================================================
+2025-10-27 17:19:54,281 - INFO - Total tickers in cache: 43
+2025-10-27 17:19:54,281 - INFO - Valid Market Trends tickers: 3/5
+2025-10-27 17:19:54,281 - INFO -   ✅ Complete: MSFT, GOOGL, NVDA
+2025-10-27 17:19:54,281 - WARNING -   ⚠️  Incomplete: AAPL, TSLA
+2025-10-27 17:19:54,282 - WARNING -      AAPL: missing week_start_price, month_start_price
+2025-10-27 17:19:54,282 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-10-27 17:19:54,282 - INFO - Overall status: ❌ INCOMPLETE
+2025-10-27 17:19:54,282 - INFO - ============================================================
+2025-10-27 17:19:54,282 - WARNING - [_shared] SH id: 138967936875904, RESULTS_CACHE id: 138967859515072, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 138967936875904, RESULTS_CACHE id: 138967859515072, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+2025-10-27 17:19:54,327 - INFO - ✓ Loaded _shared.py
+2025-10-27 17:19:54,327 - INFO - ✓ Chatbot UI available
+2025-10-27 17:19:54,331 - INFO - ✓ Loaded tab: 🏠 Home
+2025-10-27 17:19:54,335 - INFO - ✓ Loaded tab: Market Trends
+2025-10-27 17:19:54,342 - INFO - Using local repo cache dir: /mnt/c/Aarav/fin_env/unified-dashboard/cache
+2025-10-27 17:19:54,345 - INFO - ✓ Loaded tab: Market Forecast
+2025-10-27 17:19:54,348 - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+2025-10-27 17:19:54,353 - INFO - ✓ Loaded tab: 📊 Attribution Lab
+2025-10-27 17:19:54,357 - INFO - ✓ Loaded tab: Monthly Picks
+2025-10-27 17:19:54,360 - INFO - ✓ Loaded tab: Weekly Picks
+2025-10-27 17:19:54,363 - INFO - ✓ Loaded tab: Portfolio
+2025-10-27 17:19:54,364 - INFO - ✓ Loaded tab: 💹 Options Lab
+2025-10-27 17:19:54,367 - INFO - ✓ Loaded tab: 🔬 Research Lab
+2025-10-27 17:19:54,367 - INFO - ✓ index.py initialization complete
+2025-10-27 17:19:54,367 - INFO - Initializing app at module level...
+2025-10-27 17:19:54,368 - WARNING - Could not pre-load environment in create_app(): attempted relative import with no known parent package
+2025-10-27 17:19:54,369 - INFO - ✅ Pre-registered API endpoints: /api/weekly_picks, /api/monthly_picks, /api/portfolio_summary
+2025-10-27 17:19:54,940 - INFO - ✓ Created Dash application instance
+2025-10-27 17:19:54,941 - INFO - ✅ Installed after_request hook to deduplicate /_dash-dependencies
+2025-10-27 17:19:54,941 - INFO - ✅ App initialized: <class 'dash_extensions.enrich.DashProxy'>
+2025-10-27 17:19:54,948 - INFO - 🔵 Setting up callbacks and layout...
+2025-10-27 17:19:54,948 - INFO - 🔵 Registering callbacks...
+2025-10-27 17:19:54,955 - INFO - [CALLBACK_REG] Starting callback registration. app object id: 138967853882416, type: <class 'dash_extensions.enrich.DashProxy'>
+2025-10-27 17:19:54,955 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🏠 Home
+2025-10-27 17:19:54,955 - INFO - ✓ Registered callbacks for 🏠 Home
+2025-10-27 17:19:54,955 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🏠 Home
+2025-10-27 17:19:54,956 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-10-27 17:19:54,956 - INFO - ✓ Registered callbacks for Market Trends
+2025-10-27 17:19:54,957 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+2025-10-27 17:19:54,957 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Forecast
+2025-10-27 17:19:54,957 - INFO - ✓ Registered callbacks for Market Forecast
+2025-10-27 17:19:54,958 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Forecast
+2025-10-27 17:19:54,958 - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-10-27 17:19:54,959 - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-10-27 17:19:54,959 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+2025-10-27 17:19:54,959 - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-10-27 17:19:54,960 - INFO - ✓ Registered callbacks for Monthly Picks
+2025-10-27 17:19:54,960 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+2025-10-27 17:19:54,960 - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-10-27 17:19:54,960 - INFO - ✓ Registered callbacks for Weekly Picks
+2025-10-27 17:19:54,961 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+2025-10-27 17:19:54,961 - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-10-27 17:19:55,081 - INFO - Portfolio database initialized
+2025-10-27 17:19:55,081 - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-10-27 17:19:55,082 - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-10-27 17:19:55,082 - INFO - ✓ Registered callbacks for Portfolio
+2025-10-27 17:19:55,082 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+2025-10-27 17:19:55,082 - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-10-27 17:19:55,083 - INFO - ✅ Options Lab callbacks registered successfully
+2025-10-27 17:19:55,083 - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-10-27 17:19:55,083 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+2025-10-27 17:19:55,083 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-10-27 17:19:55,083 - INFO - ✅ Research Lab callbacks registered successfully
+2025-10-27 17:19:55,083 - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-10-27 17:19:55,083 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+2025-10-27 17:19:55,726 - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+2025-10-27 17:19:55,727 - INFO - ✅ Registered 0 tab callbacks
+2025-10-27 17:19:55,734 - INFO - 🔵 Registering global callbacks (search, theme, chatbot)...
+2025-10-27 17:19:55,735 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:55,735 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:55,735 - INFO - 🔵 Forcing DashProxy to register pending callbacks...
+2025-10-27 17:19:55,735 - INFO - 📊 Callback map BEFORE registration: 0 entries
+2025-10-27 17:19:55,737 - INFO - 📊 Callback map AFTER registration: 44 entries
+2025-10-27 17:19:55,737 - INFO - 🔧 Deduplicated callback_map: 44 → 41 callbacks (3 duplicates removed)
+2025-10-27 17:19:55,738 - INFO - ✅ Successfully registered 41 callbacks
+2025-10-27 17:19:55,738 - INFO - 📋 Sample callback IDs: ['..home-portfolio-value.children...home-portfolio-change.children..', '..market-sp500-value.children...market-sp500-pct.children...market-nasdaq-value.children...market-nasdaq-pct.children...market-dow-value.children...market-dow-pct.children...{"index":["ALL"],"type":"watch-price"}.children...{"index":["ALL"],"type":"watch-change"}.children..', '..home-action-result.children...home-last-job.children...home-last-analysis-job.children...home-last-hedge-job.children...home-action-alert.children...home-action-alert.is_open...home-nav.href..', 'watchlist-items-container.children', '..results-area.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...tab-visibility-indicator.children...tab-visibility-indicator.style...news-container.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...trends-last-cached.data@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d..']
+2025-10-27 17:19:55,738 - INFO - ✅ Set app.layout to function reference: <function create_layout at 0x7e63f9afb7f0>
+2025-10-27 17:19:55,738 - INFO - ✅ Callbacks and layout setup complete
+2025-10-27 17:19:55,739 - INFO - ✅ Callbacks and layout registered
+2025-10-27 17:19:55,739 - INFO - ✅ App accessible at module level for testing/deployment
+2025-10-27 17:19:55,739 - INFO - ✓ index.py layout ready
+2025-10-27 17:19:55,739 - INFO - 🔵 Registering callbacks...
+2025-10-27 17:19:55,740 - INFO - [CALLBACK_REG] Starting callback registration. app object id: 138967861164064, type: <class 'dash_extensions.enrich.DashProxy'>
+2025-10-27 17:19:55,740 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🏠 Home
+2025-10-27 17:19:55,740 - INFO - ✓ Registered callbacks for 🏠 Home
+2025-10-27 17:19:55,742 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🏠 Home
+2025-10-27 17:19:55,743 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-10-27 17:19:55,743 - INFO - ✓ Registered callbacks for Market Trends
+2025-10-27 17:19:55,744 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+2025-10-27 17:19:55,744 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Forecast
+2025-10-27 17:19:55,745 - INFO - ✓ Registered callbacks for Market Forecast
+2025-10-27 17:19:55,745 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Forecast
+2025-10-27 17:19:55,746 - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-10-27 17:19:55,746 - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-10-27 17:19:55,747 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+2025-10-27 17:19:55,747 - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-10-27 17:19:55,747 - INFO - ✓ Registered callbacks for Monthly Picks
+2025-10-27 17:19:55,748 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+2025-10-27 17:19:55,748 - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-10-27 17:19:55,748 - INFO - ✓ Registered callbacks for Weekly Picks
+2025-10-27 17:19:55,749 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+2025-10-27 17:19:55,749 - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-10-27 17:19:55,749 - INFO - Portfolio database initialized
+2025-10-27 17:19:55,750 - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-10-27 17:19:55,751 - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-10-27 17:19:55,751 - INFO - ✓ Registered callbacks for Portfolio
+2025-10-27 17:19:55,752 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+2025-10-27 17:19:55,752 - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-10-27 17:19:55,752 - INFO - ✅ Options Lab callbacks registered successfully
+2025-10-27 17:19:55,752 - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-10-27 17:19:55,753 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+2025-10-27 17:19:55,753 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-10-27 17:19:55,753 - INFO - ✅ Research Lab callbacks registered successfully
+2025-10-27 17:19:55,753 - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-10-27 17:19:55,754 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+2025-10-27 17:19:55,754 - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+2025-10-27 17:19:55,754 - INFO - ✅ Registered 0 tab callbacks
+2025-10-27 17:19:55,755 - INFO - 🔵 Registering global callbacks (search, theme, chatbot)...
+2025-10-27 17:19:55,755 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:55,755 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:55,756 - INFO - 🔵 Forcing DashProxy to register pending callbacks...
+2025-10-27 17:19:55,756 - INFO - 📊 Callback map BEFORE registration: 0 entries
+2025-10-27 17:19:55,758 - INFO - 📊 Callback map AFTER registration: 44 entries
+2025-10-27 17:19:55,759 - INFO - 🔧 Deduplicated callback_map: 44 → 41 callbacks (3 duplicates removed)
+2025-10-27 17:19:55,759 - INFO - ✅ Successfully registered 41 callbacks
+2025-10-27 17:19:55,759 - INFO - 📋 Sample callback IDs: ['..home-portfolio-value.children...home-portfolio-change.children..', '..market-sp500-value.children...market-sp500-pct.children...market-nasdaq-value.children...market-nasdaq-pct.children...market-dow-value.children...market-dow-pct.children...{"index":["ALL"],"type":"watch-price"}.children...{"index":["ALL"],"type":"watch-change"}.children..', '..home-action-result.children...home-last-job.children...home-last-analysis-job.children...home-last-hedge-job.children...home-action-alert.children...home-action-alert.is_open...home-nav.href..', 'watchlist-items-container.children', '..results-area.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...tab-visibility-indicator.children...tab-visibility-indicator.style...news-container.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...trends-last-cached.data@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d..']
+2025-10-27 17:19:55,760 - INFO - ✅ Set app.layout to function reference: <function create_layout at 0x7e63f9afb7f0>
+2025-10-27 17:19:55,760 - WARNING - Could not pre-load environment in create_app(): attempted relative import with no known parent package
+2025-10-27 17:19:55,761 - INFO - ✅ Pre-registered API endpoints: /api/weekly_picks, /api/monthly_picks, /api/portfolio_summary
+2025-10-27 17:19:56,345 - INFO - ✓ Created Dash application instance
+2025-10-27 17:19:56,345 - INFO - ✅ Installed after_request hook to deduplicate /_dash-dependencies
+2025-10-27 17:19:56,345 - INFO - ✅ App initialized: <class 'dash_extensions.enrich.DashProxy'>
+2025-10-27 17:19:56,346 - INFO - 🔵 Setting up callbacks and layout...
+2025-10-27 17:19:56,346 - INFO - 🔵 Registering callbacks...
+2025-10-27 17:19:56,346 - INFO - [CALLBACK_REG] Starting callback registration. app object id: 138968568091536, type: <class 'dash_extensions.enrich.DashProxy'>
+2025-10-27 17:19:56,347 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🏠 Home
+2025-10-27 17:19:56,347 - INFO - ✓ Registered callbacks for 🏠 Home
+2025-10-27 17:19:56,347 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🏠 Home
+2025-10-27 17:19:56,347 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-10-27 17:19:56,348 - INFO - ✓ Registered callbacks for Market Trends
+2025-10-27 17:19:56,348 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+2025-10-27 17:19:56,348 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Forecast
+2025-10-27 17:19:56,349 - INFO - ✓ Registered callbacks for Market Forecast
+2025-10-27 17:19:56,349 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Forecast
+2025-10-27 17:19:56,349 - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-10-27 17:19:56,350 - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-10-27 17:19:56,350 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+2025-10-27 17:19:56,350 - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-10-27 17:19:56,351 - INFO - ✓ Registered callbacks for Monthly Picks
+2025-10-27 17:19:56,351 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+2025-10-27 17:19:56,351 - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-10-27 17:19:56,351 - INFO - ✓ Registered callbacks for Weekly Picks
+2025-10-27 17:19:56,351 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+2025-10-27 17:19:56,352 - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-10-27 17:19:56,352 - INFO - Portfolio database initialized
+2025-10-27 17:19:56,352 - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-10-27 17:19:56,352 - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-10-27 17:19:56,353 - INFO - ✓ Registered callbacks for Portfolio
+2025-10-27 17:19:56,353 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+2025-10-27 17:19:56,353 - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-10-27 17:19:56,353 - INFO - ✅ Options Lab callbacks registered successfully
+2025-10-27 17:19:56,353 - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-10-27 17:19:56,354 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+2025-10-27 17:19:56,354 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-10-27 17:19:56,354 - INFO - ✅ Research Lab callbacks registered successfully
+2025-10-27 17:19:56,354 - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-10-27 17:19:56,354 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+2025-10-27 17:19:56,354 - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+2025-10-27 17:19:56,355 - INFO - ✅ Registered 0 tab callbacks
+2025-10-27 17:19:56,355 - INFO - 🔵 Registering global callbacks (search, theme, chatbot)...
+2025-10-27 17:19:56,355 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:56,355 - INFO - ✅ Registered 3 global callbacks
+2025-10-27 17:19:56,355 - INFO - 🔵 Forcing DashProxy to register pending callbacks...
+2025-10-27 17:19:56,356 - INFO - 📊 Callback map BEFORE registration: 0 entries
+2025-10-27 17:19:56,358 - INFO - 📊 Callback map AFTER registration: 44 entries
+2025-10-27 17:19:56,358 - INFO - 🔧 Deduplicated callback_map: 44 → 41 callbacks (3 duplicates removed)
+2025-10-27 17:19:56,358 - INFO - ✅ Successfully registered 41 callbacks
+2025-10-27 17:19:56,358 - INFO - 📋 Sample callback IDs: ['..home-portfolio-value.children...home-portfolio-change.children..', '..market-sp500-value.children...market-sp500-pct.children...market-nasdaq-value.children...market-nasdaq-pct.children...market-dow-value.children...market-dow-pct.children...{"index":["ALL"],"type":"watch-price"}.children...{"index":["ALL"],"type":"watch-change"}.children..', '..home-action-result.children...home-last-job.children...home-last-analysis-job.children...home-last-hedge-job.children...home-action-alert.children...home-action-alert.is_open...home-nav.href..', 'watchlist-items-container.children', '..results-area.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...tab-visibility-indicator.children...tab-visibility-indicator.style...news-container.children@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d...trends-last-cached.data@4abba289fc7199b43319abeed57acc888dcd1a2cd9d2a4ae6f848f278eff328d..']
+2025-10-27 17:19:56,359 - INFO - ✅ Set app.layout to function reference: <function create_layout at 0x7e63f9ff8790>
+2025-10-27 17:19:56,359 - INFO - ✅ Callbacks and layout setup complete
+2025-10-27 17:19:56,359 - INFO - ✅ Callbacks and layout registered
+2025-10-27 17:19:56,359 - INFO - ✅ App accessible at module level for testing/deployment
+2025-10-27 17:19:56,359 - INFO - ✓ index.py layout ready
+2025-10-27 17:19:56,368 - INFO - Loading environment variables...
+2025-10-27 17:20:03,007 - INFO - ✅ Loaded dotenv from /mnt/c/Aarav/fin_env/unified-dashboard/keys.env
+2025-10-27 17:20:03,014 - INFO - ✅ Loaded dotenv from /mnt/c/Aarav/fin_env/unified-dashboard/doppler.env
+2025-10-27 17:20:03,020 - INFO - ✅ Loaded dotenv from /mnt/c/Aarav/fin_env/unified-dashboard/.env
+2025-10-27 17:20:03,020 - INFO - ✅ All 5 required keys present
+2025-10-27 17:20:03,020 - INFO - ✅ All required API keys present
+2025-10-27 17:20:03,020 - INFO -    ✅ Finnhub
+2025-10-27 17:20:03,020 - INFO -    ✅ NewsAPI
+2025-10-27 17:20:03,020 - INFO -    ✅ Alpaca
+2025-10-27 17:20:03,020 - INFO -    ✅ Polygon
+2025-10-27 17:20:03,021 - INFO -    ✅ Tiingo
+2025-10-27 17:20:03,021 - INFO -    ✅ Quandl
+2025-10-27 17:20:03,021 - INFO -    ✅ FRED
+2025-10-27 17:20:03,021 - INFO - ======================================================================
+2025-10-27 17:20:03,021 - INFO - Starting Financial Dashboard on http://localhost:8050
+2025-10-27 17:20:03,021 - INFO - Loaded 10 tabs: 🏠 Home, Market Trends, Market Forecast, ⚡ Volatility Lab, 📊 Attribution Lab, Monthly Picks, Weekly Picks, Portfolio, 💹 Options Lab, 🔬 Research Lab
+2025-10-27 17:20:03,021 - INFO - Chatbot enabled: True
+2025-10-27 17:20:03,022 - INFO - ======================================================================
+Dash is running on http://0.0.0.0:8050/
+
+2025-10-27 17:20:03,022 - INFO - Dash is running on http://0.0.0.0:8050/
+
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-10-27 17:20:03,030 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8050
+ * Running on http://172.28.84.22:8050
+2025-10-27 17:20:03,031 - INFO - [33mPress CTRL+C to quit[0m
+2025-10-27 17:21:01,669 - INFO - 🔵 create_layout() called!
+2025-10-27 17:21:01,670 - INFO - ⏳ CACHE MISS: Fetching fresh weekly picks data from DB/CSV + live prices...
+2025-10-27 17:21:02,137 - INFO - Selected weekly picks file: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/models/weekly_run/picks_20251021_top20.csv
+2025-10-27 17:21:02,137 - INFO - Loading weekly picks from: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/models/weekly_run/picks_20251021_top20.csv
+2025-10-27 17:21:02,145 - INFO - [ENRICH] cached_results type: <class 'dict'>, cached_prices len: 43, keys sample: ['AAPL', 'MSFT', 'ASTS', 'SNDK', 'RGTI']
+2025-10-27 17:21:02,146 - INFO - ✅ CACHED: Weekly picks data (CSV source) saved for 300s
+2025-10-27 17:21:02,149 - INFO - ⏳ CACHE MISS: Fetching fresh monthly picks data with API calls...
+2025-10-27 17:21:02,492 - INFO - Selected monthly picks file: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/models/full_run/picks_20251001.csv
+2025-10-27 17:21:02,492 - INFO - Loading monthly picks from: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/models/full_run/picks_20251001.csv
+2025-10-27 17:21:02,500 - INFO - ✅ CACHED: Monthly picks data saved for 300s
+2025-10-27 17:21:02,530 - INFO - ✅ Layout cache load: SUCCESS - 15 tickers
+2025-10-27 17:21:02,663 - INFO - 🎨 _render_initial_table_from_cache called with: <class 'dict'> - True
+2025-10-27 17:21:02,663 - INFO - 📊 Attempting to render table from 15 tickers
+2025-10-27 17:21:03,724 - INFO - ✅ Rendering table with 15 rows
+2025-10-27 17:21:03,748 - INFO - Loaded portfolio cache for layout preload: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-10-27 17:21:03,757 - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-10-27 17:21:03,760 - INFO - ✅ Server-side positions table rendered successfully
+2025-10-27 17:21:05,203 - INFO - 🔵 create_layout() called!
+2025-10-27 17:21:05,203 - INFO - ✅ CACHE HIT: Using cached weekly picks (age: 3.1s)
+2025-10-27 17:21:05,206 - INFO - ✅ CACHE HIT: Using cached monthly picks (age: 2.7s / TTL: 300s)
+2025-10-27 17:21:05,227 - INFO - ✅ Layout cache load: SUCCESS - 15 tickers
+2025-10-27 17:21:05,236 - INFO - 🎨 _render_initial_table_from_cache called with: <class 'dict'> - True
+2025-10-27 17:21:05,236 - INFO - 📊 Attempting to render table from 15 tickers
+2025-10-27 17:21:05,332 - INFO - ✅ Rendering table with 15 rows
+2025-10-27 17:21:05,347 - INFO - Loaded portfolio cache for layout preload: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-10-27 17:21:05,352 - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-10-27 17:21:05,356 - INFO - ✅ Server-side positions table rendered successfully
+2025-10-27 17:21:05,406 - INFO - 🔵 create_layout() called!
+2025-10-27 17:21:05,407 - INFO - ✅ CACHE HIT: Using cached weekly picks (age: 3.3s)
+2025-10-27 17:21:05,409 - INFO - ✅ CACHE HIT: Using cached monthly picks (age: 2.9s / TTL: 300s)
+2025-10-27 17:21:05,429 - INFO - ✅ Layout cache load: SUCCESS - 15 tickers
+2025-10-27 17:21:05,438 - INFO - 🎨 _render_initial_table_from_cache called with: <class 'dict'> - True
+2025-10-27 17:21:05,439 - INFO - 📊 Attempting to render table from 15 tickers
+2025-10-27 17:21:05,530 - INFO - ✅ Rendering table with 15 rows
+2025-10-27 17:21:05,546 - INFO - Loaded portfolio cache for layout preload: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-10-27 17:21:05,550 - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-10-27 17:21:05,554 - INFO - ✅ Server-side positions table rendered successfully
+2025-10-27 17:21:05,600 - INFO - 127.0.0.1 - - [27/Oct/2025 17:21:05] "GET /_dash-layout HTTP/1.1" 200 -
+2025-10-27 17:21:19,667 - INFO - 127.0.0.1 - - [27/Oct/2025 17:21:19] "GET / HTTP/1.1" 200 -

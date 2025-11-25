@@ -1,0 +1,4 @@
+  File "financial_dashboard/dashboard_clean_fixed.py", line 37
+    return html.Div([
+                    ^
+SyntaxError: '[' was never closed

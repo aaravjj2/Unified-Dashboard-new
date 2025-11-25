@@ -1,0 +1,8 @@
+{
+  "timestamp": 1763686010.1696591,
+  "port": 8050,
+  "headed": true,
+  "graphs": {},
+  "verdict": "ERROR",
+  "error": "Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for locator(\"#main-tabs\") to be visible\n============================================================"
+}

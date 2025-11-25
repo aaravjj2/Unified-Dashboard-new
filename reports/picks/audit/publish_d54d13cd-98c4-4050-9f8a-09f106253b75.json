@@ -1,0 +1,13 @@
+{
+  "run_id": "d54d13cd-98c4-4050-9f8a-09f106253b75",
+  "run_type": "weekly",
+  "published_at": "2025-11-23T20:15:09.199485",
+  "count": 20,
+  "git_sha": "05e9817d92c2def5163dd667aed2a80d3e617c81",
+  "sources_used": {
+    "alpaca": false,
+    "yfinance": true,
+    "finnhub": false,
+    "fixtures": false
+  }
+}

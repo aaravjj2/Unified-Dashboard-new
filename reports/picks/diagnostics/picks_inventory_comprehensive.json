@@ -1,0 +1,207 @@
+{
+  "inventory_timestamp": "2025-11-23T00:00:00Z",
+  "git_head": "c103c552d1893697ad5d3dfd7647b321c3570ca4",
+  "branch": "rebuild/picks_pipeline_1763914892",
+  
+  "current_architecture": {
+    "ui_modules": {
+      "weekly_picks": {
+        "primary": "financial_dashboard/tabs/weekly_picks_rebuild.py",
+        "alternates": [
+          "financial_dashboard/tabs/weekly_picks.py",
+          "financial_dashboard/tabs/weekly_picks_clean.py",
+          "financial_dashboard/weekly_picks_simple.py",
+          "financial_dashboard/weekly_picks_flask.py"
+        ],
+        "status": "rebuild.py is active; others are legacy/deprecated"
+      },
+      "monthly_picks": {
+        "primary": "financial_dashboard/tabs/monthly_picks_rebuild.py",
+        "alternates": [
+          "financial_dashboard/tabs/monthly_picks.py",
+          "financial_dashboard/tabs/monthly_picks_new.py",
+          "financial_dashboard/monthly_picks_app.py",
+          "financial_dashboard/monthly_picks_simple.py",
+          "financial_dashboard/monthly_picks_flask_broken.py",
+          "financial_dashboard/monthly_picks_flask.py"
+        ],
+        "status": "rebuild.py is active; others are legacy/deprecated"
+      }
+    },
+    
+    "api_endpoints": {
+      "file": "financial_dashboard/api/picks_api.py",
+      "endpoints": [
+        {"path": "/api/weekly_picks", "method": "GET", "status": "active"},
+        {"path": "/api/monthly_picks", "method": "GET", "status": "active"}
+      ],
+      "missing_endpoints": [
+        "/api/picks/run",
+        "/api/picks/run_status",
+        "/api/picks/approve",
+        "/api/picks/history"
+      ]
+    },
+    
+    "data_sources": {
+      "json_files": [
+        {
+          "path": "data/picks/weekly_picks.json",
+          "purpose": "Published weekly picks (currently served by API)",
+          "schema": "API JSON format with ticker, rank, combined_score, etc."
+        },
+        {
+          "path": "data/picks/monthly_picks.json",
+          "purpose": "Published monthly picks",
+          "schema": "Similar to weekly with month_start_price, profit_loss"
+        },
+        {
+          "path": "data/picks/weekly_cache.json",
+          "purpose": "Cache file (purpose unclear, may be obsolete)",
+          "schema": "Unknown"
+        },
+        {
+          "path": "data/picks/monthly_cache.json",
+          "purpose": "Cache file (purpose unclear, may be obsolete)",
+          "schema": "Unknown"
+        },
+        {
+          "path": "data/picks/picks_audit.json",
+          "purpose": "Audit trail for picks operations",
+          "schema": "Array of audit events"
+        }
+      ],
+      "generators": [
+        {
+          "path": "jobs/weekly_picks_generator.py",
+          "purpose": "Legacy weekly picks generation job",
+          "status": "unknown; needs review"
+        },
+        {
+          "path": "jobs/weekly_picks_generator_next_week.py",
+          "purpose": "Next-week weekly picks generator",
+          "status": "unknown; needs review"
+        }
+      ],
+      "canonical_input": {
+        "exists": false,
+        "proposed": [
+          "data/picks_input/weekly_source.csv",
+          "data/picks_input/monthly_source.csv"
+        ],
+        "notes": "Not yet implemented; will be created in this rebuild"
+      }
+    },
+    
+    "ui_components": {
+      "tab_ids": {
+        "weekly": {
+          "tab_link": "Weekly Picks (text match)",
+          "table_selector": "table or DataTable (needs audit)",
+          "buttons": "unknown (needs DOM inspection)"
+        },
+        "monthly": {
+          "tab_link": "Monthly Picks (text match)",
+          "table_selector": "table or DataTable (needs audit)",
+          "buttons": "unknown (needs DOM inspection)"
+        }
+      },
+      "stable_ids_needed": [
+        "wp-run-btn",
+        "wp-run-mode",
+        "wp-run-status",
+        "wp-approve-btn",
+        "wp-diff-panel",
+        "wp-download-csv",
+        "wp-published-table",
+        "mp-run-btn",
+        "mp-run-mode",
+        "mp-run-status",
+        "mp-approve-btn",
+        "mp-diff-panel",
+        "mp-download-csv",
+        "mp-published-table"
+      ]
+    },
+    
+    "price_cache": {
+      "location": "financial_dashboard/outputs/prices_weekly.json",
+      "manager": "financial_dashboard/utils/price_fetcher.py",
+      "shared_cache": "financial_dashboard/_shared.py (SH.RESULTS_CACHE['results']['prices'])"
+    },
+    
+    "test_artifacts": {
+      "api_fixtures": [
+        "reports/picks/playwright/api_weekly_picks.json",
+        "reports/picks/playwright/api_monthly_picks.json"
+      ],
+      "test_scripts": [
+        "test_picks_data_display.py",
+        "quick_picks_test.py"
+      ]
+    }
+  },
+  
+  "proposed_new_structure": {
+    "canonical_input": {
+      "weekly": "data/picks_input/weekly_source.csv",
+      "monthly": "data/picks_input/monthly_source.csv",
+      "fixtures": {
+        "weekly": "reports/picks/fixtures/weekly_fixture.json",
+        "monthly": "reports/picks/fixtures/monthly_fixture.json"
+      }
+    },
+    "published_output": {
+      "weekly": "data/picks/weekly_picks_published.json",
+      "monthly": "data/picks/monthly_picks_published.json",
+      "archive": "data/picks_published/<run_id>_<type>.json"
+    },
+    "run_artifacts": {
+      "base_dir": "reports/picks/runs/<run_id>/",
+      "files": [
+        "manifest.json",
+        "inputs_checksum.json",
+        "normalized.csv",
+        "enriched.parquet",
+        "scored.parquet",
+        "selected.json",
+        "validation_report.json"
+      ]
+    },
+    "database_tables": {
+      "picks_runs": "Track every pipeline run with git_sha, params_hash, seed, validation status",
+      "weekly_picks": "Published weekly picks with run_id provenance",
+      "monthly_picks": "Published monthly picks with run_id provenance",
+      "picks_audit": "Audit log for approve/publish actions"
+    },
+    "utils": {
+      "cache_manager": "financial_dashboard/utils/cache_manager.py",
+      "picks_fetcher": "financial_dashboard/utils/picks_fetcher.py",
+      "picks_scoring": "tools/picks_scoring.py",
+      "picks_validate": "tools/picks_validate.py"
+    },
+    "runner": {
+      "cli": "tools/picks_run.py",
+      "loader": "tools/picks_load.py"
+    },
+    "ui_packages": {
+      "weekly": "financial_dashboard/tabs/weekly_picks_pkg/",
+      "monthly": "financial_dashboard/tabs/monthly_picks_pkg/"
+    }
+  },
+  
+  "deterministic_mode": {
+    "env_var": "OPTIONS_DETERMINISTIC",
+    "value_for_test": "1",
+    "fixture_paths": {
+      "weekly": "reports/picks/fixtures/weekly_fixture.json",
+      "monthly": "reports/picks/fixtures/monthly_fixture.json"
+    },
+    "seed_usage": "Passed to scoring function for reproducible random operations"
+  },
+  
+  "azure_references": {
+    "status": "Need to audit for Azure calls and replace with mock/local",
+    "replacement_log": "reports/picks/diagnostics/azure_replacements.log"
+  }
+}

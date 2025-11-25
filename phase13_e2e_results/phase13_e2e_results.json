@@ -1,0 +1,326 @@
+{
+  "timestamp": "2025-10-30T12:59:11.695346",
+  "dashboard_url": "http://localhost:8051",
+  "results": [
+    {
+      "tab": "Strategy Lab",
+      "test": "Setup - Validate Strategy Button",
+      "steps": [
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_setup_before.png"
+        },
+        {
+          "status": "success",
+          "action": "click",
+          "selector": "button#sl-validate-btn"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_setup_after.png"
+        },
+        {
+          "status": "success",
+          "action": "check_element",
+          "selector": "#sl-validation-result",
+          "exists": true
+        }
+      ],
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "tab": "Strategy Lab",
+      "test": "Backtest - Date Pickers",
+      "steps": [
+        {
+          "status": "fail",
+          "action": "click",
+          "error": "Element not found: button#backtest-tab"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_backtest.png"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-start-date",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-end-date",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-transaction-cost",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-position-size",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-max-positions",
+          "error": "Expected exists=True, got exists=False"
+        }
+      ],
+      "status": "FAIL",
+      "errors": [
+        "Element not found: button#backtest-tab",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False"
+      ]
+    },
+    {
+      "tab": "Strategy Lab",
+      "test": "Execute - Run Backtest Button",
+      "steps": [
+        {
+          "status": "fail",
+          "action": "click",
+          "error": "Element not found: button#execute-tab"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_execute.png"
+        },
+        {
+          "status": "success",
+          "action": "check_element",
+          "selector": "#sl-run-backtest-btn",
+          "exists": true
+        }
+      ],
+      "status": "FAIL",
+      "errors": [
+        "Element not found: button#execute-tab"
+      ]
+    },
+    {
+      "tab": "Strategy Lab",
+      "test": "Results - Metric Components",
+      "steps": [
+        {
+          "status": "fail",
+          "action": "click",
+          "error": "Element not found: button#results-tab"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_results.png"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-metric-cagr",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-metric-sharpe",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-metric-maxdd",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-metric-winrate",
+          "error": "Expected exists=True, got exists=False"
+        }
+      ],
+      "status": "FAIL",
+      "errors": [
+        "Element not found: button#results-tab",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False"
+      ]
+    },
+    {
+      "tab": "Strategy Lab",
+      "test": "Benchmark - Charts",
+      "steps": [
+        {
+          "status": "fail",
+          "action": "click",
+          "error": "Element not found: button#benchmark-tab"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/strategy_lab_benchmark.png"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-vs-benchmark",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-factor-attribution",
+          "error": "Expected exists=True, got exists=False"
+        },
+        {
+          "status": "fail",
+          "action": "check_element",
+          "selector": "#sl-exposure-breakdown",
+          "error": "Expected exists=True, got exists=False"
+        }
+      ],
+      "status": "FAIL",
+      "errors": [
+        "Element not found: button#benchmark-tab",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False",
+        "Expected exists=True, got exists=False"
+      ]
+    },
+    {
+      "tab": "Home / Command Center",
+      "test": "Run Full Diagnostic Button",
+      "steps": [
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/home_before_diagnostic.png"
+        },
+        {
+          "status": "success",
+          "action": "click",
+          "selector": "button#home-run-diagnostic-btn"
+        },
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/home_after_diagnostic.png"
+        },
+        {
+          "status": "success",
+          "action": "check_element",
+          "selector": "#home-diagnostic-result",
+          "exists": true
+        },
+        {
+          "status": "fail",
+          "action": "check_content",
+          "selector": "#home-diagnostic-result",
+          "error": "Expected has_content=True, got has_content=False"
+        }
+      ],
+      "status": "FAIL",
+      "errors": [
+        "Expected has_content=True, got has_content=False"
+      ]
+    },
+    {
+      "tab": "Azure ML Lab",
+      "test": "Verify Scaffold Mode Banner",
+      "steps": [
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/azure_ml_lab_overview.png"
+        },
+        {
+          "status": "success",
+          "action": "check_element",
+          "selector": "#azure-ml-status-badge",
+          "exists": true
+        },
+        {
+          "status": "success",
+          "action": "check_text",
+          "selector": "#azure-ml-status-badge",
+          "text": "Scaffold Mode"
+        }
+      ],
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "tab": "Options Lab",
+      "test": "Inventory All Buttons",
+      "steps": [
+        {
+          "status": "success",
+          "action": "wait"
+        },
+        {
+          "status": "success",
+          "action": "screenshot",
+          "path": "phase13_e2e_results/screenshots/options_lab_overview.png"
+        },
+        {
+          "status": "success",
+          "action": "count_buttons",
+          "button_count": 155
+        }
+      ],
+      "status": "PASS",
+      "errors": []
+    }
+  ],
+  "console_errors": []
+}

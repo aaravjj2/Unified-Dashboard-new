@@ -1,0 +1,209 @@
+{
+  "timestamp": 1761844069.6347463,
+  "loops": [
+    {
+      "loop_name": "accuracy_validation",
+      "iterations_per_model": 3,
+      "models_tested": {
+        "forecast": {
+          "success_rate": 100.0,
+          "iterations": [
+            {
+              "iteration": 1,
+              "predicted_price": 152.16,
+              "in_range": true,
+              "inference_time_ms": 3.66
+            },
+            {
+              "iteration": 2,
+              "predicted_price": 152.6,
+              "in_range": true,
+              "inference_time_ms": 3.72
+            },
+            {
+              "iteration": 3,
+              "predicted_price": 153.12,
+              "in_range": true,
+              "inference_time_ms": 3.49
+            }
+          ],
+          "passed": true
+        },
+        "clustering": {
+          "success_rate": 100.0,
+          "iterations": [
+            {
+              "iteration": 1,
+              "cluster_id": 4,
+              "cluster_name": "Balanced Portfolio",
+              "valid": true,
+              "inference_time_ms": 1127.39
+            },
+            {
+              "iteration": 2,
+              "cluster_id": 4,
+              "cluster_name": "Balanced Portfolio",
+              "valid": true,
+              "inference_time_ms": 0.32
+            },
+            {
+              "iteration": 3,
+              "cluster_id": 4,
+              "cluster_name": "Balanced Portfolio",
+              "valid": true,
+              "inference_time_ms": 0.35
+            }
+          ],
+          "passed": true
+        },
+        "strategy": {
+          "success_rate": 100.0,
+          "iterations": [
+            {
+              "iteration": 1,
+              "signal": "BUY",
+              "signal_strength": 0.8,
+              "valid": true,
+              "inference_time_ms": 4.05
+            },
+            {
+              "iteration": 2,
+              "signal": "BUY",
+              "signal_strength": 0.8,
+              "valid": true,
+              "inference_time_ms": 4.15
+            },
+            {
+              "iteration": 3,
+              "signal": "BUY",
+              "signal_strength": 0.8,
+              "valid": true,
+              "inference_time_ms": 3.59
+            }
+          ],
+          "passed": true
+        }
+      },
+      "overall_success": true
+    },
+    {
+      "loop_name": "response_time_validation",
+      "iterations_per_model": 3,
+      "max_allowed_time_ms": 2500,
+      "models_tested": {
+        "forecast": {
+          "avg_time_ms": 42.52,
+          "max_time_ms": 49.23,
+          "success_rate": 100.0,
+          "timings": [
+            {
+              "iteration": 1,
+              "total_time_ms": 49.23,
+              "inference_time_ms": 4.03,
+              "passed": true
+            },
+            {
+              "iteration": 2,
+              "total_time_ms": 44.69,
+              "inference_time_ms": 4.11,
+              "passed": true
+            },
+            {
+              "iteration": 3,
+              "total_time_ms": 33.63,
+              "inference_time_ms": 3.57,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        "clustering": {
+          "avg_time_ms": 44.18,
+          "max_time_ms": 56.95,
+          "success_rate": 100.0,
+          "timings": [
+            {
+              "iteration": 1,
+              "total_time_ms": 31.38,
+              "inference_time_ms": 0.28,
+              "passed": true
+            },
+            {
+              "iteration": 2,
+              "total_time_ms": 56.95,
+              "inference_time_ms": 0.34,
+              "passed": true
+            },
+            {
+              "iteration": 3,
+              "total_time_ms": 44.2,
+              "inference_time_ms": 0.27,
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        "strategy": {
+          "avg_time_ms": 48.58,
+          "max_time_ms": 60.76,
+          "success_rate": 100.0,
+          "timings": [
+            {
+              "iteration": 1,
+              "total_time_ms": 60.76,
+              "inference_time_ms": 3.37,
+              "passed": true
+            },
+            {
+              "iteration": 2,
+              "total_time_ms": 38.5,
+              "inference_time_ms": 3.74,
+              "passed": true
+            },
+            {
+              "iteration": 3,
+              "total_time_ms": 46.48,
+              "inference_time_ms": 3.36,
+              "passed": true
+            }
+          ],
+          "passed": true
+        }
+      },
+      "overall_success": true
+    },
+    {
+      "loop_name": "ui_integration_validation",
+      "checks": [
+        {
+          "check": "telemetry_database",
+          "total_predictions": 40,
+          "success_rate": 97.5,
+          "passed": true
+        },
+        {
+          "check": "models_loaded",
+          "initialized": true,
+          "models_count": 3,
+          "passed": true
+        },
+        {
+          "check": "model_files",
+          "files_checked": [
+            "forecast_model.pkl",
+            "forecast_scaler.pkl",
+            "clustering_model.pkl",
+            "clustering_scaler.pkl",
+            "strategy_model.pkl",
+            "strategy_scaler.pkl"
+          ],
+          "all_exist": true,
+          "passed": true
+        }
+      ],
+      "overall_success": true
+    }
+  ],
+  "final_status": "SUCCESS",
+  "all_loops_passed": true
+}

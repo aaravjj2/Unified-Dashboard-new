@@ -1,0 +1,20 @@
+{
+  "forecast_id": "test-forecast-001",
+  "shap_values": [
+    {"feature": "price_momentum", "importance": 0.325},
+    {"feature": "volume_trend", "importance": 0.215},
+    {"feature": "rsi_14", "importance": 0.185},
+    {"feature": "macd_signal", "importance": 0.145},
+    {"feature": "bollinger_position", "importance": 0.095},
+    {"feature": "sentiment_score", "importance": 0.035}
+  ],
+  "base_value": 150.0,
+  "features": {
+    "price_momentum": 0.025,
+    "volume_trend": 1.15,
+    "rsi_14": 58.3,
+    "macd_signal": 0.42,
+    "bollinger_position": 0.65,
+    "sentiment_score": 0.72
+  }
+}

@@ -1,0 +1,87 @@
+================================================================================
+CALLBACK REGISTRATION TRACE ANALYSIS
+================================================================================
+Total registrations: 78
+Unique registrations: 68
+Duplicate registrations: 10
+
+================================================================================
+DUPLICATES BY OUTPUT ID:
+================================================================================
+
+trends-results-store.data: 3 duplicates
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+
+news-container.children: 2 duplicates
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+
+rl-alert.children: 2 duplicates
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+
+rl-alert.color: 2 duplicates
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+
+rl-alert.is_open: 2 duplicates
+  - callback_guards.py:46 in decorator()
+  - callback_guards.py:46 in decorator()
+
+backtest-modal.style: 1 duplicates
+  - callback_guards.py:46 in decorator()
+
+debug-logs-modal.style: 1 duplicates
+  - callback_guards.py:46 in decorator()
+
+mp-content.children: 1 duplicates
+  - callback_guards.py:46 in decorator()
+
+================================================================================
+DUPLICATES BY MODULE:
+================================================================================
+callback_guards: 10
+
+================================================================================
+DETAILED DUPLICATE PATTERNS:
+================================================================================
+
+🔴 trends-results-store.data - 3 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+  ❌ Duplicate 2: callback_guards.py:46 in decorator()
+  ❌ Duplicate 3: callback_guards.py:46 in decorator()
+
+🔴 news-container.children - 2 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+  ❌ Duplicate 2: callback_guards.py:46 in decorator()
+
+🔴 rl-alert.children - 2 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+  ❌ Duplicate 2: callback_guards.py:46 in decorator()
+
+🔴 rl-alert.color - 2 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+  ❌ Duplicate 2: callback_guards.py:46 in decorator()
+
+🔴 rl-alert.is_open - 2 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+  ❌ Duplicate 2: callback_guards.py:46 in decorator()
+
+🔴 backtest-modal.style - 1 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+
+🔴 debug-logs-modal.style - 1 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()
+
+🔴 mp-content.children - 1 duplicate registrations:
+  ✅ First registered: callback_guards.py:46 in decorator()
+  ❌ Duplicate 1: callback_guards.py:46 in decorator()

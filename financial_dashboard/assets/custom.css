@@ -1,0 +1,17 @@
+/* Custom Dashboard Styles - Phase 12 Fix */
+/* This file resolves 404 errors in console */
+
+/* Chatbot FAB visibility fix - ensure FAB is clickable above all other elements */
+#chatbot-fab {
+    z-index: 99999 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure chatbot window is also above everything */
+#chatbot-window, #chatbot-container {
+    z-index: 9999 !important;
+}
+
+/* Placeholder for future custom styles */

@@ -1,0 +1,10 @@
+* 425cd66 (HEAD -> rebuild/market_trends_1763742978) chat_agent: PHASE 5 - register chat API in Flask app
+* e6558ae chat_agent: PHASE 4 - action executor with validation and audit logging
+* 3afd970 chat_agent: PHASE 3 - RAG orchestration with retrieval and provenance
+* abef76f chat_agent: PHASE 2 - ingestion pipeline with chunker, embedder, FAISS index
+* 3e90b55 chat_agent: PHASE 1 - local generator API with health endpoint
+* 5b72ce7 chat_agent: force black text color for chat widget readability
+* 297a413 chat_agent: CSS text-color fix - force black text in chat UI
+* 26548f4 Add Market Trends rebuild completion report
+* 8c8be17 Market Trends Rebuild: Apply all P0 fixes
+* e4c1e2e market_trends: Add production-grade Playwright harness + validation artifacts

@@ -1,0 +1,40 @@
+{
+    "server_responding": true,
+    "callbacks_registered": {},
+    "callbacks_fired": {
+        "market_trends_tab": true,
+        "market_trends_table_render": true,
+        "market_trends_data_complete": false,
+        "weekly_picks_tab": true,
+        "weekly_picks_render": true,
+        "monthly_picks_tab": true,
+        "monthly_picks_render": true
+    },
+    "console_errors": [],
+    "network_errors": [
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        },
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        },
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        },
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        },
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        },
+        {
+            "url": "http://localhost:8050/_dash-update-component",
+            "failure": "net::ERR_ABORTED"
+        }
+    ]
+}

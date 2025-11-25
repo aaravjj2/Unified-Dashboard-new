@@ -1,0 +1,131 @@
+================================================================================
+PHASE 20B - CHROMIUM PLAYWRIGHT E2E TEST
+================================================================================
+
+🚀 Launching Chromium browser...
+
+[1/7] Loading Azure ML Lab page...
+✅ Page loaded - Screenshot: 01_initial_load.png
+
+[2/7] Triggering ML prediction...
+❌ Prediction error: Locator.scroll_into_view_if_needed: Timeout 29972ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    54 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[3/7] Testing Predictions Tab...
+❌ Predictions tab error: Locator.scroll_into_view_if_needed: Timeout 29982ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    55 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[4/7] Testing Performance Tab...
+❌ Performance tab error: Locator.scroll_into_view_if_needed: Timeout 29972ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    54 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[5/7] Testing Feature Importance Tab...
+❌ Feature Importance error: Locator.scroll_into_view_if_needed: Timeout 29981ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    54 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[6/7] Testing Risk Analysis Tab...
+❌ Risk Analysis error: Locator.scroll_into_view_if_needed: Timeout 29975ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    53 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[7/7] Testing Model Insights Tab...
+❌ Model Insights error: Locator.scroll_into_view_if_needed: Timeout 29960ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - waiting 20ms
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+      - waiting 100ms
+    53 × waiting for element to be stable
+       - element is not visible
+     - retrying scroll into view action
+       - waiting 500ms
+
+
+[8/8] Capturing final state...
+✅ Screenshot: 08_final_state.png
+
+================================================================================
+CHROMIUM PLAYWRIGHT TEST SUMMARY
+================================================================================
+✅ Passed: 2
+❌ Failed: 6
+⏭️  Skipped: 0
+
+📸 Screenshots saved to: phase20b_snapshots/
+================================================================================
+
+❌ FAILURE: Some tests failed

@@ -1,0 +1,228 @@
+{
+  "pick_type": "weekly",
+  "generated_at": "2025-11-21T07:03:07.831109+00:00",
+  "deterministic": true,
+  "count": 20,
+  "data": [
+    {
+      "Ticker": "AAPL",
+      "Company": "AAPL Inc.",
+      "Rank": 1,
+      "Score": 100,
+      "Sector": "Technology",
+      "MarketCap": "$500B",
+      "Recommendation": "BUY",
+      "TargetPrice": 150.0,
+      "generated_at": "2025-11-21T07:03:07.831057+00:00"
+    },
+    {
+      "Ticker": "MSFT",
+      "Company": "MSFT Inc.",
+      "Rank": 2,
+      "Score": 98,
+      "Sector": "Consumer",
+      "MarketCap": "$490B",
+      "Recommendation": "BUY",
+      "TargetPrice": 155.0,
+      "generated_at": "2025-11-21T07:03:07.831075+00:00"
+    },
+    {
+      "Ticker": "GOOGL",
+      "Company": "GOOGL Inc.",
+      "Rank": 3,
+      "Score": 96,
+      "Sector": "Finance",
+      "MarketCap": "$480B",
+      "Recommendation": "BUY",
+      "TargetPrice": 160.0,
+      "generated_at": "2025-11-21T07:03:07.831077+00:00"
+    },
+    {
+      "Ticker": "AMZN",
+      "Company": "AMZN Inc.",
+      "Rank": 4,
+      "Score": 94,
+      "Sector": "Technology",
+      "MarketCap": "$470B",
+      "Recommendation": "BUY",
+      "TargetPrice": 165.0,
+      "generated_at": "2025-11-21T07:03:07.831079+00:00"
+    },
+    {
+      "Ticker": "META",
+      "Company": "META Inc.",
+      "Rank": 5,
+      "Score": 92,
+      "Sector": "Consumer",
+      "MarketCap": "$460B",
+      "Recommendation": "BUY",
+      "TargetPrice": 170.0,
+      "generated_at": "2025-11-21T07:03:07.831080+00:00"
+    },
+    {
+      "Ticker": "TSLA",
+      "Company": "TSLA Inc.",
+      "Rank": 6,
+      "Score": 90,
+      "Sector": "Finance",
+      "MarketCap": "$450B",
+      "Recommendation": "BUY",
+      "TargetPrice": 175.0,
+      "generated_at": "2025-11-21T07:03:07.831084+00:00"
+    },
+    {
+      "Ticker": "NVDA",
+      "Company": "NVDA Inc.",
+      "Rank": 7,
+      "Score": 88,
+      "Sector": "Technology",
+      "MarketCap": "$440B",
+      "Recommendation": "BUY",
+      "TargetPrice": 180.0,
+      "generated_at": "2025-11-21T07:03:07.831085+00:00"
+    },
+    {
+      "Ticker": "AMD",
+      "Company": "AMD Inc.",
+      "Rank": 8,
+      "Score": 86,
+      "Sector": "Consumer",
+      "MarketCap": "$430B",
+      "Recommendation": "BUY",
+      "TargetPrice": 185.0,
+      "generated_at": "2025-11-21T07:03:07.831087+00:00"
+    },
+    {
+      "Ticker": "NFLX",
+      "Company": "NFLX Inc.",
+      "Rank": 9,
+      "Score": 84,
+      "Sector": "Finance",
+      "MarketCap": "$420B",
+      "Recommendation": "BUY",
+      "TargetPrice": 190.0,
+      "generated_at": "2025-11-21T07:03:07.831088+00:00"
+    },
+    {
+      "Ticker": "DIS",
+      "Company": "DIS Inc.",
+      "Rank": 10,
+      "Score": 82,
+      "Sector": "Technology",
+      "MarketCap": "$410B",
+      "Recommendation": "BUY",
+      "TargetPrice": 195.0,
+      "generated_at": "2025-11-21T07:03:07.831091+00:00"
+    },
+    {
+      "Ticker": "V",
+      "Company": "V Inc.",
+      "Rank": 11,
+      "Score": 80,
+      "Sector": "Consumer",
+      "MarketCap": "$400B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 200.0,
+      "generated_at": "2025-11-21T07:03:07.831093+00:00"
+    },
+    {
+      "Ticker": "MA",
+      "Company": "MA Inc.",
+      "Rank": 12,
+      "Score": 78,
+      "Sector": "Finance",
+      "MarketCap": "$390B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 205.0,
+      "generated_at": "2025-11-21T07:03:07.831094+00:00"
+    },
+    {
+      "Ticker": "JPM",
+      "Company": "JPM Inc.",
+      "Rank": 13,
+      "Score": 76,
+      "Sector": "Technology",
+      "MarketCap": "$380B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 210.0,
+      "generated_at": "2025-11-21T07:03:07.831096+00:00"
+    },
+    {
+      "Ticker": "BAC",
+      "Company": "BAC Inc.",
+      "Rank": 14,
+      "Score": 74,
+      "Sector": "Consumer",
+      "MarketCap": "$370B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 215.0,
+      "generated_at": "2025-11-21T07:03:07.831098+00:00"
+    },
+    {
+      "Ticker": "WMT",
+      "Company": "WMT Inc.",
+      "Rank": 15,
+      "Score": 72,
+      "Sector": "Finance",
+      "MarketCap": "$360B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 220.0,
+      "generated_at": "2025-11-21T07:03:07.831099+00:00"
+    },
+    {
+      "Ticker": "COST",
+      "Company": "COST Inc.",
+      "Rank": 16,
+      "Score": 70,
+      "Sector": "Technology",
+      "MarketCap": "$350B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 225.0,
+      "generated_at": "2025-11-21T07:03:07.831101+00:00"
+    },
+    {
+      "Ticker": "HD",
+      "Company": "HD Inc.",
+      "Rank": 17,
+      "Score": 68,
+      "Sector": "Consumer",
+      "MarketCap": "$340B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 230.0,
+      "generated_at": "2025-11-21T07:03:07.831102+00:00"
+    },
+    {
+      "Ticker": "NKE",
+      "Company": "NKE Inc.",
+      "Rank": 18,
+      "Score": 66,
+      "Sector": "Finance",
+      "MarketCap": "$330B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 235.0,
+      "generated_at": "2025-11-21T07:03:07.831104+00:00"
+    },
+    {
+      "Ticker": "PEP",
+      "Company": "PEP Inc.",
+      "Rank": 19,
+      "Score": 64,
+      "Sector": "Technology",
+      "MarketCap": "$320B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 240.0,
+      "generated_at": "2025-11-21T07:03:07.831105+00:00"
+    },
+    {
+      "Ticker": "KO",
+      "Company": "KO Inc.",
+      "Rank": 20,
+      "Score": 62,
+      "Sector": "Consumer",
+      "MarketCap": "$310B",
+      "Recommendation": "HOLD",
+      "TargetPrice": 245.0,
+      "generated_at": "2025-11-21T07:03:07.831107+00:00"
+    }
+  ]
+}

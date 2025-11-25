@@ -1,0 +1,20 @@
+diff --git a/financial_dashboard/app.py b/financial_dashboard/app.py
+index fcc811a..3b13142 100644
+--- a/financial_dashboard/app.py
++++ b/financial_dashboard/app.py
+@@ -298,6 +298,15 @@ def create_app():
+         register_picks_api_routes(server)
+         logger.info("✅ Registered Picks API routes: /api/weekly_picks, /api/monthly_picks, /api/picks/reload, /api/picks/health")
+     except Exception as e:
++        logger.warning(f"Could not register Picks API: {e}")
++    
++    # Register Chat API Blueprint (RAG Chat Assistant)
++    try:
++        from financial_dashboard.api.chat import register_chat_api
++        register_chat_api(server)
++        logger.info("✅ Registered Chat API: /api/chat/*")
++    except Exception as e:
++        logger.warning(f"Could not register Chat API: {e}")
+         logger.warning(f"Could not register Picks API routes: {e}")
+     # ========================================================================
+     # STEP 3: Create Dash Application

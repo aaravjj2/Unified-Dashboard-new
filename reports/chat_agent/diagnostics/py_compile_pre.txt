@@ -1,0 +1,3 @@
+usage: py_compile.py [-h] [-q] filenames [filenames ...]
+py_compile.py: error: the following arguments are required: filenames
+Exit code: 0

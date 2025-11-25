@@ -1,0 +1,40 @@
+diff --git a/financial_dashboard/dashboard_clean_fixed.py b/financial_dashboard/dashboard_clean_fixed.py
+index 28f69bc..6432d8c 100644
+--- a/financial_dashboard/dashboard_clean_fixed.py
++++ b/financial_dashboard/dashboard_clean_fixed.py
+@@ -57,7 +57,6 @@ def create_clean_layout():
+                         dbc.NavItem(dbc.NavLink("Research Lab", href="#", id="nav-research")),
+                         dbc.NavItem(dbc.NavLink("Attribution Lab", href="#", id="nav-attribution")),
+                         dbc.NavItem(dbc.NavLink("Strategy Lab", href="#", id="nav-strategy")),
+-                        dbc.NavItem(dbc.NavLink("Azure ML Lab", href="#", id="nav-azure-ml")),
+                         dbc.NavItem(dbc.NavLink("Weekly Picks", href="#", id="nav-weekly")),
+                         dbc.NavItem(dbc.NavLink("Monthly Picks", href="#", id="nav-monthly")),
+                         dbc.NavItem(dbc.NavLink("Market Trends", href="#", id="nav-market-trends")),
+@@ -572,7 +571,6 @@ app.layout = create_clean_layout()
+      Input("nav-research", "n_clicks"),
+      Input("nav-attribution", "n_clicks"),
+      Input("nav-strategy", "n_clicks"),
+-     Input("nav-azure-ml", "n_clicks"),
+      Input("nav-weekly", "n_clicks"),
+      Input("nav-monthly", "n_clicks"),
+      Input("nav-market-trends", "n_clicks"),
+@@ -581,8 +579,8 @@ app.layout = create_clean_layout()
+      Input("nav-portfolio", "n_clicks")],
+     prevent_initial_call=True
+ )
+-def update_content(home_clicks, research_clicks, attribution_clicks, strategy_clicks, 
+-                  azure_ml_clicks, weekly_clicks, monthly_clicks, market_trends_clicks,
++def update_content(home_clicks, research_clicks, attribution_clicks, strategy_clicks,
++                  weekly_clicks, monthly_clicks, market_trends_clicks,
+                   market_forecast_clicks, volatility_clicks, portfolio_clicks):
+     ctx = dash.callback_context
+     
+@@ -599,8 +597,6 @@ def update_content(home_clicks, research_clicks, attribution_clicks, strategy_cl
+         return create_attribution_lab_content()
+     elif button_id == "nav-strategy":
+         return create_strategy_lab_content()
+-    elif button_id == "nav-azure-ml":
+-        return create_azure_ml_lab_content()
+     elif button_id == "nav-weekly":
+         return create_weekly_picks_content()
+     elif button_id == "nav-monthly":

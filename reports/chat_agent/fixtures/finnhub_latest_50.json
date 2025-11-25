@@ -1,0 +1,29 @@
+[
+  {
+    "headline": "Apple Reports Q4 Earnings Beat, Revenue Up 8% YoY",
+    "source": "Reuters",
+    "published_at": "2024-11-21T16:30:00Z",
+    "summary": "Apple Inc reported better-than-expected fourth-quarter earnings with revenue reaching $89.5 billion, up 8% year-over-year. iPhone sales remained strong despite macroeconomic headwinds. Services revenue hit a record $22.3 billion. The company announced a $0.24 per share dividend and authorized a new $90 billion share buyback program.",
+    "ticker": "AAPL",
+    "sentiment": "positive",
+    "url": "https://example.com/aapl-earnings-q4"
+  },
+  {
+    "headline": "Tech Sector Volatility Expected Ahead of Fed Meeting",
+    "source": "Bloomberg",
+    "published_at": "2024-11-22T08:00:00Z",
+    "summary": "Options traders are positioning for increased volatility in technology stocks ahead of next week's Federal Reserve policy meeting. Implied volatility for QQQ has risen to 22%, up from 18% last week. Analysts expect the Fed to maintain current rates but provide guidance on 2025 policy. Large tech names including AAPL, MSFT, and NVDA show elevated put activity.",
+    "ticker": "SPY",
+    "sentiment": "neutral",
+    "url": "https://example.com/tech-vol-fed"
+  },
+  {
+    "headline": "Microsoft Azure Cloud Revenue Accelerates to 29% Growth",
+    "source": "CNBC",
+    "published_at": "2024-11-20T17:00:00Z",
+    "summary": "Microsoft's Azure cloud platform posted 29% revenue growth in the latest quarter, exceeding analyst expectations of 26%. The company's AI services integration is driving enterprise adoption. CEO Satya Nadella highlighted Azure's position in the AI infrastructure race. Commercial cloud revenue reached $31.8 billion, representing 55% of total revenue.",
+    "ticker": "MSFT",
+    "sentiment": "positive",
+    "url": "https://example.com/msft-azure-growth"
+  }
+]

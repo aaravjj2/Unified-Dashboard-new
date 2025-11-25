@@ -1,0 +1,17 @@
+
+tests/test_research_lab_filters.py::test_nan_pe_beta_pass 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+ERROR    utils.load_env:load_env.py:157 ❌ Missing required API keys: ['NEWSAPI_KEY']
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.tabs.research_lab.data_loader:data_loader.py:333 📊 Filtered: 3 / 3 tickers passed
+PASSED                                                                   [ 50%]
+tests/test_research_lab_filters.py::test_pe_filter_excludes 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.tabs.research_lab.data_loader:data_loader.py:333 📊 Filtered: 2 / 3 tickers passed
+PASSED                                                                   [100%]
+
+============================== 2 passed in 7.64s ===============================
+pytest_exit:0

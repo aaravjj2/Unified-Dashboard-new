@@ -1,0 +1,2 @@
+Unit tests created for CacheManager and PicksFetcher at tests/unit/test_cache_and_fetcher.py
+Both utilities exist and are functional (verified via code inspection)

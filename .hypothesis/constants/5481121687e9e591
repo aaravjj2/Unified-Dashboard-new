@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/financial_dashboard/utils/cache_manager.py
+# hypothesis_version: 6.148.2
+
+[300, '%Y-%m-%d %H:%M:%S', '+00:00', '.tmp', 'Z', '_cache_metadata', 'age_seconds', 'detailed', 'file_exists', 'generated_at', 'is_fresh', 'loaded_at', 'memory_cache_present', 'path', 'r', 'record_count', 'results', 'timestamp', 'ttl_seconds', 'utf-8', 'w']

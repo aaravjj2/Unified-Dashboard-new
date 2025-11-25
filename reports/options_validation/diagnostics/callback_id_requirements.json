@@ -1,0 +1,102 @@
+{
+  "total_callback_ids": 41,
+  "all_ids_alphabetical": [
+    "chain-download",
+    "chain-expiration-dropdown",
+    "chain-export-btn",
+    "chain-moneyness-radio",
+    "chain-pcr",
+    "chain-spot-price",
+    "chain-table-container",
+    "chain-total-oi",
+    "chain-total-volume",
+    "chain-type-radio",
+    "contract-expiration-selector",
+    "contract-option-type",
+    "contract-strike-selector",
+    "contract-ticker-selector",
+    "greeks-delta-chart",
+    "greeks-gamma-chart",
+    "greeks-iv-smile",
+    "greeks-theta-chart",
+    "greeks-vega-chart",
+    "options-chain-store",
+    "options-forecast-btn",
+    "options-forecast-results",
+    "options-load-btn",
+    "options-mock-btn",
+    "options-status-message",
+    "options-surface-store",
+    "options-ticker-input",
+    "sim-breakeven",
+    "sim-calculate-btn",
+    "sim-max-loss",
+    "sim-max-profit",
+    "sim-pnl-chart",
+    "sim-quantity-input",
+    "sim-strategy-dropdown",
+    "surface-angle-slider",
+    "surface-colorscale-dropdown",
+    "tradingview-fetch-btn",
+    "tradingview-interval",
+    "tradingview-preview",
+    "tradingview-signals-container",
+    "vol-surface-3d"
+  ],
+  "categorized_by_subtab": {
+    "global_controls": [
+      "options-chain-store",
+      "options-forecast-btn",
+      "options-forecast-results",
+      "options-load-btn",
+      "options-mock-btn",
+      "options-status-message",
+      "options-surface-store",
+      "options-ticker-input"
+    ],
+    "chain_viewer": [
+      "chain-download",
+      "chain-expiration-dropdown",
+      "chain-export-btn",
+      "chain-moneyness-radio",
+      "chain-pcr",
+      "chain-spot-price",
+      "chain-table-container",
+      "chain-total-oi",
+      "chain-total-volume",
+      "chain-type-radio"
+    ],
+    "greeks": [
+      "greeks-delta-chart",
+      "greeks-gamma-chart",
+      "greeks-iv-smile",
+      "greeks-theta-chart",
+      "greeks-vega-chart"
+    ],
+    "vol_surface": [
+      "surface-angle-slider",
+      "surface-colorscale-dropdown",
+      "vol-surface-3d"
+    ],
+    "trade_sim": [
+      "sim-breakeven",
+      "sim-calculate-btn",
+      "sim-max-loss",
+      "sim-max-profit",
+      "sim-pnl-chart",
+      "sim-quantity-input",
+      "sim-strategy-dropdown"
+    ],
+    "other": [
+      "contract-expiration-selector",
+      "contract-option-type",
+      "contract-strike-selector",
+      "contract-ticker-selector",
+      "tradingview-fetch-btn",
+      "tradingview-interval",
+      "tradingview-preview",
+      "tradingview-signals-container"
+    ]
+  },
+  "constraint_note": "Cannot edit callbacks.py - layout MUST use these exact IDs"
+}

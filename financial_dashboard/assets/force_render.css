@@ -1,0 +1,46 @@
+
+/* Force Tab Visibility - Override any hiding CSS */
+.nav-tabs, .nav-pills, [role="tablist"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.nav-link, [role="tab"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.tab-content, [role="tabpanel"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure dashboard container is visible */
+#react-entry-point {
+    min-height: 100vh !important;
+}
+
+/* Hide loading spinner after 10 seconds */
+._dash-loading {
+    animation: fadeOut 10s forwards;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
+/* Force Bootstrap components to render */
+.container, .row, .col {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.dbc-tab, .dbc-tabs {
+    display: block !important;
+    visibility: visible !important;
+}

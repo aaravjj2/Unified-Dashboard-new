@@ -1,0 +1,25 @@
+# Optional heavy dependencies for embeddings and full training
+# Install into your venv only if you plan to run full embedding/training flows.
+
+# Time-series embedding
+ts2vec==0.1
+
+# PyTorch (CPU) - pick the stable CPU wheel for your Python version if you need GPU replace with appropriate CUDA build
+torch==2.2.0+cpu
+torchvision==0.15.2+cpu
+torchaudio==2.2.2+cpu
+
+# PyTorch Geometric - install matching extras from their guide if needed; this line is a placeholder
+torch-geometric
+
+# Parquet I/O
+pyarrow>=10.0.0
+fastparquet>=0.8.1
+
+# Optional utilities
+scikit-learn>=1.0
+
+# NGBoost heavy deps
+ngboost>=0.3.12
+
+# Note: Installers may need platform-specific wheels for torch and torch-geometric; see README for guidance.

@@ -1,0 +1,4 @@
+{
+  "app_import_err": "No module named 'app'",
+  "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\n  File \"/usr/lib/python3.10/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"<frozen importlib._bootstrap>\", line 1050, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1027, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1004, in _find_and_load_unlocked\nModuleNotFoundError: No module named 'app'\n"
+}

@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/financial_dashboard/utils/load_env.py
+# hypothesis_version: 6.148.2
+
+['\n📊 Provider Status:', '"', '#', "'", '--format', '.env', '=', 'ALPACA_API_KEY', 'ALPACA_SECRET', 'APCA_API_KEY_ID', 'APCA_API_SECRET_KEY', 'Alpaca', 'CHANGEME', 'FINNHUB2_API_KEY', 'FINNHUB_API_KEY', 'FINNHUB_API_KEY_2', 'FINNHUB_KEY', 'FRED', 'FRED_API_KEY', 'Finnhub', 'NEWSAPI_KEY', 'NEWS_API_KEY', 'NewsAPI', 'POLYGON_API_KEY', 'Polygon', 'QUANDL_API_KEY', 'Quandl', 'TIINGO_API_KEY', 'Tiingo', '__main__', 'doppler', 'doppler.env', 'download', 'env', 'keys.env', 'missing', 'missing_keys', 'present', 'present_keys', 'providers', 'secrets', 'sources', 'valid', 'your_key_here', '✅', '❌', '❌ SOME KEYS MISSING']

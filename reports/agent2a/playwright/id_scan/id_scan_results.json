@@ -1,0 +1,85 @@
+[
+  {
+    "error": "failed to load base page: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8029/\n=========================== logs ===========================\nnavigating to \"http://127.0.0.1:8029/\", waiting until \"domcontentloaded\"\n============================================================"
+  },
+  {
+    "id": "market-trends-table",
+    "tab": "market_trends",
+    "found": false
+  },
+  {
+    "id": "mt-download-btn",
+    "tab": "market_trends",
+    "found": false
+  },
+  {
+    "id": "news-container",
+    "tab": "market_trends",
+    "found": false
+  },
+  {
+    "id": "tickers-input",
+    "tab": "market_trends",
+    "found": false
+  },
+  {
+    "id": "vl-tabs",
+    "tab": "volatility_lab",
+    "found": false
+  },
+  {
+    "id": "vl-results-table",
+    "tab": "volatility_lab",
+    "found": false
+  },
+  {
+    "id": "vl-tickers-input",
+    "tab": "volatility_lab",
+    "found": false
+  },
+  {
+    "id": "portfolio-positions-table",
+    "tab": "portfolio",
+    "found": false
+  },
+  {
+    "id": "portfolio-refresh-btn",
+    "tab": "portfolio",
+    "found": false
+  },
+  {
+    "id": "portfolio-data-store",
+    "tab": "portfolio",
+    "found": false
+  },
+  {
+    "id": "mf-ticker-input",
+    "tab": "market_forecast",
+    "found": false
+  },
+  {
+    "id": "mf-generate-btn",
+    "tab": "market_forecast",
+    "found": false
+  },
+  {
+    "id": "mf-forecast-store",
+    "tab": "market_forecast",
+    "found": false
+  },
+  {
+    "id": "rl-brief-list",
+    "tab": "research_lab",
+    "found": false
+  },
+  {
+    "id": "rl-briefs-store",
+    "tab": "research_lab",
+    "found": false
+  },
+  {
+    "id": "rl-load-demo-btn",
+    "tab": "research_lab",
+    "found": false
+  }
+]

@@ -1,0 +1,511 @@
+{
+  "total_errors": 1169,
+  "total_warnings": 0,
+  "total_network_errors": 0,
+  "console_errors": [
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.403694"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.403867"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.404656"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.404973"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.405246"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.405490"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.405945"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.406155"
+    },
+    {
+      "type": "error",
+      "text": "{message: Overlapping wildcard callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026h-price\"}.children)\nused in a different callback.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.406301"
+    },
+    {
+      "type": "error",
+      "text": "{message: Overlapping wildcard callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026-change\"}.children)\nused in a different callback.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.406940"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.407198"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.407413"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.407601"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.407796"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.407961"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.408104"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.408408"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  watchlist-items-c\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.408757"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.409376"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.410004"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.410359"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.410904"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.411568"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.411939"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.412261"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.412978"
+    },
+    {
+      "type": "error",
+      "text": "{message: Overlapping wildcard callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026h-price\"}.children)\nused in a different callback.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.413295"
+    },
+    {
+      "type": "error",
+      "text": "{message: Overlapping wildcard callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026-change\"}.children)\nused in a different callback.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.413874"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.414290"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.414766"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.415197"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.415372"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.417243"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.417458"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-action-resul\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.417768"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  watchlist-items-c\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.418143"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.418476"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.418714"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420333"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420527"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420626"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-forecast-store\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420723"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mf-store-debug.ch\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420805"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.420905"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  home-portfolio-va\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421035"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421173"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421387"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421519"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421698"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  market-sp500-valu\u2026er\nby using `dash.callback_context` if necessary.}",
+      "location": {
+        "url": "http://localhost:8051/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js",
+        "lineNumber": 1,
+        "columnNumber": 98648
+      },
+      "timestamp": "2025-11-19T14:41:57.421885"
+    }
+  ],
+  "console_warnings": [],
+  "network_errors": [],
+  "error_details": [],
+  "timestamp": "2025-11-19T14:42:28.633445"
+}

@@ -1,0 +1,58 @@
+================================================================================
+RESEARCH LAB CONTENT VERIFICATION TEST
+================================================================================
+
+Total tabs found: 5
+
+--- Tab 1: Market Scan ---
+Components: 9
+Text length: 21 chars
+Has dropdowns: False
+Has tables: False
+Has cards: False
+Status: ❌ EMPTY
+
+--- Tab 2: Factor Analysis ---
+Components: 58
+Text length: 356 chars
+Has dropdowns: False
+Has tables: False
+Has cards: False
+Status: ✅ HAS CONTENT
+
+--- Tab 3: Correlation Explorer ---
+Components: 78
+Text length: 378 chars
+Has dropdowns: False
+Has tables: False
+Has cards: False
+Status: ✅ HAS CONTENT
+
+--- Tab 4: Strategy Backtest ---
+Components: 53
+Text length: 316 chars
+Has dropdowns: False
+Has tables: False
+Has cards: False
+Status: ✅ HAS CONTENT
+
+--- Tab 5: Research Notes ---
+Components: 31
+Text length: 118 chars
+Has dropdowns: False
+Has tables: False
+Has cards: False
+Status: ✅ HAS CONTENT
+
+================================================================================
+SUMMARY
+================================================================================
+Market Scan               ❌ EMPTY
+Factor Analysis           ✅ HAS CONTENT
+Correlation Explorer      ✅ HAS CONTENT
+Strategy Backtest         ✅ HAS CONTENT
+Research Notes            ✅ HAS CONTENT
+
+================================================================================
+❌ SOME TABS ARE EMPTY
+================================================================================

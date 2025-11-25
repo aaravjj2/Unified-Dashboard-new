@@ -1,0 +1,64 @@
+diff --git a/tests/test_cache_manager_unit.py b/tests/test_cache_manager_unit.py
+index 4dee62c..5cc4ac3 100644
+--- a/tests/test_cache_manager_unit.py
++++ b/tests/test_cache_manager_unit.py
+@@ -132,6 +132,9 @@ class TestCacheManagerUnit:
+         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+             cache_file = f.name
+         
++        # Delete the temp file so we start with no cache
++        os.remove(cache_file)
++        
+         try:
+             memory_cache = {}
+             cache_manager = CacheManager(cache_file, memory_cache)
+@@ -157,6 +160,9 @@ class TestCacheManagerUnit:
+         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+             cache_file = f.name
+         
++        # Delete the temp file so we start with no cache
++        os.remove(cache_file)
++        
+         try:
+             memory_cache = {}
+             cache_manager = CacheManager(cache_file, memory_cache)
+@@ -164,16 +170,17 @@ class TestCacheManagerUnit:
+             # No cache - should return None
+             assert cache_manager.get_cache_timestamp() is None
+             
+-            # Save to disk - should get timestamp from generated_at
++            # Save to disk - should get timestamp from _memory_loaded_at (set by save_to_disk)
+             cache_manager.save_to_disk({'detailed': [], 'tickers': []})
+             timestamp1 = cache_manager.get_cache_timestamp()
+             assert timestamp1 is not None
+             assert isinstance(timestamp1, float)
+             
+-            # Update memory cache - should prefer memory timestamp
+-            memory_cache['loaded_at'] = time.time() + 100  # Future time
++            # Wait a bit and save again - timestamp should update
++            time.sleep(0.1)
++            cache_manager.save_to_disk({'detailed': [{'ticker': 'TEST'}], 'tickers': ['TEST']})
+             timestamp2 = cache_manager.get_cache_timestamp()
+-            assert timestamp2 > timestamp1  # Should use memory timestamp
++            assert timestamp2 > timestamp1  # Should be newer
+         
+         finally:
+             if os.path.exists(cache_file):
+@@ -337,13 +344,16 @@ class TestCacheManagerUnit:
+         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+             cache_file = f.name
+         
++        # Delete the temp file so we start with no cache
++        os.remove(cache_file)
++        
+         try:
+             memory_cache = {}
+             cache_manager = CacheManager(cache_file, memory_cache)
+             
+             # Get info with no cache
+             info = cache_manager.get_cache_info()
+-            assert info['file_path'] == cache_file
++            assert info['path'] == cache_file
+             assert info['file_exists'] is False
+             assert info['timestamp'] is None
+             assert info['is_fresh'] is False

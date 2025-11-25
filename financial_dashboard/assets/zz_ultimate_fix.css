@@ -1,0 +1,23 @@
+/* POINTER-EVENTS ONLY FIX */
+/* Re-enable pointer events (was blocked by Dash internals) - DO NOT override display properties */
+
+/* Container styling */
+#trends-results-table-container {
+  max-height: 600px !important;
+  overflow: auto !important;
+}
+
+/* CRITICAL: Re-enable pointer events ONLY */
+/* DO NOT set display properties - they break DataTable's virtualization */
+.cell-table,
+.cell-table tbody,
+.cell-table tr,
+.cell-table td,
+.cell-table th,
+div[role="grid"],
+div[role="grid"] *,
+.dash-spreadsheet-container,
+.dash-table-container,
+.dash-table-container * {
+  pointer-events: auto !important;
+}

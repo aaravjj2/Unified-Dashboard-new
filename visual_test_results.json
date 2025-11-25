@@ -1,0 +1,90 @@
+{
+  "timestamp": "2025-10-31T20:02:07.504008",
+  "screenshots": [
+    {
+      "name": "01_home",
+      "description": "Dashboard Home Page",
+      "filename": "screenshots/01_home.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:37.283118"
+    },
+    {
+      "name": "02_options_lab",
+      "description": "Options Lab Main View",
+      "filename": "screenshots/02_options_lab.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:39.683198"
+    },
+    {
+      "name": "03_options_lab_contract_selector",
+      "description": "Options Lab Contract Selector",
+      "filename": "screenshots/03_options_lab_contract_selector.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:40.006123"
+    },
+    {
+      "name": "04_azure_ml_lab",
+      "description": "Azure ML Lab Main View",
+      "filename": "screenshots/04_azure_ml_lab.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:43.738608"
+    },
+    {
+      "name": "05_weekly_picks",
+      "description": "Weekly Picks Tab",
+      "filename": "screenshots/05_weekly_picks.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:46.067484"
+    },
+    {
+      "name": "06_monthly_picks",
+      "description": "Monthly Picks Tab",
+      "filename": "screenshots/06_monthly_picks.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:48.341930"
+    },
+    {
+      "name": "07_research_lab",
+      "description": "Research Lab Tab",
+      "filename": "screenshots/07_research_lab.png",
+      "url": "http://localhost:8050/",
+      "timestamp": "2025-10-31T20:02:51.706663"
+    }
+  ],
+  "interactions": [
+    {
+      "selector": "a:has-text(\"\ud83d\udcc8 Options Lab\")",
+      "action": "click",
+      "description": "Navigate to Options Lab",
+      "status": "FAILED",
+      "error": "Element not found: a:has-text(\"\ud83d\udcc8 Options Lab\")"
+    },
+    {
+      "selector": "a:has-text(\"\ud83e\udd16 Azure ML Lab\")",
+      "action": "click",
+      "description": "Navigate to Azure ML Lab",
+      "status": "SUCCESS"
+    },
+    {
+      "selector": "a:has-text(\"\ud83d\udcca Weekly Picks\")",
+      "action": "click",
+      "description": "Navigate to Weekly Picks",
+      "status": "FAILED",
+      "error": "Element not found: a:has-text(\"\ud83d\udcca Weekly Picks\")"
+    },
+    {
+      "selector": "a:has-text(\"\ud83d\udcc5 Monthly Picks\")",
+      "action": "click",
+      "description": "Navigate to Monthly Picks",
+      "status": "FAILED",
+      "error": "Element not found: a:has-text(\"\ud83d\udcc5 Monthly Picks\")"
+    },
+    {
+      "selector": "a:has-text(\"\ud83d\udd2c Research Lab\")",
+      "action": "click",
+      "description": "Navigate to Research Lab",
+      "status": "SUCCESS"
+    }
+  ],
+  "errors": []
+}

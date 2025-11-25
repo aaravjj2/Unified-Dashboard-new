@@ -1,0 +1,1342 @@
+{
+  "total_referenced_ids": 662,
+  "total_declared_ids": 5298,
+  "total_missing": 129,
+  "missing": [
+    {
+      "id": "global-search-modal",
+      "refs": 8,
+      "kinds": {
+        "Output": 4,
+        "State": 4
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/backups/phase24_25_original/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/components/global_search.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_callbacks_temp.py"
+      ]
+    },
+    {
+      "id": "mt-results-table",
+      "refs": 8,
+      "kinds": {
+        "Output": 4,
+        "Input": 4
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "url",
+      "refs": 7,
+      "kinds": {
+        "Input": 7
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/_get_paths.py",
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py",
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_full.py"
+      ]
+    },
+    {
+      "id": "interval-component",
+      "refs": 6,
+      "kinds": {
+        "Input": 6
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/home.py",
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "test-button",
+      "refs": 5,
+      "kinds": {
+        "Input": 5
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/phase24_25_fix_validation.py"
+      ]
+    },
+    {
+      "id": "portfolio-dropdown",
+      "refs": 4,
+      "kinds": {
+        "Input": 3,
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/legacy_tabs/azure_ml_lab/phase6_azure_integration/phase6_ui_callbacks.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/phase24_25_targeted_fix/dash_callback_fix.py",
+        "/home/aarav/unified-dashboard/phase24_25_targeted_critical_fix.py",
+        "/home/aarav/unified-dashboard/test_artifacts/phase24_25_targeted_fix/dash_callback_fix.py"
+      ]
+    },
+    {
+      "id": "content",
+      "refs": 4,
+      "kinds": {
+        "Output": 4
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/_get_paths.py",
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py"
+      ]
+    },
+    {
+      "id": "global-search-results",
+      "refs": 4,
+      "kinds": {
+        "Output": 4
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/backups/phase24_25_original/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/components/global_search.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_callbacks_temp.py"
+      ]
+    },
+    {
+      "id": "global-search-close",
+      "refs": 4,
+      "kinds": {
+        "Input": 4
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/backups/phase24_25_original/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/components/global_search.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_callbacks_temp.py"
+      ]
+    },
+    {
+      "id": "total-signals",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "executed-signals",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "rejected-signals",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "avg-processing-time",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "signals-table",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "risk-blocks",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/signal_dashboard.py",
+        "/home/aarav/unified-dashboard/signal_dashboard_fixed.py"
+      ]
+    },
+    {
+      "id": "test-output",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/phase24_25_fix_validation.py"
+      ]
+    },
+    {
+      "id": "portfolio-table",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/phase24_25_targeted_fix/dash_callback_fix.py",
+        "/home/aarav/unified-dashboard/phase24_25_targeted_critical_fix.py",
+        "/home/aarav/unified-dashboard/test_artifacts/phase24_25_targeted_fix/dash_callback_fix.py"
+      ]
+    },
+    {
+      "id": "main-tabs",
+      "refs": 3,
+      "kinds": {
+        "Input": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/phase24_25_targeted_fix/dash_callback_fix.py",
+        "/home/aarav/unified-dashboard/phase24_25_targeted_critical_fix.py",
+        "/home/aarav/unified-dashboard/test_artifacts/phase24_25_targeted_fix/dash_callback_fix.py"
+      ]
+    },
+    {
+      "id": "page-content",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_full.py"
+      ]
+    },
+    {
+      "id": "test-dropdown",
+      "refs": 3,
+      "kinds": {
+        "Input": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "test-input",
+      "refs": 3,
+      "kinds": {
+        "Input": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/apply_phase24_25_critical_fixes.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/app_fixed.py",
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "exp-status",
+      "refs": 3,
+      "kinds": {
+        "Output": 3
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "scenario-job-store",
+      "refs": 3,
+      "kinds": {
+        "Output": 2,
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/analysis_hub_refactored.py"
+      ]
+    },
+    {
+      "id": "scenario-poll-interval",
+      "refs": 3,
+      "kinds": {
+        "Output": 2,
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/analysis_hub_refactored.py"
+      ]
+    },
+    {
+      "id": "my-div",
+      "refs": 2,
+      "kinds": {
+        "Output": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py"
+      ]
+    },
+    {
+      "id": "my-input",
+      "refs": 2,
+      "kinds": {
+        "Input": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py"
+      ]
+    },
+    {
+      "id": "another-input",
+      "refs": 2,
+      "kinds": {
+        "Input": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py"
+      ]
+    },
+    {
+      "id": "theme-styles",
+      "refs": 2,
+      "kinds": {
+        "Output": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/theme_toggle.py"
+      ]
+    },
+    {
+      "id": "exp-results-selector",
+      "refs": 2,
+      "kinds": {
+        "Output": 1,
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-date-range",
+      "refs": 2,
+      "kinds": {
+        "State": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "mt-status",
+      "refs": 2,
+      "kinds": {
+        "Output": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "mt-load-table",
+      "refs": 2,
+      "kinds": {
+        "Input": 2
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "WebSocket connection isn",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/websockets/legacy/protocol.py"
+      ]
+    },
+    {
+      "id": "language",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/dash.py"
+      ]
+    },
+    {
+      "id": "container",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/_callback_context.py"
+      ]
+    },
+    {
+      "id": "btn-1",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/_callback_context.py"
+      ]
+    },
+    {
+      "id": "btn-2",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/.test_venv/lib/python3.10/site-packages/dash/_callback_context.py"
+      ]
+    },
+    {
+      "id": "main-content",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-home",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-research",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-attribution",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-strategy",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-weekly",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-monthly",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-market-trends",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-market-forecast",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-volatility",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "nav-portfolio",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/dashboard_clean_fixed.py"
+      ]
+    },
+    {
+      "id": "output-area",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "test-btn-1",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "test-btn-2",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "test-btn-3",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/index_clean.py"
+      ]
+    },
+    {
+      "id": "run-btn-unified",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/market_dashboard.py"
+      ]
+    },
+    {
+      "id": "portfolio-alerts-list",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/INTEGRATION_SNIPPETS.py"
+      ]
+    },
+    {
+      "id": "portfolio-positions-store",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/INTEGRATION_SNIPPETS.py"
+      ]
+    },
+    {
+      "id": "hedge-correlation-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/hedge_finder.py"
+      ]
+    },
+    {
+      "id": "hedge-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/hedge_finder.py"
+      ]
+    },
+    {
+      "id": "global-search-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/global_search.py"
+      ]
+    },
+    {
+      "id": "sentiment-gauge",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/sentiment_analysis.py"
+      ]
+    },
+    {
+      "id": "sentiment-timeline",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/sentiment_analysis.py"
+      ]
+    },
+    {
+      "id": "sentiment-analyze-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/sentiment_analysis.py"
+      ]
+    },
+    {
+      "id": "sentiment-ticker-input",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/sentiment_analysis.py"
+      ]
+    },
+    {
+      "id": "theme-toggle-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/theme_toggle.py"
+      ]
+    },
+    {
+      "id": "health-score-gauge",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/portfolio_health.py"
+      ]
+    },
+    {
+      "id": "sector-exposure-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/portfolio_health.py"
+      ]
+    },
+    {
+      "id": "correlation-heatmap",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/portfolio_health.py"
+      ]
+    },
+    {
+      "id": "health-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/portfolio_health.py"
+      ]
+    },
+    {
+      "id": "factor-dna-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/factor_dna.py"
+      ]
+    },
+    {
+      "id": "factor-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/factor_dna.py"
+      ]
+    },
+    {
+      "id": "vix-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/volatility_lab.py"
+      ]
+    },
+    {
+      "id": "vol-term-structure",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/volatility_lab.py"
+      ]
+    },
+    {
+      "id": "vol-lab-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/components/volatility_lab.py"
+      ]
+    },
+    {
+      "id": "port-notional",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-invested",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-realized-pnl",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-realized-pct",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-unrealized-pnl",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-unrealized-pct",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-alpha",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-beta",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-positions-table",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-pnl-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-sector-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-contributors-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-transactions-table",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-alerts-list",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-avg-return",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-win-rate",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-best-pick",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-best-return",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-worst-pick",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-worst-return",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-type-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-rank-chart",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-table",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-refresh-interval",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "port-perf-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/portfolio.py"
+      ]
+    },
+    {
+      "id": "exp-history-table",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-results-content",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-run-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-results-refresh-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-name",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-description",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-universe",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-horizon",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-model",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "exp-features",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/research_lab.py"
+      ]
+    },
+    {
+      "id": "mt-output",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "mt-compute",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "mt-refresh",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "mt-tickers",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/modules/market_trends_new.py"
+      ]
+    },
+    {
+      "id": "scenario-results-area",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/analysis_hub_refactored.py"
+      ]
+    },
+    {
+      "id": "scenario-name",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/analysis_hub_refactored.py"
+      ]
+    },
+    {
+      "id": "scenario-horizon",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/analysis_hub_refactored.py"
+      ]
+    },
+    {
+      "id": "chain-summary-stats",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "chain-data-table",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "greeks-charts",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "vol-surface-plot",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "simulator-results",
+      "refs": 1,
+      "kinds": {
+        "Output": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "chain-option-type-radio",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "chain-moneyness-filter",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "vol-surface-angle",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "vol-surface-colorscale",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "simulator-calculate-btn",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "simulator-strategy",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "simulator-quantity",
+      "refs": 1,
+      "kinds": {
+        "State": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks_isolated.py"
+      ]
+    },
+    {
+      "id": "tradingview-interval",
+      "refs": 1,
+      "kinds": {
+        "Input": 1
+      },
+      "files": [
+        "/home/aarav/unified-dashboard/financial_dashboard/tabs/options_lab/callbacks.py"
+      ]
+    }
+  ]
+}

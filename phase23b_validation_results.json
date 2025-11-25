@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-10-31T22:18:35.404439",
+  "overall_success_rate": 80.0,
+  "loops": [
+    {
+      "loop": 1,
+      "name": "Bugfix Cycle",
+      "timestamp": "2025-10-31T22:15:53.079782",
+      "tests": [
+        {
+          "name": "Python Compilation",
+          "status": "pass",
+          "output": "Listing 'financial_dashboard/tabs/strategy_lab'...\nCompiling 'financial_dashboard/tabs/strategy_lab/layout_backup_pre_modularization_753lines.py'...\nCompiling 'financial_dashboard/tabs/strategy_lab/optimization.py'...\nListing 'financial_dashboard/tabs/strategy_lab/subtabs'...\nListing 'financial_dashboard/tabs/options_lab'...\nCompiling 'financial_dashboard/tabs/options_lab/callbacks_isolated.py'...\nCompiling 'financial_dashboard/tabs/options_lab/tradingview_handler.py'...\n"
+        },
+        {
+          "name": "Module Imports",
+          "status": "pass",
+          "output": "\u2705 All modules imported successfully\n"
+        },
+        {
+          "name": "Orphaned Callback IDs",
+          "status": "pass",
+          "output": "No legacy IDs found"
+        }
+      ],
+      "summary": {
+        "passed": 3,
+        "total": 3,
+        "success_rate": 100.0
+      }
+    },
+    {
+      "loop": 2,
+      "name": "Playwright Tests",
+      "timestamp": "2025-10-31T22:16:20.957047",
+      "tests": [
+        {
+          "name": "Dashboard Availability",
+          "status": "pass",
+          "output": "Dashboard responding at http://localhost:8050"
+        },
+        {
+          "name": "Strategy Lab Chromium Test",
+          "status": "fail",
+          "output": "_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n  File \"/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py\", line 558, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#sl-run-backtest-btn\")\n    - locator resolved to <button id=\"sl-run-backtest-btn\" class=\"w-100 mb-3 btn btn-primary btn-lg\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    53 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n"
+        },
+        {
+          "name": "Options Lab Chromium Test",
+          "status": "pass",
+          "output": ""
+        },
+        {
+          "name": "LambdaTest Cross-Browser",
+          "status": "skip",
+          "output": "LambdaTest credentials not configured"
+        }
+      ],
+      "summary": {
+        "passed": 2,
+        "total": 3,
+        "success_rate": 66.67
+      }
+    },
+    {
+      "loop": 3,
+      "name": "E2E & Performance Tests",
+      "timestamp": "2025-10-31T22:18:25.048498",
+      "tests": [
+        {
+          "name": "Endpoint: Home page",
+          "status": "pass",
+          "output": "HTTP 200"
+        },
+        {
+          "name": "Endpoint: Dash layout",
+          "status": "pass",
+          "output": "HTTP 200"
+        },
+        {
+          "name": "Endpoint: Dash dependencies",
+          "status": "pass",
+          "output": "HTTP 200"
+        },
+        {
+          "name": "Stress Test",
+          "status": "fail",
+          "output": ", line 457, in <module>\n    main()\n  File \"/mnt/c/Aarav/fin_env/unified-dashboard/phase22_stress_test.py\", line 447, in main\n    exit_code = generate_final_report()\n  File \"/mnt/c/Aarav/fin_env/unified-dashboard/phase22_stress_test.py\", line 407, in generate_final_report\n    json.dump(report, f, indent=2)\n  File \"/usr/lib/python3.10/json/__init__.py\", line 179, in dump\n    for chunk in iterable:\n  File \"/usr/lib/python3.10/json/encoder.py\", line 431, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/usr/lib/python3.10/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/usr/lib/python3.10/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/usr/lib/python3.10/json/encoder.py\", line 438, in _iterencode\n    o = _default(o)\n  File \"/usr/lib/python3.10/json/encoder.py\", line 179, in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nTypeError: Object of type bool is not JSON serializable\n"
+        }
+      ],
+      "summary": {
+        "passed": 3,
+        "total": 4,
+        "success_rate": 75.0
+      }
+    }
+  ]
+}

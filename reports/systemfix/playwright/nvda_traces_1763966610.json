@@ -1,0 +1,13 @@
+{
+  "found": true,
+  "traces": [
+    {
+      "name": "Forecast"
+    },
+    {
+      "name": "95% Confidence"
+    }
+  ],
+  "rawLen": 2,
+  "method": "legendtext"
+}

@@ -1,0 +1,19 @@
+{
+  "api_keys_present": {
+    "openai": true,
+    "finnhub": true,
+    "polygon": true,
+    "tiingo": true,
+    "lambdatest": true
+  },
+  "database_config": {
+    "database_url": true,
+    "postgres_user": true,
+    "postgres_password": true
+  },
+  "dashboard_config": {
+    "dash_debug": "true",
+    "dash_port": "8051",
+    "enable_market_lookup": "1"
+  }
+}

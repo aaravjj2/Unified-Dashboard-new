@@ -1,0 +1,14 @@
+ M reports/options_validation/diagnostics/git_status_pre8050.txt
+ M test-artifacts/research_lab/00_homepage.png
+ M test-artifacts/research_lab/01_research_lab_opened.png
+ M test-artifacts/research_lab/02_market_scan_initial.png
+ M test-artifacts/research_lab/03_market_scan_tickers_entered.png
+ M test-artifacts/research_lab/04_market_scan_results.png
+ M test-artifacts/research_lab/05_factor_analysis_initial.png
+ M test-artifacts/research_lab/11_strategy_backtest_initial.png
+ M test-artifacts/research_lab/12_strategy_backtest_no_dropdown.png
+ M test-artifacts/research_lab/14_research_notes_initial.png
+ M test-artifacts/research_lab/17_rapid_cycle_0___Market_Scan.png
+ M test-artifacts/research_lab/17_rapid_cycle_1___Factor_Analysis.png
+?? reports/options_validation/FINAL_MISSION_REPORT.md
+?? reports/options_validation/patches/paper_orders_1763685374.diff

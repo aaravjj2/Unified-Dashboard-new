@@ -1,0 +1,349 @@
+"""
+Database Persistence Layer - AGENT-1B Phase 4
+PostgreSQL support for market forecasts with JSON fallback
+
+Architecture:
+- Primary: PostgreSQL (if DB_URL set)
+- Fallback: JSON files in data/forecast/
+- Automatic migration on first run
+"""
+
+import os
+import json
+import logging
+from typing import Dict, Any, Optional, List
+from datetime import datetime
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+# Try to import PostgreSQL driver
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor, Json
+    POSTGRES_AVAILABLE = True
+except ImportError:
+    POSTGRES_AVAILABLE = False
+    logger.warning("psycopg2 not installed, using JSON fallback")
+
+
+class ForecastPersistence:
+    """
+    Persistence layer for market forecasts
+    
+    Modes:
+    1. PostgreSQL (if DB_URL set and psycopg2 installed)
+    2. JSON fallback (data/forecast/<id>.json)
+    """
+    
+    def __init__(self, db_url: Optional[str] = None):
+        self.db_url = db_url or os.getenv("DB_URL")
+        self.use_postgres = bool(self.db_url and POSTGRES_AVAILABLE)
+        self.data_dir = Path("data/forecast")
+        self.explain_dir = Path("data/forecast/explain")
+        
+        # Create directories for JSON fallback
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.explain_dir.mkdir(parents=True, exist_ok=True)
+        
+        if self.use_postgres:
+            self._run_migrations()
+            logger.info("Using PostgreSQL persistence")
+        else:
+            logger.info("Using JSON file persistence")
+    
+    def save_forecast(self, forecast_id: str, data: Dict[str, Any]):
+        """Save forecast result"""
+        if self.use_postgres:
+            self._save_to_postgres(forecast_id, data)
+        else:
+            self._save_to_json(forecast_id, data)
+    
+    def get_forecast(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve forecast by ID"""
+        if self.use_postgres:
+            return self._get_from_postgres(forecast_id)
+        else:
+            return self._get_from_json(forecast_id)
+    
+    def get_latest(self, ticker: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Get most recent forecast"""
+        if self.use_postgres:
+            return self._get_latest_postgres(ticker)
+        else:
+            return self._get_latest_json(ticker)
+    
+    def get_history(
+        self, ticker: Optional[str] = None, limit: int = 20, offset: int = 0
+    ) -> Dict[str, Any]:
+        """Get forecast history with pagination"""
+        if self.use_postgres:
+            return self._get_history_postgres(ticker, limit, offset)
+        else:
+            return self._get_history_json(ticker, limit, offset)
+    
+    def save_explanation(self, forecast_id: str, data: Dict[str, Any]):
+        """Save SHAP explainability data"""
+        if self.use_postgres:
+            self._save_explanation_postgres(forecast_id, data)
+        else:
+            self._save_explanation_json(forecast_id, data)
+    
+    def get_explanation(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve explainability data"""
+        if self.use_postgres:
+            return self._get_explanation_postgres(forecast_id)
+        else:
+            return self._get_explanation_json(forecast_id)
+    
+    # --- PostgreSQL Methods ---
+    
+    def _run_migrations(self):
+        """Run database migrations"""
+        migration_file = Path("migrations/0001_create_market_forecasts.sql")
+        if not migration_file.exists():
+            logger.warning(f"Migration file not found: {migration_file}")
+            return
+        
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor() as cur:
+                    with open(migration_file) as f:
+                        cur.execute(f.read())
+                conn.commit()
+            logger.info("Database migrations completed")
+        except Exception as e:
+            logger.error(f"Migration failed: {e}")
+    
+    def _save_to_postgres(self, forecast_id: str, data: Dict[str, Any]):
+        """Save forecast to PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO market_forecasts 
+                        (forecast_id, ticker, horizon, confidence, model, status, forecast_data, metrics, created_at)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (forecast_id) DO UPDATE SET
+                            status = EXCLUDED.status,
+                            forecast_data = EXCLUDED.forecast_data,
+                            metrics = EXCLUDED.metrics,
+                            updated_at = CURRENT_TIMESTAMP
+                        """,
+                        (
+                            forecast_id,
+                            data.get("ticker"),
+                            data.get("horizon"),
+                            data.get("confidence"),
+                            data.get("model"),
+                            data.get("status", "completed"),
+                            Json(data.get("forecast", [])),
+                            Json(data.get("metrics", {})),
+                            data.get("timestamp", datetime.utcnow().isoformat())
+                        )
+                    )
+                conn.commit()
+        except Exception as e:
+            logger.error(f"Failed to save to PostgreSQL: {e}")
+            # Fallback to JSON
+            self._save_to_json(forecast_id, data)
+    
+    def _get_from_postgres(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve forecast from PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        "SELECT * FROM market_forecasts WHERE forecast_id = %s",
+                        (forecast_id,)
+                    )
+                    row = cur.fetchone()
+                    return dict(row) if row else None
+        except Exception as e:
+            logger.error(f"Failed to retrieve from PostgreSQL: {e}")
+            return self._get_from_json(forecast_id)
+    
+    def _get_latest_postgres(self, ticker: Optional[str]) -> Optional[Dict[str, Any]]:
+        """Get latest forecast from PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    if ticker:
+                        cur.execute(
+                            "SELECT * FROM market_forecasts WHERE ticker = %s ORDER BY created_at DESC LIMIT 1",
+                            (ticker,)
+                        )
+                    else:
+                        cur.execute(
+                            "SELECT * FROM market_forecasts ORDER BY created_at DESC LIMIT 1"
+                        )
+                    row = cur.fetchone()
+                    return dict(row) if row else None
+        except Exception as e:
+            logger.error(f"Failed to get latest from PostgreSQL: {e}")
+            return self._get_latest_json(ticker)
+    
+    def _get_history_postgres(
+        self, ticker: Optional[str], limit: int, offset: int
+    ) -> Dict[str, Any]:
+        """Get forecast history from PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    # Count total
+                    if ticker:
+                        cur.execute(
+                            "SELECT COUNT(*) FROM market_forecasts WHERE ticker = %s",
+                            (ticker,)
+                        )
+                    else:
+                        cur.execute("SELECT COUNT(*) FROM market_forecasts")
+                    total = cur.fetchone()["count"]
+                    
+                    # Fetch paginated results
+                    if ticker:
+                        cur.execute(
+                            "SELECT * FROM market_forecasts WHERE ticker = %s ORDER BY created_at DESC LIMIT %s OFFSET %s",
+                            (ticker, limit, offset)
+                        )
+                    else:
+                        cur.execute(
+                            "SELECT * FROM market_forecasts ORDER BY created_at DESC LIMIT %s OFFSET %s",
+                            (limit, offset)
+                        )
+                    
+                    rows = cur.fetchall()
+                    forecasts = [dict(row) for row in rows]
+                    
+                    return {
+                        "forecasts": forecasts,
+                        "total": total,
+                        "limit": limit,
+                        "offset": offset
+                    }
+        except Exception as e:
+            logger.error(f"Failed to get history from PostgreSQL: {e}")
+            return self._get_history_json(ticker, limit, offset)
+    
+    def _save_explanation_postgres(self, forecast_id: str, data: Dict[str, Any]):
+        """Save explainability data to PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO forecast_explanations 
+                        (forecast_id, shap_values, base_value, features)
+                        VALUES (%s, %s, %s, %s)
+                        ON CONFLICT (forecast_id) DO UPDATE SET
+                            shap_values = EXCLUDED.shap_values,
+                            base_value = EXCLUDED.base_value,
+                            features = EXCLUDED.features
+                        """,
+                        (
+                            forecast_id,
+                            Json(data.get("shap_values", [])),
+                            data.get("base_value"),
+                            Json(data.get("features", {}))
+                        )
+                    )
+                conn.commit()
+        except Exception as e:
+            logger.error(f"Failed to save explanation to PostgreSQL: {e}")
+            self._save_explanation_json(forecast_id, data)
+    
+    def _get_explanation_postgres(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve explainability data from PostgreSQL"""
+        try:
+            with psycopg2.connect(self.db_url) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        "SELECT * FROM forecast_explanations WHERE forecast_id = %s",
+                        (forecast_id,)
+                    )
+                    row = cur.fetchone()
+                    return dict(row) if row else None
+        except Exception as e:
+            logger.error(f"Failed to get explanation from PostgreSQL: {e}")
+            return self._get_explanation_json(forecast_id)
+    
+    # --- JSON Methods ---
+    
+    def _save_to_json(self, forecast_id: str, data: Dict[str, Any]):
+        """Save forecast to JSON file"""
+        # Ensure directory exists (important for tests with tmp_path)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        
+        file_path = self.data_dir / f"{forecast_id}.json"
+        with open(file_path, "w") as f:
+            json.dump(data, f, indent=2)
+        logger.info(f"Saved forecast to {file_path}")
+    
+    def _get_from_json(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve forecast from JSON file"""
+        file_path = self.data_dir / f"{forecast_id}.json"
+        if file_path.exists():
+            with open(file_path) as f:
+                return json.load(f)
+        return None
+    
+    def _get_latest_json(self, ticker: Optional[str]) -> Optional[Dict[str, Any]]:
+        """Get latest forecast from JSON files"""
+        forecasts = self._list_json_forecasts()
+        
+        if ticker:
+            forecasts = [f for f in forecasts if f.get("ticker") == ticker]
+        
+        if not forecasts:
+            return None
+        
+        forecasts.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+        return forecasts[0]
+    
+    def _get_history_json(
+        self, ticker: Optional[str], limit: int, offset: int
+    ) -> Dict[str, Any]:
+        """Get forecast history from JSON files"""
+        forecasts = self._list_json_forecasts()
+        
+        if ticker:
+            forecasts = [f for f in forecasts if f.get("ticker") == ticker]
+        
+        forecasts.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+        
+        total = len(forecasts)
+        forecasts = forecasts[offset:offset + limit]
+        
+        return {
+            "forecasts": forecasts,
+            "total": total,
+            "limit": limit,
+            "offset": offset
+        }
+    
+    def _save_explanation_json(self, forecast_id: str, data: Dict[str, Any]):
+        """Save explainability data to JSON file"""
+        file_path = self.explain_dir / f"{forecast_id}.json"
+        with open(file_path, "w") as f:
+            json.dump(data, f, indent=2)
+        logger.info(f"Saved explanation to {file_path}")
+    
+    def _get_explanation_json(self, forecast_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve explainability data from JSON file"""
+        file_path = self.explain_dir / f"{forecast_id}.json"
+        if file_path.exists():
+            with open(file_path) as f:
+                return json.load(f)
+        return None
+    
+    def _list_json_forecasts(self) -> List[Dict[str, Any]]:
+        """Load all forecasts from JSON directory"""
+        forecasts = []
+        for file_path in self.data_dir.glob("*.json"):
+            try:
+                with open(file_path) as f:
+                    forecasts.append(json.load(f))
+            except Exception as e:
+                logger.warning(f"Failed to load {file_path}: {e}")
+        return forecasts

@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-10-28T01:01:34.569005",
+  "benchmarks": {
+    "data_fetching": {
+      "fetch_2tickers_1year": 3.9856655597686768,
+      "fetch_10tickers_1year": 0.38365840911865234,
+      "fetch_benchmark": 0.41722607612609863,
+      "load_factors": 4.0885021686553955,
+      "load_universe": 0.016304492950439453
+    },
+    "backtesting": {
+      "momentum_2tickers_1year": {
+        "time": 7.802993297576904,
+        "success": true,
+        "cagr": 0.018458098033535597,
+        "sharpe": 0.846999089834606
+      },
+      "meanrev_5tickers_1year": {
+        "time": 3.2632968425750732,
+        "success": true,
+        "cagr": 0.01710128505694719,
+        "sharpe": 0.29150621179335734
+      },
+      "pairs_2tickers_6months": {
+        "time": 5.4850804805755615,
+        "success": true,
+        "cagr": 0.0,
+        "sharpe": 0
+      }
+    },
+    "module_loading": {
+      "import_data_loader": 0.012856006622314453,
+      "import_callbacks": 0.010095596313476562,
+      "create_layout": 0.32585859298706055
+    }
+  }
+}

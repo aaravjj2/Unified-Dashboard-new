@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-11-22T12:57:17.156244",
+  "base_url": "http://127.0.0.1:8050",
+  "headless": false,
+  "tests": [
+    {
+      "test": "weekly_picks",
+      "timestamp": "2025-11-22T12:56:33.501104",
+      "checks": [
+        {
+          "name": "weekly_tab_visible",
+          "status": "PASS"
+        },
+        {
+          "name": "weekly_table_present",
+          "status": "PASS",
+          "locator": "table"
+        },
+        {
+          "name": "weekly_ticker_data",
+          "status": "PASS",
+          "count": 3
+        },
+        {
+          "name": "weekly_charts",
+          "status": "PASS",
+          "selector": "div[class*=\"plotly\"]",
+          "count": 66
+        }
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "test": "monthly_picks",
+      "timestamp": "2025-11-22T12:56:47.586258",
+      "checks": [
+        {
+          "name": "monthly_tab_visible",
+          "status": "PASS"
+        },
+        {
+          "name": "monthly_table_present",
+          "status": "PASS"
+        },
+        {
+          "name": "monthly_ticker_count",
+          "status": "INFO",
+          "count": 59
+        }
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "test": "picks_navigation",
+      "timestamp": "2025-11-22T12:56:59.603413",
+      "checks": [
+        {
+          "name": "nav_to_weekly",
+          "status": "PASS"
+        },
+        {
+          "name": "nav_to_monthly",
+          "status": "PASS"
+        },
+        {
+          "name": "nav_back_to_weekly",
+          "status": "PASS"
+        }
+      ],
+      "status": "COMPLETED"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+    "action_suggestion": null,
+    "answer": " Based on the retrieved context, it seems like you are asking for information about how to buy 10 shares of AAPL. To complete this task, I would suggest using a trading platform that allows paper trading, such as Robinhood or E*TRADE. The user should open a new account and fund their account with at least $500 in order to execute the trade. Then, they can use the platform's built-in options functionality to place an option contract specifying that if the stock price reaches a certain level within a specific timeframe, the user will pay the broker a premium for the option. The user should be aware that this is a simulation of trading and involves risk.",
+    "metadata": {
+        "model": "orca-mini-3b-gguf2-q4_0.gguf",
+        "retrieved_chunks": 3,
+        "tokens": 482,
+        "use_rag": true
+    },
+    "raw_model_text": " Based on the retrieved context, it seems like you are asking for information about how to buy 10 shares of AAPL. To complete this task, I would suggest using a trading platform that allows paper trading, such as Robinhood or E*TRADE. The user should open a new account and fund their account with at least $500 in order to execute the trade. Then, they can use the platform's built-in options functionality to place an option contract specifying that if the stock price reaches a certain level within a specific timeframe, the user will pay the broker a premium for the option. The user should be aware that this is a simulation of trading and involves risk.",
+    "retrievals": [
+        {
+            "chunk_id": "vol_surfaces_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "vol_surfaces_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/vol_surfaces.json",
+                "type": "vol_surfaces"
+            },
+            "score": 1.2144863605499268,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"date\": \"2024-11-22\",\n  \"implied_vol_30d\": 0.28,\n  \"implied_vol_60d\": 0.31,\n  \"vol_surface\": {\n    \"strikes\": [\n      140,\n      150,\n      160,\n      170,\n      180\n    ],\n    \"expirations\": [\n      \"2024-12-20\",\n      \"2025-01-17\"\n    ],\n    \"iv_matrix\": [\n      [\n        0.32,\n        0.29,\n        0.28,\n        0.3,\n        0.34\n      ],\n      [\n        0.35,\n        0.31,\n        0.3,\n        0.32,\n        0.36\n      ]\n    ]\n  },\n  \"analysis\": \"AAPL shows elevated near-term implied volatility ahead of earnings. 30-day IV is at 28%, suggesting heightened option premiums. Consider selling premium via covered calls or cash-secured puts if bullish on underlying.\"\n}"
+        },
+        {
+            "chunk_id": "finnhub_latest_50_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "finnhub_latest_50_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/finnhub_latest_50.json",
+                "type": "finnhub_latest_50"
+            },
+            "score": 1.2700510025024414,
+            "text": "{\n  \"headline\": \"Apple Reports Q4 Earnings Beat, Revenue Up 8% YoY\",\n  \"source\": \"Reuters\",\n  \"published_at\": \"2024-11-21T16:30:00Z\",\n  \"summary\": \"Apple Inc reported better-than-expected fourth-quarter earnings with revenue reaching $89.5 billion, up 8% year-over-year. iPhone sales remained strong despite macroeconomic headwinds. Services revenue hit a record $22.3 billion. The company announced a $0.24 per share dividend and authorized a new $90 billion share buyback program.\",\n  \"ticker\": \"AAPL\",\n  \"sentiment\": \"positive\",\n  \"url\": \"https://example.com/aapl-earnings-q4\"\n}"
+        },
+        {
+            "chunk_id": "weekly_picks_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.273013710975647,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"rank\": 1,\n  \"rationale\": \"Strong technical momentum with breakout above 170 resistance. Earnings beat expectations with 8% revenue growth. Bullish sentiment from analyst upgrades and institutional buying.\",\n  \"combined_score\": 0.92,\n  \"momentum_score\": 0.95,\n  \"sentiment_score\": 0.88,\n  \"fundamental_score\": 0.93,\n  \"week_start_date\": \"2024-11-18\",\n  \"generated_at\": \"2024-11-22T10:00:00Z\"\n}"
+        }
+    ],
+    "sources": [
+        {
+            "chunk_id": "vol_surfaces_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "vol_surfaces_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/vol_surfaces.json",
+                "type": "vol_surfaces"
+            },
+            "score": 1.2144863605499268,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"date\": \"2024-11-22\",\n  \"implied_vol_30d\": 0.28,\n  \"implied_vol_60d\": 0.31,\n  \"vol_surface\": {\n    \"strikes\": [\n      140,\n      150,\n      160,\n      170,\n      180\n    ],\n   ..."
+        },
+        {
+            "chunk_id": "finnhub_latest_50_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "finnhub_latest_50_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/finnhub_latest_50.json",
+                "type": "finnhub_latest_50"
+            },
+            "score": 1.2700510025024414,
+            "text": "{\n  \"headline\": \"Apple Reports Q4 Earnings Beat, Revenue Up 8% YoY\",\n  \"source\": \"Reuters\",\n  \"published_at\": \"2024-11-21T16:30:00Z\",\n  \"summary\": \"Apple Inc reported better-than-expected fourth-quart..."
+        },
+        {
+            "chunk_id": "weekly_picks_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.273013710975647,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"rank\": 1,\n  \"rationale\": \"Strong technical momentum with breakout above 170 resistance. Earnings beat expectations with 8% revenue growth. Bullish sentiment from analyst upgra..."
+        }
+    ]
+}

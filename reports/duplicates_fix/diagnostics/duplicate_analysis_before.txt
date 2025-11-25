@@ -1,0 +1,138 @@
+================================================================================
+DUPLICATE CALLBACK ANALYSIS
+================================================================================
+Total unique components with duplicates: 56
+
+Top components by duplicate count:
+  perf-total-return: 10 duplicates
+  residual-alpha: 9 duplicates
+  portfolio-value: 7 duplicates
+  rl-brief-modal: 7 duplicates
+  mf-forecast-store: 6 duplicates
+  vl-heatmap: 6 duplicates
+  rl-alert: 6 duplicates
+  vl-overview-last-: 5 duplicates
+  sl-tickers-input: 5 duplicates
+  portfolio-analyti: 5 duplicates
+  greeks-delta-char: 5 duplicates
+  sectors-weights-p: 4 duplicates
+  sl-metric-cagr: 4 duplicates
+  options-chain-sto: 4 duplicates
+  chain-spot-price: 4 duplicates
+  sim-max-profit: 4 duplicates
+  contract-strike-s: 4 duplicates
+  rl-briefs-store: 4 duplicates
+  factors-exposures: 3 duplicates
+  wp-status-message: 3 duplicates
+
+Total errors from duplicates: 149
+
+================================================================================
+DUPLICATES BY TAB PREFIX:
+================================================================================
+
+RL (22 total duplicates):
+  - rl-brief-modal: 7
+  - rl-alert: 6
+  - rl-briefs-store: 4
+  - rl-brief-list: 1
+  - rl-selected-brief: 1
+  - rl-detail-panel: 1
+  - rl-analysis-resul: 1
+  - rl-brief-export-b: 1
+
+SL (17 total duplicates):
+  - sl-tickers-input: 5
+  - sl-metric-cagr: 4
+  - sl-validation-res: 2
+  - sl-execution-stat: 2
+  - sl-equity-curve: 1
+  - sl-vs-benchmark: 1
+  - sl-factor-attribu: 1
+  - sl-exposure-break: 1
+
+PORTFOLIO (15 total duplicates):
+  - portfolio-value: 7
+  - portfolio-analyti: 5
+  - portfolio-positio: 1
+  - portfolio-orders-: 1
+  - portfolio-factor-: 1
+
+VL (14 total duplicates):
+  - vl-heatmap: 6
+  - vl-overview-last-: 5
+  - vl-signal-table: 1
+  - vl-backtest-resul: 1
+  - vl-diag-collapse: 1
+
+PERF (10 total duplicates):
+  - perf-total-return: 10
+
+RESIDUAL (9 total duplicates):
+  - residual-alpha: 9
+
+MF (7 total duplicates):
+  - mf-forecast-store: 6
+  - mf-store-debug: 1
+
+CHAIN (6 total duplicates):
+  - chain-spot-price: 4
+  - chain-table-conta: 1
+  - chain-download: 1
+
+GREEKS (5 total duplicates):
+  - greeks-delta-char: 5
+
+OPTIONS (5 total duplicates):
+  - options-chain-sto: 4
+  - options-forecast-: 1
+
+WP (5 total duplicates):
+  - wp-status-message: 3
+  - wp-content: 2
+
+SECTORS (4 total duplicates):
+  - sectors-weights-p: 4
+
+SIM (4 total duplicates):
+  - sim-max-profit: 4
+
+CONTRACT (4 total duplicates):
+  - contract-strike-s: 4
+
+FACTORS (3 total duplicates):
+  - factors-exposures: 3
+
+INSPECT (3 total duplicates):
+  - inspect-modal: 3
+
+MP (3 total duplicates):
+  - mp-data-store: 2
+  - mp-content: 1
+
+CHATBOT (3 total duplicates):
+  - chatbot-messages: 2
+  - chatbot-container: 1
+
+VOL (2 total duplicates):
+  - vol-surface-3d: 2
+
+OPT (2 total duplicates):
+  - opt-tickers-input: 1
+  - opt-results-conta: 1
+
+TRADINGVIEW (2 total duplicates):
+  - tradingview-previ: 1
+  - tradingview-signa: 1
+
+SHAP (1 total duplicates):
+  - shap-regen-status: 1
+
+NEWS (1 total duplicates):
+  - news-prefetch-sta: 1
+
+MONTE (1 total duplicates):
+  - monte-carlo-resul: 1
+
+RESEARCH (1 total duplicates):
+  - research-lab-cont: 1

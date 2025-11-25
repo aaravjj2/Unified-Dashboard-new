@@ -1,0 +1,436 @@
+diff --git a/bento_services/forecast_service/bentofile.yaml b/bento_services/forecast_service/bentofile.yaml
+new file mode 100644
+index 0000000..2cd0619
+--- /dev/null
++++ b/bento_services/forecast_service/bentofile.yaml
+@@ -0,0 +1,26 @@
++service: "service:ForecastService"
++name: forecast_service
++labels:
++  owner: unified-dashboard
++  project: market-forecast
++description: "Market forecast service with LSTM/Prophet models"
++
++include:
++  - "service.py"
++  - "requirements.txt"
++
++python:
++  packages:
++    - numpy
++    - pandas
++    - bentoml
++    # TODO: Add model-specific deps
++    # - torch  # for LSTM
++    # - prophet  # for Prophet
++    # - shap  # for explainability
++
++docker:
++  distro: debian
++  python_version: "3.10"
++  env:
++    BENTOML_PORT: "5001"
+diff --git a/bento_services/forecast_service/requirements.txt b/bento_services/forecast_service/requirements.txt
+new file mode 100644
+index 0000000..759e4e5
+--- /dev/null
++++ b/bento_services/forecast_service/requirements.txt
+@@ -0,0 +1,8 @@
++numpy>=1.24.0
++pandas>=2.0.0
++bentoml>=1.2.0
++
++# Model dependencies (uncomment when models are trained)
++# torch>=2.0.0
++# prophet>=1.1.0
++# shap>=0.42.0
+diff --git a/bento_services/forecast_service/service.py b/bento_services/forecast_service/service.py
+new file mode 100644
+index 0000000..fd13b3d
+--- /dev/null
++++ b/bento_services/forecast_service/service.py
+@@ -0,0 +1,130 @@
++"""
++BentoML Forecast Service Template - AGENT-1B Phase 3
++Production-ready BentoML service for market forecasting
++
++Build Steps:
++1. pip install bentoml
++2. bentoml build
++3. bentoml containerize forecast_service:latest
++4. docker run -p 5001:5001 forecast_service:latest
++
++Directory Structure:
++bento_services/
++└── forecast_service/
++    ├── service.py          # This file
++    ├── bentofile.yaml      # Bento build config
++    └── requirements.txt    # Dependencies
++"""
++
++import bentoml
++from bentoml.io import JSON
++from typing import Dict, Any
++import numpy as np
++import pandas as pd
++from datetime import datetime, timedelta
++
++
++# TODO: Replace with actual trained model
++# For now, using simple linear regression as placeholder
++@bentoml.service(
++    name="forecast_service",
++    resources={"cpu": "2"},
++    traffic={"timeout": 30}
++)
++class ForecastService:
++    """
++    Market forecast service using BentoML
++    
++    Production deployment:
++    - Load pre-trained LSTM/Prophet models from model registry
++    - Support multiple model versions (A/B testing)
++    - Cache historical data for feature engineering
++    """
++    
++    def __init__(self):
++        # TODO: Load models from BentoML model store
++        # self.lstm_model = bentoml.pytorch.load_model("forecast_lstm:latest")
++        # self.prophet_model = bentoml.sklearn.load_model("forecast_prophet:latest")
++        pass
++    
++    @bentoml.api(input=JSON(), output=JSON())
++    def predict(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
++        """
++        Generate market forecast
++        
++        Input:
++        {
++            "ticker": str,
++            "horizon": int,
++            "confidence": float,
++            "model": str
++        }
++        
++        Output:
++        {
++            "ticker": str,
++            "forecast": [...],
++            "metrics": {...},
++            "model": str,
++            "horizon": int,
++            "confidence": float
++        }
++        """
++        ticker = input_data["ticker"]
++        horizon = input_data["horizon"]
++        confidence = input_data["confidence"]
++        model_type = input_data["model"]
++        
++        # TODO: Replace with actual model inference
++        forecast = self._generate_placeholder_forecast(
++            ticker, horizon, confidence, model_type
++        )
++        
++        return forecast
++    
++    def _generate_placeholder_forecast(
++        self, ticker: str, horizon: int, confidence: float, model: str
++    ) -> Dict[str, Any]:
++        """
++        Placeholder forecast generation
++        
++        In production:
++        1. Fetch historical data from data lake
++        2. Engineer features (technical indicators, sentiment, macro)
++        3. Run model inference (LSTM/Prophet/Ensemble)
++        4. Calculate SHAP values for explainability
++        5. Return forecast with confidence intervals
++        """
++        start_date = datetime.utcnow()
++        base_price = 150.0
++        daily_growth = 0.002
++        
++        # Confidence interval
++        ci_multiplier = {0.90: 1.645, 0.95: 1.96, 0.99: 2.576}[confidence]
++        std_dev = base_price * 0.02 * (horizon / 30)
++        
++        forecast_data = []
++        for i in range(horizon):
++            date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
++            yhat = base_price * (1 + daily_growth) ** i
++            margin = ci_multiplier * std_dev
++            
++            forecast_data.append({
++                "date": date,
++                "yhat": round(yhat, 2),
++                "yhat_lower": round(yhat - margin, 2),
++                "yhat_upper": round(yhat + margin, 2)
++            })
++        
++        return {
++            "ticker": ticker,
++            "forecast": forecast_data,
++            "metrics": {
++                "rmse": 2.5,
++                "mae": 1.8,
++                "mape": 0.012
++            },
++            "model": model,
++            "horizon": horizon,
++            "confidence": confidence
++        }
+diff --git a/docker-compose.bento.yml b/docker-compose.bento.yml
+new file mode 100644
+index 0000000..1f3704e
+--- /dev/null
++++ b/docker-compose.bento.yml
+@@ -0,0 +1,28 @@
++version: '3.8'
++
++services:
++  forecast-bento:
++    build:
++      context: ./bento_services/forecast_service
++      dockerfile: Dockerfile  # Generated by `bentoml containerize`
++    ports:
++      - "5001:5001"
++    environment:
++      - BENTOML_PORT=5001
++      - LOG_LEVEL=info
++    volumes:
++      - ./data:/app/data
++    restart: unless-stopped
++    healthcheck:
++      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
++      interval: 30s
++      timeout: 10s
++      retries: 3
++
++  # Optional: Add model registry service
++  # bentoml-yatai:
++  #   image: bentoml/yatai:latest
++  #   ports:
++  #     - "3000:3000"
++  #   environment:
++  #     - YATAI_PORT=3000
+diff --git a/services/mock_bento/README.md b/services/mock_bento/README.md
+new file mode 100644
+index 0000000..7d044c0
+--- /dev/null
++++ b/services/mock_bento/README.md
+@@ -0,0 +1,72 @@
++# Market Forecast - Mock Bento Service
++
++Standalone Flask service simulating BentoML forecast endpoint for local development.
++
++## Quick Start
++
++```bash
++# Run mock service
++python services/mock_bento/app.py
++
++# Service starts on http://localhost:5001
++```
++
++## Endpoints
++
++### POST /predict
++Execute forecast prediction.
++
++**Request:**
++```json
++{
++  "ticker": "AAPL",
++  "horizon": 30,
++  "confidence": 0.95,
++  "model": "lstm"
++}
++```
++
++**Response:**
++```json
++{
++  "ticker": "AAPL",
++  "forecast": [
++    {"date": "2024-01-01", "yhat": 150.5, "yhat_lower": 148.0, "yhat_upper": 153.0},
++    ...
++  ],
++  "metrics": {
++    "rmse": 2.5,
++    "mae": 1.8,
++    "mape": 0.012
++  },
++  "model": "lstm",
++  "horizon": 30,
++  "confidence": 0.95
++}
++```
++
++### GET /health
++Service health check.
++
++**Response:**
++```json
++{
++  "status": "healthy",
++  "service": "mock_bento_forecast",
++  "timestamp": "2024-01-01T12:00:00Z"
++}
++```
++
++## Fixture Loading
++
++Service loads from `tests/fixtures/forecast/forecast_fixture.json` if available.  
++Falls back to synthetic forecast generation if fixture missing.
++
++## Integration with Adapter
++
++Set environment variable:
++```bash
++export FORECAST_BENTO_URL=http://localhost:5001/predict
++```
++
++The `ForecastAdapter` will automatically use this mock service for forecast requests.
+diff --git a/services/mock_bento/app.py b/services/mock_bento/app.py
+new file mode 100644
+index 0000000..5c9ac81
+--- /dev/null
++++ b/services/mock_bento/app.py
+@@ -0,0 +1,136 @@
++"""
++Mock Bento Forecast Service - AGENT-1B Phase 3
++Standalone Flask service simulating BentoML forecast endpoint
++
++Run with: python services/mock_bento/app.py
++Endpoint: POST http://localhost:5001/predict
++Health: GET http://localhost:5001/health
++"""
++
++import json
++import logging
++from datetime import datetime, timedelta
++from flask import Flask, request, jsonify
++from pathlib import Path
++
++app = Flask(__name__)
++logging.basicConfig(level=logging.INFO)
++logger = logging.getLogger(__name__)
++
++# Load fixture data
++FIXTURE_PATH = Path(__file__).parent.parent.parent / "tests/fixtures/forecast/forecast_fixture.json"
++
++
++@app.route("/predict", methods=["POST"])
++def predict():
++    """
++    Forecast prediction endpoint
++    
++    Request:
++    {
++        "ticker": str,
++        "horizon": int,     # 7, 30, or 90
++        "confidence": float, # 0.90, 0.95, or 0.99
++        "model": str        # "lstm" | "prophet" | "ensemble"
++    }
++    
++    Response:
++    {
++        "ticker": str,
++        "forecast": [...],   # Array of {date, yhat, yhat_lower, yhat_upper}
++        "metrics": {...},    # {rmse, mae, mape}
++        "model": str,
++        "horizon": int,
++        "confidence": float
++    }
++    """
++    try:
++        data = request.get_json()
++        ticker = data.get("ticker", "AAPL")
++        horizon = int(data.get("horizon", 30))
++        confidence = float(data.get("confidence", 0.95))
++        model = data.get("model", "lstm")
++        
++        # Load base fixture
++        if FIXTURE_PATH.exists():
++            with open(FIXTURE_PATH) as f:
++                base_result = json.load(f)
++        else:
++            # Fallback: generate synthetic forecast
++            base_result = _generate_synthetic_forecast(ticker, horizon, confidence, model)
++        
++        # Override with request params
++        base_result["ticker"] = ticker
++        base_result["horizon"] = horizon
++        base_result["confidence"] = confidence
++        base_result["model"] = model
++        
++        # Adjust forecast length to match horizon
++        if "forecast" in base_result:
++            base_result["forecast"] = base_result["forecast"][:horizon]
++        
++        logger.info(f"Prediction for {ticker} (horizon={horizon}, model={model})")
++        return jsonify(base_result), 200
++    
++    except Exception as e:
++        logger.error(f"Prediction error: {e}")
++        return jsonify({"error": str(e)}), 500
++
++
++@app.route("/health", methods=["GET"])
++def health():
++    """Health check endpoint"""
++    return jsonify({
++        "status": "healthy",
++        "service": "mock_bento_forecast",
++        "timestamp": datetime.utcnow().isoformat()
++    }), 200
++
++
++def _generate_synthetic_forecast(ticker: str, horizon: int, confidence: float, model: str) -> dict:
++    """
++    Generate synthetic forecast data (fallback when fixture missing)
++    
++    Creates simple linear trend with confidence intervals
++    """
++    start_date = datetime.utcnow()
++    base_price = 150.0  # Starting price
++    daily_growth = 0.002  # 0.2% daily growth
++    
++    # Confidence interval width (wider for higher horizons)
++    ci_multiplier = {0.90: 1.645, 0.95: 1.96, 0.99: 2.576}[confidence]
++    std_dev = base_price * 0.02 * (horizon / 30)  # 2% std per 30 days
++    
++    forecast = []
++    for i in range(horizon):
++        date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
++        yhat = base_price * (1 + daily_growth) ** i
++        margin = ci_multiplier * std_dev
++        
++        forecast.append({
++            "date": date,
++            "yhat": round(yhat, 2),
++            "yhat_lower": round(yhat - margin, 2),
++            "yhat_upper": round(yhat + margin, 2)
++        })
++    
++    return {
++        "ticker": ticker,
++        "forecast": forecast,
++        "metrics": {
++            "rmse": 2.5,
++            "mae": 1.8,
++            "mape": 0.012
++        },
++        "model": model,
++        "horizon": horizon,
++        "confidence": confidence
++    }
++
++
++if __name__ == "__main__":
++    logger.info("Starting Mock Bento Forecast Service on http://localhost:5001")
++    logger.info(f"Fixture path: {FIXTURE_PATH}")
++    logger.info(f"Fixture exists: {FIXTURE_PATH.exists()}")
++    
++    app.run(host="0.0.0.0", port=5001, debug=True)

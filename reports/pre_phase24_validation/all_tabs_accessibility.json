@@ -1,0 +1,103 @@
+{
+  "Home": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [
+      "portfolio",
+      "market",
+      "dashboard"
+    ],
+    "content_indicators_expected": [
+      "portfolio",
+      "market",
+      "dashboard"
+    ]
+  },
+  "Command Center": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [],
+    "content_indicators_expected": [
+      "jobs",
+      "queue",
+      "alerts"
+    ]
+  },
+  "Strategy Lab": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [],
+    "content_indicators_expected": [
+      "backtest",
+      "strategy",
+      "configure"
+    ]
+  },
+  "Options Lab": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [
+      "options",
+      "strike"
+    ],
+    "content_indicators_expected": [
+      "options",
+      "strike",
+      "expiration"
+    ]
+  },
+  "Weekly Picks": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [],
+    "content_indicators_expected": [
+      "weekly",
+      "picks",
+      "regenerate"
+    ]
+  },
+  "Monthly Picks": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [],
+    "content_indicators_expected": [
+      "monthly",
+      "picks",
+      "themes"
+    ]
+  },
+  "Research Lab": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [
+      "research",
+      "analysis",
+      "data"
+    ],
+    "content_indicators_expected": [
+      "research",
+      "analysis",
+      "data"
+    ]
+  },
+  "Portfolio": {
+    "accessible": true,
+    "status_code": 200,
+    "page_size": 7606,
+    "content_indicators_found": [
+      "portfolio"
+    ],
+    "content_indicators_expected": [
+      "portfolio",
+      "positions",
+      "analytics"
+    ]
+  }
+}

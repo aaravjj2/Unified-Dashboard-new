@@ -1,0 +1,196 @@
+{
+  "forecast_id": "test-002",
+  "ticker": "AAPL",
+  "horizon": 30,
+  "confidence": 0.95,
+  "model": "lstm",
+  "status": "completed",
+  "timestamp": "2025-11-19T03:52:05.579867",
+  "forecast": [
+    {
+      "date": "2024-01-15",
+      "yhat": 150.25,
+      "yhat_lower": 147.8,
+      "yhat_upper": 152.7
+    },
+    {
+      "date": "2024-01-16",
+      "yhat": 150.55,
+      "yhat_lower": 148.05,
+      "yhat_upper": 153.05
+    },
+    {
+      "date": "2024-01-17",
+      "yhat": 150.85,
+      "yhat_lower": 148.3,
+      "yhat_upper": 153.4
+    },
+    {
+      "date": "2024-01-18",
+      "yhat": 151.15,
+      "yhat_lower": 148.55,
+      "yhat_upper": 153.75
+    },
+    {
+      "date": "2024-01-19",
+      "yhat": 151.45,
+      "yhat_lower": 148.8,
+      "yhat_upper": 154.1
+    },
+    {
+      "date": "2024-01-22",
+      "yhat": 151.75,
+      "yhat_lower": 149.05,
+      "yhat_upper": 154.45
+    },
+    {
+      "date": "2024-01-23",
+      "yhat": 152.05,
+      "yhat_lower": 149.3,
+      "yhat_upper": 154.8
+    },
+    {
+      "date": "2024-01-24",
+      "yhat": 152.35,
+      "yhat_lower": 149.55,
+      "yhat_upper": 155.15
+    },
+    {
+      "date": "2024-01-25",
+      "yhat": 152.65,
+      "yhat_lower": 149.8,
+      "yhat_upper": 155.5
+    },
+    {
+      "date": "2024-01-26",
+      "yhat": 152.95,
+      "yhat_lower": 150.05,
+      "yhat_upper": 155.85
+    },
+    {
+      "date": "2024-01-29",
+      "yhat": 153.25,
+      "yhat_lower": 150.3,
+      "yhat_upper": 156.2
+    },
+    {
+      "date": "2024-01-30",
+      "yhat": 153.55,
+      "yhat_lower": 150.55,
+      "yhat_upper": 156.55
+    },
+    {
+      "date": "2024-01-31",
+      "yhat": 153.85,
+      "yhat_lower": 150.8,
+      "yhat_upper": 156.9
+    },
+    {
+      "date": "2024-02-01",
+      "yhat": 154.15,
+      "yhat_lower": 151.05,
+      "yhat_upper": 157.25
+    },
+    {
+      "date": "2024-02-02",
+      "yhat": 154.45,
+      "yhat_lower": 151.3,
+      "yhat_upper": 157.6
+    },
+    {
+      "date": "2024-02-05",
+      "yhat": 154.75,
+      "yhat_lower": 151.55,
+      "yhat_upper": 157.95
+    },
+    {
+      "date": "2024-02-06",
+      "yhat": 155.05,
+      "yhat_lower": 151.8,
+      "yhat_upper": 158.3
+    },
+    {
+      "date": "2024-02-07",
+      "yhat": 155.35,
+      "yhat_lower": 152.05,
+      "yhat_upper": 158.65
+    },
+    {
+      "date": "2024-02-08",
+      "yhat": 155.65,
+      "yhat_lower": 152.3,
+      "yhat_upper": 159.0
+    },
+    {
+      "date": "2024-02-09",
+      "yhat": 155.95,
+      "yhat_lower": 152.55,
+      "yhat_upper": 159.35
+    },
+    {
+      "date": "2024-02-12",
+      "yhat": 156.25,
+      "yhat_lower": 152.8,
+      "yhat_upper": 159.7
+    },
+    {
+      "date": "2024-02-13",
+      "yhat": 156.55,
+      "yhat_lower": 153.05,
+      "yhat_upper": 160.05
+    },
+    {
+      "date": "2024-02-14",
+      "yhat": 156.85,
+      "yhat_lower": 153.3,
+      "yhat_upper": 160.4
+    },
+    {
+      "date": "2024-02-15",
+      "yhat": 157.15,
+      "yhat_lower": 153.55,
+      "yhat_upper": 160.75
+    },
+    {
+      "date": "2024-02-16",
+      "yhat": 157.45,
+      "yhat_lower": 153.8,
+      "yhat_upper": 161.1
+    },
+    {
+      "date": "2024-02-20",
+      "yhat": 157.75,
+      "yhat_lower": 154.05,
+      "yhat_upper": 161.45
+    },
+    {
+      "date": "2024-02-21",
+      "yhat": 158.05,
+      "yhat_lower": 154.3,
+      "yhat_upper": 161.8
+    },
+    {
+      "date": "2024-02-22",
+      "yhat": 158.35,
+      "yhat_lower": 154.55,
+      "yhat_upper": 162.15
+    },
+    {
+      "date": "2024-02-23",
+      "yhat": 158.65,
+      "yhat_lower": 154.8,
+      "yhat_upper": 162.5
+    },
+    {
+      "date": "2024-02-26",
+      "yhat": 158.95,
+      "yhat_lower": 155.05,
+      "yhat_upper": 162.85
+    }
+  ],
+  "metrics": {
+    "rmse": 2.45,
+    "mae": 1.82,
+    "mape": 0.0121
+  }
+}

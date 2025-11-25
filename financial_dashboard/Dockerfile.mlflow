@@ -1,0 +1,37 @@
+# ============================================================================
+# MLflow Experiment Tracking Service - Extends Optimized Base Image
+# ============================================================================
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# Install MLflow-specific Python packages (small, changes more frequently)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir \
+    mlflow==2.8.1 \
+    boto3==1.29.7 \
+    psycopg2-binary==2.9.9
+
+# Copy application code (most frequently changing, keep last)
+COPY . .
+
+# Expose MLflow server port
+EXPOSE 5000
+
+# Set environment variables for MLflow
+ENV MLFLOW_BACKEND_STORE_URI=postgresql://postgres:postgres_dev_pass@postgres:5432/mlflow
+ENV MLFLOW_DEFAULT_ARTIFACT_ROOT=s3://mlflow-artifacts
+ENV AWS_ACCESS_KEY_ID=minioadmin
+ENV AWS_SECRET_ACCESS_KEY=minioadmin
+ENV MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Start MLflow server
+CMD ["mlflow", "server", \
+     "--backend-store-uri", "${MLFLOW_BACKEND_STORE_URI}", \
+     "--default-artifact-root", "${MLFLOW_DEFAULT_ARTIFACT_ROOT}", \
+     "--host", "0.0.0.0", \
+     "--port", "5000"]

@@ -1,0 +1,60 @@
+{
+  "start_time": "2025-11-24T04:43:01.523416",
+  "tests": [
+    {
+      "name": "Dashboard Loads",
+      "status": "passed",
+      "message": "Loaded in 26.75s",
+      "duration_seconds": 26.752222299575806
+    },
+    {
+      "name": "Health Endpoint",
+      "status": "passed",
+      "message": "Status: healthy, Callbacks: 80",
+      "duration_seconds": 0.7150378227233887
+    },
+    {
+      "name": "Callback Map Endpoint",
+      "status": "passed",
+      "message": "Total callbacks: 80 (13 duplicates - verify intentional)",
+      "duration_seconds": 0.6170496940612793
+    },
+    {
+      "name": "Market Sentiment Endpoint",
+      "status": "passed",
+      "message": "No timestamp available",
+      "duration_seconds": 0.6040918827056885
+    },
+    {
+      "name": "Tab Navigation",
+      "status": "passed",
+      "message": "Found 40 tabs",
+      "duration_seconds": 5.565261125564575
+    },
+    {
+      "name": "Market Forecast Tab",
+      "status": "passed",
+      "message": "Chart rendered successfully",
+      "duration_seconds": 7.552341938018799
+    },
+    {
+      "name": "Command Center Tab",
+      "status": "passed",
+      "message": "Tab loaded",
+      "duration_seconds": 7.2428200244903564
+    },
+    {
+      "name": "Console Errors Check",
+      "status": "failed",
+      "message": "Found 4 errors:\n{message: Invalid prop for this component, html: Property \"options\" was used with component ID:\n  \"\u2026da55a12281068, contract-expiration-selector.value}\n{message: Invalid prop for this component, html: Property \"options\" was used with component ID:\n  \"\u2026da55a12281068, contract-expiration-selector.value}\n{message: Invalid prop for this component, html: Property \"options\" was used with component ID:\n  \"\u2026da55a12281068, contract-expiration-selector.value}\n{message: Invalid prop for this component, html: Property \"options\" was used with component ID:\n  \"\u2026da55a12281068, contract-expiration-selector.value}",
+      "duration_seconds": 4.363059997558594e-05
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "passed": 7,
+    "failed": 1,
+    "skipped": 0
+  },
+  "end_time": "2025-11-24T04:43:56.194179"
+}

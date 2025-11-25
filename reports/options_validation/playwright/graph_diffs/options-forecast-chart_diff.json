@@ -1,0 +1,15 @@
+{
+  "elem_id": "options-forecast-chart",
+  "timestamp": "2025-11-20T20:59:43.356478Z",
+  "diff_result": {
+    "changed": true,
+    "change_type": "y_data_changed: L2 norm = 0.0224",
+    "metrics": {
+      "trace_count_diff": 0,
+      "l2_norm_y": 0.022360679774997894,
+      "l2_norm_x": 0.0
+    },
+    "valid": true,
+    "issues": []
+  }
+}

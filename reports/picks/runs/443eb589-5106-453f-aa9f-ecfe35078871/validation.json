@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "errors": [
+    "Sector concentration exceeds threshold"
+  ]
+}

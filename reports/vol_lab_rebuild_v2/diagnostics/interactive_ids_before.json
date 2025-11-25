@@ -1,0 +1,165 @@
+{
+  "audit_timestamp": "2024-11-27T14:30:00",
+  "source": "volatility_lab_compact.py (Agent-1B monolithic)",
+  "total_interactive_ids": 27,
+  "interactive_ids": [
+    "vl-overview-last-surface",
+    "vl-overview-atm-iv",
+    "vl-overview-term-30",
+    "vl-overview-term-60",
+    "vl-overview-term-90",
+    "vl-compute-quick-btn",
+    "vl-overview-refresh-btn",
+    "vl-calc-ticker",
+    "vl-calc-expiry",
+    "vl-calc-strike-range",
+    "vl-calc-run-btn",
+    "vl-heatmap",
+    "vl-iv-metrics-table",
+    "vl-iv-export-btn",
+    "vl-explorer-date-slider",
+    "vl-signal-run-btn",
+    "vl-signal-table",
+    "vl-signal-paper-order-btn",
+    "vl-backtest-run-btn",
+    "vl-backtest-results",
+    "vl-backtest-export-btn",
+    "vl-diag-solver-log",
+    "vl-diag-iterations",
+    "vl-diag-last-payload",
+    "vl-diag-export-log",
+    "vl-surface-store",
+    "vl-job-store",
+    "vl-health-interval"
+  ],
+  "breakdown_by_panel": {
+    "overview": {
+      "count": 7,
+      "ids": [
+        "vl-overview-last-surface",
+        "vl-overview-atm-iv",
+        "vl-overview-term-30",
+        "vl-overview-term-60",
+        "vl-overview-term-90",
+        "vl-compute-quick-btn",
+        "vl-overview-refresh-btn"
+      ]
+    },
+    "iv_surface": {
+      "count": 8,
+      "ids": [
+        "vl-calc-ticker",
+        "vl-calc-expiry",
+        "vl-calc-strike-range",
+        "vl-calc-run-btn",
+        "vl-heatmap",
+        "vl-iv-metrics-table",
+        "vl-iv-export-btn",
+        "vl-explorer-date-slider"
+      ]
+    },
+    "signals_backtest": {
+      "count": 6,
+      "ids": [
+        "vl-signal-run-btn",
+        "vl-signal-table",
+        "vl-signal-paper-order-btn",
+        "vl-backtest-run-btn",
+        "vl-backtest-results",
+        "vl-backtest-export-btn"
+      ]
+    },
+    "diagnostics": {
+      "count": 5,
+      "ids": [
+        "vl-diag-solver-log",
+        "vl-diag-iterations",
+        "vl-diag-last-payload",
+        "vl-diag-export-log",
+        "vl-diag-collapse"
+      ]
+    },
+    "stores_and_intervals": {
+      "count": 3,
+      "ids": [
+        "vl-surface-store",
+        "vl-job-store",
+        "vl-health-interval"
+      ]
+    }
+  },
+  "callback_wiring": {
+    "compute_iv_surface": {
+      "outputs": 6,
+      "inputs": 1,
+      "states": 3,
+      "output_ids": [
+        "vl-heatmap",
+        "vl-iv-metrics-table",
+        "vl-diag-solver-log",
+        "vl-diag-iterations",
+        "vl-diag-last-payload",
+        "vl-surface-store"
+      ],
+      "input_ids": ["vl-calc-run-btn"],
+      "state_ids": [
+        "vl-calc-ticker",
+        "vl-calc-expiry",
+        "vl-calc-strike-range"
+      ]
+    },
+    "run_signals": {
+      "outputs": 1,
+      "inputs": 1,
+      "states": 1,
+      "output_ids": ["vl-signal-table"],
+      "input_ids": ["vl-signal-run-btn"],
+      "state_ids": ["vl-surface-store"]
+    },
+    "run_backtest": {
+      "outputs": 1,
+      "inputs": 1,
+      "states": 1,
+      "output_ids": ["vl-backtest-results"],
+      "input_ids": ["vl-backtest-run-btn"],
+      "state_ids": ["vl-surface-store"]
+    },
+    "refresh_overview": {
+      "outputs": 5,
+      "inputs": 1,
+      "states": 0,
+      "output_ids": [
+        "vl-overview-last-surface",
+        "vl-overview-atm-iv",
+        "vl-overview-term-30",
+        "vl-overview-term-60",
+        "vl-overview-term-90"
+      ],
+      "input_ids": ["vl-overview-refresh-btn"],
+      "state_ids": []
+    },
+    "toggle_diagnostics": {
+      "outputs": 1,
+      "inputs": 1,
+      "states": 1,
+      "output_ids": ["vl-diag-collapse"],
+      "input_ids": ["vl-diag-solver-log"],
+      "state_ids": ["vl-diag-collapse"]
+    },
+    "poll_health": {
+      "outputs": 2,
+      "inputs": 1,
+      "states": 0,
+      "output_ids": ["vl-diag-solver-log", "vl-diag-iterations"],
+      "input_ids": ["vl-health-interval"],
+      "state_ids": []
+    }
+  },
+  "validation": {
+    "all_ids_unique": true,
+    "all_ids_prefixed_vl": true,
+    "all_callbacks_mapped": true,
+    "orphaned_ids": [],
+    "duplicate_ids": []
+  }
+}

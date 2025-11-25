@@ -1,0 +1,92 @@
+{
+  "timestamp": "2025-11-24T08:14:22.303280",
+  "url": "http://localhost:8050",
+  "tickers_tested": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "NVDA"
+  ],
+  "results": [
+    {
+      "expected_ticker": "AAPL",
+      "found_in_title": true,
+      "dropdown_value": null,
+      "found_selected": false,
+      "all_tickers_in_dom": [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "NVDA"
+      ],
+      "match": true,
+      "ticker": "AAPL",
+      "timestamp": 1763972001,
+      "screenshot": "/home/aarav/unified-dashboard/reports/systemfix/playwright/AAPL_forecast_1763972001.png",
+      "dom": "/home/aarav/unified-dashboard/reports/systemfix/dom/AAPL_forecast_1763972001.html",
+      "store_found": false
+    },
+    {
+      "expected_ticker": "MSFT",
+      "found_in_title": true,
+      "dropdown_value": null,
+      "found_selected": false,
+      "all_tickers_in_dom": [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "NVDA"
+      ],
+      "match": true,
+      "ticker": "MSFT",
+      "timestamp": 1763972001,
+      "screenshot": "/home/aarav/unified-dashboard/reports/systemfix/playwright/MSFT_forecast_1763972001.png",
+      "dom": "/home/aarav/unified-dashboard/reports/systemfix/dom/MSFT_forecast_1763972001.html",
+      "store_found": false
+    },
+    {
+      "expected_ticker": "GOOGL",
+      "found_in_title": true,
+      "dropdown_value": null,
+      "found_selected": false,
+      "all_tickers_in_dom": [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "NVDA"
+      ],
+      "match": true,
+      "ticker": "GOOGL",
+      "timestamp": 1763972001,
+      "screenshot": "/home/aarav/unified-dashboard/reports/systemfix/playwright/GOOGL_forecast_1763972001.png",
+      "dom": "/home/aarav/unified-dashboard/reports/systemfix/dom/GOOGL_forecast_1763972001.html",
+      "store_found": true,
+      "store_ticker": "AAPL"
+    },
+    {
+      "expected_ticker": "NVDA",
+      "found_in_title": true,
+      "dropdown_value": null,
+      "found_selected": false,
+      "all_tickers_in_dom": [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "NVDA"
+      ],
+      "match": true,
+      "ticker": "NVDA",
+      "timestamp": 1763972001,
+      "screenshot": "/home/aarav/unified-dashboard/reports/systemfix/playwright/NVDA_forecast_1763972001.png",
+      "dom": "/home/aarav/unified-dashboard/reports/systemfix/dom/NVDA_forecast_1763972001.html",
+      "store_found": true,
+      "store_ticker": "AAPL"
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0
+  }
+}

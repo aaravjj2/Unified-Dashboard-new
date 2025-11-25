@@ -1,0 +1,70 @@
+================================================================================
+PHASE 6E: UNIFIED CONTEXT AND CALLBACK REPAIR
+COMBINED CONSOLE OUTPUT + CALLBACK TRACES
+================================================================================
+
+## MODULE IDENTITY VERIFICATION TEST OUTPUT
+
+================================================================================
+PHASE 6E: MODULE IDENTITY VERIFICATION
+================================================================================
+
+[Test 1] Import _shared as SH
+[_shared.py] ✅ Preloaded 21 weekly prices
+[_shared] SH id: 138420750592304, RESULTS_CACHE id: 138420111504832, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 138420750592304, RESULTS_CACHE id: 138420111504832, SH.__file__: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+  SH module: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+  id(SH): 138420750592304
+  id(SH.RESULTS_CACHE): 138420111504832
+  RESULTS_CACHE keys: dict_keys(['results', 'loaded_at'])
+  Prices loaded: 21 tickers
+  Sample tickers: ['AAPL', 'MSFT', 'ASTS', 'SNDK', 'RGTI']
+  Sample price data (AAPL): {'current_price': 262.78, 'daily_change': 1.23, 'start_price': 249.41, 'profit_loss': 13.41, 'source': 'alpaca', 'month_start_price': 245.32, 'week_start_price': 249.41}
+
+[Test 2] Simulate callback import
+  SH_callback module: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/_shared.py
+  id(SH_callback): 138420750592304
+  id(SH_callback.RESULTS_CACHE): 138420111504832
+  Same module object? True
+  Same RESULTS_CACHE object? True
+
+[Test 3] Test cache reload
+  Before reload: 21 prices
+[_shared.py] ✅ Preloaded 21 weekly prices
+  After reload: 21 prices
+
+[Test 4] Verify output paths
+  SH.OUT_ROOT: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/outputs
+  OUT_ROOT exists: True
+  prices_weekly.json exists: True
+  prices_monthly.json exists: True
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+================================================================================
+
+## PLAYWRIGHT E2E TEST OUTPUT (Market Trends)
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/c/Aarav/fin_env/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.10.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/test_market_trends_ui.py::test_table_renders_all_rows[chromium] 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:94 ✅ Loaded keys.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded doppler.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded .env
+INFO     utils.load_env:load_env.py:150 ✅ All 5 required keys present
+PASSED                                                                   [100%]
+
+============================== 1 passed in 41.90s ==============================
+
+================================================================================
+END OF COMBINED LOGS
+================================================================================

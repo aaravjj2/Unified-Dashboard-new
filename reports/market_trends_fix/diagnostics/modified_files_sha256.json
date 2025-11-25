@@ -1,0 +1,11 @@
+{
+  "financial_dashboard/utils/cache_manager.py": "669cbb233099a505338ef2cfa97f05f80060e924615c0ce133c392f6dbe4b1a5",
+  "financial_dashboard/utils/news_manager.py": "cc662886a7d0c200f9aa0f59ae458bd68f0f668c941d83fb95116cf79ab47a39",
+  "financial_dashboard/tabs/market_trends_callbacks_fixed.py": "03ffaa1c7d69e856cdb4386bc19e529663e115aa48bc70e12ba951d010f73f91",
+  "financial_dashboard/tabs/market_trends.py": "250e2b70cd96d4674bb47c0f59dc231d3297bb73179bb41e7959b9601865e0ed",
+  "tests/test_cache_manager_unit.py": "dd53e165758d0bcd351ce14009be4657def0cb1c38ff36fc49a35775f2536c4a",
+  "tests/test_cache_manager_properties.py": "ca577228fb243561a822f7b0d680f0d8291c99a76b6134a847ff72c83a1fbd6c",
+  "tests/test_market_trends_fixes.py": "0a7f4a6b3aaeea2436f3da3f96cfc8376e3782796b9b3319ed3612b3c09fc9b7",
+  "tests/fixtures/market_trends/news_fixtures.json": "d585e72f70ac463b4e577e9e53b5b758a098ebc094d544731bc09ad0eba05f3d",
+  "tests/fixtures/market_trends/sample_brief.json": "1d14865879f7b3fb0058fa43f367bb44dbb49de2462ee599ccfdade88681091a"
+}

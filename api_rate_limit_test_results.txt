@@ -1,0 +1,158 @@
+================================================================================
+API RATE LIMIT TESTING - FINNHUB & ALPACA
+================================================================================
+Test started at: 2025-10-23 14:02:19
+
+
+================================================================================
+TESTING FINNHUB API - Key 1
+================================================================================
+
+📍 Testing: Company Profile
+   URL: https://finnhub.io/api/v1/stock/profile2
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=59
+           X-RateLimit-Reset=1761242601
+   ✅ SUCCESS - Data returned: dict
+      Keys: ['country', 'currency', 'estimateCurrency', 'exchange', 'finnhubIndustry']
+
+📍 Testing: Quote (Real-time Price)
+   URL: https://finnhub.io/api/v1/quote
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=58
+           X-RateLimit-Reset=1761242603
+   ✅ SUCCESS - Data returned: dict
+      Keys: ['c', 'd', 'dp', 'h', 'l']
+
+📍 Testing: Candles (Historical OHLC)
+   URL: https://finnhub.io/api/v1/stock/candle
+   Status Code: 403
+   Headers: X-RateLimit-Limit=N/A
+           X-RateLimit-Remaining=N/A
+           X-RateLimit-Reset=N/A
+   ❌ FORBIDDEN (403) - Access denied
+   Response: {"error":"You don't have access to this resource."}
+
+📍 Testing: Company News
+   URL: https://finnhub.io/api/v1/company-news
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=59
+           X-RateLimit-Reset=1761242606
+   ✅ SUCCESS - Data returned: list
+      Items: 243
+
+📍 Testing: Market News
+   URL: https://finnhub.io/api/v1/news
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=58
+           X-RateLimit-Reset=1761242606
+   ✅ SUCCESS - Data returned: list
+      Items: 100
+
+================================================================================
+TESTING FINNHUB RATE LIMITS - Key 1
+================================================================================
+
+Making rapid requests (5 symbols)...
+   Request 1: AAPL - Status 200 - Remaining: 54
+   Request 2: MSFT - Status 200 - Remaining: 53
+   Request 3: GOOGL - Status 200 - Remaining: 52
+   Request 4: AMZN - Status 200 - Remaining: 51
+   Request 5: TSLA - Status 200 - Remaining: 50
+
+Completed in 1.31s
+
+================================================================================
+TESTING FINNHUB API - Key 2
+================================================================================
+
+📍 Testing: Company Profile
+   URL: https://finnhub.io/api/v1/stock/profile2
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=59
+           X-RateLimit-Reset=1761242610
+   ✅ SUCCESS - Data returned: dict
+      Keys: ['country', 'currency', 'estimateCurrency', 'exchange', 'finnhubIndustry']
+
+📍 Testing: Quote (Real-time Price)
+   URL: https://finnhub.io/api/v1/quote
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=57
+           X-RateLimit-Reset=1761242603
+   ✅ SUCCESS - Data returned: dict
+      Keys: ['c', 'd', 'dp', 'h', 'l']
+
+📍 Testing: Candles (Historical OHLC)
+   URL: https://finnhub.io/api/v1/stock/candle
+   Status Code: 403
+   Headers: X-RateLimit-Limit=N/A
+           X-RateLimit-Remaining=N/A
+           X-RateLimit-Reset=N/A
+   ❌ FORBIDDEN (403) - Access denied
+   Response: {"error":"You don't have access to this resource."}
+
+📍 Testing: Company News
+   URL: https://finnhub.io/api/v1/company-news
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=59
+           X-RateLimit-Reset=1761242614
+   ✅ SUCCESS - Data returned: list
+      Items: 243
+
+📍 Testing: Market News
+   URL: https://finnhub.io/api/v1/news
+   Status Code: 200
+   Headers: X-RateLimit-Limit=60
+           X-RateLimit-Remaining=58
+           X-RateLimit-Reset=1761242614
+   ✅ SUCCESS - Data returned: list
+      Items: 100
+
+================================================================================
+TESTING FINNHUB RATE LIMITS - Key 2
+================================================================================
+
+Making rapid requests (5 symbols)...
+   Request 1: AAPL - Status 200 - Remaining: 56
+   Request 2: MSFT - Status 200 - Remaining: 55
+   Request 3: GOOGL - Status 200 - Remaining: 54
+   Request 4: AMZN - Status 200 - Remaining: 53
+   Request 5: TSLA - Status 200 - Remaining: 52
+
+Completed in 1.63s
+
+================================================================================
+TESTING ALPACA API
+================================================================================
+❌ Alpaca credentials not found in environment
+
+================================================================================
+TEST SUMMARY
+================================================================================
+
+📊 FINNHUB KEY 1 RESULTS:
+   ✅ Company Profile: SUCCESS
+   ✅ Quote (Real-time Price): SUCCESS
+   ❌ Candles (Historical OHLC): FORBIDDEN
+   ✅ Company News: SUCCESS
+   ✅ Market News: SUCCESS
+
+📊 FINNHUB KEY 2 RESULTS:
+   ✅ Company Profile: SUCCESS
+   ✅ Quote (Real-time Price): SUCCESS
+   ❌ Candles (Historical OHLC): FORBIDDEN
+   ✅ Company News: SUCCESS
+   ✅ Market News: SUCCESS
+
+📊 ALPACA RESULTS:
+
+================================================================================
+Test completed at: 2025-10-23 14:02:38
+================================================================================

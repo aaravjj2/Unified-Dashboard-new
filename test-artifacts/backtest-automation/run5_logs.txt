@@ -1,0 +1,200 @@
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,415 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,539 - ERROR - Error fetching week_start_price for KLAC: cannot convert the series to <class 'float'>
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,575 - INFO - Fetched DIS from yfinance (fallback)
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,650 - WARNING - Alpaca fetch failed for EA: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,650 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,724 - INFO - Fetched EA from yfinance (fallback)
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,780 - WARNING - Alpaca fetch failed for ETSY: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:47,780 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | /app/utils/price_client.py:315: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | /app/utils/price_client.py:319: FutureWarning:
+dash_app  | 
+dash_app  | Calling float on a single element Series is deprecated and will raise a TypeError in the future. Use float(ser.iloc[0]) instead
+dash_app  | 
+dash_app  | 2025-10-24 02:49:48,355 - INFO - Price fetch complete: 20/20 tickers | Alpaca: 20 | Finnhub: 0 | yfinance: 0 | Local: 0
+dash_app  | 2025-10-24 02:49:48,359 - INFO - 172.18.0.1 - - [24/Oct/2025 02:49:48] "POST /_dash-update-component HTTP/1.1" 200 -
+dash_app  | 2025-10-24 02:49:48,646 - INFO - 🎯 BACKTEST BUTTON: Queueing full analysis job for ['NVDA', 'AAPL', 'MSFT', 'GOOGL', 'META', 'AMZN', 'TSLA', 'INTC', 'AMD', 'AVGO', 'NTCL', 'SPY', 'QQQ', 'XLK', 'LZMH'] (1y), test_mode=False
+dash_app  | 2025-10-24 02:49:48,647 - INFO - ================================================================================
+dash_app  | 2025-10-24 02:49:48,647 - INFO - 🚀 BACKGROUND JOB STARTED: job_1761274188647
+dash_app  | 2025-10-24 02:49:48,647 - INFO -    Target: run_full_analysis
+dash_app  | 2025-10-24 02:49:48,647 - INFO - ✅ Backtest job queued: job_1761274188647
+dash_app  | 2025-10-24 02:49:48,647 - INFO -    Module: market_trends_dash
+dash_app  | 2025-10-24 02:49:48,648 - INFO - 172.18.0.1 - - [24/Oct/2025 02:49:48] "POST /_dash-update-component HTTP/1.1" 200 -
+dash_app  | 2025-10-24 02:49:48,648 - INFO -    Args: ()
+dash_app  | 2025-10-24 02:49:48,648 - INFO -    Kwargs keys: ['tickers', 'period', 'options', 'test_mode']
+dash_app  | 2025-10-24 02:49:48,648 - INFO -       tickers: NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA,INTC,AMD,AVGO,NTCL,SPY,QQQ,XLK,LZMH (type=<class 'str'>)
+dash_app  | 2025-10-24 02:49:48,649 - INFO -       period: 1y
+dash_app  | 2025-10-24 02:49:48,649 - INFO -       options: ['options', 'news', 'backtest']
+dash_app  | 2025-10-24 02:49:48,649 - INFO -       test_mode: False
+dash_app  | 2025-10-24 02:49:48,649 - INFO - ================================================================================
+dash_app  | 2025-10-24 02:49:48,649 - INFO - ✅ Normalized tickers from string to list: ['NVDA', 'AAPL', 'MSFT', 'GOOGL', 'META', 'AMZN', 'TSLA', 'INTC', 'AMD', 'AVGO', 'NTCL', 'SPY', 'QQQ', 'XLK', 'LZMH']
+dash_app  | 2025-10-24 02:49:48,649 - INFO - ⏱️  Starting job execution with 300s timeout...
+dash_app  | 2025-10-24 02:49:48,649 - DEBUG - run_full_analysis called with tickers=['NVDA', 'AAPL', 'MSFT', 'GOOGL', 'META', 'AMZN', 'TSLA', 'INTC', 'AMD', 'AVGO', 'NTCL', 'SPY', 'QQQ', 'XLK', 'LZMH'] (type=<class 'list'>) period='1y' kwargs={'options': ['options', 'news', 'backtest'], 'test_mode': False}
+dash_app  | 2025-10-24 02:49:48,649 - INFO - 🎯 PHASE 4: Received options as list: ['options', 'news', 'backtest']
+dash_app  | 2025-10-24 02:49:48,649 - INFO -    Parsed flags: no_options=False, no_news=False, run_backtest=True
+dash_app  | /app/pipelines/compute_market_trends.py:52: FutureWarning:
+dash_app  | 
+dash_app  | YF.download() has changed argument auto_adjust default to True
+dash_app  | 
+dash_app  | 2025-10-24 02:49:48,684 - INFO - 🔄 manage_polling: status_text='{'props': {'children': ['Running full analysis with backtest (Job ID: job_1761274188647)'], 'id': 'job-status-display', 'style': {'display': 'block'}}, 'type': 'Div', 'namespace': 'dash_html_components'}', job_id=job_1761274188647
+dash_app  | 2025-10-24 02:49:48,685 - INFO - Unknown status, disabling polling
+dash_app  | 2025-10-24 02:49:48,685 - INFO - 172.18.0.1 - - [24/Oct/2025 02:49:48] "POST /_dash-update-component HTTP/1.1" 200 -
+dash_app  | 2025-10-24 02:49:49,251 - INFO - ✅ Job completed successfully in 0.60s
+dash_app  | 2025-10-24 02:49:49,252 - INFO -    Result keys: ['ok', 'generated_at', 'detailed', 'prices', 'market_trend']
+dash_app  | 2025-10-24 02:49:49,252 - INFO -    Detailed records: 15
+dash_app  | 2025-10-24 02:49:49,252 - INFO - 📝 Job job_1761274188647 marked as 'done'
+dash_app  | 2025-10-24 02:49:53,606 - INFO - Fetched ETSY from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:53,713 - WARNING - Alpaca fetch failed for GEV: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:53,713 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:53,793 - INFO - Fetched GEV from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:53,908 - WARNING - Alpaca fetch failed for GLW: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:53,908 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:54,046 - INFO - Fetched GLW from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:54,147 - WARNING - Alpaca fetch failed for HOOD: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:54,148 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:54,227 - INFO - Fetched HOOD from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:54,279 - WARNING - Alpaca fetch failed for HUT: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:54,279 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:54,355 - INFO - Fetched HUT from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:54,405 - WARNING - Alpaca fetch failed for INOD: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:54,406 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:54,479 - INFO - Fetched INOD from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:54,531 - WARNING - Alpaca fetch failed for INTC: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:54,532 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:55,586 - INFO - Fetched INTC from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:55,660 - WARNING - Alpaca fetch failed for JNJ: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:55,660 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:55,818 - INFO - Fetched JNJ from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:55,873 - WARNING - Alpaca fetch failed for KLAC: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:55,873 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:55,998 - INFO - Fetched KLAC from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:56,059 - WARNING - Alpaca fetch failed for LRCX: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:56,059 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:56,146 - INFO - Fetched LRCX from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:56,201 - WARNING - Alpaca fetch failed for MU: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:56,201 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:56,312 - INFO - Fetched MU from yfinance (fallback)
+dash_app  | 2025-10-24 02:49:56,381 - WARNING - Alpaca fetch failed for NEM: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 02:49:56,381 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 02:49:56,832 - INFO - 172.18.0.1 - - [24/Oct/2025 02:49:56] "GET /_job_status?job_id=job_1761274188647 HTTP/1.1" 200 -

@@ -1,0 +1,222 @@
+{
+  "app_id": 131571228836192,
+  "app_type": "<class 'dash_extensions.enrich.DashProxy'>",
+  "callback_ids": [
+    "..cc-smoke-results.data...cc-system-status.children...cc-system-status.color..",
+    "cc-portfolio-snapshot.children",
+    "cc-perf-insights.children",
+    "..cc-sentiment-indicator.children...cc-sentiment-indicator.className...cc-sentiment-score.children...cc-sentiment-last-updated.children..",
+    "cc-chat-response.children",
+    "..cc-picks-card.children...cc-picks-last-run-id.children..",
+    "cc-admin-output.children",
+    "..status.children@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...status.style@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...current-job.data@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...poll-interval.disabled@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e..",
+    "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data..",
+    "..results-area.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...news-container.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.style@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee..",
+    "mt-provider-summary.children",
+    "..vl-heatmap.figure...vl-iv-metrics-table.children...vl-diag-solver-log.children...vl-diag-iterations.children...vl-diag-last-payload.children...vl-surface-store.data..",
+    "vl-signal-table.children",
+    "vl-backtest-results.children",
+    "..vl-overview-last-surface.children...vl-overview-atm-iv.children...vl-overview-term-30.children...vl-overview-term-60.children...vl-overview-term-90.children..",
+    "vl-diag-collapse.is_open",
+    "..perf-total-return.children...perf-total-return.className...perf-excess-return.children...perf-excess-return.className...perf-sharpe.children...perf-info-ratio.children...perf-cumulative-chart.figure...perf-monthly-chart.figure...perf-metrics-table.children...attr-status-message.children..",
+    "..factors-exposures-container.children...factors-contribution-chart.figure...factors-timeseries-chart.figure..",
+    "..sectors-weights-pie.figure...sectors-contribution-bar.figure...sectors-table-container.children...sectors-heatmap.figure..",
+    "..residual-alpha.children...residual-alpha.className...residual-beta.children...residual-tracking.children...residual-vol.children...residual-timeseries-chart.figure...residual-histogram.figure...residual-explained-pie.figure...residual-scatter-chart.figure..",
+    "..sl-validation-result.children...sl-validation-status.data..",
+    "..sl-tickers-input.value...sl-entry-condition.value...sl-exit-condition.value...sl-position-size.value...sl-max-positions.value..",
+    "..sl-execution-status.children...sl-backtest-results.data..",
+    "..sl-metric-cagr.children...sl-metric-sharpe.children...sl-metric-maxdd.children...sl-metric-winrate.children..",
+    "sl-equity-curve.figure",
+    "sl-vs-benchmark.figure",
+    "sl-factor-attribution.figure",
+    "sl-exposure-breakdown.figure",
+    "..mp-content.children...mp-status-message.children...mp-data-store.data..",
+    "mp-csv-download.data",
+    "..wp-content.children...wp-status-message.children...wp-data-store.data..",
+    "wp-csv-download.data",
+    "..portfolio-value.children...portfolio-invested.children...portfolio-unrealized-pl.children...portfolio-buying-power.children...portfolio-data-store.data...portfolio-alpaca-alert.children...portfolio-alpaca-alert.is_open..",
+    "shap-regen-status.children",
+    "portfolio-positions-table.children",
+    "..inspect-modal.is_open...inspect-modal-title.children...inspect-modal-body.children..",
+    "news-prefetch-status.children",
+    "portfolio-orders-table.children",
+    "..portfolio-analytics-content.children...portfolio-var.children...portfolio-cvar.children...portfolio-sharpe.children...portfolio-beta.children..",
+    "monte-carlo-results.children",
+    "portfolio-factor-exposure-content.children",
+    "opt-tickers-input.value",
+    "opt-results-container.children",
+    "..options-chain-store.data...options-status-message.children...chain-expiration-dropdown.options...chain-expiration-dropdown.value..",
+    "..chain-spot-price.children...chain-total-volume.children...chain-total-oi.children...chain-pcr.children..",
+    "contract-expiration-selector.options@8d0373f186a26323058d311740f8644f290f8577190b2a172bcd74fae8e45d18",
+    "chain-table-container.children",
+    "chain-download.data",
+    "..greeks-delta-chart.figure...greeks-gamma-chart.figure...greeks-theta-chart.figure...greeks-vega-chart.figure...greeks-iv-smile.figure..",
+    "..vol-surface-3d.figure...options-surface-store.data..",
+    "sim-expiration-dropdown.options",
+    "sim-strike-dropdown.options",
+    "..sim-max-profit.children...sim-max-loss.children...sim-breakeven.children...sim-pnl-chart.figure..",
+    "tradingview-preview.children",
+    "options-forecast-results.children",
+    "tradingview-signals-container.children",
+    "..contract-strike-selector.options...contract-strike-selector.value...contract-expiration-selector.options@0fc8ea7e0029011e47b06c793ab7db54100933482a34d65a33eda55a12281068...contract-expiration-selector.value..",
+    "..ol-backtest-results.children...ol-backtest-equity-chart.figure...ol-backtest-trades-table.children...ol-backtest-store.data..",
+    "ol-backtest-download.data",
+    "sim-order-confirmation.children",
+    "..rl-briefs-store.data@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.children@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.color@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.is_open@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab..",
+    "rl-brief-list.children",
+    "rl-selected-brief-id.data",
+    "rl-detail-panel.children",
+    "..rl-brief-modal.is_open...rl-modal-title.children...rl-brief-title-input.value...rl-brief-tags-input.value...rl-brief-summary-input.value...rl-brief-body-input.value...rl-edit-brief-id.data..",
+    "..rl-alert.children@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.color@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.is_open@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b..",
+    "..rl-alert.children@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.color@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.is_open@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846..",
+    "..rl-briefs-store.data@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.children@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.color@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.is_open@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70..",
+    "..rl-briefs-store.data@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.children@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.color@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.is_open@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759..",
+    "rl-analysis-results.children",
+    "market-scan-results-container.children",
+    "factor-analysis-results-container.children",
+    "correlation-heatmap.children",
+    "backtest-results-container.children",
+    "research-lab-content.children",
+    "rl-brief-export-btn.href",
+    "chatbot-container.style",
+    "..chatbot-messages.children@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0...chatbot-input.value...chatbot-pending-action.data@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0..",
+    "..chatbot-messages.children@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336...chatbot-pending-action.data@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336..",
+    "chatbot-loading-output.children"
+  ],
+  "duplicate_count": 13,
+  "duplicate_outputs": [
+    {
+      "callback_ids": [
+        "..status.children@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...status.style@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...current-job.data@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...poll-interval.disabled@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e..",
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data..",
+        "..results-area.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...news-container.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.style@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee.."
+      ],
+      "count": 3,
+      "output_id": "status.children"
+    },
+    {
+      "callback_ids": [
+        "..status.children@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...status.style@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...current-job.data@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...poll-interval.disabled@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e..",
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data..",
+        "..results-area.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...news-container.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.style@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee.."
+      ],
+      "count": 3,
+      "output_id": "status.style"
+    },
+    {
+      "callback_ids": [
+        "..status.children@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...status.style@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...current-job.data@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...poll-interval.disabled@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e..",
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data.."
+      ],
+      "count": 2,
+      "output_id": "current-job.data"
+    },
+    {
+      "callback_ids": [
+        "..status.children@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...status.style@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...current-job.data@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e...poll-interval.disabled@1824666894a373c3e249f6d745d66a858093d9c054e74ebedd57559d8ef2dc5e..",
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data.."
+      ],
+      "count": 2,
+      "output_id": "poll-interval.disabled"
+    },
+    {
+      "callback_ids": [
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data..",
+        "..results-area.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...news-container.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.style@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee.."
+      ],
+      "count": 2,
+      "output_id": "results-area.children"
+    },
+    {
+      "callback_ids": [
+        "..results-area.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...news-container.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.children@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...status.style@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...current-job.data@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...poll-interval.disabled@e203ee2fd878f11e5db9ea4d80df9f303524cbbf35ac017cbd713e7d1367d7ed...trends-results-store.data..",
+        "..results-area.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...news-container.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.children@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee...status.style@593563ea9f4a2fe1c5383288eb01a71303041d73faba638a4eeeac40a9efa9ee.."
+      ],
+      "count": 2,
+      "output_id": "news-container.children"
+    },
+    {
+      "callback_ids": [
+        "contract-expiration-selector.options@8d0373f186a26323058d311740f8644f290f8577190b2a172bcd74fae8e45d18",
+        "..contract-strike-selector.options...contract-strike-selector.value...contract-expiration-selector.options@0fc8ea7e0029011e47b06c793ab7db54100933482a34d65a33eda55a12281068...contract-expiration-selector.value.."
+      ],
+      "count": 2,
+      "output_id": "contract-expiration-selector.options"
+    },
+    {
+      "callback_ids": [
+        "..rl-briefs-store.data@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.children@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.color@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.is_open@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab..",
+        "..rl-briefs-store.data@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.children@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.color@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.is_open@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70..",
+        "..rl-briefs-store.data@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.children@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.color@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.is_open@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759.."
+      ],
+      "count": 3,
+      "output_id": "rl-briefs-store.data"
+    },
+    {
+      "callback_ids": [
+        "..rl-briefs-store.data@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.children@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.color@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.is_open@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab..",
+        "..rl-alert.children@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.color@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.is_open@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b..",
+        "..rl-alert.children@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.color@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.is_open@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846..",
+        "..rl-briefs-store.data@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.children@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.color@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.is_open@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70..",
+        "..rl-briefs-store.data@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.children@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.color@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.is_open@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759.."
+      ],
+      "count": 5,
+      "output_id": "rl-alert.children"
+    },
+    {
+      "callback_ids": [
+        "..rl-briefs-store.data@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.children@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.color@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.is_open@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab..",
+        "..rl-alert.children@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.color@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.is_open@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b..",
+        "..rl-alert.children@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.color@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.is_open@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846..",
+        "..rl-briefs-store.data@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.children@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.color@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.is_open@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70..",
+        "..rl-briefs-store.data@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.children@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.color@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.is_open@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759.."
+      ],
+      "count": 5,
+      "output_id": "rl-alert.color"
+    },
+    {
+      "callback_ids": [
+        "..rl-briefs-store.data@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.children@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.color@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab...rl-alert.is_open@1e7fc514ad91c7b1c4dd04d1cc7e2169d7891ddefb05e2157044da006519acab..",
+        "..rl-alert.children@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.color@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b...rl-alert.is_open@41f904c1bfa503424d18d4a881484a2ae42d9f377a971c45113dfe0164133b9b..",
+        "..rl-alert.children@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.color@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846...rl-alert.is_open@2197a2899bf3ea035bc16b38c6eb4f51817bf9b5ea469948b624017473a2b846..",
+        "..rl-briefs-store.data@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.children@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.color@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70...rl-alert.is_open@4178a80dc79c1c785c53e6b39341a662db55d2f17f7f9bf3127d7b59ccd9fb70..",
+        "..rl-briefs-store.data@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.children@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.color@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759...rl-alert.is_open@c5eb06d8068854d40d53c595365cd80013e5375c79e44f8eddd941c36fa6d759.."
+      ],
+      "count": 5,
+      "output_id": "rl-alert.is_open"
+    },
+    {
+      "callback_ids": [
+        "..chatbot-messages.children@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0...chatbot-input.value...chatbot-pending-action.data@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0..",
+        "..chatbot-messages.children@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336...chatbot-pending-action.data@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336.."
+      ],
+      "count": 2,
+      "output_id": "chatbot-messages.children"
+    },
+    {
+      "callback_ids": [
+        "..chatbot-messages.children@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0...chatbot-input.value...chatbot-pending-action.data@2b1e186663cea15bbd4006568e3f68d186a9cb16808da2051b87f9b3ba17efe0..",
+        "..chatbot-messages.children@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336...chatbot-pending-action.data@7874104a33567109c9dc14dcf256ea14845b5eedb64719e1c967ebc3d3ffc336.."
+      ],
+      "count": 2,
+      "output_id": "chatbot-pending-action.data"
+    }
+  ],
+  "output_id_counts": {
+    "chatbot-messages.children": 2,
+    "chatbot-pending-action.data": 2,
+    "contract-expiration-selector.options": 2,
+    "current-job.data": 2,
+    "news-container.children": 2,
+    "poll-interval.disabled": 2,
+    "results-area.children": 2,
+    "rl-alert.children": 5,
+    "rl-alert.color": 5,
+    "rl-alert.is_open": 5,
+    "rl-briefs-store.data": 3,
+    "status.children": 3,
+    "status.style": 3
+  },
+  "status": "success",
+  "total_callbacks": 80
+}

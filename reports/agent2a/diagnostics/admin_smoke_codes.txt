@@ -1,0 +1,6 @@
+--- codes ---
+/ 200
+/admin/ 200
+/admin/callback_map 200
+/admin/tab_health/market_trends 200
+/admin/tab_health/volatility_lab 200

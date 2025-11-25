@@ -1,0 +1,14 @@
+{
+  "timestamp": 1763951311.1436408,
+  "total": 6,
+  "passed": 6,
+  "failed": 0,
+  "results": {
+    "Health Check": "PASS",
+    "RAG Query + Sources": "PASS",
+    "No-Chunk Guard": "PASS",
+    "Action Execution": "PASS",
+    "Live Trading Block": "PASS",
+    "Reindex API": "PASS"
+  }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "pick_type": "weekly",
+    "action": "load",
+    "source": "csv",
+    "record_count": 20,
+    "uploader": "cli",
+    "details": {
+      "csv_path": "outputs/top20_weekly_picks_20251026.csv",
+      "pick_date_or_month": "2025-10-26"
+    },
+    "created_at": "2025-11-21T02:03:24.679015"
+  },
+  {
+    "pick_type": "weekly",
+    "action": "background_update",
+    "source": "picks_updater",
+    "details": {
+      "action": "price_update",
+      "initial_count": 20,
+      "enriched_count": 20,
+      "success_rate": 100.0,
+      "duration_seconds": 0.055844783782958984,
+      "cache_updated": true
+    },
+    "created_at": "2025-11-21T09:25:55.982253"
+  }
+]

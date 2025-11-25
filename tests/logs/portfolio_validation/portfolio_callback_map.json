@@ -1,0 +1,171 @@
+{
+  "total_callbacks": 35,
+  "portfolio_callbacks_count": 8,
+  "portfolio_callbacks": [
+    {
+      "output": "..home-portfolio-value.children...home-portfolio-change.children..",
+      "inputs": [
+        {
+          "id": "interval-component",
+          "property": "n_intervals"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "..portfolio-value.children...portfolio-invested.children...portfolio-unrealized-pl.children...portfolio-buying-power.children...portfolio-data-store.data...portfolio-alpaca-alert.children...portfolio-alpaca-alert.is_open..",
+      "inputs": [
+        {
+          "id": "portfolio-refresh-btn",
+          "property": "n_clicks"
+        },
+        {
+          "id": "portfolio-interval",
+          "property": "n_intervals"
+        },
+        {
+          "id": "portfolio-load-trigger",
+          "property": "data"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "portfolio-positions-table.children",
+      "inputs": [
+        {
+          "id": "portfolio-tracker-subtabs",
+          "property": "active_tab"
+        },
+        {
+          "id": "portfolio-positions-refresh-btn",
+          "property": "n_clicks"
+        },
+        {
+          "id": "portfolio-interval",
+          "property": "n_intervals"
+        }
+      ],
+      "state": [
+        {
+          "id": "portfolio-data-store",
+          "property": "data"
+        }
+      ],
+      "clientside_function": null,
+      "prevent_initial_call": true,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "news-prefetch-status.children",
+      "inputs": [
+        {
+          "id": "portfolio-tracker-subtabs",
+          "property": "active_tab"
+        },
+        {
+          "id": "portfolio-refresh-btn",
+          "property": "n_clicks"
+        },
+        {
+          "id": "portfolio-interval",
+          "property": "n_intervals"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "portfolio-orders-table.children",
+      "inputs": [
+        {
+          "id": "portfolio-refresh-btn",
+          "property": "n_clicks"
+        },
+        {
+          "id": "order-filter",
+          "property": "value"
+        },
+        {
+          "id": "order-date-range",
+          "property": "start_date"
+        },
+        {
+          "id": "order-date-range",
+          "property": "end_date"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "..portfolio-analytics-content.children...portfolio-var.children...portfolio-cvar.children...portfolio-sharpe.children...portfolio-beta.children..",
+      "inputs": [
+        {
+          "id": "analytics-period",
+          "property": "value"
+        },
+        {
+          "id": "portfolio-data-store",
+          "property": "data"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "portfolio-factor-exposure-content.children",
+      "inputs": [
+        {
+          "id": "portfolio-data-store",
+          "property": "data"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    },
+    {
+      "output": "opt-tickers-input.value",
+      "inputs": [
+        {
+          "id": "portfolio-data-store",
+          "property": "data"
+        }
+      ],
+      "state": [],
+      "clientside_function": null,
+      "prevent_initial_call": false,
+      "background": null,
+      "dynamic_creator": null,
+      "no_output": false
+    }
+  ]
+}

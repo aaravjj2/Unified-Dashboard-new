@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, hypothesis-6.148.2, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/test_market_trends_fixes.py::TestMarketTrendsButtons::test_03_button_reload_model 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+INFO     utils.load_env:load_env.py:162 ✅ All 5 required keys present
+FAILED                                                                   [100%]
+
+=================================== FAILURES ===================================
+_____________ TestMarketTrendsButtons.test_03_button_reload_model ______________
+tests/test_market_trends_fixes.py:133: in test_03_button_reload_model
+    page.wait_for_function("() => { const el = document.querySelector('#mt-model-status'); return el && el.innerText && el.innerText.trim().length > 0;}", timeout=7000)
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/sync_api/_generated.py:11912: in wait_for_function
+    self._sync(
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_page.py:950: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_frame.py:772: in wait_for_function
+    return from_channel(await self._channel.send("waitForFunction", params))
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:61: in send
+    return await self._connection.wrap_api_call(
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:482: in wrap_api_call
+    return await cb()
+/mnt/c/Aarav/fin_env/.venv_local/lib/python3.10/site-packages/playwright/_impl/_connection.py:97: in inner_send
+    result = next(iter(done)).result()
+E   playwright._impl._api_types.TimeoutError: Timeout 7000ms exceeded.
+---------------------------- Captured stdout setup -----------------------------
+
+[conftest] Environment loaded: 5 keys present
+------------------------------ Captured log setup ------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+INFO     utils.load_env:load_env.py:162 ✅ All 5 required keys present
+=========================== short test summary info ============================
+FAILED tests/test_market_trends_fixes.py::TestMarketTrendsButtons::test_03_button_reload_model
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============================== 1 failed in 35.48s ==============================

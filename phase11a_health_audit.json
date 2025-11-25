@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-10-29T20:15:52.662156",
+  "system_info": {
+    "python_version": "3.10.12 (main, Aug 15 2025, 14:32:43) [GCC 11.4.0]",
+    "platform": "linux",
+    "executable": "/mnt/c/Aarav/fin_env/.venv_local/bin/python3",
+    "env_files_present": [
+      "keys.env",
+      "doppler.env",
+      ".env"
+    ]
+  },
+  "python_environment": {
+    "critical_packages": {
+      "dash": null,
+      "plotly": "6.3.0",
+      "pandas": "2.3.3",
+      "numpy": "2.2.6",
+      "flask": "2.1.2",
+      "requests": "2.32.5",
+      "playwright": "1.55.0"
+    }
+  },
+  "service_health": {
+    "dashboard_port_8050": "OPEN",
+    "llm_configured": false
+  },
+  "disk_usage": {},
+  "process_status": {
+    "python_processes": 8,
+    "dashboard_running": false
+  },
+  "telemetry": {
+    "logs": 34,
+    "outputs": 536,
+    "ci_reports": 7
+  }
+}

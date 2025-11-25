@@ -1,0 +1,87 @@
+{
+    "action_suggestion": null,
+    "answer": " The top stock picks mentioned in the context are AAPL and NVDA as per sources 1 and 2 respectively. As per source 3, options traders are pricing in increased volatility in tech stocks ahead of next week's Federal Reserve policy meeting.",
+    "metadata": {
+        "model": "orca-mini-3b-gguf2-q4_0.gguf",
+        "retrieved_chunks": 3,
+        "tokens": 392,
+        "use_rag": true
+    },
+    "raw_model_text": " The top stock picks mentioned in the context are AAPL and NVDA as per sources 1 and 2 respectively. As per source 3, options traders are pricing in increased volatility in tech stocks ahead of next week's Federal Reserve policy meeting.",
+    "retrievals": [
+        {
+            "chunk_id": "weekly_picks_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.04660964012146,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"rank\": 1,\n  \"rationale\": \"Strong technical momentum with breakout above 170 resistance. Earnings beat expectations with 8% revenue growth. Bullish sentiment from analyst upgrades and institutional buying.\",\n  \"combined_score\": 0.92,\n  \"momentum_score\": 0.95,\n  \"sentiment_score\": 0.88,\n  \"fundamental_score\": 0.93,\n  \"week_start_date\": \"2024-11-18\",\n  \"generated_at\": \"2024-11-22T10:00:00Z\"\n}"
+        },
+        {
+            "chunk_id": "weekly_picks_1_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_1",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.2323777675628662,
+            "text": "{\n  \"ticker\": \"NVDA\",\n  \"rank\": 2,\n  \"rationale\": \"AI chip demand remains robust. Q3 earnings exceeded forecasts with data center revenue up 25% QoQ. Technical chart shows consolidation above key support at 140.\",\n  \"combined_score\": 0.89,\n  \"momentum_score\": 0.91,\n  \"sentiment_score\": 0.85,\n  \"fundamental_score\": 0.91,\n  \"week_start_date\": \"2024-11-18\",\n  \"generated_at\": \"2024-11-22T10:00:00Z\"\n}"
+        },
+        {
+            "chunk_id": "finnhub_latest_50_1_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "finnhub_latest_50_1",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/finnhub_latest_50.json",
+                "type": "finnhub_latest_50"
+            },
+            "score": 1.3003051280975342,
+            "text": "{\n  \"headline\": \"Tech Sector Volatility Expected Ahead of Fed Meeting\",\n  \"source\": \"Bloomberg\",\n  \"published_at\": \"2024-11-22T08:00:00Z\",\n  \"summary\": \"Options traders are positioning for increased volatility in technology stocks ahead of next week's Federal Reserve policy meeting. Implied volatility for QQQ has risen to 22%, up from 18% last week. Analysts expect the Fed to maintain current rates but provide guidance on 2025 policy. Large tech names including AAPL, MSFT, and NVDA show elevated put activity.\",\n  \"ticker\": \"SPY\",\n  \"sentiment\": \"neutral\",\n  \"url\": \"https://example.com/tech-vol-fed\"\n}"
+        }
+    ],
+    "sources": [
+        {
+            "chunk_id": "weekly_picks_0_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_0",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.04660964012146,
+            "text": "{\n  \"ticker\": \"AAPL\",\n  \"rank\": 1,\n  \"rationale\": \"Strong technical momentum with breakout above 170 resistance. Earnings beat expectations with 8% revenue growth. Bullish sentiment from analyst upgra..."
+        },
+        {
+            "chunk_id": "weekly_picks_1_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "weekly_picks_1",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/weekly_picks.json",
+                "type": "weekly_picks"
+            },
+            "score": 1.2323777675628662,
+            "text": "{\n  \"ticker\": \"NVDA\",\n  \"rank\": 2,\n  \"rationale\": \"AI chip demand remains robust. Q3 earnings exceeded forecasts with data center revenue up 25% QoQ. Technical chart shows consolidation above key supp..."
+        },
+        {
+            "chunk_id": "finnhub_latest_50_1_chunk_0",
+            "metadata": {
+                "chunk_index": 0,
+                "doc_id": "finnhub_latest_50_1",
+                "fixture": true,
+                "source": "reports/chat_agent/fixtures/finnhub_latest_50.json",
+                "type": "finnhub_latest_50"
+            },
+            "score": 1.3003051280975342,
+            "text": "{\n  \"headline\": \"Tech Sector Volatility Expected Ahead of Fed Meeting\",\n  \"source\": \"Bloomberg\",\n  \"published_at\": \"2024-11-22T08:00:00Z\",\n  \"summary\": \"Options traders are positioning for increased v..."
+        }
+    ]
+}

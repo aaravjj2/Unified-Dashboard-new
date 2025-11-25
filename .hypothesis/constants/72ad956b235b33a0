@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/services/forecast_persistence.py
+# hypothesis_version: 6.148.2
+
+['*.json', 'DB_URL', 'base_value', 'completed', 'confidence', 'count', 'data/forecast', 'features', 'forecast', 'forecasts', 'horizon', 'limit', 'metrics', 'model', 'offset', 'shap_values', 'status', 'ticker', 'timestamp', 'total', 'w']

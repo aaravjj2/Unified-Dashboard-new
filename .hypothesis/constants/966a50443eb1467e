@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/api/market_forecast.py
+# hypothesis_version: 6.148.2
+
+[0.9, 0.95, 0.99, 200, 202, 400, 404, 500, 503, '/admin/health', '/api/market_forecast', '/history', '/latest', '/run', '0', '1', 'FORECAST_BENTO_URL', 'GET', 'No forecasts found', 'POST', 'confidence', 'down', 'ensemble', 'error', 'healthy', 'horizon', 'limit', 'lstm', 'market_forecast', 'mode', 'model', 'offset', 'prophet', 'status', 'sync', 'ticker', 'ticker is required', 'timestamp']

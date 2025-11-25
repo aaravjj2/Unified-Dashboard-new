@@ -1,0 +1,110 @@
+{
+  "total_tabs": 6,
+  "successful_tabs": 6,
+  "success_rate": 1.0,
+  "tab_results": [
+    {
+      "tab_name": "Home",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/home_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:49:26.360178"
+    },
+    {
+      "tab_name": "Command Center",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/command_center_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:49:35.475710"
+    },
+    {
+      "tab_name": "Strategy Lab",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/strategy_lab_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:49:44.838913"
+    },
+    {
+      "tab_name": "Options Lab",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/options_lab_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:49:55.800813"
+    },
+    {
+      "tab_name": "Weekly Picks",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/weekly_picks_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:50:04.778922"
+    },
+    {
+      "tab_name": "Monthly Picks",
+      "success": true,
+      "screenshot_path": "test_artifacts/phase24_25_full_debug/monthly_picks_validation.png",
+      "dom_info": {
+        "title": "Financial Dashboard",
+        "elementCount": 68,
+        "inputCount": 0,
+        "buttonCount": 0
+      },
+      "color_validation": {
+        "total": 0,
+        "compliant": 0,
+        "compliance_rate": 1
+      },
+      "timestamp": "2025-11-01T13:50:13.864213"
+    }
+  ],
+  "generated_at": "2025-11-01T13:50:13.919098"
+}

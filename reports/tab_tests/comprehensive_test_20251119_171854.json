@@ -1,0 +1,332 @@
+{
+  "timestamp": "2025-11-19T17:18:54.137188",
+  "dashboard_url": "http://localhost:8052",
+  "tabs_tested": 5,
+  "tabs_passed": 0,
+  "tabs_failed": 5,
+  "success_rate": "0.0%",
+  "detailed_results": [
+    {
+      "tab_name": "Research Lab",
+      "tab_switched": true,
+      "buttons_found": [],
+      "buttons_missing": [
+        "Refresh Briefs",
+        "Load Demo Data",
+        "Create Brief"
+      ],
+      "buttons_clicked": [],
+      "buttons_failed": [],
+      "content_visible": [
+        "Brief",
+        "Research",
+        "Status"
+      ],
+      "console_errors": [],
+      "network_errors": [],
+      "screenshots": [
+        "reports/tab_tests/research_lab_initial.png"
+      ],
+      "success": false
+    },
+    {
+      "tab_name": "Market Forecast",
+      "tab_switched": true,
+      "buttons_found": [
+        "Run Forecast"
+      ],
+      "buttons_missing": [
+        "Explain Results",
+        "Refresh Data"
+      ],
+      "buttons_clicked": [
+        "Run Forecast (no change)"
+      ],
+      "buttons_failed": [],
+      "content_visible": [
+        "Forecast",
+        "Prediction",
+        "Market"
+      ],
+      "console_errors": [],
+      "network_errors": [],
+      "screenshots": [
+        "reports/tab_tests/market_forecast_initial.png",
+        "reports/tab_tests/market_forecast_mf-run-btn_clicked.png"
+      ],
+      "success": false
+    },
+    {
+      "tab_name": "Volatility Lab",
+      "tab_switched": true,
+      "buttons_found": [
+        "Calculate IV Surface"
+      ],
+      "buttons_missing": [
+        "Refresh Data"
+      ],
+      "buttons_clicked": [],
+      "buttons_failed": [
+        "Calculate IV Surface: not visible"
+      ],
+      "content_visible": [
+        "Volatility",
+        "Surface",
+        "IV"
+      ],
+      "console_errors": [],
+      "network_errors": [],
+      "screenshots": [
+        "reports/tab_tests/volatility_lab_initial.png"
+      ],
+      "success": false
+    },
+    {
+      "tab_name": "Market Trends",
+      "tab_switched": true,
+      "buttons_found": [],
+      "buttons_missing": [
+        "Run Analysis",
+        "Refresh News"
+      ],
+      "buttons_clicked": [],
+      "buttons_failed": [],
+      "content_visible": [
+        "Trends",
+        "Analysis",
+        "Market"
+      ],
+      "console_errors": [],
+      "network_errors": [],
+      "screenshots": [
+        "reports/tab_tests/market_trends_initial.png"
+      ],
+      "success": false
+    },
+    {
+      "tab_name": "Portfolio",
+      "tab_switched": true,
+      "buttons_found": [],
+      "buttons_missing": [
+        "Refresh Portfolio",
+        "Sync Alpaca"
+      ],
+      "buttons_clicked": [],
+      "buttons_failed": [],
+      "content_visible": [
+        "Portfolio",
+        "Holdings",
+        "Performance"
+      ],
+      "console_errors": [],
+      "network_errors": [],
+      "screenshots": [
+        "reports/tab_tests/portfolio_initial.png"
+      ],
+      "success": false
+    }
+  ],
+  "console_errors": [
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  download-data.dat\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  backtest-modal.st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  backtest-modal.st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  debug-logs-modal.\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  debug-logs-modal.\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  download-data.dat\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  news-container.ch\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  status.children@5\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  status.children@5\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  status.children@5\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  backtest-modal.st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  backtest-modal.st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  debug-logs-modal.\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  debug-logs-modal.\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  results-area.chil\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mt-model-status.c\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mt-model-status.c\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  mt-model-status.c\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  news-container.ch\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  trends-results-st\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  current-job.data@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  current-job.data@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  detail-modal.is_o\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  detail-modal.is_o\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  download-data.dat\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  model-status.chil\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  reload-trigger.da\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  full-brief.style@\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  compact-brief-wra\u2026er\nby using `dash.callback_context` if necessary.}"
+    },
+    {
+      "type": "error",
+      "text": "{message: Duplicate callback outputs, html: In the callback for output(s):\n  backtest-modal.st\u2026er\nby using `dash.callback_context` if necessary.}"
+    }
+  ],
+  "syntax_errors": []
+}

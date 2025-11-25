@@ -1,0 +1,57 @@
+[
+  {
+    "ticker": "AAPL",
+    "rank": 1,
+    "rationale": "Strong technical momentum with breakout above 170 resistance. Earnings beat expectations with 8% revenue growth. Bullish sentiment from analyst upgrades and institutional buying.",
+    "combined_score": 0.92,
+    "momentum_score": 0.95,
+    "sentiment_score": 0.88,
+    "fundamental_score": 0.93,
+    "week_start_date": "2024-11-18",
+    "generated_at": "2024-11-22T10:00:00Z"
+  },
+  {
+    "ticker": "NVDA",
+    "rank": 2,
+    "rationale": "AI chip demand remains robust. Q3 earnings exceeded forecasts with data center revenue up 25% QoQ. Technical chart shows consolidation above key support at 140.",
+    "combined_score": 0.89,
+    "momentum_score": 0.91,
+    "sentiment_score": 0.85,
+    "fundamental_score": 0.91,
+    "week_start_date": "2024-11-18",
+    "generated_at": "2024-11-22T10:00:00Z"
+  },
+  {
+    "ticker": "MSFT",
+    "rank": 3,
+    "rationale": "Azure cloud growth accelerating with 30% YoY revenue increase. Copilot AI adoption exceeding expectations. Dividend increase signals management confidence.",
+    "combined_score": 0.86,
+    "momentum_score": 0.84,
+    "sentiment_score": 0.87,
+    "fundamental_score": 0.88,
+    "week_start_date": "2024-11-18",
+    "generated_at": "2024-11-22T10:00:00Z"
+  },
+  {
+    "ticker": "GOOGL",
+    "rank": 4,
+    "rationale": "Search ad revenue stabilizing after recent softness. YouTube premium subscriptions growing. Gemini AI integration driving engagement.",
+    "combined_score": 0.82,
+    "momentum_score": 0.80,
+    "sentiment_score": 0.82,
+    "fundamental_score": 0.84,
+    "week_start_date": "2024-11-18",
+    "generated_at": "2024-11-22T10:00:00Z"
+  },
+  {
+    "ticker": "META",
+    "rank": 5,
+    "rationale": "Reels monetization improving with ad load increases. Reality Labs losses narrowing. User engagement metrics stable across platforms.",
+    "combined_score": 0.79,
+    "momentum_score": 0.77,
+    "sentiment_score": 0.80,
+    "fundamental_score": 0.81,
+    "week_start_date": "2024-11-18",
+    "generated_at": "2024-11-22T10:00:00Z"
+  }
+]

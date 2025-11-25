@@ -1,0 +1,101 @@
+{
+  "modified_files": {
+    "button_test_results.txt": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "dashboard.pid": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "demo_button_working.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "doppler.env": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/index.py": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/tabs/legacy/options_lab_layout_backup_1763667492.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/tabs/legacy/options_lab_layout_old.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/tabs/options_lab/__init__.py": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/tabs/options_lab/layout.py": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "financial_dashboard/utils/explain.py": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/callback_map_before.json": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/current_branch.txt": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/current_options_structure.json": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/dash_layout_before.json": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/git_status_before.txt": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/options_validation/diagnostics/py_compile.txt": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/vol_lab_rebuild_v2/clicker_snapshots/error_screenshot.png": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "reports/vol_lab_rebuild_v2/clicker_snapshots/test_log.txt": {
+      "status": "M",
+      "sha256": "see_patch"
+    },
+    "reports/vol_lab_rebuild_v2/clicker_snapshots/videos/28d2b05c34432a359f5cc50546d35d42.webm": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "reports/vol_lab_rebuild_v2/clicker_snapshots/videos/794a89774e3f2522e8ff6ae56ebb893a.webm": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "test_button_working.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "test_page_state.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "test_portfolio_divs.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    },
+    "test_simple_table.py": {
+      "status": "A",
+      "sha256": "see_patch"
+    }
+  },
+  "commit": "1d5d0ff"
+}

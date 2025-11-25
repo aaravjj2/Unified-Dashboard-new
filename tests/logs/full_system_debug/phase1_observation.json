@@ -1,0 +1,27 @@
+{
+  "phase": 1,
+  "timestamp": "2025-10-26T14:35:41.831608",
+  "checks": {
+    "server_running": true,
+    "total_callbacks": 68,
+    "market_trends_callbacks": 5,
+    "portfolio_callbacks": 13,
+    "api_/api/portfolio_summary": {
+      "status": 200,
+      "success": true
+    },
+    "api_/api/weekly_picks": {
+      "status": 200,
+      "success": true
+    },
+    "api_/api/monthly_picks": {
+      "status": 200,
+      "success": true
+    },
+    "cache_files": [
+      "portfolio_data.json",
+      "price_results_weekly_smoke.json",
+      "research_experiments.json"
+    ]
+  }
+}

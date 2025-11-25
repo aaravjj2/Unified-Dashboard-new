@@ -1,0 +1,107 @@
+{
+  "iteration": 1,
+  "timestamp": "2025-10-26T17:45:30.813386",
+  "subtabs": [
+    {
+      "subtab_id": "positions",
+      "subtab_name": "Positions",
+      "timestamp": "2025-10-26T17:45:45.319693",
+      "iteration": 1,
+      "status": "SUCCESS",
+      "checks": {
+        "portfolio_tab_click": true,
+        "subtab_click": true,
+        "has_datatable": false,
+        "has_graph": true,
+        "has_content": true,
+        "is_empty": false,
+        "still_loading": false,
+        "no_data_message": false
+      },
+      "screenshot": "tests/logs/portfolio_validation/positions_iteration1.png",
+      "console_errors": []
+    },
+    {
+      "subtab_id": "orders",
+      "subtab_name": "Order History",
+      "timestamp": "2025-10-26T17:46:16.288646",
+      "iteration": 1,
+      "status": "SUCCESS",
+      "checks": {
+        "portfolio_tab_click": true,
+        "subtab_click": true,
+        "has_datatable": false,
+        "has_graph": true,
+        "has_content": true,
+        "is_empty": false,
+        "still_loading": false,
+        "no_data_message": false
+      },
+      "screenshot": "tests/logs/portfolio_validation/orders_iteration1.png",
+      "console_errors": []
+    },
+    {
+      "subtab_id": "analytics",
+      "subtab_name": "Analytics",
+      "timestamp": "2025-10-26T17:46:24.937784",
+      "iteration": 1,
+      "status": "SUCCESS",
+      "checks": {
+        "portfolio_tab_click": true,
+        "subtab_click": true,
+        "has_datatable": false,
+        "has_graph": true,
+        "has_content": true,
+        "is_empty": false,
+        "still_loading": false,
+        "no_data_message": false
+      },
+      "screenshot": "tests/logs/portfolio_validation/analytics_iteration1.png",
+      "console_errors": []
+    },
+    {
+      "subtab_id": "factors",
+      "subtab_name": "Factor Exposure",
+      "timestamp": "2025-10-26T17:46:35.045131",
+      "iteration": 1,
+      "status": "SUCCESS",
+      "checks": {
+        "portfolio_tab_click": true,
+        "subtab_click": true,
+        "has_datatable": false,
+        "has_graph": true,
+        "has_content": true,
+        "is_empty": false,
+        "still_loading": false,
+        "no_data_message": false
+      },
+      "screenshot": "tests/logs/portfolio_validation/factors_iteration1.png",
+      "console_errors": []
+    },
+    {
+      "subtab_id": "optimization",
+      "subtab_name": "Optimization",
+      "timestamp": "2025-10-26T17:46:43.649419",
+      "iteration": 1,
+      "status": "SUCCESS",
+      "checks": {
+        "portfolio_tab_click": true,
+        "subtab_click": true,
+        "has_datatable": false,
+        "has_graph": true,
+        "has_content": true,
+        "is_empty": false,
+        "still_loading": false,
+        "no_data_message": false
+      },
+      "screenshot": "tests/logs/portfolio_validation/optimization_iteration1.png",
+      "console_errors": []
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "success": 5,
+    "failed": 0,
+    "success_rate": "100.0%"
+  }
+}

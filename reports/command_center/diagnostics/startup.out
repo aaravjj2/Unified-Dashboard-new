@@ -1,0 +1,349 @@
+nohup: ignoring input
+2025-11-23 22:45:49,990 - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks
+2025-11-23 22:45:49,990 - INFO - ✓ Loaded keys.env (did not overwrite existing env vars)
+2025-11-23 22:45:49,991 - INFO - ✅ Preloaded 20 weekly prices from cache
+[_shared.py] ✅ Preloaded 20 weekly prices
+2025-11-23 22:45:49,991 - INFO - ✅ Preloaded 39 total prices (including monthly)
+2025-11-23 22:45:49,992 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+2025-11-23 22:45:49,992 - INFO - [PRICE_FETCHER] Initialized
+2025-11-23 22:45:49,992 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-11-23 22:45:49,992 - INFO - ============================================================
+2025-11-23 22:45:49,992 - INFO - Startup Cache Validation Report
+2025-11-23 22:45:49,992 - INFO - ============================================================
+2025-11-23 22:45:49,992 - INFO - Total tickers in cache: 39
+2025-11-23 22:45:49,992 - INFO - Valid Market Trends tickers: 0/5
+2025-11-23 22:45:49,992 - INFO -   ✅ Complete: 
+2025-11-23 22:45:49,992 - WARNING -   ⚠️  Incomplete: AAPL, MSFT, GOOGL, NVDA, TSLA
+2025-11-23 22:45:49,992 - WARNING -      AAPL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:49,992 - WARNING -      MSFT: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:49,992 - WARNING -      GOOGL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:49,992 - WARNING -      NVDA: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:49,992 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-11-23 22:45:49,992 - INFO - Overall status: ❌ INCOMPLETE
+2025-11-23 22:45:49,992 - INFO - ============================================================
+2025-11-23 22:45:50,020 - INFO - ✓ Loaded _shared.py
+2025-11-23 22:45:50,021 - INFO - ✓ Chatbot UI available
+2025-11-23 22:45:50,807 - INFO - ✓ Loaded tab: 🎯 Command Center
+2025-11-23 22:45:51,839 - INFO - ✓ Home Lab helpers loaded
+2025-11-23 22:45:51,840 - INFO - ✓ Home Lab layout module loaded
+2025-11-23 22:45:51,840 - INFO - ✓ Home Lab module initialized
+2025-11-23 22:45:51,840 - INFO - ✓ Loaded tab: 🏠 Command Center (Legacy)
+2025-11-23 22:45:51,840 - INFO - ✓ Loaded tab: 🏠 Home
+2025-11-23 22:45:51,840 - INFO - ✅ Preloaded 20 weekly prices from cache
+[_shared.py] ✅ Preloaded 20 weekly prices
+2025-11-23 22:45:51,841 - INFO - ✅ Preloaded 39 total prices (including monthly)
+2025-11-23 22:45:51,841 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+2025-11-23 22:45:51,841 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-11-23 22:45:51,841 - INFO - ============================================================
+2025-11-23 22:45:51,841 - INFO - Startup Cache Validation Report
+2025-11-23 22:45:51,841 - INFO - ============================================================
+2025-11-23 22:45:51,841 - INFO - Total tickers in cache: 39
+2025-11-23 22:45:51,841 - INFO - Valid Market Trends tickers: 0/5
+2025-11-23 22:45:51,841 - INFO -   ✅ Complete: 
+2025-11-23 22:45:51,841 - WARNING -   ⚠️  Incomplete: AAPL, MSFT, GOOGL, NVDA, TSLA
+2025-11-23 22:45:51,841 - WARNING -      AAPL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:51,841 - WARNING -      MSFT: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:51,841 - WARNING -      GOOGL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:51,841 - WARNING -      NVDA: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:45:51,841 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-11-23 22:45:51,841 - INFO - Overall status: ❌ INCOMPLETE
+2025-11-23 22:45:51,841 - INFO - ============================================================
+2025-11-23 22:45:51,841 - WARNING - [_shared] SH id: 138569975838128, RESULTS_CACHE id: 138569975871872, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 138569975838128, RESULTS_CACHE id: 138569975871872, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+2025-11-23 22:45:53,204 - INFO - CacheManager initialized: path=/home/aarav/unified-dashboard/financial_dashboard/outputs/market_brief.json, ttl=300s
+2025-11-23 22:45:53,204 - INFO - NewsManager initialized: ttl=300s, providers=['finnhub', 'alpaca'], deterministic=False
+2025-11-23 22:45:53,204 - INFO - Market Trends module initialized with CacheManager and NewsManager
+2025-11-23 22:45:53,204 - INFO - ✓ Loaded tab: Market Trends
+2025-11-23 22:45:57,253 - INFO - ✓ Loaded tab: Market Forecast
+2025-11-23 22:45:57,254 - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+2025-11-23 22:45:57,674 - INFO - ✓ Loaded tab: 📊 Attribution Lab
+2025-11-23 22:45:57,674 - INFO - ✓ Strategy Lab Setup subtab loaded
+2025-11-23 22:45:57,674 - INFO - ✓ Strategy Lab Execution subtab loaded
+2025-11-23 22:45:57,675 - INFO - ✓ Strategy Lab Results subtab loaded
+2025-11-23 22:45:57,675 - INFO - ✓ Strategy Lab Benchmark subtab loaded (enhanced with Beta, IR, Tracking Error)
+2025-11-23 22:45:57,675 - INFO - ✓ Strategy Lab Risk & Factor Analysis subtab loaded
+2025-11-23 22:45:57,675 - INFO - ✓ Strategy Lab modular layout loaded (6 subtabs)
+2025-11-23 22:45:57,675 - INFO - ✓ Loaded tab: ⚡ Strategy Lab
+2025-11-23 22:45:57,676 - INFO - CacheManager initialized: path=data/picks/monthly_cache.json, ttl=300s
+2025-11-23 22:45:57,676 - INFO - ✓ Loaded tab: Monthly Picks
+2025-11-23 22:45:57,676 - INFO - CacheManager initialized: path=data/picks/weekly_cache.json, ttl=300s
+2025-11-23 22:45:57,677 - INFO - ✓ Loaded tab: Weekly Picks
+2025-11-23 22:45:57,727 - INFO - Portfolio analytics caching enabled: /home/aarav/unified-dashboard/financial_dashboard/.cache/portfolio
+2025-11-23 22:45:58,421 - INFO - ✓ Loaded tab: Portfolio
+2025-11-23 22:45:58,423 - WARNING - ⚠️ SENTRY_DSN not configured - exception tracking disabled
+2025-11-23 22:45:58,423 - WARNING - ⚠️ DATADOG_ENABLED=false - metrics disabled
+2025-11-23 22:45:58,423 - INFO - ✓ Loaded tab: 💹 Options Lab
+2025-11-23 22:45:58,424 - INFO - ✓ Loaded tab: 🔬 Research Lab
+2025-11-23 22:45:58,424 - INFO - ✓ index.py initialization complete
+2025-11-23 22:45:58,424 - INFO - ✓ index.py layout ready
+2025-11-23 22:45:58,424 - INFO - Loading environment variables...
+2025-11-23 22:45:59,209 - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+2025-11-23 22:45:59,209 - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+2025-11-23 22:45:59,210 - INFO - ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+2025-11-23 22:45:59,210 - INFO - ✅ All 5 required keys present
+2025-11-23 22:45:59,210 - INFO - ✅ All required API keys present
+2025-11-23 22:45:59,210 - INFO -    ✅ Finnhub
+2025-11-23 22:45:59,210 - INFO -    ✅ NewsAPI
+2025-11-23 22:45:59,210 - INFO -    ✅ Alpaca
+2025-11-23 22:45:59,210 - INFO -    ✅ Polygon
+2025-11-23 22:45:59,210 - INFO -    ✅ Tiingo
+2025-11-23 22:45:59,210 - INFO -    ✅ Quandl
+2025-11-23 22:45:59,210 - INFO -    ✅ FRED
+2025-11-23 22:45:59,210 - INFO - Creating Dash application instance...
+2025-11-23 22:45:59,210 - INFO - ======================================================================
+2025-11-23 22:45:59,210 - INFO - Creating Financial Dashboard Application
+2025-11-23 22:45:59,210 - INFO - ======================================================================
+2025-11-23 22:45:59,210 - INFO - Step 1: Creating Flask server...
+2025-11-23 22:45:59,211 - WARNING - Could not load environment: attempted relative import with no known parent package
+2025-11-23 22:45:59,211 - INFO - Step 2: Registering API endpoints...
+2025-11-23 22:45:59,211 - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks, /api/portfolio_summary
+2025-11-23 22:45:59,211 - WARNING - Could not register Research API: No module named 'api.research'
+2025-11-23 22:45:59,212 - WARNING - Could not register Market Forecast API: No module named 'services.forecast_adapter'
+2025-11-23 22:45:59,212 - WARNING - Could not register Volatility Surface API: attempted relative import with no known parent package
+2025-11-23 22:45:59,213 - INFO - ✅ Registered Options Forecast API: /api/options/forecast
+2025-11-23 22:45:59,213 - INFO - ✅ Registered Options Backtest API: /api/options/backtest/*
+2025-11-23 22:45:59,215 - INFO - Registered picks API endpoints
+2025-11-23 22:45:59,215 - INFO - ✅ Registered Picks Pipeline API: /api/picks/*
+2025-11-23 22:45:59,216 - INFO - ✅ Registered Command Center API: /api/cc/*
+2025-11-23 22:45:59,216 - INFO - ✅ Registered Command Center API: /api/cc/*
+2025-11-23 22:45:59,217 - INFO - ✅ Registered Command Center Admin API: /admin/cc/*
+2025-11-23 22:45:59,217 - INFO - ✅ Registered Command Center Admin API: /admin/cc/*
+2025-11-23 22:45:59,217 - INFO - ✅ Registered Callback Map Admin API: /admin/callback_map
+2025-11-23 22:45:59,217 - WARNING - Could not initialize Market Trends CacheManager; using fallback (in-memory)
+2025-11-23 22:45:59,218 - INFO - ✅ Registered Market Trends Admin API: /api/market_trends/brief, /refresh, /health
+2025-11-23 22:45:59,218 - INFO - ✅ Picks API routes registered
+2025-11-23 22:45:59,218 - INFO - ✅ Registered Picks API routes: /api/weekly_picks, /api/monthly_picks, /api/picks/reload, /api/picks/health
+2025-11-23 22:45:59,221 - INFO - Chat API registered at /api/chat/*
+2025-11-23 22:45:59,221 - INFO - ✅ Registered Chat API: /api/chat/*
+2025-11-23 22:45:59,221 - INFO - Step 3: Creating Dash application...
+2025-11-23 22:46:00,226 - INFO - Instrumenting callback registration tracking...
+2025-11-23 22:46:00,226 - INFO - ✅ Callback instrumentation active
+2025-11-23 22:46:00,226 - INFO - ✅ Dash application created
+2025-11-23 22:46:00,226 - INFO - Step 4: Setting application layout...
+2025-11-23 22:46:00,227 - INFO - ✅ Registered API endpoints: /api/weekly_picks, /api/monthly_picks
+2025-11-23 22:46:00,227 - INFO - ✓ Loaded keys.env (did not overwrite existing env vars)
+2025-11-23 22:46:00,227 - INFO - ✅ Preloaded 20 weekly prices from cache
+[_shared.py] ✅ Preloaded 20 weekly prices
+2025-11-23 22:46:00,227 - INFO - ✅ Preloaded 39 total prices (including monthly)
+2025-11-23 22:46:00,227 - WARNING - [PRELOAD] Cache incomplete - Missing: [], Invalid: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+2025-11-23 22:46:00,227 - INFO - [PRICE_FETCHER] No missing tickers to fetch
+2025-11-23 22:46:00,227 - INFO - ============================================================
+2025-11-23 22:46:00,227 - INFO - Startup Cache Validation Report
+2025-11-23 22:46:00,227 - INFO - ============================================================
+2025-11-23 22:46:00,227 - INFO - Total tickers in cache: 39
+2025-11-23 22:46:00,227 - INFO - Valid Market Trends tickers: 0/5
+2025-11-23 22:46:00,227 - INFO -   ✅ Complete: 
+2025-11-23 22:46:00,227 - WARNING -   ⚠️  Incomplete: AAPL, MSFT, GOOGL, NVDA, TSLA
+2025-11-23 22:46:00,227 - WARNING -      AAPL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:46:00,227 - WARNING -      MSFT: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:46:00,227 - WARNING -      GOOGL: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:46:00,227 - WARNING -      NVDA: missing daily_change, week_start_price, month_start_price, profit_loss
+2025-11-23 22:46:00,227 - WARNING -      TSLA: missing week_start_price, month_start_price
+2025-11-23 22:46:00,227 - INFO - Overall status: ❌ INCOMPLETE
+2025-11-23 22:46:00,227 - INFO - ============================================================
+2025-11-23 22:46:00,227 - WARNING - [_shared] SH id: 138569988000160, RESULTS_CACHE id: 138569886973824, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+[_shared] SH id: 138569988000160, RESULTS_CACHE id: 138569886973824, SH.__file__: /home/aarav/unified-dashboard/financial_dashboard/_shared.py
+2025-11-23 22:46:00,231 - INFO - ✓ Loaded _shared.py
+2025-11-23 22:46:00,231 - INFO - ✓ Chatbot UI available
+2025-11-23 22:46:00,231 - INFO - ✓ Loaded tab: 🎯 Command Center
+2025-11-23 22:46:00,231 - INFO - ✓ Loaded tab: 🏠 Command Center (Legacy)
+2025-11-23 22:46:00,231 - INFO - ✓ Loaded tab: 🏠 Home
+2025-11-23 22:46:00,231 - INFO - CacheManager initialized: path=/home/aarav/unified-dashboard/financial_dashboard/outputs/market_brief.json, ttl=300s
+2025-11-23 22:46:00,231 - INFO - NewsManager initialized: ttl=300s, providers=['finnhub', 'alpaca'], deterministic=False
+2025-11-23 22:46:00,231 - INFO - Market Trends module initialized with CacheManager and NewsManager
+2025-11-23 22:46:00,231 - INFO - ✓ Loaded tab: Market Trends
+2025-11-23 22:46:00,301 - INFO - ✓ Loaded tab: Market Forecast
+2025-11-23 22:46:00,301 - INFO - ✓ Loaded tab: ⚡ Volatility Lab
+2025-11-23 22:46:00,301 - INFO - ✓ Loaded tab: 📊 Attribution Lab
+2025-11-23 22:46:00,301 - INFO - ✓ Loaded tab: ⚡ Strategy Lab
+2025-11-23 22:46:00,302 - INFO - CacheManager initialized: path=data/picks/monthly_cache.json, ttl=300s
+2025-11-23 22:46:00,302 - INFO - ✓ Loaded tab: Monthly Picks
+2025-11-23 22:46:00,302 - INFO - CacheManager initialized: path=data/picks/weekly_cache.json, ttl=300s
+2025-11-23 22:46:00,302 - INFO - ✓ Loaded tab: Weekly Picks
+2025-11-23 22:46:00,302 - INFO - ✓ Loaded tab: Portfolio
+2025-11-23 22:46:00,302 - INFO - ✓ Loaded tab: 💹 Options Lab
+2025-11-23 22:46:00,302 - INFO - ✓ Loaded tab: 🔬 Research Lab
+2025-11-23 22:46:00,302 - INFO - ✓ index.py initialization complete
+2025-11-23 22:46:00,302 - INFO - ✓ index.py layout ready
+2025-11-23 22:46:00,302 - INFO - 🔵 create_layout() called!
+2025-11-23 22:46:00,302 - INFO - 🔍 ENABLED_TABS = ['command_center_pkg', 'research_lab', 'attribution_lab', 'strategy_lab', 'weekly_picks', 'monthly_picks', 'market_trends', 'market_forecast', 'volatility_lab', 'portfolio', 'options_lab']
+2025-11-23 22:46:00,302 - INFO - 🔍 loaded_tabs keys = ['command_center_pkg', 'home_lab', 'home', 'market_trends', 'market_forecast', 'volatility_lab', 'attribution_lab', 'strategy_lab', 'monthly_picks', 'weekly_picks', 'portfolio', 'options_lab', 'research_lab']
+2025-11-23 22:46:00,302 - INFO - 🔍 Processing tab: command_center_pkg
+2025-11-23 22:46:00,302 - INFO -   📋 Tab info: 🎯 Command Center
+2025-11-23 22:46:00,302 - INFO -   🔧 Found layout function `create_layout` for command_center_pkg
+2025-11-23 22:46:00,302 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,302 - INFO - 🎯 Creating Command Center layout skeleton
+2025-11-23 22:46:00,303 - INFO -   ✅ Created layout for command_center_pkg, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,303 - INFO -   🏷️ Creating tab with label: 🎯 Command Center
+2025-11-23 22:46:00,303 - INFO -   ✅ Successfully added tab command_center_pkg to tabs list
+2025-11-23 22:46:00,303 - INFO - 🔍 Processing tab: research_lab
+2025-11-23 22:46:00,303 - INFO -   📋 Tab info: 🔬 Research Lab
+2025-11-23 22:46:00,303 - INFO -   🔧 Found layout function `layout` for research_lab
+2025-11-23 22:46:00,303 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,305 - INFO -   ✅ Created layout for research_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,305 - INFO -   🏷️ Creating tab with label: 🔬 Research Lab
+2025-11-23 22:46:00,305 - INFO -   ✅ Successfully added tab research_lab to tabs list
+2025-11-23 22:46:00,305 - INFO - 🔍 Processing tab: attribution_lab
+2025-11-23 22:46:00,305 - INFO -   📋 Tab info: 📊 Attribution Lab
+2025-11-23 22:46:00,305 - INFO -   🔧 Found layout function `layout` for attribution_lab
+2025-11-23 22:46:00,305 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,307 - INFO -   ✅ Created layout for attribution_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,307 - INFO -   🏷️ Creating tab with label: 📊 Attribution Lab
+2025-11-23 22:46:00,307 - INFO -   ✅ Successfully added tab attribution_lab to tabs list
+2025-11-23 22:46:00,307 - INFO - 🔍 Processing tab: strategy_lab
+2025-11-23 22:46:00,307 - INFO -   📋 Tab info: ⚡ Strategy Lab
+2025-11-23 22:46:00,307 - INFO -   🔧 Found layout function `layout` for strategy_lab
+2025-11-23 22:46:00,307 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,307 - INFO - Creating Strategy Lab layout with 5 modular subtabs (Backtest+Execute merged)...
+2025-11-23 22:46:00,309 - INFO -   ✅ Created layout for strategy_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,309 - INFO -   🏷️ Creating tab with label: ⚡ Strategy Lab
+2025-11-23 22:46:00,309 - INFO -   ✅ Successfully added tab strategy_lab to tabs list
+2025-11-23 22:46:00,309 - INFO - 🔍 Processing tab: weekly_picks
+2025-11-23 22:46:00,309 - INFO -   📋 Tab info: Weekly Picks
+2025-11-23 22:46:00,309 - INFO -   🔧 Found layout function `create_layout` for weekly_picks
+2025-11-23 22:46:00,309 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,310 - INFO -   ✅ Created layout for weekly_picks, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,310 - INFO -   🏷️ Creating tab with label: Weekly Picks
+2025-11-23 22:46:00,310 - INFO -   ✅ Successfully added tab weekly_picks to tabs list
+2025-11-23 22:46:00,310 - INFO - 🔍 Processing tab: monthly_picks
+2025-11-23 22:46:00,310 - INFO -   📋 Tab info: Monthly Picks
+2025-11-23 22:46:00,310 - INFO -   🔧 Found layout function `create_layout` for monthly_picks
+2025-11-23 22:46:00,310 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,310 - INFO -   ✅ Created layout for monthly_picks, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,310 - INFO -   🏷️ Creating tab with label: Monthly Picks
+2025-11-23 22:46:00,310 - INFO -   ✅ Successfully added tab monthly_picks to tabs list
+2025-11-23 22:46:00,310 - INFO - 🔍 Processing tab: market_trends
+2025-11-23 22:46:00,310 - INFO -   📋 Tab info: Market Trends
+2025-11-23 22:46:00,310 - INFO -   🔧 Found layout function `layout` for market_trends
+2025-11-23 22:46:00,310 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,310 - INFO - 🎨 layout() called - starting
+2025-11-23 22:46:00,310 - INFO - Loaded cache from disk: 7 records
+2025-11-23 22:46:00,310 - INFO - Loaded 7 records from cache for layout
+2025-11-23 22:46:00,310 - INFO - Rendering initial table...
+2025-11-23 22:46:00,313 - INFO - Rendering initial news...
+2025-11-23 22:46:00,314 - INFO -   ✅ Created layout for market_trends, content type: <class 'dash.html.Div.Div'>
+2025-11-23 22:46:00,314 - INFO -   🏷️ Creating tab with label: Market Trends
+2025-11-23 22:46:00,314 - INFO -   ✅ Successfully added tab market_trends to tabs list
+2025-11-23 22:46:00,314 - INFO - 🔍 Processing tab: market_forecast
+2025-11-23 22:46:00,314 - INFO -   📋 Tab info: Market Forecast
+2025-11-23 22:46:00,314 - INFO -   🔧 Found layout function `layout` for market_forecast
+2025-11-23 22:46:00,314 - WARNING -   ⚠️ `layout` attribute is not callable (type: <class 'dash_bootstrap_components._components.Container.Container'>), skipping
+2025-11-23 22:46:00,314 - WARNING -   ⚠️ No layout for market_forecast
+2025-11-23 22:46:00,314 - INFO -   🏷️ Creating tab with label: Market Forecast
+2025-11-23 22:46:00,314 - INFO -   ✅ Successfully added tab market_forecast to tabs list
+2025-11-23 22:46:00,314 - INFO - 🔍 Processing tab: volatility_lab
+2025-11-23 22:46:00,314 - INFO -   📋 Tab info: ⚡ Volatility Lab
+2025-11-23 22:46:00,314 - INFO -   🔧 Found layout function `layout` for volatility_lab
+2025-11-23 22:46:00,314 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,394 - INFO -   ✅ Created layout for volatility_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,394 - INFO -   🏷️ Creating tab with label: ⚡ Volatility Lab
+2025-11-23 22:46:00,394 - INFO -   ✅ Successfully added tab volatility_lab to tabs list
+2025-11-23 22:46:00,394 - INFO - 🔍 Processing tab: portfolio
+2025-11-23 22:46:00,394 - INFO -   📋 Tab info: Portfolio
+2025-11-23 22:46:00,394 - INFO -   🔧 Found layout function `layout` for portfolio
+2025-11-23 22:46:00,394 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,394 - INFO - Loaded portfolio cache for layout preload: /home/aarav/unified-dashboard/financial_dashboard/cache/portfolio_data.json
+2025-11-23 22:46:00,394 - INFO - ✅ Server-side render: Loading 1 positions from cache into layout
+2025-11-23 22:46:00,398 - INFO - ✅ Server-side positions table rendered successfully
+2025-11-23 22:46:00,400 - INFO -   ✅ Created layout for portfolio, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,400 - INFO -   🏷️ Creating tab with label: Portfolio
+2025-11-23 22:46:00,400 - INFO -   ✅ Successfully added tab portfolio to tabs list
+2025-11-23 22:46:00,400 - INFO - 🔍 Processing tab: options_lab
+2025-11-23 22:46:00,400 - INFO -   📋 Tab info: 💹 Options Lab
+2025-11-23 22:46:00,400 - INFO -   🔧 Found layout function `create_layout` for options_lab
+2025-11-23 22:46:00,400 - INFO -   🔧 Layout function type: <class 'function'>
+2025-11-23 22:46:00,402 - INFO -   ✅ Created layout for options_lab, content type: <class 'dash_bootstrap_components._components.Container.Container'>
+2025-11-23 22:46:00,402 - INFO -   🏷️ Creating tab with label: 💹 Options Lab
+2025-11-23 22:46:00,402 - INFO -   ✅ Successfully added tab options_lab to tabs list
+2025-11-23 22:46:00,402 - INFO - ✅ Created 11 tabs total
+2025-11-23 22:46:00,403 - INFO - Sanitizing layout to prevent React rendering errors...
+2025-11-23 22:46:00,404 - INFO - Sanitizing layout...
+2025-11-23 22:46:00,405 - INFO - ✅ Layout sanitization complete
+2025-11-23 22:46:00,405 - INFO - ✅ Layout set with 11 tabs
+2025-11-23 22:46:00,405 - INFO - Step 5: Registering callbacks...
+2025-11-23 22:46:00,405 - INFO - [CALLBACK_REG] Starting callback registration. app object id: 138569888606976, type: <class 'dash_extensions.enrich.DashProxy'>
+2025-11-23 22:46:00,406 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🎯 Command Center
+2025-11-23 22:46:00,406 - INFO - 🔧 Registering Command Center callbacks
+2025-11-23 22:46:27,211 - INFO - ✅ Command Center callbacks registered successfully
+2025-11-23 22:46:27,211 - INFO - ✓ Registered callbacks for 🎯 Command Center
+2025-11-23 22:46:27,211 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🎯 Command Center
+2025-11-23 22:46:27,211 - INFO - [CALLBACK_REG] Skipping disabled tab: home_lab (🏠 Command Center (Legacy))
+2025-11-23 22:46:27,211 - INFO - [CALLBACK_REG] Skipping disabled tab: home (🏠 Home)
+2025-11-23 22:46:27,211 - INFO - [CALLBACK_REG] Attempting to register callbacks for Market Trends
+2025-11-23 22:46:27,211 - INFO - 🔵 Registering Market Trends callbacks...
+2025-11-23 22:46:27,217 - INFO - ✅ Market Trends callbacks registered successfully!
+2025-11-23 22:46:27,218 - INFO - ✓ Registered callbacks for Market Trends
+2025-11-23 22:46:27,218 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Market Trends
+2025-11-23 22:46:27,218 - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Volatility Lab
+2025-11-23 22:46:27,218 - INFO - ✓ Registering Volatility Lab callbacks (modular package version)
+2025-11-23 22:46:27,222 - INFO - ✅ Volatility Lab callbacks registered successfully (5/6 callbacks active - health polling disabled to fix duplicate outputs)
+2025-11-23 22:46:27,222 - INFO - ✓ Registered callbacks for ⚡ Volatility Lab
+2025-11-23 22:46:27,222 - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Volatility Lab
+2025-11-23 22:46:27,222 - INFO - [CALLBACK_REG] Attempting to register callbacks for 📊 Attribution Lab
+2025-11-23 22:46:27,222 - INFO - 📊 Registering Attribution Lab callbacks (first time)...
+2025-11-23 22:46:27,226 - INFO - ✅ Attribution Lab callbacks registered successfully
+2025-11-23 22:46:27,226 - INFO - ✓ Registered callbacks for 📊 Attribution Lab
+2025-11-23 22:46:27,226 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 📊 Attribution Lab
+2025-11-23 22:46:27,226 - INFO - [CALLBACK_REG] Attempting to register callbacks for ⚡ Strategy Lab
+2025-11-23 22:46:27,226 - INFO - 🎯 Registering Strategy Lab callbacks (first time)...
+2025-11-23 22:46:27,233 - INFO - ✅ Strategy Lab callbacks registered successfully (8 callbacks)
+2025-11-23 22:46:27,233 - INFO - ✓ Registered callbacks for ⚡ Strategy Lab
+2025-11-23 22:46:27,233 - INFO - [CALLBACK_REG] Callback map now has 0 entries after ⚡ Strategy Lab
+2025-11-23 22:46:27,233 - INFO - [CALLBACK_REG] Attempting to register callbacks for Monthly Picks
+2025-11-23 22:46:27,236 - INFO - ✅ Monthly picks callbacks registered
+2025-11-23 22:46:27,236 - INFO - ✓ Registered callbacks for Monthly Picks
+2025-11-23 22:46:27,236 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Monthly Picks
+2025-11-23 22:46:27,236 - INFO - [CALLBACK_REG] Attempting to register callbacks for Weekly Picks
+2025-11-23 22:46:27,241 - INFO - ✅ Weekly picks callbacks registered
+2025-11-23 22:46:27,241 - INFO - ✓ Registered callbacks for Weekly Picks
+2025-11-23 22:46:27,241 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Weekly Picks
+2025-11-23 22:46:27,241 - INFO - [CALLBACK_REG] Attempting to register callbacks for Portfolio
+2025-11-23 22:46:27,413 - INFO - Portfolio database initialized
+2025-11-23 22:46:27,542 - INFO - SHAP_DEBUG - Registering factor_exposure callback
+2025-11-23 22:46:27,547 - INFO - Portfolio tracker callbacks registered (modular architecture)
+2025-11-23 22:46:27,547 - INFO - ✓ Registered callbacks for Portfolio
+2025-11-23 22:46:27,547 - INFO - [CALLBACK_REG] Callback map now has 0 entries after Portfolio
+2025-11-23 22:46:27,547 - INFO - [CALLBACK_REG] Attempting to register callbacks for 💹 Options Lab
+2025-11-23 22:46:27,547 - INFO - 📈 Registering Options Lab callbacks (first time)...
+2025-11-23 22:46:27,556 - INFO - ✅ Options Lab callbacks registered successfully
+2025-11-23 22:46:27,562 - INFO - ✅ Options Lab callbacks registered successfully (including Backtester)
+2025-11-23 22:46:27,562 - INFO - ✓ Registered callbacks for 💹 Options Lab
+2025-11-23 22:46:27,562 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 💹 Options Lab
+2025-11-23 22:46:27,562 - INFO - [CALLBACK_REG] Attempting to register callbacks for 🔬 Research Lab
+2025-11-23 22:46:27,562 - INFO - 📝 Registering Research Lab callbacks (first time)...
+2025-11-23 22:46:27,562 - INFO - 🔗 Research API base URL: http://127.0.0.1:8051
+2025-11-23 22:46:27,577 - INFO - ✅ Research Lab callbacks registered successfully (22 callbacks)
+2025-11-23 22:46:27,577 - INFO - ✓ Registered callbacks for 🔬 Research Lab
+2025-11-23 22:46:27,577 - INFO - [CALLBACK_REG] Callback map now has 0 entries after 🔬 Research Lab
+2025-11-23 22:46:27,577 - INFO - 🤖 Registering RAG-powered chatbot callbacks...
+2025-11-23 22:46:27,577 - INFO - 🤖 Registering chatbot callbacks...
+2025-11-23 22:46:27,581 - INFO - ✅ Chatbot callbacks registered successfully
+2025-11-23 22:46:27,581 - INFO - ✅ RAG chatbot callbacks registered successfully
+2025-11-23 22:46:27,581 - INFO - [CALLBACK_REG] Skipping app.register_callbacks() - DashProxy handles this automatically
+2025-11-23 22:46:27,581 - INFO - [CALLBACK_REG] Registration complete. Total callbacks: 0
+2025-11-23 22:46:27,581 - INFO - ✅ Registered 0 callbacks
+2025-11-23 22:46:27,581 - INFO - Step 6: Starting background services...
+2025-11-23 22:46:27,583 - INFO - 🚀 Market sentiment poller started (interval: 60s, safe_mode: True)
+2025-11-23 22:46:27,583 - INFO - ✅ Market sentiment poller thread started
+2025-11-23 22:46:27,583 - INFO - ✅ Market sentiment poller started: {'running': True, 'poll_interval': 60, 'safe_mode': True, 'enable_pub': False}
+2025-11-23 22:46:27,583 - INFO - ======================================================================
+2025-11-23 22:46:27,583 - INFO - ✅ Application created successfully!
+2025-11-23 22:46:27,583 - INFO - ======================================================================
+2025-11-23 22:46:27,583 - INFO - ✅ App created successfully: <class 'dash_extensions.enrich.DashProxy'>
+2025-11-23 22:46:27,583 - INFO - ======================================================================
+2025-11-23 22:46:27,583 - INFO - Starting Financial Dashboard on http://localhost:8051
+2025-11-23 22:46:27,583 - INFO - Loaded 13 tabs: 🎯 Command Center, 🏠 Command Center (Legacy), 🏠 Home, Market Trends, Market Forecast, ⚡ Volatility Lab, 📊 Attribution Lab, ⚡ Strategy Lab, Monthly Picks, Weekly Picks, Portfolio, 💹 Options Lab, 🔬 Research Lab
+2025-11-23 22:46:27,583 - INFO - Chatbot enabled: True
+2025-11-23 22:46:27,583 - INFO - ======================================================================
+Dash is running on http://0.0.0.0:8051/
+
+2025-11-23 22:46:27,584 - INFO - Dash is running on http://0.0.0.0:8051/
+
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-11-23 22:46:27,588 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8051
+ * Running on http://172.28.84.22:8051
+2025-11-23 22:46:27,588 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-23 22:46:55,314 - INFO - 127.0.0.1 - - [23/Nov/2025 22:46:55] "GET /api/cc/portfolio_snapshot HTTP/1.1" 200 -

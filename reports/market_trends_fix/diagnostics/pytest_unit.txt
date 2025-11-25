@@ -1,0 +1,152 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, hypothesis-6.148.2, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 12 items
+
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_load_from_disk_with_valid_json 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+INFO     utils.load_env:load_env.py:162 ✅ All 5 required keys present
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpg69_ehbi.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [  8%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_load_from_disk_with_missing_file 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/nonexistent_cache_file_12345.json, ttl=300s
+WARNING  financial_dashboard.utils.cache_manager:cache_manager.py:78 Cache file not found: /tmp/nonexistent_cache_file_12345.json
+PASSED                                                                   [ 16%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_load_from_disk_with_corrupted_json 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpjehg1c0n.json, ttl=300s
+ERROR    financial_dashboard.utils.cache_manager:cache_manager.py:91 Corrupted cache file (JSON decode error): Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+PASSED                                                                   [ 25%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_save_to_disk_creates_file_with_correct_structure 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpjvh_qnzw.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+PASSED                                                                   [ 33%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_save_to_disk_atomic_write 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfjjwzn54.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [ 41%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_is_cache_fresh_with_various_timestamps 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpym97xyng.json, ttl=300s
+WARNING  financial_dashboard.utils.cache_manager:cache_manager.py:78 Cache file not found: /tmp/tmpym97xyng.json
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+PASSED                                                                   [ 50%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_get_cache_timestamp_sources 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpp2yxk04l.json, ttl=300s
+WARNING  financial_dashboard.utils.cache_manager:cache_manager.py:78 Cache file not found: /tmp/tmpp2yxk04l.json
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 0 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+PASSED                                                                   [ 58%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_update_cache_syncs_memory_and_disk 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpfks5r3lu.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [ 66%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_clear_cache_removes_both_memory_and_disk 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpukophta8.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:311 Cache cleared successfully
+PASSED                                                                   [ 75%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_thread_safety_concurrent_reads 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpt3e3o52r.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [ 83%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_thread_safety_concurrent_writes 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpt3xo6vx4.json, ttl=300s
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 1 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:87 Loaded cache from disk: 1 records
+PASSED                                                                   [ 91%]
+tests/test_cache_manager_unit.py::TestCacheManagerUnit::test_get_cache_info 
+-------------------------------- live log call ---------------------------------
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:64 CacheManager initialized: path=/tmp/tmpbxehpo21.json, ttl=300s
+WARNING  financial_dashboard.utils.cache_manager:cache_manager.py:78 Cache file not found: /tmp/tmpbxehpo21.json
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:138 Saved cache to disk atomically: 2 records
+INFO     financial_dashboard.utils.cache_manager:cache_manager.py:207 Cache updated successfully (memory + disk)
+PASSED                                                                   [100%]
+
+============================== 12 passed in 2.85s ==============================
+Exit code: 0

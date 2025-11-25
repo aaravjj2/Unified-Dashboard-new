@@ -1,0 +1,752 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/c/Aarav/fin_env/.venv_local/bin/python3
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, hypothesis-6.148.2, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... 
+----------------------------- live log collection ------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=False
+collected 17 items
+
+tests/test_market_forecast_unit.py::TestForecastAPI::test_run_forecast_sync_success 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+ERROR    utils.load_env:load_env.py:157 ❌ Missing required API keys: ['NEWSAPI_KEY']
+PASSED                                                                   [  5%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_run_forecast_missing_ticker PASSED [ 11%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_run_forecast_invalid_horizon PASSED [ 17%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_run_forecast_invalid_confidence PASSED [ 23%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_get_latest_forecast PASSED [ 29%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_get_latest_forecast_not_found PASSED [ 35%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_get_forecast_history PASSED [ 41%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_get_forecast_explanation PASSED [ 47%]
+tests/test_market_forecast_unit.py::TestForecastAPI::test_health_check_healthy PASSED [ 52%]
+tests/test_market_forecast_unit.py::TestForecastAdapter::test_deterministic_mode_loads_fixture 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/test-001.json
+PASSED                                                                   [ 58%]
+tests/test_market_forecast_unit.py::TestForecastAdapter::test_bento_mode_calls_service 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=False
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/test-002.json
+PASSED                                                                   [ 64%]
+tests/test_market_forecast_unit.py::TestForecastAdapter::test_bento_failure_fallback_to_fixture 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=False
+FAILED                                                                   [ 70%]
+tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_save_and_retrieve 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+FAILED                                                                   [ 76%]
+tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_get_latest 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+FAILED                                                                   [ 82%]
+tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_get_history_pagination 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+FAILED                                                                   [ 88%]
+tests/test_market_forecast_unit.py::TestForecastProperties::test_forecast_always_returns_correct_length 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+FAILED                                                                   [ 94%]
+tests/test_market_forecast_unit.py::TestForecastProperties::test_forecast_confidence_intervals_valid 
+-------------------------------- live log call ---------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-002.json
+PASSED                                                                   [100%]
+
+=================================== FAILURES ===================================
+__________ TestForecastAdapter.test_bento_failure_fallback_to_fixture __________
+tests/test_market_forecast_unit.py:239: in test_bento_failure_fallback_to_fixture
+    result = adapter.run_forecast(
+services/forecast_adapter.py:72: in run_forecast
+    response = requests.post(
+/usr/lib/python3.10/unittest/mock.py:1114: in __call__
+    return self._mock_call(*args, **kwargs)
+/usr/lib/python3.10/unittest/mock.py:1118: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+/usr/lib/python3.10/unittest/mock.py:1173: in _execute_mock_call
+    raise effect
+E   Exception: Bento service unavailable
+------------------------------ Captured log call -------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=False
+_____________ TestForecastPersistence.test_json_save_and_retrieve ______________
+tests/test_market_forecast_unit.py:264: in test_json_save_and_retrieve
+    persistence.save_forecast("test-001", fixture_data)
+services/forecast_persistence.py:60: in save_forecast
+    self._save_to_json(forecast_id, data)
+services/forecast_persistence.py:276: in _save_to_json
+    with open(file_path, "w") as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_save_and_retrieve0/forecast/test-001.json'
+------------------------------ Captured log call -------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+_________________ TestForecastPersistence.test_json_get_latest _________________
+tests/test_market_forecast_unit.py:285: in test_json_get_latest
+    persistence.save_forecast(f"test-{i:03d}", data)
+services/forecast_persistence.py:60: in save_forecast
+    self._save_to_json(forecast_id, data)
+services/forecast_persistence.py:276: in _save_to_json
+    with open(file_path, "w") as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_get_latest0/forecast/test-000.json'
+------------------------------ Captured log call -------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+___________ TestForecastPersistence.test_json_get_history_pagination ___________
+tests/test_market_forecast_unit.py:305: in test_json_get_history_pagination
+    persistence.save_forecast(f"test-{i:03d}", data)
+services/forecast_persistence.py:60: in save_forecast
+    self._save_to_json(forecast_id, data)
+services/forecast_persistence.py:276: in _save_to_json
+    with open(file_path, "w") as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_get_history_paginati0/forecast/test-000.json'
+------------------------------ Captured log call -------------------------------
+INFO     services.forecast_persistence:forecast_persistence.py:53 Using JSON file persistence
+______ TestForecastProperties.test_forecast_always_returns_correct_length ______
+tests/test_market_forecast_unit.py:324: in test_forecast_always_returns_correct_length
+    ticker=st.text(min_size=1, max_size=5, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+tests/test_market_forecast_unit.py:343: in test_forecast_always_returns_correct_length
+    assert len(result["forecast"]) <= horizon  # May be truncated to match horizon
+E   AssertionError: assert 30 <= 7
+E    +  where 30 = len([{'date': '2024-01-15', 'yhat': 150.25, 'yhat_lower': 147.8, 'yhat_upper': 152.7}, {'date': '2024-01-16', 'yhat': 150.55, 'yhat_lower': 148.05, 'yhat_upper': 153.05}, {'date': '2024-01-17', 'yhat': 150.85, 'yhat_lower': 148.3, 'yhat_upper': 153.4}, {'date': '2024-01-18', 'yhat': 151.15, 'yhat_lower': 148.55, 'yhat_upper': 153.75}, {'date': '2024-01-19', 'yhat': 151.45, 'yhat_lower': 148.8, 'yhat_upper': 154.1}, {'date': '2024-01-22', 'yhat': 151.75, 'yhat_lower': 149.05, 'yhat_upper': 154.45}, {'date': '2024-01-23', 'yhat': 152.05, 'yhat_lower': 149.3, 'yhat_upper': 154.8}, {'date': '2024-01-24', 'yhat': 152.35, 'yhat_lower': 149.55, 'yhat_upper': 155.15}, {'date': '2024-01-25', 'yhat': 152.65, 'yhat_lower': 149.8, 'yhat_upper': 155.5}, {'date': '2024-01-26', 'yhat': 152.95, 'yhat_lower': 150.05, 'yhat_upper': 155.85}, {'date': '2024-01-29', 'yhat': 153.25, 'yhat_lower': 150.3, 'yhat_upper': 156.2}, {'date': '2024-01-30', 'yhat': 153.55, 'yhat_lower': 150.55, 'yhat_upper': 156.55}, {'date': '2024-01-31', 'yhat': 153.85, 'yhat_lower': 150.8, 'yhat_upper': 156.9}, {'date': '2024-02-01', 'yhat': 154.15, 'yhat_lower': 151.05, 'yhat_upper': 157.25}, {'date': '2024-02-02', 'yhat': 154.45, 'yhat_lower': 151.3, 'yhat_upper': 157.6}, {'date': '2024-02-05', 'yhat': 154.75, 'yhat_lower': 151.55, 'yhat_upper': 157.95}, {'date': '2024-02-06', 'yhat': 155.05, 'yhat_lower': 151.8, 'yhat_upper': 158.3}, {'date': '2024-02-07', 'yhat': 155.35, 'yhat_lower': 152.05, 'yhat_upper': 158.65}, {'date': '2024-02-08', 'yhat': 155.65, 'yhat_lower': 152.3, 'yhat_upper': 159.0}, {'date': '2024-02-09', 'yhat': 155.95, 'yhat_lower': 152.55, 'yhat_upper': 159.35}, {'date': '2024-02-12', 'yhat': 156.25, 'yhat_lower': 152.8, 'yhat_upper': 159.7}, {'date': '2024-02-13', 'yhat': 156.55, 'yhat_lower': 153.05, 'yhat_upper': 160.05}, {'date': '2024-02-14', 'yhat': 156.85, 'yhat_lower': 153.3, 'yhat_upper': 160.4}, {'date': '2024-02-15', 'yhat': 157.15, 'yhat_lower': 153.55, 'yhat_upper': 160.75}, {'date': '2024-02-16', 'yhat': 157.45, 'yhat_lower': 153.8, 'yhat_upper': 161.1}, {'date': '2024-02-20', 'yhat': 157.75, 'yhat_lower': 154.05, 'yhat_upper': 161.45}, {'date': '2024-02-21', 'yhat': 158.05, 'yhat_lower': 154.3, 'yhat_upper': 161.8}, {'date': '2024-02-22', 'yhat': 158.35, 'yhat_lower': 154.55, 'yhat_upper': 162.15}, {'date': '2024-02-23', 'yhat': 158.65, 'yhat_lower': 154.8, 'yhat_upper': 162.5}, {'date': '2024-02-26', 'yhat': 158.95, 'yhat_lower': 155.05, 'yhat_upper': 162.85}])
+E   Falsifying example: test_forecast_always_returns_correct_length(
+E       # The test sometimes passed when commented parts were varied together.
+E       self=<tests.test_market_forecast_unit.TestForecastProperties object at 0x78aebc204b20>,
+E       ticker='A',  # or any other generated value
+E       horizon=7,
+E       confidence=0.9,  # or any other generated value
+E   )
+------------------------------ Captured log call -------------------------------
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+INFO     services.forecast_adapter:forecast_adapter.py:47 ForecastAdapter initialized: bento_url=http://localhost:5001/predict, deterministic=True
+INFO     services.forecast_adapter:forecast_adapter.py:270 Saved forecast to data/forecast/prop-test-001.json
+=========================== short test summary info ============================
+FAILED tests/test_market_forecast_unit.py::TestForecastAdapter::test_bento_failure_fallback_to_fixture - Exception: Bento service unavailable
+FAILED tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_save_and_retrieve - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_save_and_retrieve0/forecast/test-001.json'
+FAILED tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_get_latest - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_get_latest0/forecast/test-000.json'
+FAILED tests/test_market_forecast_unit.py::TestForecastPersistence::test_json_get_history_pagination - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-aarav/pytest-0/test_json_get_history_paginati0/forecast/test-000.json'
+FAILED tests/test_market_forecast_unit.py::TestForecastProperties::test_forecast_always_returns_correct_length - AssertionError: assert 30 <= 7
+ +  where 30 = len([{'date': '2024-01-15', 'yhat': 150.25, 'yhat_lower': 147.8, 'yhat_upper': 152.7}, {'date': '2024-01-16', 'yhat': 150.55, 'yhat_lower': 148.05, 'yhat_upper': 153.05}, {'date': '2024-01-17', 'yhat': 150.85, 'yhat_lower': 148.3, 'yhat_upper': 153.4}, {'date': '2024-01-18', 'yhat': 151.15, 'yhat_lower': 148.55, 'yhat_upper': 153.75}, {'date': '2024-01-19', 'yhat': 151.45, 'yhat_lower': 148.8, 'yhat_upper': 154.1}, {'date': '2024-01-22', 'yhat': 151.75, 'yhat_lower': 149.05, 'yhat_upper': 154.45}, {'date': '2024-01-23', 'yhat': 152.05, 'yhat_lower': 149.3, 'yhat_upper': 154.8}, {'date': '2024-01-24', 'yhat': 152.35, 'yhat_lower': 149.55, 'yhat_upper': 155.15}, {'date': '2024-01-25', 'yhat': 152.65, 'yhat_lower': 149.8, 'yhat_upper': 155.5}, {'date': '2024-01-26', 'yhat': 152.95, 'yhat_lower': 150.05, 'yhat_upper': 155.85}, {'date': '2024-01-29', 'yhat': 153.25, 'yhat_lower': 150.3, 'yhat_upper': 156.2}, {'date': '2024-01-30', 'yhat': 153.55, 'yhat_lower': 150.55, 'yhat_upper': 156.55}, {'date': '2024-01-31', 'yhat': 153.85, 'yhat_lower': 150.8, 'yhat_upper': 156.9}, {'date': '2024-02-01', 'yhat': 154.15, 'yhat_lower': 151.05, 'yhat_upper': 157.25}, {'date': '2024-02-02', 'yhat': 154.45, 'yhat_lower': 151.3, 'yhat_upper': 157.6}, {'date': '2024-02-05', 'yhat': 154.75, 'yhat_lower': 151.55, 'yhat_upper': 157.95}, {'date': '2024-02-06', 'yhat': 155.05, 'yhat_lower': 151.8, 'yhat_upper': 158.3}, {'date': '2024-02-07', 'yhat': 155.35, 'yhat_lower': 152.05, 'yhat_upper': 158.65}, {'date': '2024-02-08', 'yhat': 155.65, 'yhat_lower': 152.3, 'yhat_upper': 159.0}, {'date': '2024-02-09', 'yhat': 155.95, 'yhat_lower': 152.55, 'yhat_upper': 159.35}, {'date': '2024-02-12', 'yhat': 156.25, 'yhat_lower': 152.8, 'yhat_upper': 159.7}, {'date': '2024-02-13', 'yhat': 156.55, 'yhat_lower': 153.05, 'yhat_upper': 160.05}, {'date': '2024-02-14', 'yhat': 156.85, 'yhat_lower': 153.3, 'yhat_upper': 160.4}, {'date': '2024-02-15', 'yhat': 157.15, 'yhat_lower': 153.55, 'yhat_upper': 160.75}, {'date': '2024-02-16', 'yhat': 157.45, 'yhat_lower': 153.8, 'yhat_upper': 161.1}, {'date': '2024-02-20', 'yhat': 157.75, 'yhat_lower': 154.05, 'yhat_upper': 161.45}, {'date': '2024-02-21', 'yhat': 158.05, 'yhat_lower': 154.3, 'yhat_upper': 161.8}, {'date': '2024-02-22', 'yhat': 158.35, 'yhat_lower': 154.55, 'yhat_upper': 162.15}, {'date': '2024-02-23', 'yhat': 158.65, 'yhat_lower': 154.8, 'yhat_upper': 162.5}, {'date': '2024-02-26', 'yhat': 158.95, 'yhat_lower': 155.05, 'yhat_upper': 162.85}])
+Falsifying example: test_forecast_always_returns_correct_length(
+    # The test sometimes passed when commented parts were varied together.
+    self=<tests.test_market_forecast_unit.TestForecastProperties object at 0x78aebc204b20>,
+    ticker='A',  # or any other generated value
+    horizon=7,
+    confidence=0.9,  # or any other generated value
+)
+======================== 5 failed, 12 passed in 17.40s =========================

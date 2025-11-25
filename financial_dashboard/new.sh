@@ -1,0 +1,2 @@
+    wsl --list --verbose
+    

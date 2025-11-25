@@ -1,0 +1,9 @@
+nohup: ignoring input
+2025-11-19 20:30:25,563 INFO Starting mock Bento on 0.0.0.0:5001 (debug=False)
+ * Serving Flask app 'services.mock_bento.app'
+ * Debug mode: off
+2025-11-19 20:30:26,702 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.28.84.22:5001
+2025-11-19 20:30:26,702 INFO [33mPress CTRL+C to quit[0m

@@ -1,0 +1,32 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/aarav/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.11.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 7 items
+
+tests/playwright/test_research_lab_snapshot_clicker.py::test_research_lab_snapshot_overview[chromium] 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/keys.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/doppler.env
+INFO     utils.load_env:load_env.py:101 ✅ Loaded dotenv from /home/aarav/unified-dashboard/.env
+ERROR    utils.load_env:load_env.py:157 ❌ Missing required API keys: ['NEWSAPI_KEY']
+PASSED                                                                   [ 14%]
+tests/playwright/test_research_lab_snapshot_clicker.py::test_research_lab_market_scan[chromium] FAILED [ 28%]
+
+=================================== FAILURES ===================================
+___________________ test_research_lab_market_scan[chromium] ____________________
+tests/playwright/test_research_lab_snapshot_clicker.py:184: in test_research_lab_market_scan
+    assert market_scan_tab is not None, "❌ Could not find Market Scan subtab"
+E   AssertionError: ❌ Could not find Market Scan subtab
+E   assert None is not None
+----------------------------- Captured stdout call -----------------------------
+
+📊 TEST 2: Market Scan Subtab
+============================================================
+=========================== short test summary info ============================
+FAILED tests/playwright/test_research_lab_snapshot_clicker.py::test_research_lab_market_scan[chromium]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+========================= 1 failed, 1 passed in 37.25s =========================
+pytest_exit:0

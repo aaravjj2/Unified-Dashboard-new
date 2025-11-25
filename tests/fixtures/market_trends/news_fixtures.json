@@ -1,0 +1,115 @@
+{
+  "news_items": [
+    {
+      "headline": "SPY Hits New Record High as Tech Rally Continues",
+      "summary": "The S&P 500 ETF (SPY) reached an all-time high today driven by strong earnings from major technology companies and positive economic data.",
+      "source": "Market Wire",
+      "url": "https://example.com/news/spy-record-high",
+      "datetime": "2024-11-18T14:30:00Z"
+    },
+    {
+      "headline": "QQQ Surges on AI Infrastructure Spending Boom",
+      "summary": "Nasdaq-100 ETF (QQQ) jumped 2.3% as investors bet on continued growth in artificial intelligence and cloud computing infrastructure.",
+      "source": "Tech News Daily",
+      "url": "https://example.com/news/qqq-ai-boom",
+      "datetime": "2024-11-18T13:15:00Z"
+    },
+    {
+      "headline": "IWM Small-Cap Rally: Regional Banks Lead Gains",
+      "summary": "Russell 2000 ETF (IWM) rose 1.8% with regional banking stocks leading the charge on improved lending conditions and strong economic growth.",
+      "source": "Financial Times",
+      "url": "https://example.com/news/iwm-smallcap-rally",
+      "datetime": "2024-11-18T12:00:00Z"
+    },
+    {
+      "headline": "AAPL Announces Major Product Launch Event",
+      "summary": "Apple Inc. (AAPL) confirmed a special event next month where it's expected to unveil new hardware and AI-powered features across its ecosystem.",
+      "source": "Tech Insider",
+      "url": "https://example.com/news/aapl-product-launch",
+      "datetime": "2024-11-18T11:45:00Z"
+    },
+    {
+      "headline": "MSFT Cloud Revenue Beats Expectations, Stock Rises",
+      "summary": "Microsoft (MSFT) reported quarterly cloud revenue growth of 28%, surpassing analyst estimates and driving shares up 3.1% in extended trading.",
+      "source": "Bloomberg Tech",
+      "url": "https://example.com/news/msft-cloud-beats",
+      "datetime": "2024-11-18T10:30:00Z"
+    },
+    {
+      "headline": "TSLA Production Ramp-Up Shows Promise in Q4",
+      "summary": "Tesla (TSLA) production data indicates significant improvements in manufacturing efficiency, potentially leading to record deliveries this quarter.",
+      "source": "Auto Industry News",
+      "url": "https://example.com/news/tsla-production",
+      "datetime": "2024-11-18T09:20:00Z"
+    },
+    {
+      "headline": "NVDA GPU Demand Remains Strong Despite Supply Constraints",
+      "summary": "NVIDIA (NVDA) continues to face unprecedented demand for its AI training chips, with order backlogs extending into next year.",
+      "source": "Semiconductor Weekly",
+      "url": "https://example.com/news/nvda-demand",
+      "datetime": "2024-11-18T08:00:00Z"
+    },
+    {
+      "headline": "GOOGL Advertising Revenue Stabilizes After Rocky Quarter",
+      "summary": "Alphabet (GOOGL) shows signs of recovery in digital advertising as major brands return to platform spending after budget cuts.",
+      "source": "Ad Age",
+      "url": "https://example.com/news/googl-ad-revenue",
+      "datetime": "2024-11-17T16:45:00Z"
+    },
+    {
+      "headline": "AMZN Prime Day Sales Set New Record",
+      "summary": "Amazon (AMZN) reported record-breaking Prime Day sales, with third-party sellers seeing 40% year-over-year growth.",
+      "source": "E-Commerce Today",
+      "url": "https://example.com/news/amzn-prime-day",
+      "datetime": "2024-11-17T15:30:00Z"
+    },
+    {
+      "headline": "META Unveils New VR Headset with Advanced AI Features",
+      "summary": "Meta Platforms (META) launched its latest virtual reality device, incorporating AI-powered avatars and real-time translation capabilities.",
+      "source": "VR News",
+      "url": "https://example.com/news/meta-vr-launch",
+      "datetime": "2024-11-17T14:00:00Z"
+    },
+    {
+      "headline": "Market Volatility Index (VIX) Falls to Six-Month Low",
+      "summary": "The CBOE Volatility Index dropped below 13, signaling investor confidence and reduced fear in equity markets.",
+      "source": "Market Watch",
+      "url": "https://example.com/news/vix-low",
+      "datetime": "2024-11-17T13:00:00Z"
+    },
+    {
+      "headline": "Federal Reserve Officials Signal Potential Rate Pause",
+      "summary": "Multiple Fed speakers indicated the central bank may hold rates steady at the next meeting, giving markets time to digest previous hikes.",
+      "source": "Reuters Economics",
+      "url": "https://example.com/news/fed-rate-pause",
+      "datetime": "2024-11-17T12:00:00Z"
+    },
+    {
+      "headline": "Energy Sector Rallies on Oil Price Rebound",
+      "summary": "Crude oil prices climbed 4% this week, lifting energy stocks and providing tailwinds for major integrated oil companies.",
+      "source": "Energy News",
+      "url": "https://example.com/news/energy-rally",
+      "datetime": "2024-11-17T11:00:00Z"
+    },
+    {
+      "headline": "Banking Sector Shows Resilience with Strong Q3 Earnings",
+      "summary": "Major US banks reported better-than-expected third quarter results, driven by net interest margin expansion and credit quality improvements.",
+      "source": "Financial Post",
+      "url": "https://example.com/news/banking-q3",
+      "datetime": "2024-11-17T10:00:00Z"
+    },
+    {
+      "headline": "Consumer Confidence Hits Highest Level in 18 Months",
+      "summary": "The latest consumer confidence survey showed a significant uptick, supported by strong employment data and moderating inflation.",
+      "source": "Economic Indicators Weekly",
+      "url": "https://example.com/news/consumer-confidence",
+      "datetime": "2024-11-17T09:00:00Z"
+    }
+  ],
+  "_metadata": {
+    "fixture_version": "1.0",
+    "created_at": "2024-11-18T00:00:00Z",
+    "description": "Sample news fixtures for Market Trends deterministic testing",
+    "total_items": 15
+  }
+}

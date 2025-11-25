@@ -1,0 +1,18 @@
+# Exclude all markdown files
+*.md
+
+# Exclude all text files
+*.txt
+
+# Exclude all shell scripts
+*.sh
+
+# Exclude logs and test artifacts
+logs/
+test_screenshots/
+*.log
+
+# Exclude caches and VS Code settings
+.vscode/
+.pytest_cache/
+__pycache__/

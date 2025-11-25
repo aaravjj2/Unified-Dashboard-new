@@ -1,0 +1,157 @@
+{
+  "timestamp": "2025-10-29T22:33:57.243009+00:00",
+  "gpt4all_validation": {
+    "component": "GPT4All Falcon",
+    "status": "DEGRADED",
+    "details": {
+      "model_path": "models/gpt4all-falcon-newbpe-q4_0.gguf",
+      "model_exists": true,
+      "model_size_mb": 4015.9169311523438,
+      "total_prompts_tested": 3,
+      "successful_prompts": 3,
+      "failed_prompts": 0,
+      "deterministic_validation_passed": true,
+      "test_results": [
+        {
+          "prompt": "What is 2 + 2? Answer with just the number.",
+          "response": "4",
+          "inference_time_ms": 8302.646398544312,
+          "tokens_generated": 1,
+          "temperature": 0.0,
+          "max_tokens": 50,
+          "success": true,
+          "error_message": "",
+          "timestamp": "2025-10-29T22:28:07.963147+00:00"
+        },
+        {
+          "prompt": "Name the capital of France in one word.",
+          "response": "Paris",
+          "inference_time_ms": 2675.2161979675293,
+          "tokens_generated": 1,
+          "temperature": 0.0,
+          "max_tokens": 50,
+          "success": true,
+          "error_message": "",
+          "timestamp": "2025-10-29T22:28:10.685981+00:00"
+        },
+        {
+          "prompt": "Is the sky blue? Answer yes or no.",
+          "response": "Yes, the sky is blue.",
+          "inference_time_ms": 4935.996294021606,
+          "tokens_generated": 5,
+          "temperature": 0.0,
+          "max_tokens": 50,
+          "success": true,
+          "error_message": "",
+          "timestamp": "2025-10-29T22:28:15.673275+00:00"
+        }
+      ],
+      "deterministic_results": [
+        {
+          "prompt": "What is 2 + 2? Answer with just the number.",
+          "run1_response": "4",
+          "run2_response": "4",
+          "run3_response": "4",
+          "all_identical": true,
+          "inference_times_ms": [
+            3748.0287551879883,
+            4808.346271514893,
+            3948.497772216797
+          ],
+          "avg_inference_time_ms": 4168.290932973226
+        },
+        {
+          "prompt": "Name the capital of France in one word.",
+          "run1_response": "Paris",
+          "run2_response": "Paris",
+          "run3_response": "Paris",
+          "all_identical": true,
+          "inference_times_ms": [
+            4711.849212646484,
+            5609.1883182525635,
+            2990.669012069702
+          ],
+          "avg_inference_time_ms": 4437.235514322917
+        },
+        {
+          "prompt": "Is the sky blue? Answer yes or no.",
+          "run1_response": "Yes, the sky is blue.",
+          "run2_response": "Yes, the sky is blue.",
+          "run3_response": "Yes, the sky is blue.",
+          "all_identical": true,
+          "inference_times_ms": [
+            4045.454978942871,
+            3796.5400218963623,
+            3618.968725204468
+          ],
+          "avg_inference_time_ms": 3820.321242014567
+        }
+      ],
+      "avg_inference_time_ms": 5304.619630177815,
+      "validation_success": false,
+      "timestamp": "2025-10-29T22:28:53.466738+00:00",
+      "error_message": ""
+    },
+    "timestamp": "2025-10-29T22:32:59.574366+00:00",
+    "sla_met": false,
+    "error_message": ""
+  },
+  "dashboard_validation": {
+    "component": "Unified Dashboard",
+    "status": "PASSED",
+    "details": {
+      "url": "http://localhost:8050",
+      "http_status": 200,
+      "response_size": 8754,
+      "has_title": true,
+      "has_css": true,
+      "has_js": true
+    },
+    "timestamp": "2025-10-29T22:33:02.450275+00:00",
+    "sla_met": true,
+    "error_message": ""
+  },
+  "strategy_bot_validation": {
+    "component": "Strategy Bot",
+    "status": "DEGRADED",
+    "details": {
+      "existing_files": [
+        "phase8_analytics/trend_analyzer.py",
+        "phase8_analytics/volatility_heatmap.py"
+      ],
+      "missing_files": [
+        "phase9_strategy/strategy_builder.py",
+        "phase9_strategy/backtest_lab.py"
+      ],
+      "strategy_events_count": 0
+    },
+    "timestamp": "2025-10-29T22:33:02.564552+00:00",
+    "sla_met": true,
+    "error_message": ""
+  },
+  "playwright_validation": {
+    "component": "Playwright Validation",
+    "status": "PASSED",
+    "details": {
+      "load_time_ms": 2682.7545166015625,
+      "page_title": "Updating...",
+      "console_errors": [],
+      "screenshot_path": "outputs/phase10_snapshots/homepage.png"
+    },
+    "timestamp": "2025-10-29T22:33:56.082510+00:00",
+    "sla_met": false,
+    "error_message": ""
+  },
+  "performance_metrics": {
+    "gpt4all_avg_inference_ms": 5304.619630177815,
+    "dashboard_load_time_ms": 2682.7545166015625,
+    "all_sla_met": false,
+    "sla_violations": [
+      "GPT4All inference: 5305ms > 5000ms",
+      "Dashboard load: 2683ms > 2500ms"
+    ]
+  },
+  "overall_status": "DEGRADED",
+  "all_sla_met": false,
+  "validation_success": true
+}

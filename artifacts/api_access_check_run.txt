@@ -1,0 +1,9 @@
+Loaded keys file: /mnt/c/Aarav/fin_env/unified-dashboard/financial_dashboard/keys.env
+Wrote report: /mnt/c/Aarav/fin_env/unified-dashboard/artifacts/api_access_check.txt
+Finnhub FINNHUB_API_KEY: key_present=True
+  quote: 200
+  candle: 403
+Finnhub FINNHUB2_API_KEY: key_present=True
+  quote: 200
+  candle: 403
+Alpaca account: 200

@@ -1,0 +1,41 @@
+{
+  "run_id": "d1bb1b80-4cb8-41fb-a3ac-7603c4a8f26f",
+  "run_type": "weekly",
+  "git_sha": "4d460f1f019ceade13bf70875d09521c5c30f7d9",
+  "params": {
+    "top_n": 20,
+    "min_avg_volume": 0,
+    "max_per_sector": 3,
+    "max_sector_share": 0.5,
+    "w1": 0.4,
+    "w2": 0.3,
+    "w3": 0.2,
+    "w4": 0.1
+  },
+  "params_hash": "fc3ae73c183b05a1",
+  "mode": "dryrun",
+  "seed": "d1bb1b80-4cb8-41fb-a3ac-7603c4a8f26f",
+  "started_at": "2025-11-23T18:48:17.816748",
+  "finished_at": "2025-11-23T18:48:17.816754",
+  "sources_used": {
+    "alpaca": false,
+    "yfinance": true,
+    "finnhub": false,
+    "fixtures": false
+  },
+  "inputs_count": 57,
+  "enriched_count": 57,
+  "scored_count": 57,
+  "final_count": 20,
+  "target_count": 20,
+  "validation": {
+    "passed": true,
+    "errors": [],
+    "warnings": []
+  },
+  "relaxation_steps": 3,
+  "inputs_checksum": {
+    "enriched_csv": "fe289b1456d535773720dab5316a864c34e9060e400a8e04ca1ccb47abe08798",
+    "scored_csv": "c84d1dc0b9b8c20ebdf0e7d4ffb7cbae612d5f4b917a5dc1b5f3b20c790e46a0"
+  }
+}

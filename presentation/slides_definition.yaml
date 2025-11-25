@@ -1,0 +1,99 @@
+slides:
+  - type: title
+    title: "Shark Tank: Impact Data Analytics — Market Dashboard Demo"
+    subtitle: "Team: [Your Names]  •  Course: Impact Data Analytics Innovation Challenge"
+    notes: "Quick introduction: who we are and what the pitch will cover (5-8 minute presentation)."
+    image: screenshots/final/20251119_152942_00_initial.png
+
+  - type: bullets
+    title: "The Problem"
+    bullets:
+      - "Many community organizations and small businesses lack timely market insights to make data-driven decisions."
+      - "Manual research is slow, noisy, and often not tailored to local impact goals."
+      - "Decision-makers need accessible, actionable signals (not raw data)."
+    notes: "Explain why it matters: budget constraints, need for fast decisions, risk management. Give a concise example (e.g., a local nonprofit choosing investments for an endowment)."
+    image: screenshots/01_home.png
+
+  - type: bullets
+    title: "The Data"
+    bullets:
+      - "Market prices & time series (intraday / daily) — public APIs (yfinance, Finnhub)."
+      - "Options data & implied volatility (for risk signals) — Alpaca / yfinance fallback / mock for demos."
+      - "Alternative signals: news sentiment, macro indicators, community-specific datasets." 
+    notes: "State sources and privacy/credentials plan. Mention that our dashboard already integrates yfinance, Finnhub, and (optionally) Alpaca in the codebase."
+    image: snapshots/phase12_playwright_snapshots/market_forecast.png
+
+  - type: bullets
+    title: "Analysis Approach"
+    bullets:
+      - "Real-time dashboards: monitor price, volatility, and options Greeks for risk-aware decisions."
+      - "Signal generation: detect momentum, volatility surges, option skew changes."
+      - "Interactive exploration: filter by ticker, expiration, and moneyness to assess risk exposure."
+    notes: "High-level methods: time-series analysis, volatility surface visualization, lightweight ML for trends if needed. Keep methods understandable for judges."
+    image: snapshots/screenshot_comparisons/market_forecast_content.png
+
+  - type: bullets
+    title: "Our Solution — Market Dashboard"
+    bullets:
+      - "Interactive Dash app: tabs for Market Trends, Options Lab, Volatility Lab, Research Lab."
+      - "Options Lab: chain loader, Greeks, IV smile, vol-surface 3D visualization, trade simulator."
+      - "Actionable outputs: weekly/monthly picks, simple trade suggestions, exportable CSVs for reporting."
+    notes: "Explain that the repo's dashboard will be used as the demo platform — point to the Options Lab tab for a hands-on demo."
+    images:
+      - snapshots/phase12_playwright_snapshots/options_lab.png
+      - screenshots/02_options_lab.png
+
+  - type: bullets
+    title: "Demo Flow (2 minutes)"
+    bullets:
+      - "1) Load ticker in Options Lab (yfinance mock if API keys missing)."
+      - "2) Show Greeks charts, IV smile, and vol-surface."
+      - "3) Run a quick trade simulator and export a CSV with suggested contracts."
+    notes: "Keep demo short and rehearsed. Mention fallback mock data to guarantee reproducible demo."
+    image: options_lab_snapshots/options_lab_after_click.png
+    image_only: true
+    full_image: true
+
+  - type: bullets
+    title: "Impact & Metrics"
+    bullets:
+      - "Benefit: faster, data-driven decisions for small orgs and student teams."
+      - "Metrics: decision time reduction, accuracy of signal (precision/recall of recommended picks), user adoption."
+      - "Pilot goal: 3 partner orgs, 50 users, measure decisions influenced within 3 months."
+    notes: "Tie metrics to measurable outcomes judges care about."
+    image: snapshots/screenshot_comparisons/weekly_picks_annotated.png
+
+  - type: bullets
+    title: "Technical Roadmap / Requirements"
+    bullets:
+      - "Minimum: Python environment, API keys optional (yfinance works for demo)."
+      - "Dependencies: Dash, pandas, numpy, plotly, python-pptx (for this deck generation script)."
+      - "Next steps: polish UI, add deterministic test data, integrate simple model for forecasts."
+    notes: "Be clear about what you need (data, compute, time)."
+    image: screenshots/final/20251119_152942_01_market_trends.png
+
+  - type: bullets
+    title: "The Ask"
+    bullets:
+      - "$X in funding to build a pilot (data, cloud hosting, API credits)."
+      - "Mentorship/partners to run a 3-month pilot with community orgs."
+      - "Support for UX polishing and creating training materials."
+    notes: "Be specific and concise about resources and timeline."
+
+  - type: bullets
+    title: "Closing — Why This Matters"
+    bullets:
+      - "Democratizes market analytics for small teams and community-impact projects."
+      - "Leverages data for measurable social and financial outcomes."
+      - "We can demo a working prototype in minutes using our dashboard."
+    notes: "Strong close; invite questions and a live demo."
+    image: test-artifacts/home_snapshot.png
+
+  - type: appendix
+    title: "Appendix — Data Sources & Tech Stack"
+    bullets:
+      - "Data: yfinance, Finnhub, optional Alpaca (credentials managed via keys.env)."
+      - "Stack: Dash, Flask, Plotly, pandas, numpy."
+      - "Repo: /financial_dashboard — tabs/options_lab has greeks and chain loader implementations."
+    notes: "Optional slide for judges who ask technical questions."
+    image: options_lab_snapshots/market_forecast_options_initial.png

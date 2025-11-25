@@ -1,0 +1,579 @@
+"""
+Home Tab - Customizable Dashboard
+==================================
+Widget-based homepage with drag-and-drop customization.
+Features portfolio summary, watchlist, market overview, and quick actions.
+"""
+
+import dash
+from dash import html, dcc, Input, Output, State, callback
+import dash_bootstrap_components as dbc
+from datetime import datetime, timedelta
+import plotly.graph_objects as go
+
+# Default widget layout
+DEFAULT_WIDGETS = [
+    {"id": "portfolio_summary", "row": 0, "col": 0, "width": 6},
+    {"id": "market_overview", "row": 0, "col": 6, "width": 6},
+    {"id": "watchlist", "row": 1, "col": 0, "width": 4},
+    {"id": "quick_actions", "row": 1, "col": 4, "width": 4},
+    {"id": "recent_trades", "row": 1, "col": 8, "width": 4},
+]
+
+def create_portfolio_widget():
+    """Create portfolio summary widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-wallet2 me-2"),
+            html.Span("Portfolio Summary", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div("Total Value", className="text-muted small"),
+                    html.H4("$125,430.50", className="text-success mb-0", id="home-portfolio-value"),
+                ], width=6),
+                dbc.Col([
+                    html.Div("Today's Change", className="text-muted small"),
+                    html.H4([
+                        "+$2,340.20 ",
+                        html.Small("(+1.9%)", className="text-success")
+                    ], className="text-success mb-0", id="home-portfolio-change"),
+                ], width=6),
+            ]),
+            html.Hr(),
+            dbc.Row([
+                dbc.Col([
+                    html.Div("Positions", className="text-muted small"),
+                    html.H5("24", className="mb-0"),
+                ], width=4),
+                dbc.Col([
+                    html.Div("Day High", className="text-muted small"),
+                    html.H5("$127,890", className="mb-0 text-success"),
+                ], width=4),
+                dbc.Col([
+                    html.Div("Day Low", className="text-muted small"),
+                    html.H5("$123,100", className="mb-0 text-danger"),
+                ], width=4),
+            ]),
+        ])
+    ], className="shadow-sm h-100")
+
+def create_market_overview_widget():
+    """Create market indices overview widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-graph-up me-2"),
+            html.Span("Market Overview", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div("S&P 500", className="text-muted small"),
+                    html.H5([
+                        html.Span("4,567.80 ", id="market-sp500-value"),
+                        html.Small("+0.5%", id="market-sp500-pct", className="text-success")
+                    ], className="mb-2"),
+                ], width=4),
+                dbc.Col([
+                    html.Div("NASDAQ", className="text-muted small"),
+                    html.H5([
+                        html.Span("14,234.50 ", id="market-nasdaq-value"),
+                        html.Small("+0.8%", id="market-nasdaq-pct", className="text-success")
+                    ], className="mb-2"),
+                ], width=4),
+                dbc.Col([
+                    html.Div("DOW", className="text-muted small"),
+                    html.H5([
+                        html.Span("35,678.90 ", id="market-dow-value"),
+                        html.Small("-0.2%", id="market-dow-pct", className="text-danger")
+                    ], className="mb-2"),
+                ], width=4),
+            ]),
+            html.Hr(),
+            dcc.Graph(
+                id="market-mini-chart",
+                figure=go.Figure(
+                    data=[go.Scatter(x=[1, 2, 3, 4, 5], y=[4500, 4520, 4540, 4550, 4567], mode='lines', line=dict(color='#28a745'))],
+                    layout=go.Layout(height=100, margin=dict(l=0, r=0, t=0, b=0), showlegend=False, xaxis=dict(visible=False), yaxis=dict(visible=False))
+                ),
+                config={'displayModeBar': False}
+            )
+        ,
+    # hidden containers for action results / last job ids
+    html.Div(id='home-action-result', style={'display': 'none'}),
+    html.Div(id='home-last-job', style={'display': 'none'}),
+    html.Div(id='home-last-analysis-job', style={'display': 'none'}),
+    html.Div(id='home-last-hedge-job', style={'display': 'none'})
+        ])
+    ], className="shadow-sm h-100")
+
+def create_watchlist_widget():
+    """Create watchlist widget. Uses `data/watchlist.json` for persistence."""
+    # Render container; items are filled by callbacks
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-star me-2"),
+            html.Span("Watchlist", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col(dcc.Input(id='watch-add-input', placeholder='Enter ticker (e.g. AAPL)', persistence=True), width=7),
+                dbc.Col(dbc.Button('Add', id='watch-add-btn', color='primary', className='w-100'), width=5),
+            ], className='mb-3'),
+            html.Div(id='watchlist-items-container')
+        ])
+    ], className="shadow-sm h-100")
+
+def create_quick_actions_widget():
+    """Create quick actions widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-lightning me-2"),
+            html.Span("Quick Actions", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    dbc.Button([
+                        html.I(className="bi bi-search me-2"),
+                        "Scan Market"
+                    ], id='home-scan-market', color="primary", className="w-100 mb-2"),
+                ], width=12),
+                dbc.Col([
+                    dbc.Button([
+                        html.I(className="bi bi-graph-up me-2"),
+                        "Analyze"
+                    ], id='home-analyze', color="info", className="w-100 mb-2"),
+                ], width=12),
+                dbc.Col([
+                    dbc.Button([
+                        html.I(className="bi bi-shield-check me-2"),
+                        "Hedge Finder"
+                    ], id='home-hedge-finder', color="warning", className="w-100 mb-2"),
+                ], width=12),
+                dbc.Col([
+                    dbc.Button([
+                        html.I(className="bi bi-gear me-2"),
+                        "Settings"
+                    ], id='home-settings', color="secondary", className="w-100"),
+                ], width=12),
+            ])
+        ])
+    ], className="shadow-sm h-100")
+
+def create_recent_trades_widget():
+    """Create recent trades widget."""
+    recent_trades = [
+        {"action": "BUY", "symbol": "AAPL", "qty": "10", "price": "$178.50"},
+        {"action": "SELL", "symbol": "TSLA", "qty": "5", "price": "$242.80"},
+        {"action": "BUY", "symbol": "NVDA", "qty": "15", "price": "$485.20"},
+    ]
+    
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-clock-history me-2"),
+            html.Span("Recent Trades", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            html.Div([
+                dbc.Row([
+                    dbc.Col(
+                        dbc.Badge(
+                            trade["action"],
+                            color="success" if trade["action"] == "BUY" else "danger",
+                            className="me-2"
+                        ),
+                        width=3
+                    ),
+                    dbc.Col(html.Strong(trade["symbol"]), width=3),
+                    dbc.Col(html.Span(f"{trade['qty']} @ {trade['price']}"), width=6),
+                ], className="mb-2")
+                for trade in recent_trades
+            ])
+        ])
+    ], className="shadow-sm h-100")
+
+def layout():
+    """Create the home tab layout."""
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                html.H3([
+                    html.I(className="bi bi-house-door me-2"),
+                    "Dashboard Home"
+                ]),
+                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", className="text-muted"),
+                # Visible alert area for Quick Actions feedback
+                dbc.Alert(id='home-action-alert', is_open=False, color='info', className='mt-2', style={'display': 'none'})
+            ])
+        ], className="mb-4"),
+        
+        # Widget grid - Row 1
+        dbc.Row([
+            dbc.Col(create_portfolio_widget(), width=6, id="widget-portfolio"),
+            dbc.Col(create_market_overview_widget(), width=6, id="widget-market"),
+        ], className="mb-4"),
+
+        # Client-side navigation placeholder
+        dcc.Location(id='home-nav', refresh=False),
+        
+        # Widget grid - Row 2
+        dbc.Row([
+            dbc.Col(create_watchlist_widget(), width=4, id="widget-watchlist"),
+            dbc.Col(create_quick_actions_widget(), width=4, id="widget-actions"),
+            dbc.Col(create_recent_trades_widget(), width=4, id="widget-trades"),
+        ], className="mb-4"),
+        
+        # Customization hint
+        dbc.Row([
+            dbc.Col([
+                dbc.Alert([
+                    html.I(className="bi bi-info-circle me-2"),
+                    "Tip: Customize your dashboard layout in Settings (drag & drop coming soon!)"
+                ], color="info", className="mb-0")
+            ])
+        ])
+    ], fluid=True, className="p-4")
+
+def register_callbacks(app):
+    """Register callbacks for the home tab."""
+    @app.callback(
+        Output("home-portfolio-value", "children"),
+        Output("home-portfolio-change", "children"),
+        Input("interval-component", "n_intervals")
+    )
+    def update_portfolio_summary(n):
+        """Update portfolio summary with live data from portfolio dashboard service."""
+        try:
+            import requests
+            import os
+
+            # Call portfolio dashboard service GET /portfolio/summary endpoint
+            portfolio_dashboard_url = os.environ.get('PORTFOLIO_DASHBOARD_URL', 'http://portfolio_dashboard:8057')
+            response = requests.get(f"{portfolio_dashboard_url}/portfolio/summary", timeout=5)
+
+            if response.status_code == 200:
+                data = response.json()
+
+                # portfolio_dashboard_service returns different structure
+                portfolio_value = data.get('portfolio_value', 0)
+                total_pl = data.get('total_unrealized_pl', 0)
+                total_pl_pct = data.get('total_unrealized_pl_pct', 0)
+
+                # Format values
+                value_str = f"${portfolio_value:,.2f}"
+
+                if total_pl >= 0:
+                    change_str = f"+${total_pl:,.2f}"
+                    change_class = "text-success"
+                else:
+                    change_str = f"${total_pl:,.2f}"
+                    change_class = "text-danger"
+
+                pct_str = f"({total_pl_pct:+.1f}%)"
+
+                return value_str, [
+                    change_str + " ",
+                    html.Small(pct_str, className=change_class)
+                ]
+            else:
+                # Service returned non-200, use placeholder
+                return "$125,430.50 (service error)", [
+                    "+$2,340.20 ",
+                    html.Small("(+1.9%)", className="text-muted")
+                ]
+
+        except Exception as e:
+            # Network error or service unavailable — attempt local fallbacks before returning a static placeholder
+            print(f"Error fetching portfolio data: {e}")
+            try:
+                # Try local executor (Alpaca) to get live portfolio value
+                from ..utils.execution import AlpacaExecutor
+                exec_client = AlpacaExecutor()
+                pv = exec_client.get_portfolio_value()
+                try:
+                    positions = exec_client.get_open_positions()
+                    total_pl = sum(p.get('unrealized_pl', 0) for p in positions.values())
+                except Exception:
+                    total_pl = 0
+
+                total_pl_pct = (total_pl / pv) * 100 if pv else 0
+                value_str = f"${pv:,.2f}"
+                if total_pl >= 0:
+                    change_str = f"+${total_pl:,.2f}"
+                    change_class = "text-success"
+                else:
+                    change_str = f"${total_pl:,.2f}"
+                    change_class = "text-danger"
+                pct_str = f"({total_pl_pct:+.1f}%)"
+                return value_str, [change_str + " ", html.Small(pct_str, className=change_class)]
+            except Exception:
+                # As a last resort, try reading the most recent snapshot from DB utilities
+                try:
+                    from ..utils.db_utils_new import get_latest_snapshot
+                    snap = get_latest_snapshot()
+                    pv = snap.get('portfolio_value') if snap else None
+                    if pv:
+                        return f"${pv:,.2f} (snapshot)", ["-- ", html.Small("(snapshot)", className="text-muted")]
+                except Exception:
+                    pass
+
+        # Fallback static placeholder
+        return "$125,430.50 (offline)", [
+            "+$2,340.20 ",
+            html.Small("(+1.9%)", className="text-muted")
+        ]
+
+    @app.callback(
+        Output('market-sp500-value', 'children'),
+        Output('market-sp500-pct', 'children'),
+        Output('market-nasdaq-value', 'children'),
+        Output('market-nasdaq-pct', 'children'),
+        Output('market-dow-value', 'children'),
+        Output('market-dow-pct', 'children'),
+        Output({'type': 'watch-price', 'index': dash.ALL}, 'children'),
+        Output({'type': 'watch-change', 'index': dash.ALL}, 'children'),
+        Input('interval-component', 'n_intervals')
+    )
+    def refresh_market_and_watchlist(n):
+        """Fetch latest market indices and watchlist prices. Minimal safe implementation using utils/price_fetch."""
+        try:
+            from ..utils.price_fetch import get_price_single, fetch_prices_batch
+        except Exception:
+            # If import fails, return placeholders
+            sp500_val = "4,567.80 "
+            sp500_pct = html.Small("+0.5%", className="text-success")
+            nasdaq_val = "14,234.50 "
+            nasdaq_pct = html.Small("+0.8%", className="text-success")
+            dow_val = "35,678.90 "
+            dow_pct = html.Small("-0.2%", className="text-danger")
+            # For watchlist items, return unchanged placeholder strings by reading static symbols
+            symbols = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
+            prices = ["$178.50", "$242.80", "$485.20", "$378.90"]
+            changes = ["+1.2%", "-0.5%", "+2.3%", "+0.8%"]
+            return sp500_val, sp500_pct, nasdaq_val, nasdaq_pct, dow_val, dow_pct, prices, changes
+
+        # Minimal mapping: use yfinance/finnhub for index proxies (SPY, QQQ, DIA)
+        idx_map = {'SPY': ('market-sp500-value', 'market-sp500-pct'), 'QQQ': ('market-nasdaq-value', 'market-nasdaq-pct'), 'DIA': ('market-dow-value', 'market-dow-pct')}
+        prices = fetch_prices_batch(['SPY', 'QQQ', 'DIA'], parallelism=3, context='live')
+        sp = prices.get('SPY', {})
+        qq = prices.get('QQQ', {})
+        di = prices.get('DIA', {})
+
+        def fmt_price(p):
+            if not p or p.get('last_price') is None:
+                return "--"
+            return f"${p['last_price']:,.2f} "
+
+        def fmt_pct(p):
+            if not p or p.get('last_price') is None or p.get('prev_close') in (None, 0):
+                return html.Small("--", className="text-muted")
+            try:
+                pct = (p['last_price'] - p['prev_close']) / (p['prev_close']) * 100
+                cls = 'text-success' if pct >= 0 else 'text-danger'
+                sign = '+' if pct >= 0 else ''
+                return html.Small(f"{sign}{pct:+.2f}%", className=cls)
+            except Exception:
+                return html.Small("--", className="text-muted")
+
+        sp_val, sp_pct = fmt_price(sp), fmt_pct(sp)
+        qq_val, qq_pct = fmt_price(qq), fmt_pct(qq)
+        di_val, di_pct = fmt_price(di), fmt_pct(di)
+
+        # Watchlist symbols: read persisted file if present
+        try:
+            import json, os
+            wl_path = _watchlist_path()
+            if os.path.exists(wl_path):
+                with open(wl_path, 'r') as f:
+                    symbols = json.load(f)
+            else:
+                symbols = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
+        except Exception:
+            symbols = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
+        w = fetch_prices_batch(symbols, parallelism=4, context='live')
+        w_prices = [fmt_price(w.get(s)) for s in symbols]
+        w_changes = []
+        for s in symbols:
+            p = w.get(s)
+            if not p or p.get('last_price') is None or p.get('prev_close') in (None, 0):
+                w_changes.append("--")
+            else:
+                try:
+                    pct = (p['last_price'] - p['prev_close']) / (p['prev_close']) * 100
+                    sign = '+' if pct >= 0 else ''
+                    w_changes.append(f"{sign}{pct:+.2f}%")
+                except Exception:
+                    w_changes.append("--")
+
+        # No change to action alert on interval refresh — only update market/watchlist values
+        return sp_val, sp_pct, qq_val, qq_pct, di_val, di_pct, w_prices, w_changes
+
+    @app.callback(
+        Output('home-action-result', 'children'),
+        Output('home-last-job', 'children'),
+        Output('home-last-analysis-job', 'children'),
+        Output('home-last-hedge-job', 'children'),
+        Output('home-action-alert', 'children'),
+        Output('home-action-alert', 'is_open'),
+        Output('home-nav', 'href'),
+        Input('home-scan-market', 'n_clicks'),
+        Input('home-analyze', 'n_clicks'),
+        Input('home-hedge-finder', 'n_clicks'),
+        Input('home-settings', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def handle_quick_actions(scan, analyze, hedge, settings):
+        # Determine which button was clicked
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            return ''
+        btn = ctx.triggered[0]['prop_id'].split('.')[0]
+        # Perform minimal action: attempt to call internal API if exists, else log and return message
+        import requests, os, json
+        try:
+            # Default empty job ids
+            last_job_id = ''
+            last_analysis_job = ''
+            last_hedge_job = ''
+
+            if btn == 'home-scan-market':
+                url = os.environ.get('MARKET_TRENDS_URL', 'http://market_trends:8050')
+                payload = {
+                    "tickers": ["SPY", "QQQ", "DIA"],
+                    "period": "1mo",
+                    "interval": "1d",
+                    "options": False,
+                    "news": False,
+                    "topn": 10
+                }
+                try:
+                    r = requests.post(f"{url}/api/jobs", json=payload, timeout=5)
+                    if r.status_code in (200, 201):
+                        data = r.json()
+                        last_job_id = data.get('job_id') or data.get('jobId') or ''
+                        msg = f"Scan Market job queued: {last_job_id}"
+                    else:
+                        msg = f"Scan Market request failed ({r.status_code})"
+                except Exception as e:
+                    msg = f"Scan Market error: {str(e)[:120]}"
+
+                # Show alert and keep navigation unchanged
+                return msg, last_job_id, last_analysis_job, last_hedge_job, msg, True, dash.no_update
+
+            if btn == 'home-analyze':
+                url = os.environ.get('ANALYSIS_SERVICE_URL', 'http://analysis:8054')
+                # Use a simple attribution job payload
+                payload = {
+                    "picks_type": "weekly",
+                    "start_date": (datetime.utcnow() - timedelta(days=30)).strftime('%Y-%m-%d'),
+                    "end_date": datetime.utcnow().strftime('%Y-%m-%d'),
+                    "horizon": "1w"
+                }
+                try:
+                    r = requests.post(f"{url}/api/jobs", json=payload, timeout=5)
+                    if r.status_code in (200, 201):
+                        data = r.json()
+                        last_analysis_job = data.get('job_id') or data.get('jobId') or ''
+                        msg = f"Analysis job queued: {last_analysis_job}"
+                    else:
+                        msg = f"Analysis request failed ({r.status_code})"
+                except Exception as e:
+                    msg = f"Analyze error: {str(e)[:120]}"
+
+                return msg, last_job_id, last_analysis_job, last_hedge_job, msg, True, dash.no_update
+
+            if btn == 'home-hedge-finder':
+                # Hedge Finder exists as a component; return message that UI should open it.
+                # The Portfolio tab's Hedge Finder can be opened by client-side navigation; here we just return a flag.
+                msg = f"Hedge Finder opened ({datetime.now().isoformat()})"
+                last_hedge_job = 'ui-opened'
+                # Navigate to the Portfolio tab's hedge finder anchor (if app uses hash), else to Portfolio tab value
+                href = '/#portfolio'  # fallback: user may implement client routing to detect this
+                return msg, last_job_id, last_analysis_job, last_hedge_job, msg, True, href
+
+            if btn == 'home-settings':
+                msg = f"Settings opened ({datetime.now().isoformat()})"
+                return msg, last_job_id, last_analysis_job, last_hedge_job, msg, True, dash.no_update
+
+        except Exception as e:
+            err = f"Action error: {str(e)[:120]}"
+            return err, '', '', '', err, True, dash.no_update
+
+        return '', '', '', '', '', False, dash.no_update
+
+    def _watchlist_path():
+        import os
+        return os.path.join(os.path.dirname(__file__), '..', 'data', 'watchlist.json')
+
+    @app.callback(
+        Output('watchlist-items-container', 'children'),
+        Input('interval-component', 'n_intervals'),
+        Input('watch-add-btn', 'n_clicks'),
+        State('watch-add-input', 'value'),
+        Input({'type': 'watch-remove', 'index': dash.ALL}, 'n_clicks'),
+        prevent_initial_call=False
+    )
+    def update_watchlist(n_intervals, add_n_clicks, add_value, remove_n_clicks_list):
+        """Unified watchlist handler: interval refresh, add item, and remove item all use the same output.
+
+        Using a single callback prevents Dash 'Duplicate callback outputs' errors and keeps state persistence simple.
+        """
+        import json, os, ast
+        ctx = dash.callback_context
+        path = _watchlist_path()
+        default = ["AAPL", "TSLA", "NVDA", "MSFT"]
+
+        # Read existing list
+        try:
+            if os.path.exists(path):
+                with open(path, 'r') as f:
+                    arr = json.load(f)
+            else:
+                arr = default.copy()
+        except Exception:
+            arr = default.copy()
+
+        # If triggered by add button, append symbol
+        if ctx.triggered:
+            trig = ctx.triggered[0]['prop_id']
+            if trig.startswith('watch-add-btn'):
+                if add_value:
+                    symbol = str(add_value).upper().strip()
+                    if symbol and symbol not in arr:
+                        arr.append(symbol)
+                        try:
+                            os.makedirs(os.path.dirname(path), exist_ok=True)
+                            with open(path, 'w') as f:
+                                json.dump(arr, f)
+                        except Exception:
+                            pass
+            elif 'watch-remove' in trig:
+                # parse the pattern-matching id to get the symbol
+                try:
+                    idx = trig.split('.')[0]
+                    key = ast.literal_eval(idx)
+                    symbol = key.get('index')
+                    if symbol in arr:
+                        arr.remove(symbol)
+                        try:
+                            with open(path, 'w') as f:
+                                json.dump(arr, f)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+
+        # Build rows for current list
+        rows = []
+        for s in arr:
+            rows.append(
+                dbc.Row([
+                    dbc.Col(html.Strong(s), width=4),
+                    dbc.Col(html.Span("--", id={'type':'watch-price', 'index': s}), width=4),
+                    dbc.Col(html.Span("--", id={'type':'watch-change', 'index': s}), width=3),
+                    dbc.Col(dbc.Button('Remove', id={'type':'watch-remove', 'index': s}, color='danger', size='sm'), width=1),
+                ], className='mb-2')
+            )
+        return rows

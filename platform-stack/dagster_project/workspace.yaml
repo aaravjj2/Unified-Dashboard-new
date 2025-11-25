@@ -1,0 +1,2 @@
+load_from:
+  - python_file: data_pipeline.py

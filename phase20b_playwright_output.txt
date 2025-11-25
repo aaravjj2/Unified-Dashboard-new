@@ -1,0 +1,107 @@
+================================================================================
+PHASE 20B - CHROMIUM PLAYWRIGHT E2E TEST
+================================================================================
+
+🚀 Launching Chromium browser...
+
+[1/7] Loading Azure ML Lab page...
+✅ Page loaded - Screenshot: 01_initial_load.png
+
+[2/7] Testing Predictions Tab...
+✅ Predictions tab shows database footer
+✅ Screenshot: 02_predictions_tab.png
+
+[3/7] Testing Performance Tab...
+⚠️ Performance tab error: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("a[href=\"#performance\"], button:has-text(\"Performance\")").first
+    - locator resolved to <button id="perf-export-btn" class="mt-3 perf-export-btn btn btn-outline-success">📥 Export Performance Report</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+
+[4/7] Testing Feature Importance Tab...
+⚠️ Feature Importance error: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("button:has-text(\"Feature Importance\"), a:has-text(\"Feature Importance\")").first
+    - locator resolved to <a href="#" role="tab" tabindex="-1" class="nav-link" id="react-aria8751172435-:r4:-tab-null" aria-controls="react-aria8751172435-:r4:-tabpane-null">🔍 Feature Importance</a>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+
+[5/7] Testing Risk Analysis Tab...
+⚠️ Risk Analysis error: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("button:has-text(\"Risk Analysis\"), a:has-text(\"Risk\")").first
+    - locator resolved to <a href="#" role="tab" tabindex="-1" class="nav-link" id="react-aria8751172435-:r3:-tab-null" aria-controls="react-aria8751172435-:r3:-tabpane-null">⚠️ Risk & Factors</a>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+
+[6/7] Testing Model Insights Tab...
+⚠️ Model Insights error: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("button:has-text(\"Model Insights\"), a:has-text(\"Insights\")").first
+    - locator resolved to <a href="#" role="tab" tabindex="-1" class="nav-link" id="react-aria8751172435-:r4:-tab-null" aria-controls="react-aria8751172435-:r4:-tabpane-null">🧠 Model Insights</a>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+
+[7/7] Capturing final state...
+✅ Screenshot: 07_final_state.png
+
+================================================================================
+CHROMIUM PLAYWRIGHT TEST SUMMARY
+================================================================================
+✅ Passed: 3
+❌ Failed: 4
+⏭️  Skipped: 0
+
+📸 Screenshots saved to: phase20b_snapshots/
+================================================================================
+
+❌ FAILURE: Some tests failed

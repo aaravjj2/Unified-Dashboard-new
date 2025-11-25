@@ -1,0 +1,936 @@
+diff --git a/financial_dashboard/api/chat.py b/financial_dashboard/api/chat.py
+index a755e43..ddc9ef5 100644
+--- a/financial_dashboard/api/chat.py
++++ b/financial_dashboard/api/chat.py
+@@ -11,6 +11,8 @@ from flask import Blueprint, request, jsonify
+ from typing import Dict, Any
+ 
+ from financial_dashboard.services.chat.generator_client import get_generator
++from financial_dashboard.services.chat.faiss_index import get_index
++from financial_dashboard.services.chat.ingest import IngestionPipeline
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -40,12 +42,10 @@ def health():
+         generator = get_generator()
+         generator_health = generator.health_check()
+         
+-        # Check vector index (placeholder for now)
+-        index_health = {
+-            "status": "not_implemented",
+-            "size": 0,
+-            "last_ingest": None
+-        }
++        # Check vector index
++        index = get_index()
++        index_health = index.health_check()
++        index_health["status"] = "healthy" if index_health["size"] > 0 else "empty"
+         
+         # Determine overall status
+         if generator_health["status"] == "healthy":
+@@ -225,14 +225,22 @@ def reindex():
+         }
+     """
+     try:
+-        # Placeholder for PHASE 2
+-        logger.info("Reindex requested (not yet implemented)")
++        start_time = time.time()
++        
++        # Reingest from fixtures
++        pipeline = IngestionPipeline()
++        stats = pipeline.ingest_fixtures()
++        
++        duration_ms = (time.time() - start_time) * 1000
++        
++        logger.info(f"Reindexing complete in {duration_ms:.0f}ms: {stats}")
+         
+         return jsonify({
+             "success": True,
+-            "documents_indexed": 0,
+-            "duration_ms": 0,
+-            "note": "Reindexing not yet implemented - coming in PHASE 2"
++            "documents_indexed": stats['documents'],
++            "chunks_created": stats['chunks'],
++            "indexed": stats['indexed'],
++            "duration_ms": duration_ms
+         }), 200
+         
+     except Exception as e:
+@@ -250,7 +258,7 @@ def ingest():
+     Request body:
+         {
+             "documents": [
+-                {"text": "...", "metadata": {...}},
++                {"text": "...", "doc_id": "...", "metadata": {...}},
+                 ...
+             ],
+             "use_fixtures": false
+@@ -259,6 +267,7 @@ def ingest():
+     Response:
+         {
+             "success": true,
++            "documents": 10,
+             "chunks_created": 234,
+             "indexed": 234
+         }
+@@ -271,12 +280,18 @@ def ingest():
+         
+         logger.info(f"Ingest requested: {len(documents)} docs, fixtures={use_fixtures}")
+         
+-        # Placeholder for PHASE 2
++        pipeline = IngestionPipeline()
++        
++        if use_fixtures:
++            stats = pipeline.ingest_fixtures()
++        elif documents:
++            stats = pipeline.ingest_documents(documents)
++        else:
++            return jsonify({"error": "No documents provided and use_fixtures=false"}), 400
++        
+         return jsonify({
+             "success": True,
+-            "chunks_created": 0,
+-            "indexed": 0,
+-            "note": "Ingestion not yet implemented - coming in PHASE 2"
++            **stats
+         }), 200
+         
+     except Exception as e:
+diff --git a/financial_dashboard/services/chat/chunker.py b/financial_dashboard/services/chat/chunker.py
+new file mode 100644
+index 0000000..c310a7d
+--- /dev/null
++++ b/financial_dashboard/services/chat/chunker.py
+@@ -0,0 +1,157 @@
++"""
++Chunker - Semantic text chunking for RAG
++Splits documents into semantic chunks with overlap
++"""
++
++import logging
++from typing import List, Dict, Any, Optional
++from dataclasses import dataclass
++
++logger = logging.getLogger(__name__)
++
++
++@dataclass
++class Chunk:
++    """Represents a text chunk with metadata"""
++    text: str
++    chunk_id: str
++    metadata: Dict[str, Any]
++    start_char: int
++    end_char: int
++    
++    def to_dict(self) -> Dict[str, Any]:
++        return {
++            "text": self.text,
++            "chunk_id": self.chunk_id,
++            "metadata": self.metadata,
++            "start_char": self.start_char,
++            "end_char": self.end_char
++        }
++
++
++class SemanticChunker:
++    """
++    Semantic text chunker with paragraph-based splitting and overlap
++    
++    Strategy:
++    1. Try to split on paragraph boundaries (double newline)
++    2. Fall back to sentence boundaries if paragraphs too large
++    3. Fall back to fixed-length window if no good boundaries
++    """
++    
++    def __init__(
++        self,
++        chunk_size: int = 512,
++        chunk_overlap: int = 50,
++        min_chunk_size: int = 100
++    ):
++        """
++        Initialize chunker
++        
++        Args:
++            chunk_size: Target chunk size in characters
++            chunk_overlap: Overlap between chunks in characters
++            min_chunk_size: Minimum viable chunk size
++        """
++        self.chunk_size = chunk_size
++        self.chunk_overlap = chunk_overlap
++        self.min_chunk_size = min_chunk_size
++    
++    def chunk_document(
++        self,
++        text: str,
++        doc_id: str,
++        metadata: Optional[Dict[str, Any]] = None
++    ) -> List[Chunk]:
++        """
++        Chunk a document into semantic chunks
++        
++        Args:
++            text: Document text
++            doc_id: Unique document identifier
++            metadata: Document metadata (source, ticker, url, etc.)
++            
++        Returns:
++            List of Chunk objects
++        """
++        if not text or len(text) < self.min_chunk_size:
++            logger.warning(f"Document {doc_id} too small to chunk ({len(text)} chars)")
++            return []
++        
++        metadata = metadata or {}
++        chunks = []
++        
++        # Strategy 1: Split on paragraphs
++        paragraphs = text.split('\n\n')
++        
++        current_chunk_text = ""
++        current_start = 0
++        chunk_idx = 0
++        
++        for para_idx, para in enumerate(paragraphs):
++            para = para.strip()
++            if not para:
++                continue
++            
++            # If adding this paragraph exceeds chunk size, finalize current chunk
++            if len(current_chunk_text) + len(para) > self.chunk_size and current_chunk_text:
++                chunk_id = f"{doc_id}_chunk_{chunk_idx}"
++                chunks.append(Chunk(
++                    text=current_chunk_text.strip(),
++                    chunk_id=chunk_id,
++                    metadata={**metadata, "chunk_index": chunk_idx, "doc_id": doc_id},
++                    start_char=current_start,
++                    end_char=current_start + len(current_chunk_text)
++                ))
++                chunk_idx += 1
++                
++                # Start new chunk with overlap
++                overlap_text = current_chunk_text[-self.chunk_overlap:] if len(current_chunk_text) > self.chunk_overlap else ""
++                current_chunk_text = overlap_text + " " + para
++                current_start = current_start + len(current_chunk_text) - len(overlap_text)
++            else:
++                # Add paragraph to current chunk
++                if current_chunk_text:
++                    current_chunk_text += "\n\n" + para
++                else:
++                    current_chunk_text = para
++        
++        # Finalize last chunk
++        if current_chunk_text and len(current_chunk_text) >= self.min_chunk_size:
++            chunk_id = f"{doc_id}_chunk_{chunk_idx}"
++            chunks.append(Chunk(
++                text=current_chunk_text.strip(),
++                chunk_id=chunk_id,
++                metadata={**metadata, "chunk_index": chunk_idx, "doc_id": doc_id},
++                start_char=current_start,
++                end_char=current_start + len(current_chunk_text)
++            ))
++        
++        logger.info(f"Chunked document {doc_id} into {len(chunks)} chunks")
++        return chunks
++    
++    def chunk_batch(
++        self,
++        documents: List[Dict[str, Any]]
++    ) -> List[Chunk]:
++        """
++        Chunk a batch of documents
++        
++        Args:
++            documents: List of dicts with keys: text, doc_id, metadata
++            
++        Returns:
++            Flat list of all chunks
++        """
++        all_chunks = []
++        
++        for doc in documents:
++            text = doc.get('text', '')
++            doc_id = doc.get('doc_id', f"doc_{len(all_chunks)}")
++            metadata = doc.get('metadata', {})
++            
++            chunks = self.chunk_document(text, doc_id, metadata)
++            all_chunks.extend(chunks)
++        
++        logger.info(f"Chunked {len(documents)} documents into {len(all_chunks)} total chunks")
++        return all_chunks
+diff --git a/financial_dashboard/services/chat/embed.py b/financial_dashboard/services/chat/embed.py
+new file mode 100644
+index 0000000..61078e6
+--- /dev/null
++++ b/financial_dashboard/services/chat/embed.py
+@@ -0,0 +1,134 @@
++"""
++Embedder - Text to vector embeddings
++Uses sentence-transformers or fallback to deterministic hash-based pseudo-embeddings
++"""
++
++import os
++import hashlib
++import logging
++import numpy as np
++from typing import List, Optional
++
++logger = logging.getLogger(__name__)
++
++
++class Embedder:
++    """
++    Text embedder with fallback to deterministic pseudo-embeddings
++    
++    Supports:
++    - sentence-transformers for production embeddings
++    - Deterministic hash-based pseudo-embeddings for testing
++    """
++    
++    def __init__(
++        self,
++        model_name: str = "all-MiniLM-L6-v2",
++        embedding_dim: int = 384,
++        deterministic: bool = False
++    ):
++        """
++        Initialize embedder
++        
++        Args:
++            model_name: Name of sentence-transformer model
++            embedding_dim: Embedding dimension
++            deterministic: If True, use hash-based pseudo-embeddings
++        """
++        self.model_name = model_name
++        self.embedding_dim = embedding_dim
++        self.deterministic = deterministic or os.getenv("OPTIONS_DETERMINISTIC") == "1"
++        
++        # Try to import sentence-transformers
++        self._model = None
++        if not self.deterministic:
++            try:
++                from sentence_transformers import SentenceTransformer
++                self._model = SentenceTransformer(model_name)
++                self.embedding_dim = self._model.get_sentence_embedding_dimension()
++                logger.info(f"Loaded embedder: {model_name}, dim={self.embedding_dim}")
++            except ImportError:
++                logger.warning("sentence-transformers not available, using deterministic mode")
++                self.deterministic = True
++            except Exception as e:
++                logger.warning(f"Failed to load embedder {model_name}: {e}, using deterministic mode")
++                self.deterministic = True
++    
++    def embed(self, text: str) -> np.ndarray:
++        """
++        Embed a single text
++        
++        Args:
++            text: Input text
++            
++        Returns:
++            Numpy array of shape (embedding_dim,)
++        """
++        if self.deterministic or self._model is None:
++            return self._deterministic_embed(text)
++        
++        try:
++            embedding = self._model.encode(text, convert_to_numpy=True)
++            return embedding
++        except Exception as e:
++            logger.error(f"Embedding failed: {e}, falling back to deterministic")
++            return self._deterministic_embed(text)
++    
++    def embed_batch(self, texts: List[str]) -> np.ndarray:
++        """
++        Embed a batch of texts
++        
++        Args:
++            texts: List of input texts
++            
++        Returns:
++            Numpy array of shape (len(texts), embedding_dim)
++        """
++        if self.deterministic or self._model is None:
++            embeddings = [self._deterministic_embed(text) for text in texts]
++            return np.array(embeddings)
++        
++        try:
++            embeddings = self._model.encode(texts, convert_to_numpy=True, show_progress_bar=False)
++            return embeddings
++        except Exception as e:
++            logger.error(f"Batch embedding failed: {e}, falling back to deterministic")
++            embeddings = [self._deterministic_embed(text) for text in texts]
++            return np.array(embeddings)
++    
++    def _deterministic_embed(self, text: str) -> np.ndarray:
++        """
++        Generate deterministic pseudo-embedding from text hash
++        
++        Useful for testing and fixtures
++        
++        Args:
++            text: Input text
++            
++        Returns:
++            Numpy array of shape (embedding_dim,)
++        """
++        # Hash the text to get deterministic seed
++        text_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()
++        seed = int(text_hash[:8], 16)
++        
++        # Generate pseudo-random embedding with fixed seed
++        rng = np.random.default_rng(seed)
++        embedding = rng.standard_normal(self.embedding_dim)
++        
++        # Normalize to unit length (like real embeddings)
++        embedding = embedding / np.linalg.norm(embedding)
++        
++        return embedding.astype(np.float32)
++
++
++# Global singleton
++_embedder_instance: Optional[Embedder] = None
++
++
++def get_embedder() -> Embedder:
++    """Get or create global embedder instance"""
++    global _embedder_instance
++    if _embedder_instance is None:
++        _embedder_instance = Embedder()
++    return _embedder_instance
+diff --git a/financial_dashboard/services/chat/faiss_index.py b/financial_dashboard/services/chat/faiss_index.py
+new file mode 100644
+index 0000000..b002666
+--- /dev/null
++++ b/financial_dashboard/services/chat/faiss_index.py
+@@ -0,0 +1,271 @@
++"""
++FAISS Index Manager
++Persistent vector index with metadata mapping for RAG retrieval
++"""
++
++import os
++import json
++import logging
++import numpy as np
++from typing import List, Dict, Any, Optional, Tuple
++from pathlib import Path
++
++logger = logging.getLogger(__name__)
++
++
++class FAISSIndex:
++    """
++    FAISS-based vector index with persistent storage
++    
++    Features:
++    - Add chunks with embeddings
++    - Search with metadata filtering
++    - Persistent storage to disk
++    - Metadata mapping (chunk_id -> metadata)
++    """
++    
++    def __init__(
++        self,
++        index_dir: str = "data/faiss_index",
++        embedding_dim: int = 384,
++        index_type: str = "Flat"
++    ):
++        """
++        Initialize FAISS index
++        
++        Args:
++            index_dir: Directory for index files
++            embedding_dim: Dimension of embeddings
++            index_type: FAISS index type (Flat, IVF, HNSW)
++        """
++        self.index_dir = Path(index_dir)
++        self.embedding_dim = embedding_dim
++        self.index_type = index_type
++        
++        self.index_path = self.index_dir / "index.faiss"
++        self.metadata_path = self.index_dir / "metadata.json"
++        
++        # Create directory if needed
++        self.index_dir.mkdir(parents=True, exist_ok=True)
++        
++        # Try to import faiss
++        try:
++            import faiss
++            self.faiss = faiss
++            self.has_faiss = True
++            logger.info("FAISS library loaded successfully")
++        except ImportError:
++            self.has_faiss = False
++            logger.warning("FAISS not available, using in-memory fallback")
++        
++        # Initialize index and metadata
++        self._index = None
++        self._metadata = {}  # Maps index_id -> chunk metadata
++        self._chunk_id_map = {}  # Maps chunk_id -> index_id
++        
++        # Load existing index if available
++        if self.index_path.exists() and self.metadata_path.exists():
++            self.load()
++        else:
++            self._init_new_index()
++    
++    def _init_new_index(self):
++        """Initialize a new empty index"""
++        if self.has_faiss:
++            if self.index_type == "Flat":
++                self._index = self.faiss.IndexFlatL2(self.embedding_dim)
++            elif self.index_type == "IVF":
++                quantizer = self.faiss.IndexFlatL2(self.embedding_dim)
++                self._index = self.faiss.IndexIVFFlat(quantizer, self.embedding_dim, 100)
++            else:
++                self._index = self.faiss.IndexFlatL2(self.embedding_dim)
++            
++            logger.info(f"Initialized new {self.index_type} index with dim={self.embedding_dim}")
++        else:
++            # Fallback: store embeddings in memory
++            self._index = []
++            logger.info("Using in-memory fallback index")
++        
++        self._metadata = {}
++        self._chunk_id_map = {}
++    
++    def add(
++        self,
++        chunks: List[Dict[str, Any]],
++        embeddings: np.ndarray
++    ) -> int:
++        """
++        Add chunks with embeddings to index
++        
++        Args:
++            chunks: List of chunk dicts (must have 'chunk_id', 'text', 'metadata')
++            embeddings: Numpy array of shape (len(chunks), embedding_dim)
++            
++        Returns:
++            Number of chunks added
++        """
++        if len(chunks) != len(embeddings):
++            raise ValueError(f"Chunks count ({len(chunks)}) != embeddings count ({len(embeddings)})")
++        
++        # Get current index size
++        current_size = self.size()
++        
++        # Add to FAISS index
++        if self.has_faiss:
++            self._index.add(embeddings.astype(np.float32))
++        else:
++            # Fallback: append to list
++            if not isinstance(self._index, list):
++                self._index = []
++            for emb in embeddings:
++                self._index.append(emb.astype(np.float32))
++        
++        # Add metadata mapping
++        for idx, chunk in enumerate(chunks):
++            index_id = current_size + idx
++            chunk_id = chunk['chunk_id']
++            
++            self._metadata[index_id] = {
++                "chunk_id": chunk_id,
++                "text": chunk['text'],
++                "metadata": chunk.get('metadata', {})
++            }
++            self._chunk_id_map[chunk_id] = index_id
++        
++        logger.info(f"Added {len(chunks)} chunks to index (new size: {self.size()})")
++        return len(chunks)
++    
++    def search(
++        self,
++        query_embedding: np.ndarray,
++        top_k: int = 8,
++        filter_meta: Optional[Dict[str, Any]] = None
++    ) -> List[Dict[str, Any]]:
++        """
++        Search index for similar chunks
++        
++        Args:
++            query_embedding: Query embedding vector
++            top_k: Number of results to return
++            filter_meta: Optional metadata filter (e.g., {"ticker": "AAPL"})
++            
++        Returns:
++            List of dicts with keys: chunk_id, text, metadata, score
++        """
++        if self.size() == 0:
++            logger.warning("Index is empty, returning no results")
++            return []
++        
++        # Reshape query for FAISS
++        query_vec = query_embedding.reshape(1, -1).astype(np.float32)
++        
++        # Search
++        if self.has_faiss:
++            # FAISS search
++            distances, indices = self._index.search(query_vec, min(top_k * 2, self.size()))
++            distances = distances[0]
++            indices = indices[0]
++        else:
++            # Fallback: brute-force cosine similarity
++            index_embeddings = np.array(self._index)
++            similarities = np.dot(index_embeddings, query_vec.T).flatten()
++            # Convert to L2 distance for consistency
++            distances = 1.0 - similarities
++            indices = np.argsort(distances)[:min(top_k * 2, len(self._index))]
++            distances = distances[indices]
++        
++        # Collect results with metadata
++        results = []
++        for dist, idx in zip(distances, indices):
++            if idx < 0 or idx >= self.size():
++                continue
++            
++            meta_entry = self._metadata.get(int(idx), {})
++            
++            # Apply metadata filter if provided
++            if filter_meta:
++                chunk_meta = meta_entry.get('metadata', {})
++                if not all(chunk_meta.get(k) == v for k, v in filter_meta.items()):
++                    continue
++            
++            results.append({
++                "chunk_id": meta_entry.get('chunk_id', f"idx_{idx}"),
++                "text": meta_entry.get('text', ''),
++                "metadata": meta_entry.get('metadata', {}),
++                "score": float(dist)
++            })
++            
++            if len(results) >= top_k:
++                break
++        
++        logger.info(f"Search returned {len(results)} results (top_k={top_k})")
++        return results
++    
++    def size(self) -> int:
++        """Get number of vectors in index"""
++        if self.has_faiss:
++            return self._index.ntotal if self._index else 0
++        else:
++            return len(self._index) if isinstance(self._index, list) else 0
++    
++    def save(self):
++        """Save index and metadata to disk"""
++        try:
++            if self.has_faiss and self._index:
++                self.faiss.write_index(self._index, str(self.index_path))
++                logger.info(f"Saved FAISS index to {self.index_path}")
++            
++            # Save metadata
++            with open(self.metadata_path, 'w') as f:
++                json.dump({
++                    "metadata": {str(k): v for k, v in self._metadata.items()},
++                    "chunk_id_map": self._chunk_id_map,
++                    "size": self.size(),
++                    "embedding_dim": self.embedding_dim
++                }, f, indent=2)
++            logger.info(f"Saved metadata to {self.metadata_path}")
++            
++        except Exception as e:
++            logger.error(f"Failed to save index: {e}", exc_info=True)
++    
++    def load(self):
++        """Load index and metadata from disk"""
++        try:
++            if self.has_faiss and self.index_path.exists():
++                self._index = self.faiss.read_index(str(self.index_path))
++                logger.info(f"Loaded FAISS index from {self.index_path} (size: {self._index.ntotal})")
++            
++            if self.metadata_path.exists():
++                with open(self.metadata_path, 'r') as f:
++                    data = json.load(f)
++                    self._metadata = {int(k): v for k, v in data.get('metadata', {}).items()}
++                    self._chunk_id_map = data.get('chunk_id_map', {})
++                    logger.info(f"Loaded metadata from {self.metadata_path} ({len(self._metadata)} entries)")
++            
++        except Exception as e:
++            logger.error(f"Failed to load index: {e}", exc_info=True)
++            self._init_new_index()
++    
++    def health_check(self) -> Dict[str, Any]:
++        """Check index health"""
++        return {
++            "size": self.size(),
++            "has_faiss": self.has_faiss,
++            "index_type": self.index_type,
++            "embedding_dim": self.embedding_dim,
++            "metadata_entries": len(self._metadata),
++            "index_exists": self.index_path.exists(),
++            "metadata_exists": self.metadata_path.exists()
++        }
++
++
++# Global singleton
++_index_instance: Optional[FAISSIndex] = None
++
++
++def get_index() -> FAISSIndex:
++    """Get or create global index instance"""
++    global _index_instance
++    if _index_instance is None:
++        _index_instance = FAISSIndex()
++    return _index_instance
+diff --git a/financial_dashboard/services/chat/ingest.py b/financial_dashboard/services/chat/ingest.py
+new file mode 100644
+index 0000000..3f88fd6
+--- /dev/null
++++ b/financial_dashboard/services/chat/ingest.py
+@@ -0,0 +1,157 @@
++"""
++Ingest - Document ingestion pipeline
++Chunks documents, generates embeddings, and indexes them
++"""
++
++import os
++import json
++import logging
++from typing import List, Dict, Any
++from pathlib import Path
++
++from financial_dashboard.services.chat.chunker import SemanticChunker
++from financial_dashboard.services.chat.embed import get_embedder
++from financial_dashboard.services.chat.faiss_index import get_index
++
++logger = logging.getLogger(__name__)
++
++
++class IngestionPipeline:
++    """
++    Document ingestion pipeline
++    
++    Steps:
++    1. Chunk documents
++    2. Generate embeddings
++    3. Index chunks
++    """
++    
++    def __init__(self):
++        """Initialize ingestion pipeline"""
++        self.chunker = SemanticChunker(chunk_size=512, chunk_overlap=50)
++        self.embedder = get_embedder()
++        self.index = get_index()
++    
++    def ingest_documents(
++        self,
++        documents: List[Dict[str, Any]]
++    ) -> Dict[str, Any]:
++        """
++        Ingest a batch of documents
++        
++        Args:
++            documents: List of dicts with keys: text, doc_id, metadata
++            
++        Returns:
++            Dict with ingestion stats
++        """
++        logger.info(f"Starting ingestion of {len(documents)} documents")
++        
++        # Step 1: Chunk documents
++        chunks = self.chunker.chunk_batch(documents)
++        
++        if not chunks:
++            logger.warning("No chunks created from documents")
++            return {
++                "documents": len(documents),
++                "chunks": 0,
++                "indexed": 0
++            }
++        
++        # Step 2: Generate embeddings
++        chunk_texts = [chunk.text for chunk in chunks]
++        embeddings = self.embedder.embed_batch(chunk_texts)
++        
++        # Step 3: Prepare chunk dicts for indexing
++        chunk_dicts = [chunk.to_dict() for chunk in chunks]
++        
++        # Step 4: Add to index
++        indexed_count = self.index.add(chunk_dicts, embeddings)
++        
++        # Step 5: Save index
++        self.index.save()
++        
++        logger.info(f"Ingestion complete: {len(documents)} docs -> {len(chunks)} chunks -> {indexed_count} indexed")
++        
++        return {
++            "documents": len(documents),
++            "chunks": len(chunks),
++            "indexed": indexed_count
++        }
++    
++    def ingest_fixtures(
++        self,
++        fixture_dir: str = "reports/chat_agent/fixtures"
++    ) -> Dict[str, Any]:
++        """
++        Ingest documents from fixture directory
++        
++        Args:
++            fixture_dir: Path to fixture directory
++            
++        Returns:
++            Dict with ingestion stats
++        """
++        fixture_path = Path(fixture_dir)
++        
++        if not fixture_path.exists():
++            logger.warning(f"Fixture directory does not exist: {fixture_dir}")
++            return {"documents": 0, "chunks": 0, "indexed": 0}
++        
++        # Load fixture files
++        documents = []
++        
++        for json_file in fixture_path.glob("*.json"):
++            try:
++                with open(json_file, 'r') as f:
++                    data = json.load(f)
++                    
++                    # Convert fixture data to document format
++                    if isinstance(data, list):
++                        # Array of items
++                        for idx, item in enumerate(data):
++                            text = json.dumps(item, indent=2)
++                            documents.append({
++                                "text": text,
++                                "doc_id": f"{json_file.stem}_{idx}",
++                                "metadata": {
++                                    "source": str(json_file),
++                                    "fixture": True,
++                                    "type": json_file.stem
++                                }
++                            })
++                    else:
++                        # Single object
++                        text = json.dumps(data, indent=2)
++                        documents.append({
++                            "text": text,
++                            "doc_id": json_file.stem,
++                            "metadata": {
++                                "source": str(json_file),
++                                "fixture": True,
++                                "type": json_file.stem
++                            }
++                        })
++                
++                logger.info(f"Loaded fixture: {json_file.name}")
++                
++            except Exception as e:
++                logger.error(f"Failed to load fixture {json_file}: {e}")
++        
++        if not documents:
++            logger.warning("No fixture documents loaded")
++            return {"documents": 0, "chunks": 0, "indexed": 0}
++        
++        # Ingest the fixture documents
++        return self.ingest_documents(documents)
++
++
++def ingest_from_fixtures() -> Dict[str, Any]:
++    """
++    Convenience function to ingest from default fixture directory
++    
++    Returns:
++        Dict with ingestion stats
++    """
++    pipeline = IngestionPipeline()
++    return pipeline.ingest_fixtures()
+diff --git a/reports/chat_agent/fixtures/finnhub_latest_50.json b/reports/chat_agent/fixtures/finnhub_latest_50.json
+new file mode 100644
+index 0000000..0588f5e
+--- /dev/null
++++ b/reports/chat_agent/fixtures/finnhub_latest_50.json
+@@ -0,0 +1,29 @@
++[
++  {
++    "headline": "Apple Reports Q4 Earnings Beat, Revenue Up 8% YoY",
++    "source": "Reuters",
++    "published_at": "2024-11-21T16:30:00Z",
++    "summary": "Apple Inc reported better-than-expected fourth-quarter earnings with revenue reaching $89.5 billion, up 8% year-over-year. iPhone sales remained strong despite macroeconomic headwinds. Services revenue hit a record $22.3 billion. The company announced a $0.24 per share dividend and authorized a new $90 billion share buyback program.",
++    "ticker": "AAPL",
++    "sentiment": "positive",
++    "url": "https://example.com/aapl-earnings-q4"
++  },
++  {
++    "headline": "Tech Sector Volatility Expected Ahead of Fed Meeting",
++    "source": "Bloomberg",
++    "published_at": "2024-11-22T08:00:00Z",
++    "summary": "Options traders are positioning for increased volatility in technology stocks ahead of next week's Federal Reserve policy meeting. Implied volatility for QQQ has risen to 22%, up from 18% last week. Analysts expect the Fed to maintain current rates but provide guidance on 2025 policy. Large tech names including AAPL, MSFT, and NVDA show elevated put activity.",
++    "ticker": "SPY",
++    "sentiment": "neutral",
++    "url": "https://example.com/tech-vol-fed"
++  },
++  {
++    "headline": "Microsoft Azure Cloud Revenue Accelerates to 29% Growth",
++    "source": "CNBC",
++    "published_at": "2024-11-20T17:00:00Z",
++    "summary": "Microsoft's Azure cloud platform posted 29% revenue growth in the latest quarter, exceeding analyst expectations of 26%. The company's AI services integration is driving enterprise adoption. CEO Satya Nadella highlighted Azure's position in the AI infrastructure race. Commercial cloud revenue reached $31.8 billion, representing 55% of total revenue.",
++    "ticker": "MSFT",
++    "sentiment": "positive",
++    "url": "https://example.com/msft-azure-growth"
++  }
++]
+diff --git a/reports/chat_agent/fixtures/positions_snapshot.json b/reports/chat_agent/fixtures/positions_snapshot.json
+new file mode 100644
+index 0000000..ea9ba61
+--- /dev/null
++++ b/reports/chat_agent/fixtures/positions_snapshot.json
+@@ -0,0 +1,32 @@
++[
++  {
++    "symbol": "AAPL",
++    "qty": 100,
++    "avg_entry_price": 185.50,
++    "current_price": 189.75,
++    "unrealized_pl": 425.00,
++    "unrealized_pl_pct": 2.29,
++    "market_value": 18975.00,
++    "last_updated": "2024-11-22T10:15:00Z"
++  },
++  {
++    "symbol": "MSFT",
++    "qty": 50,
++    "avg_entry_price": 372.00,
++    "current_price": 378.25,
++    "unrealized_pl": 312.50,
++    "unrealized_pl_pct": 1.68,
++    "market_value": 18912.50,
++    "last_updated": "2024-11-22T10:15:00Z"
++  },
++  {
++    "symbol": "TSLA",
++    "qty": 25,
++    "avg_entry_price": 245.00,
++    "current_price": 238.50,
++    "unrealized_pl": -162.50,
++    "unrealized_pl_pct": -2.65,
++    "market_value": 5962.50,
++    "last_updated": "2024-11-22T10:15:00Z"
++  }
++]
+diff --git a/reports/chat_agent/fixtures/vol_surface_aapl.json b/reports/chat_agent/fixtures/vol_surface_aapl.json
+new file mode 100644
+index 0000000..e3d1ce5
+--- /dev/null
++++ b/reports/chat_agent/fixtures/vol_surface_aapl.json
+@@ -0,0 +1,16 @@
++[
++  {
++    "title": "AAPL Volatility Analysis",
++    "ticker": "AAPL",
++    "published_at": "2024-11-22T10:00:00Z",
++    "content": "Apple Inc (AAPL) exhibits elevated implied volatility in near-term options expiring within 30 days. The volatility surface shows a pronounced smile pattern with strike prices at 180 and 200 showing IV of 35% and 38% respectively. This suggests market participants are pricing in significant price movement risk. Historical volatility (30-day) stands at 28%, indicating the current IV represents a premium over realized volatility. Traders should consider this when evaluating option strategies.",
++    "source": "vol_surface_aapl.json"
++  },
++  {
++    "title": "AAPL Options Chain Deep Dive",
++    "ticker": "AAPL",
++    "published_at": "2024-11-22T09:30:00Z",
++    "content": "The AAPL options chain for December expiration shows concentrated open interest at the 190 strike for calls and 185 strike for puts. This creates potential support/resistance levels. The put/call ratio is 0.85, suggesting moderate bullish sentiment. Near-the-money options display high gamma, making them sensitive to underlying price changes. Volatility skew favors downside protection with put IV averaging 2-3% higher than equidistant calls.",
++    "source": "vol_surface_aapl.json"
++  }
++]

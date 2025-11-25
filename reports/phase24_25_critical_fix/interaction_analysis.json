@@ -1,0 +1,330 @@
+{
+  "total_console_errors": 12,
+  "total_network_errors": 0,
+  "total_successful_requests": 30,
+  "tab_results": {
+    "Home": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/home_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/home_after.png"
+    },
+    "Command Center": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/command_center_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/command_center_after.png"
+    },
+    "Strategy Lab": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/strategy_lab_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/strategy_lab_after.png"
+    },
+    "Options Lab": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/options_lab_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/options_lab_after.png"
+    },
+    "Weekly Picks": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/weekly_picks_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/weekly_picks_after.png"
+    },
+    "Monthly Picks": {
+      "console_errors": 2,
+      "network_errors": 0,
+      "successful_requests": 5,
+      "interactive_tests": [],
+      "successful_interactions": 0,
+      "total_interactions": 0,
+      "interaction_success_rate": 0,
+      "before_screenshot": "test_artifacts/phase24_25_fixed/monthly_picks_before.png",
+      "after_screenshot": "test_artifacts/phase24_25_fixed/monthly_picks_after.png"
+    }
+  },
+  "console_errors": [
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:04:51.602194"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:04:51.602520"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:04:56.500112"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:04:56.500432"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:05:00.597025"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:05:00.597420"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:05:04.725793"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:05:04.726113"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:05:12.014612"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:05:12.014934"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js', 'lineNumber': 120, 'columnNumber': 177}",
+      "timestamp": "2025-11-01T18:05:16.097880"
+    },
+    {
+      "type": "error",
+      "text": "Error: Minified React error #31; visit https://reactjs.org/docs/error-decoder.html?invariant=31&args[]=object%20with%20keys%20%7Bprops%2C%20type%2C%20namespace%7D for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at qd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:85:41)\n    at u (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:88:373)\n    at x (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:91:16)\n    at v (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:95:81)\n    at aa (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:123:401)\n    at Qk (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:254:196)\n    at Ri (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:185)\n    at Ok (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:195:116)\n    at Nd (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:194:492)\n    at Qf (http://localhost:8050/_dash-component-suites/dash/deps/react-dom@18.v3_2_0m1757632822.3.1.min.js:187:439)",
+      "location": "{'url': 'http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1757632821.min.js', 'lineNumber': 1, 'columnNumber': 98648}",
+      "timestamp": "2025-11-01T18:05:16.098241"
+    }
+  ],
+  "network_errors": [],
+  "successful_requests": [
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:52.365980"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:52.367092"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:52.367497"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:52.368367"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:52.368820"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:56.521038"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:56.521623"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:56.521971"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:56.529392"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:04:56.637620"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:00.617203"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:00.619373"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:00.622472"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:00.623919"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:00.737782"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:04.745000"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:04.779992"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:04.781197"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:04.781501"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:07.998321"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:12.030672"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:12.032261"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:12.036757"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:12.037530"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:12.150702"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:16.128276"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:16.128981"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:16.130412"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 204,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:16.130828"
+    },
+    {
+      "url": "http://localhost:8050/_dash-update-component",
+      "status": 200,
+      "method": "POST",
+      "timestamp": "2025-11-01T18:05:16.221006"
+    }
+  ]
+}
