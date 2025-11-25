@@ -215,7 +215,7 @@ TAB_CONFIG = [
     {'id': 'home_lab', 'name': '🏠 Home Lab (Legacy)', 'module': 'tabs/home_lab/__init__.py'},  # Keep legacy for fallback
     {'id': 'market_trends', 'name': 'Market Trends', 'module': 'tabs/market_trends.py'},
     {'id': 'market_forecast', 'name': 'Market Forecast', 'module': 'tabs/market_forecast.py'},
-    {'id': 'volatility_lab', 'name': '⚡ Volatility Lab', 'module': 'tabs/volatility_lab_v2/__init__.py'},  # Agent-1A modular package
+    {'id': 'volatility_lab', 'name': '⚡ Volatility Lab', 'module': 'tabs/volatility_lab_pkg/__init__.py'},  # Phase 34 rebuild
     {'id': 'attribution_lab', 'name': '📊 Attribution Lab', 'module': 'tabs/attribution_lab/__init__.py'},
     {'id': 'strategy_lab', 'name': '⚡ Strategy Lab', 'module': 'tabs/strategy_lab/__init__.py'},
     # Use the rebuilt tab implementations (clean, testable rebuilds)
