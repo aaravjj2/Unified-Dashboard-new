@@ -1,2 +1,0 @@
-'data/faiss_index/index.faiss' -> 'reports/chat_agent/db_dumps/index.faiss'
-'data/faiss_index/metadata.json' -> 'reports/chat_agent/db_dumps/metadata.json'

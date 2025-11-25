@@ -1,7 +1,0 @@
-{
-  "lambdatest_username_present": true,
-  "lambdatest_key_present": true,
-  "database_url_present": true,
-  "openai_key_present": true,
-  "credentials_not_hardcoded": true
-}

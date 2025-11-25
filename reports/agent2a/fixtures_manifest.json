@@ -1,8 +1,0 @@
-{
-  "fixtures": [
-    "tests/fixtures/research/demo_brief.json"
-  ],
-  "mock_services": [
-    "services/mock_bento/predict.py"
-  ]
-}

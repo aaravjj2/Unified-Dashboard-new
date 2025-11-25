@@ -1,5 +1,0 @@
-  File "financial_dashboard/tabs/market_forecast.py", line 144
-    ))
-     ^
-SyntaxError: unmatched ')'
-✅ All files compile

@@ -1,3 +1,0 @@
-Problematic scripts found:
-financial_dashboard/assets/pre24_input_color_fix.css
-financial_dashboard/assets/phase_pre24_input_fix.css

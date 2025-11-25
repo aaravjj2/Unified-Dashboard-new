@@ -1,4 +1,0 @@
-aarav     656214  0.1  1.0 1790000 258260 ?      Sl   13:42   0:10 python run_dashboard.py
-postgres  656873  0.0  0.0 217772 19312 ?        Ss   13:43   0:00 postgres: 14/main: dashboard_user financial_dashboard 127.0.0.1(48548) idle
-postgres  671153  0.0  0.0 217772 19472 ?        Ss   15:22   0:00 postgres: 14/main: dashboard_user financial_dashboard 127.0.0.1(50142) idle
-aarav     678242  0.0  0.0   2892  1600 pts/7    Ss+  15:40   0:00 /bin/sh -c cd '/home/aarav/unified-dashboard' && /bin/sh

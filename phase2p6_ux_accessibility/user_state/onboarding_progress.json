@@ -1,9 +1,0 @@
-{
-  "first_run": true,
-  "steps": {
-    "welcome_seen": false,
-    "theme_toggled": false,
-    "tour_completed": false,
-    "data_loaded": false
-  }
-}

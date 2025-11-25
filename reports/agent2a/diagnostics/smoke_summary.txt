@@ -1,9 +1,0 @@
-Admin diagnostics smoke test summary
-
-- root_index.html: fetched (see reports/agent2a/diagnostics/root_index.html)
-- admin_callback_map.json: exists; payload: callback_map not available message (expected when internals not exposed)
-- admin_tab_health_market_trends.json: exists; payload indicates Market Trends files present
-- mock_bento_info.json: empty or not responding (mock Bento start interrupted)
-- mock_bento_predict.json: not available (service stopped during start)
-
-Verdict: Admin blueprint registered successfully and server responded on http://127.0.0.1:8029; admin tab_health endpoint returned tab presence. Mock Bento attempted to start but was stopped; please restart it with: `python3 services/mock_bento/app.py` and re-run predict check.

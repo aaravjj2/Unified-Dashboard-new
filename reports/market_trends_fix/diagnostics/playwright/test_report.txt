@@ -1,7 +1,0 @@
-Market Trends Browser Tests
-Started: 2025-11-21T12:17:58.485384
-Base URL: http://localhost:8029
-Headful: False
-
-
-Completed: 2025-11-21T12:18:10.043971

@@ -1,4 +1,0 @@
-  File "financial_dashboard/tabs/analysis_hub_refactored.py", line 25
-    from financial_dashboard from financial_dashboard import _shared as SH
-                             ^^^^
-SyntaxError: invalid syntax

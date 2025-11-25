@@ -1,3 +1,0 @@
--rw-rw-r-- 1 aarav aarav 749 Nov  2 01:13 cache/portfolio_data.json
--rwxrwxrwx 1 aarav aarav 499 Oct 24 16:56 cache/price_results_weekly_smoke.json
--rwxrwxrwx 1 aarav aarav 688 Oct 21 17:28 cache/research_experiments.json

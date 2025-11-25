@@ -1,8 +1,0 @@
- M reports/options_validation/screenshots/console_check_1_home.png
- M reports/options_validation/screenshots/console_check_2_options_lab.png
- M reports/options_validation/screenshots/console_check_3_stabilized.png
-?? greeks_simple_test.py
-?? reports/agent1b/diagnostics/fix_summary.txt
-?? reports/agent1b/diagnostics/git_status_pre_phase3.txt
-?? reports/agent1b/diagnostics/py_compile_pre_phase3.txt
-?? reports/options_validation/patches/restore_results_table_client_placeholder_1763700742.patch

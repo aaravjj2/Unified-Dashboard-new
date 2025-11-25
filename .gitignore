@@ -39,3 +39,6 @@ outputs/
 reports/command_center/logs/
 __pycache__/
 .venv_wsl2/
+reports/
+*.md
+*.json

@@ -1,7 +1,0 @@
-{
-    "chunks_created": 24,
-    "documents_indexed": 24,
-    "duration_ms": 115025.7797241211,
-    "indexed": 24,
-    "success": true
-}

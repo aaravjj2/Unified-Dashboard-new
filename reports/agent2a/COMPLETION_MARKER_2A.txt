@@ -1,2 +1,0 @@
-AGENT-2A: Non-callback structural hardening complete.
-See reports/agent2a for artifacts, patches, and instructions for Agent-1A.

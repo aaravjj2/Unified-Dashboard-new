@@ -1,8 +1,0 @@
-Preflight Triage Summary (2025-11-19 13:15 UTC):
-- Port 8029 was previously occupied by PID 323128; process was terminated and server relaunched via `PORT=8029 python3 run_dashboard.py` (PID recorded in `dash_server_pid.txt`).
-- `dash_layout_before.json` successfully captured after restart; layout endpoint responds but downstream tabs still render empty content in-browser (to be verified during UI run).
-- `callback_map_before.json` shows `callback_map_len = 88`, confirming callbacks register, though not yet validated against representative controls.
-- Import scan flagged 14 failing modules: multiple `SyntaxError` instances from duplicated `from financial_dashboard from financial_dashboard import _shared as SH`, missing helpers (`utils.sync_manifest`), and placeholder modules lacking `create_layout`.
-- Name collision scan surfaced two conflicts: `financial_dashboard/tabs/research_lab.md` (conflicts with `financial_dashboard/tabs/research_lab/`) and `financial_dashboard/tabs/volatility_lab.py` (conflicts with `financial_dashboard/tabs/volatility_lab/`). These must be resolved to keep module imports deterministic.
-- Follow-up: repair broken tab modules, ensure deterministic helper availability, then proceed with structural fixes and headed Playwright verification.
-- Azure ML lab removed entirely: tab moved to `financial_dashboard/legacy_tabs/`, removed from index config/ENABLED_TABS, azure_guard removed, env vars purged. Dashboard is now Azure-free.

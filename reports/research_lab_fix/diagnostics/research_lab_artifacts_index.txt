@@ -1,5 +1,0 @@
-total 24
-drwxr-xr-x 3 aarav aarav  4096 Nov 18 20:34 .
-drwxr-xr-x 6 aarav aarav  4096 Nov 18 18:34 ..
--rw-r--r-- 1 aarav aarav 11686 Nov 18 18:53 RESEARCH_LAB_FIX_SUMMARY.md
-drwxr-xr-x 2 aarav aarav  4096 Nov 18 20:34 research_lab

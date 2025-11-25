@@ -1,2 +1,0 @@
-NAME             IMAGE                            COMMAND                  SERVICE          CREATED        STATUS        PORTS
-newrelic-infra   newrelic/infrastructure:latest   "/sbin/tini -- /usr/…"   newrelic_infra   12 hours ago   Up 12 hours   
