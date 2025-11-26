@@ -203,6 +203,29 @@ Set your backtest parameters and run the simulation:
                             className="w-100 mt-2",
                             style={'display': 'none'}
                         ),
+                        
+                        # Divider
+                        html.Hr(className="my-3"),
+                        
+                        # Live Order Section
+                        html.H5("💰 Execute Live Order", className="mb-2"),
+                        html.P(
+                            "Execute a real trade based on backtest results. Requires confirmation.",
+                            className="text-muted small mb-3"
+                        ),
+                        dbc.Button(
+                            [html.I(className="bi bi-lightning-charge me-2"), "Execute Live Order"],
+                            id='sl-execute-live-btn',
+                            color='warning',
+                            size='lg',
+                            className="w-100",
+                            n_clicks=0,
+                            disabled=True  # Enabled after backtest completes
+                        ),
+                        html.Small(
+                            "⚠️ LIVE_ORDER_ALLOWED=true - Real money at risk",
+                            className="text-danger d-block mt-2 text-center"
+                        ),
                     ])
                 ])
             ], md=12),

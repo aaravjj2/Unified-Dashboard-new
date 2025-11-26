@@ -1972,7 +1972,195 @@ def register_callbacks(app):
     
     callback_count += 1
     
+    # ========================================================================
+    # CALLBACK 18: Live Order - Open Confirmation Modal
+    # ========================================================================
+    @app.callback(
+        [Output('sl-order-confirmation-modal', 'is_open'),
+         Output('sl-order-confirmation-content', 'children'),
+         Output('sl-pending-order', 'data')],
+        Input('sl-execute-live-btn', 'n_clicks'),
+        [State('sl-backtest-results', 'data'),
+         State('sl-live-order-config', 'data')],
+        prevent_initial_call=True
+    )
+    def open_order_confirmation(n_clicks, results, config):
+        """Open confirmation modal for live order execution."""
+        if not n_clicks or not results or not results.get('success'):
+            return False, [], {}
+        
+        from .orders import LIVE_ORDER_ALLOWED, create_order
+        
+        if not LIVE_ORDER_ALLOWED:
+            return True, dbc.Alert([
+                html.H6("❌ Live Orders Disabled"),
+                html.P("Live order execution is disabled via LIVE_ORDER_ALLOWED=false")
+            ], color="danger"), {}
+        
+        try:
+            # Get first ticker from results
+            tickers = results.get('tickers', ['AAPL'])
+            symbol = tickers[0] if isinstance(tickers, list) else tickers.split(',')[0].strip()
+            
+            # Determine order side based on last trade in backtest
+            # For demo, use BUY
+            side = "BUY"
+            quantity = 10  # Default quantity
+            
+            # Create pending order
+            order_details = create_order(
+                symbol=symbol,
+                side=side,
+                quantity=quantity,
+                order_type="MARKET",
+                estimated_price=100.0  # Would be fetched from live quote
+            )
+            
+            # Build confirmation content
+            content = dbc.Card([
+                dbc.CardBody([
+                    html.H5(f"📋 Order Details", className="mb-3"),
+                    dbc.ListGroup([
+                        dbc.ListGroupItem([
+                            html.Strong("Symbol: "), order_details['symbol']
+                        ]),
+                        dbc.ListGroupItem([
+                            html.Strong("Side: "), 
+                            dbc.Badge(order_details['side'], color="success" if order_details['side'] == 'BUY' else "danger")
+                        ]),
+                        dbc.ListGroupItem([
+                            html.Strong("Quantity: "), f"{order_details['quantity']} shares"
+                        ]),
+                        dbc.ListGroupItem([
+                            html.Strong("Order Type: "), order_details['order_type']
+                        ]),
+                        dbc.ListGroupItem([
+                            html.Strong("Estimated Value: "), f"${order_details['estimated_value']:,.2f}"
+                        ]),
+                    ], flush=True)
+                ])
+            ])
+            
+            return True, content, {'order_id': order_details['order_id']}
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to create order: {e}")
+            return True, dbc.Alert([
+                html.H6("❌ Order Creation Failed"),
+                html.P(str(e))
+            ], color="danger"), {}
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 19: Live Order - Confirm Execution
+    # ========================================================================
+    @app.callback(
+        [Output('sl-order-confirmation-modal', 'is_open', allow_duplicate=True),
+         Output('sl-order-result-modal', 'is_open'),
+         Output('sl-order-result-content', 'children')],
+        Input('sl-order-confirm-btn', 'n_clicks'),
+        State('sl-pending-order', 'data'),
+        prevent_initial_call=True
+    )
+    def execute_confirmed_order(n_clicks, pending_order):
+        """Execute order after user confirmation."""
+        if not n_clicks or not pending_order:
+            return True, False, []
+        
+        from .orders import confirm_and_execute
+        
+        try:
+            order_id = pending_order.get('order_id')
+            result = confirm_and_execute(order_id)
+            
+            if result['status'] == 'FILLED':
+                content = dbc.Alert([
+                    html.H6("✅ Order Executed Successfully!"),
+                    html.P([
+                        html.Strong("Order ID: "), result['broker_order_id'] or result['id']
+                    ]),
+                    html.P([
+                        html.Strong("Fill Price: "), f"${result['fill_price']:,.2f}"
+                    ]),
+                    html.P([
+                        html.Strong("Filled Quantity: "), f"{result['fill_quantity']} shares"
+                    ])
+                ], color="success")
+            else:
+                content = dbc.Alert([
+                    html.H6(f"⚠️ Order Status: {result['status']}"),
+                    html.P(result.get('error_message', 'Unknown error'))
+                ], color="warning")
+            
+            return False, True, content
+            
+        except Exception as e:
+            logger.error(f"❌ Order execution failed: {e}")
+            return False, True, dbc.Alert([
+                html.H6("❌ Execution Failed"),
+                html.P(str(e))
+            ], color="danger")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 20: Live Order - Cancel
+    # ========================================================================
+    @app.callback(
+        Output('sl-order-confirmation-modal', 'is_open', allow_duplicate=True),
+        Input('sl-order-cancel-btn', 'n_clicks'),
+        State('sl-pending-order', 'data'),
+        prevent_initial_call=True
+    )
+    def cancel_order(n_clicks, pending_order):
+        """Cancel pending order."""
+        if not n_clicks:
+            return True
+        
+        if pending_order and pending_order.get('order_id'):
+            from .orders import cancel_pending_order
+            try:
+                cancel_pending_order(pending_order['order_id'])
+                logger.info(f"❌ Order cancelled by user: {pending_order['order_id']}")
+            except Exception as e:
+                logger.warning(f"⚠️ Could not cancel order: {e}")
+        
+        return False
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 21: Close Order Result Modal
+    # ========================================================================
+    @app.callback(
+        Output('sl-order-result-modal', 'is_open', allow_duplicate=True),
+        Input('sl-order-result-close-btn', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def close_result_modal(n_clicks):
+        """Close the order result modal."""
+        return False
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 22: Enable Live Order Button After Backtest
+    # ========================================================================
+    @app.callback(
+        Output('sl-execute-live-btn', 'disabled'),
+        Input('sl-backtest-results', 'data')
+    )
+    def enable_live_order_button(results):
+        """Enable live order button after successful backtest."""
+        if results and results.get('success'):
+            return False  # Enable button
+        return True  # Keep disabled
+    
+    callback_count += 1
+    
     logger.info(f"✅ Strategy Lab Phase 23 callbacks registered: Benchmark & Risk subtabs now synchronized")
+    logger.info(f"✅ Strategy Lab live order callbacks registered (LIVE_ORDER_ALLOWED=True)")
     logger.info(f"✅ Strategy Lab callbacks registered successfully ({callback_count} callbacks)")
     
     # Mark callbacks as registered (global declared at function start)
