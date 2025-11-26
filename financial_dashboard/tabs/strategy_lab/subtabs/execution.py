@@ -130,7 +130,7 @@ Set your backtest parameters and run the simulation:
                     ], md=6),
                 ], className="mb-3"),
                 
-                # Max Positions
+                # Max Positions & Random Seed
                 dbc.Row([
                     dbc.Col([
                         html.Label("Max Concurrent Positions", className="fw-bold small"),
@@ -141,6 +141,19 @@ Set your backtest parameters and run the simulation:
                             min=1,
                             max=20,
                             step=1,
+                            style={'width': '100%'},
+                            className="mb-2"
+                        ),
+                    ], md=6),
+                    dbc.Col([
+                        html.Label("Random Seed (for reproducibility)", className="fw-bold small"),
+                        dcc.Input(
+                            id='sl-random-seed',
+                            type='number',
+                            value=42,
+                            min=0,
+                            step=1,
+                            placeholder="Leave blank for random",
                             style={'width': '100%'},
                             className="mb-2"
                         ),
