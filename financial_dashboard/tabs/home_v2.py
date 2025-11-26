@@ -30,26 +30,26 @@ def create_portfolio_widget():
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
-                    html.Div("Total Value", className="small", style={'color': '#ffffff'}),
+                    html.Div("Total Value", className="small", style={'color': '#000000'}),
                     html.H4("Loading...", className="text-muted mb-0", id="home-portfolio-value"),
                 ], width=6),
                 dbc.Col([
-                    html.Div("Today's Change", className="small", style={'color': '#ffffff'}),
+                    html.Div("Today's Change", className="small", style={'color': '#000000'}),
                     html.H4("Loading...", className="text-muted mb-0", id="home-portfolio-change"),
                 ], width=6),
             ]),
             html.Hr(),
             dbc.Row([
                 dbc.Col([
-                    html.Div("Positions", className="small", style={'color': '#ffffff'}),
+                    html.Div("Positions", className="small", style={'color': '#000000'}),
                     html.H5("--", className="mb-0 text-muted"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("Day High", className="small", style={'color': '#ffffff'}),
+                    html.Div("Day High", className="small", style={'color': '#000000'}),
                     html.H5("--", className="mb-0 text-muted"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("Day Low", className="small", style={'color': '#ffffff'}),
+                    html.Div("Day Low", className="small", style={'color': '#000000'}),
                     html.H5("--", className="mb-0 text-muted"),
                 ], width=4),
             ]),
@@ -66,21 +66,21 @@ def create_market_overview_widget():
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
-                    html.Div("S&P 500", className="small", style={'color': '#ffffff'}),
+                    html.Div("S&P 500", className="small", style={'color': '#000000'}),
                     html.H5([
                         html.Span("--", id="market-sp500-value"),
                         html.Small("--", id="market-sp500-pct", className="text-muted")
                     ], className="mb-2"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("NASDAQ", className="small", style={'color': '#ffffff'}),
+                    html.Div("NASDAQ", className="small", style={'color': '#000000'}),
                     html.H5([
                         html.Span("--", id="market-nasdaq-value"),
                         html.Small("--", id="market-nasdaq-pct", className="text-muted")
                     ], className="mb-2"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("DOW", className="small", style={'color': '#ffffff'}),
+                    html.Div("DOW", className="small", style={'color': '#000000'}),
                     html.H5([
                         html.Span("--", id="market-dow-value"),
                         html.Small("--", id="market-dow-pct", className="text-muted")
@@ -88,11 +88,33 @@ def create_market_overview_widget():
                 ], width=4),
             ]),
             html.Hr(),
-            # TradingView Widget - Iframe Embed (More Reliable)
+            # TradingView Widget
             html.Iframe(
-                src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=SP%3ASPX&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&theme=dark&style=1&timezone=Etc%2FUTC&studies=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget&utm_campaign=chart&utm_term=SP%3ASPX",
-                style={"height": "350px", "width": "100%", "border": "none"},
-                id="tradingview_widget"
+                srcDoc='''
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                  <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
+                  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+                  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                  <script type="text/javascript">
+                  new TradingView.widget(
+                  {
+                  "autosize": true,
+                  "symbol": "SP:SPX",
+                  "interval": "D",
+                  "timezone": "Etc/UTC",
+                  "theme": "dark",
+                  "style": "1",
+                  "locale": "en",
+                  "enable_publishing": false,
+                  "allow_symbol_change": true,
+                  "container_id": "tradingview_chart"
+                  }
+                  );
+                  </script>
+                </div>
+                ''',
+                style={"width": "100%", "height": "400px", "border": "none"},
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             )
         ,
     # hidden containers for action results / last job ids
@@ -183,7 +205,7 @@ def layout():
                     html.I(className="bi bi-house-door me-2"),
                     "Dashboard Home"
                 ]),
-                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#ffffff'}),
+                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#000000'}),
                 # Visible alert area for Quick Actions feedback
                 dbc.Alert(id='home-action-alert', is_open=False, color='info', className='mt-2', style={'display': 'none'})
             ])
@@ -544,11 +566,11 @@ def register_callbacks(app):
         for s in arr:
             rows.append(
                 dbc.Row([
-                    dbc.Col(html.Strong(s, style={'color': '#ffffff'}), width=3),
-                    dbc.Col(html.Span("--", id={'type':'watch-price', 'index': s},style={'color': '#ffffff'}), width=3),
-                    dbc.Col(html.Span("--", id={'type':'watch-change', 'index': s}), width=4),
-                    dbc.Col(dbc.Button('×', id={'type':'watch-remove', 'index': s}, color='danger', size='sm', className='btn-sm'), width=2),
-                ], className='mb-2 align-items-center', style={'min-height': '32px'})
+                    dbc.Col(html.Strong(s), width=4),
+                    dbc.Col(html.Span("--", id={'type':'watch-price', 'index': s}), width=4),
+                    dbc.Col(html.Span("--", id={'type':'watch-change', 'index': s}), width=3),
+                    dbc.Col(dbc.Button('Remove', id={'type':'watch-remove', 'index': s}, color='danger', size='sm'), width=1),
+                ], className='mb-2')
             )
         return rows
 

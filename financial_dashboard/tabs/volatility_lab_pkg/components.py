@@ -181,7 +181,7 @@ def create_backtest_summary(results=None):
     Create backtest metrics summary.
     
     Args:
-        results: Dict with keys: total_return, sharpe, max_drawdown, total_trades
+        results: Dict with keys: total_return, sharpe, max_drawdown, trades, win_rate
         
     Returns:
         html.Div with formatted metrics cards
@@ -191,7 +191,8 @@ def create_backtest_summary(results=None):
             'total_return': 0.0,
             'sharpe': 0.0,
             'max_drawdown': 0.0,
-            'total_trades': 0
+            'trades': 0,
+            'win_rate': 0.0
         }
     
     return html.Div([
@@ -199,25 +200,25 @@ def create_backtest_summary(results=None):
             dbc.Col(dbc.Card([
                 dbc.CardBody([
                     html.H5("Total Return", className="card-title"),
-                    html.H3(f"{results['total_return']:.2%}", className="text-success")
+                    html.H3(f"{results.get('total_return', 0):.2%}", className="text-success")
                 ])
             ]), width=3),
             dbc.Col(dbc.Card([
                 dbc.CardBody([
                     html.H5("Sharpe Ratio", className="card-title"),
-                    html.H3(f"{results['sharpe']:.2f}")
+                    html.H3(f"{results.get('sharpe', 0):.2f}")
                 ])
             ]), width=3),
             dbc.Col(dbc.Card([
                 dbc.CardBody([
                     html.H5("Max Drawdown", className="card-title"),
-                    html.H3(f"{results['max_drawdown']:.2%}", className="text-danger")
+                    html.H3(f"{results.get('max_drawdown', 0):.2%}", className="text-danger")
                 ])
             ]), width=3),
             dbc.Col(dbc.Card([
                 dbc.CardBody([
                     html.H5("Total Trades", className="card-title"),
-                    html.H3(str(results['total_trades']))
+                    html.H3(str(results.get('trades', 0)))
                 ])
             ]), width=3),
         ])
@@ -245,16 +246,19 @@ def create_glass_card(title, content, footer=None, card_id=None):
     if footer:
         card_children.append(dbc.CardFooter(footer))
     
-    return dbc.Card(
-        card_children,
-        id=card_id,
-        className="glass-card mb-3",
-        style={
+    card_kwargs = {
+        'className': "glass-card mb-3",
+        'style': {
             'backgroundColor': 'rgba(255, 255, 255, 0.05)',
             'backdropFilter': 'blur(10px)',
             'border': '1px solid rgba(255, 255, 255, 0.1)'
         }
-    )
+    }
+    
+    if card_id:
+        card_kwargs['id'] = card_id
+    
+    return dbc.Card(card_children, **card_kwargs)
 
 
 __all__ = [

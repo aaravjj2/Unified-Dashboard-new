@@ -151,11 +151,12 @@ def create_app():
     # STEP 0: Start Chatbot Service
     # ========================================================================
     logger.info("Step 0: Starting chatbot service...")
-    chatbot_available = start_chatbot_service()
+    # chatbot_available = start_chatbot_service()
+    chatbot_available = False
     if chatbot_available:
         logger.info("✅ Chatbot service is available")
     else:
-        logger.warning("⚠️ Chatbot service not available - chatbot features may not work")
+        logger.info("⚠️ Chatbot service DISABLED for debugging")
     
     # ========================================================================
     # STEP 1: Create Flask Server
@@ -841,13 +842,15 @@ def create_app():
     # allow multiple callbacks to target the same Output (reduces
     # 'Duplicate callback outputs' client errors). Fall back to
     # the regular Dash class if the package is not installed.
-    try:
-        from dash_extensions.enrich import DashProxy, MultiplexerTransform
-        use_proxy = True
-    except Exception:
-        DashProxy = None
-        MultiplexerTransform = None
-        use_proxy = False
+    # DISABLED: DashProxy breaks callback execution - no requests sent to /_dash-update-component
+    # try:
+    #     from dash_extensions.enrich import DashProxy, MultiplexerTransform
+    #     use_proxy = True
+    # except Exception:
+    #     DashProxy = None
+    #     MultiplexerTransform = None
+    #     use_proxy = False
+    use_proxy = False  # FORCE standard Dash - DashProxy breaks callbacks
 
     if use_proxy and DashProxy is not None and MultiplexerTransform is not None:
         app = DashProxy(
@@ -958,7 +961,8 @@ def create_app():
     try:
         # Import callbacks module using absolute package path to avoid
         # resolving to an unrelated top-level module named `callbacks`.
-        from financial_dashboard import callbacks as callbacks_module
+        from financial_dashboard import callback_registry as callbacks_module
+        print(f"DEBUG: callbacks_module loaded from: {callbacks_module.__file__}")
         
         # Register all callbacks
         callback_count = callbacks_module.register_all_callbacks(

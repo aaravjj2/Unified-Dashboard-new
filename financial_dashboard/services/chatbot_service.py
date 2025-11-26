@@ -1,7 +1,7 @@
 """
 AI Chatbot Service for Financial Dashboard
 Provides conversational AI interface with access to market data and analytics.
-Uses TinyLlama-1.1B on GPU for fast, local inference.
+Uses Mistral-7B-Instruct-v0.2 on GPU for high-quality, local inference.
 
 Run: python -m uvicorn services.chatbot_service:app --host 0.0.0.0 --port 8062
 """
@@ -12,11 +12,16 @@ from typing import Dict, List, Optional
 from datetime import datetime
 from contextlib import asynccontextmanager
 import asyncio
+import json
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import httpx
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'keys.env'))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -52,25 +57,24 @@ async def lifespan(app: FastAPI):
     app.state.llm = None
     
     try:
-        from ctransformers import AutoModelForCausalLM
-        logger.info("📦 Loading TinyLlama-1.1B model (GPU)...")
+        from gpt4all import GPT4All
+        logger.info("📦 Loading Mistral-7B-Instruct model (GPU)...")
         
-        # Use a separate thread for model loading to not block startup
-        def load_model():
-            return AutoModelForCausalLM.from_pretrained(
-                "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
-                model_file="tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
-                model_type="llama",
-                gpu_layers=50,  # Offload to GPU
-                context_length=2048
-            )
+        # Use local model file
+        model_path = "/home/aarav/unified-dashboard/models"
+        model_file = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
         
-        # We'll load it synchronously here for simplicity in this script, 
-        # but in prod you might want to do this differently.
-        # Since ctransformers downloads the model, this might take a while on first run.
-        app.state.llm = load_model()
+        # Load model synchronously
+        # Using 'cuda' for GPU acceleration if available, otherwise CPU
+        app.state.llm = GPT4All(
+            model_name=model_file,
+            model_path=model_path,
+            device='cuda',
+            n_threads=8,
+            n_ctx=2048
+        )
         app.state.llm_available = True
-        logger.info("✅ LLM model loaded successfully on GPU")
+        logger.info("✅ Mistral-7B-Instruct loaded successfully on GPU")
         
     except Exception as e:
         logger.warning(f"⚠️ LLM not available: {e}. Using rule-based chatbot.")
@@ -87,7 +91,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="AI Chatbot Service",
     description="Conversational AI for financial dashboard",
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan
 )
 
@@ -101,9 +105,67 @@ app.add_middleware(
 )
 
 
+async def fetch_finnhub_quote(symbol: str, http_client: httpx.AsyncClient) -> Optional[Dict]:
+    """Fetch real-time quote from Finnhub"""
+    api_key = os.getenv("FINNHUB_API_KEY")
+    if not api_key:
+        return None
+        
+    try:
+        url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}"
+        response = await http_client.get(url, timeout=5.0)
+        if response.status_code == 200:
+            data = response.json()
+            # Finnhub returns c (current), d (change), dp (percent change), h (high), l (low), o (open), pc (prev close)
+            if data.get('c', 0) > 0:
+                return {
+                    'symbol': symbol,
+                    'price': data.get('c'),
+                    'change': data.get('d'),
+                    'change_percent': data.get('dp'),
+                    'high': data.get('h'),
+                    'low': data.get('l'),
+                    'open': data.get('o'),
+                    'prev_close': data.get('pc'),
+                    'source': 'Finnhub'
+                }
+    except Exception as e:
+        logger.warning(f"Failed to fetch {symbol} from Finnhub: {e}")
+    
+    return None
+
+
+async def fetch_alpaca_positions(http_client: httpx.AsyncClient) -> List[Dict]:
+    """Fetch open positions from Alpaca"""
+    api_key = os.getenv("APCA_API_KEY_ID")
+    api_secret = os.getenv("APCA_API_SECRET_KEY")
+    base_url = os.getenv("APCA_API_BASE_URL", "https://paper-api.alpaca.markets")
+    
+    if not api_key or not api_secret:
+        return []
+        
+    try:
+        headers = {
+            "APCA-API-KEY-ID": api_key,
+            "APCA-API-SECRET-KEY": api_secret
+        }
+        response = await http_client.get(f"{base_url}/v2/positions", headers=headers, timeout=5.0)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        logger.warning(f"Failed to fetch Alpaca positions: {e}")
+        
+    return []
+
+
 async def fetch_stock_price(symbol: str, http_client: httpx.AsyncClient) -> Optional[Dict]:
-    """Fetch stock price from options service or yfinance fallback"""
-    # Try options service first
+    """Fetch stock price from Finnhub, then options service, then yfinance fallback"""
+    # 1. Try Finnhub first (Primary)
+    finnhub_data = await fetch_finnhub_quote(symbol, http_client)
+    if finnhub_data:
+        return finnhub_data
+
+    # 2. Try options service
     try:
         options_url = os.getenv("OPTIONS_SERVICE_URL", "http://localhost:8060")
         response = await http_client.get(f"{options_url}/quote/{symbol}", timeout=2.0)
@@ -112,13 +174,12 @@ async def fetch_stock_price(symbol: str, http_client: httpx.AsyncClient) -> Opti
     except Exception:
         pass
     
-    # Fallback to yfinance for real-time data
+    # 3. Fallback to yfinance
     try:
         import yfinance as yf
         ticker = yf.Ticker(symbol)
         info = ticker.info
         
-        # Get current price
         current_price = info.get('currentPrice') or info.get('regularMarketPrice') or info.get('previousClose')
         
         if current_price:
@@ -135,125 +196,81 @@ async def fetch_stock_price(symbol: str, http_client: httpx.AsyncClient) -> Opti
     return None
 
 
-# Financial terminology glossary for enhanced chatbot context
-FINANCIAL_GLOSSARY = {
-    # Options & Volatility
-    "IV": "Implied Volatility - market's forecast of likely movement in a security's price",
-    "IV Rank": "Implied Volatility Rank - where current IV stands relative to its 52-week range",
-    "IV Percentile": "percentage of days in past year when IV was lower than current level",
-    "Vega": "option Greek measuring sensitivity to volatility changes",
-    "Theta": "option Greek measuring time decay",
-    "Delta": "option Greek measuring price sensitivity to underlying",
-    "Gamma": "option Greek measuring rate of change of Delta",
-    "ATM": "At-The-Money - strike price equal to current stock price",
-    "ITM": "In-The-Money - option with intrinsic value",
-    "OTM": "Out-of-The-Money - option with no intrinsic value",
-    "DTE": "Days To Expiration",
-    "IV Surface": "3D visualization of implied volatility across strikes and expirations",
-    
-    # Trading Strategies
-    "Iron Condor": "options strategy selling OTM put and call spreads",
-    "Straddle": "buying both call and put at same strike",
-    "Strangle": "buying OTM call and put",
-    "Butterfly": "limited risk strategy using three strikes",
-    "Calendar Spread": "buying and selling options with different expirations",
-    "Vertical Spread": "buying and selling options with different strikes, same expiration",
-    
-    # Market Terms
-    "Bull Market": "rising market with optimistic sentiment",
-    "Bear Market": "declining market, typically 20%+ drop from highs",
-    "Volatility": "statistical measure of price dispersion",
-    "Liquidity": "ease of buying/selling without affecting price",
-    "Bid-Ask Spread": "difference between highest buy and lowest sell price",
-    "Market Maker": "firm providing liquidity by quoting buy/sell prices",
-    "VIX": "CBOE Volatility Index - market fear gauge",
-    
-    # Portfolio & Risk
-    "Sharpe Ratio": "risk-adjusted return metric",
-    "Beta": "measure of volatility relative to market",
-    "Alpha": "excess return above benchmark",
-    "Drawdown": "peak-to-trough decline",
-    "Portfolio Rebalancing": "realigning asset weights to target allocation",
-    "Diversification": "spreading investments to reduce risk",
-    
-    # Technical Analysis
-    "Support": "price level where buying interest prevents further decline",
-    "Resistance": "price level where selling interest prevents further rise",
-    "Moving Average": "average price over specific time period",
-    "RSI": "Relative Strength Index - momentum oscillator (0-100)",
-    "MACD": "Moving Average Convergence Divergence - trend indicator",
-    "Bollinger Bands": "volatility bands around moving average",
-    
-    # Common Abbreviations
-    "P/E": "Price-to-Earnings ratio",
-    "EPS": "Earnings Per Share",
-    "ROI": "Return On Investment",
-    "YTD": "Year-To-Date",
-    "QoQ": "Quarter-over-Quarter",
-    "YoY": "Year-over-Year",
-    "ATH": "All-Time High",
-    "ATL": "All-Time Low",
-}
-
-
-
 async def process_query_llm(query: str, llm, http_client: httpx.AsyncClient) -> ChatResponse:
-    """Process query using LLM with RAG context"""
+    """Process query using Mistral LLM with RAG context"""
     sources = []
     context_parts = []
     
-    # 1. Simple RAG: Extract symbols and fetch data
+    # 1. Extract symbols and fetch market data
     words = query.upper().replace('?', '').replace('.', '').replace(',', '').split()
-    # Common stock symbols (exclude common English words to avoid false positives)
     exclude_words = {"WHAT", "WHEN", "WHERE", "PRICE", "COST", "ABOUT", "TELL", "SHOW", 
                      "GIVE", "FIND", "HELP", "PLEASE", "THANK", "THANKS", "THE", "AND", 
                      "FOR", "WITH", "FROM", "THAT", "THIS", "HAVE", "DOES", "MEAN", "LIKE",
                      "KNOW", "MUCH", "MORE", "SOME", "MAKE", "GOOD", "BEST", "NEED", "WILL",
-                     "WOULD", "COULD", "SHOULD", "THERE", "THEIR", "THEY", "THEM", "THEN"}
+                     "WOULD", "COULD", "SHOULD", "THERE", "THEIR", "THEY", "THEM", "THEN",
+                     "PORTFOLIO", "POSITION", "HOLDING", "ACCOUNT", "MONEY", "CASH"}
     symbols = [w for w in words if len(w) <= 5 and w.isalpha() and w not in exclude_words]
     
-    for symbol in symbols[:3]:  # Limit to 3 symbols to avoid overwhelming context
+    for symbol in symbols[:3]:
         price_data = await fetch_stock_price(symbol, http_client)
         if price_data:
-            context_parts.append(f"Current price of {symbol}: ${price_data.get('price', 'N/A')}")
-            sources.append(f"Real-time Quote ({symbol})")
+            change_str = f"{price_data.get('change', 0):+.2f} ({price_data.get('change_percent', 0):+.2f}%)"
+            context_parts.append(f"Market Data for {symbol}:\n- Price: ${price_data.get('price', 'N/A')}\n- Change: {change_str}\n- Source: {price_data.get('source', 'Unknown')}")
+            sources.append(f"Quote ({symbol})")
+            
+    # 2. Check for portfolio/position keywords
+    if any(k in query.upper() for k in ["PORTFOLIO", "POSITION", "HOLDING", "ACCOUNT"]):
+        positions = await fetch_alpaca_positions(http_client)
+        if positions:
+            pos_str = "Current Portfolio Positions:\n"
+            for p in positions:
+                symbol = p.get('symbol')
+                qty = p.get('qty')
+                mv = float(p.get('market_value', 0))
+                pl_pct = float(p.get('unrealized_plpc', 0)) * 100
+                pos_str += f"- {symbol}: {qty} shares, Value: ${mv:.2f}, P&L: {pl_pct:+.2f}%\n"
+            context_parts.append(pos_str)
+            sources.append("Alpaca Portfolio")
+        else:
+            context_parts.append("Portfolio: No open positions found or API unavailable.")
+
+    # 3. Construct Prompt
+    current_date = datetime.now().strftime("%B %d, %Y")
     
-    
-    # 2. Construct Enhanced Prompt with current date and financial knowledge
-    current_date = datetime.now().strftime("%B %d, %Y")  # e.g., "November 24, 2024"
-    system_prompt = f"""You are a knowledgeable financial assistant for a professional trading dashboard.
+    system_prompt = f"""You are a professional financial assistant for a trading dashboard.
+Current Date: {current_date}
 
-Current date: {current_date}
+Your Role:
+- Analyze market data and provide trading insights.
+- Explain financial concepts (Options, Greeks, Technical Analysis).
+- Assist with portfolio management.
 
-Your expertise includes:
-- Stock market analysis and trading strategies
-- Options trading (calls, puts, spreads, Greeks)
-- Technical analysis and chart patterns
-- Portfolio management and risk assessment
-- Market trends and economic indicators
+Guidelines:
+- Be concise, accurate, and professional.
+- Use the provided Context data to answer questions.
+- If context is missing, provide general knowledge but mention you don't have real-time data.
+- Format numbers clearly (e.g., $150.25, +1.5%).
+"""
 
-Communication style:
-- Be concise and professional
-- Use financial terminology appropriately
-- Explain complex concepts in simple terms when needed
-- Always reference the current date when providing market data
-- If you don't have specific data, acknowledge it and provide general guidance
-
-Available dashboard features you can reference:
-- Market data and real-time quotes
-- Options analysis in Volatility Lab (IV Surface, Signals, Backtesting)
-- Market forecasts and predictions
-- Portfolio tracking and performance analytics"""
-    
     context_str = "\n\n".join(context_parts)
-    if context_str:
-        prompt = f"<|system|>\n{system_prompt}\n\nContext:\n{context_str}<|end|>\n<|user|>\n{query}<|end|>\n<|assistant|>"
-    else:
-        prompt = f"<|system|>\n{system_prompt}<|end|>\n<|user|>\n{query}<|end|>\n<|assistant|>"
     
-    # 3. Generate
+    # Mistral Instruction Format: <s>[INST] Instruction [/INST]
+    if context_str:
+        full_prompt = f"<s>[INST] {system_prompt}\n\nCONTEXT DATA:\n{context_str}\n\nUSER QUESTION:\n{query} [/INST]"
+    else:
+        full_prompt = f"<s>[INST] {system_prompt}\n\nUSER QUESTION:\n{query} [/INST]"
+    
+    # 4. Generate
     try:
-        response_text = llm(prompt, max_new_tokens=256, temperature=0.7)
+        # GPT4All generate method
+        response_text = llm.generate(
+            full_prompt,
+            max_tokens=512,
+            temp=0.7,
+            top_k=40,
+            top_p=0.9
+        )
+        
         return ChatResponse(
             response=response_text.strip(),
             timestamp=datetime.now().isoformat(),
@@ -266,19 +283,10 @@ Available dashboard features you can reference:
 
 async def process_query_rule_based(query: str, http_client: httpx.AsyncClient) -> ChatResponse:
     """Fallback rule-based processing"""
-    query_lower = query.lower()
-    
-    if "help" in query_lower:
-        return ChatResponse(
-            response="I can help you with stock prices, market trends, and portfolio analysis. Try asking 'What is the price of AAPL?'",
-            timestamp=datetime.now().isoformat(),
-            sources=["System"]
-        )
-        
     return ChatResponse(
-        response="I'm running in rule-based mode. I can answer basic questions, but for advanced analysis, please ensure the LLM is loaded.",
+        response="I'm currently running in fallback mode. Please ensure the AI model is loaded for full capabilities.",
         timestamp=datetime.now().isoformat(),
-        sources=["Rule-based Fallback"]
+        sources=["System Fallback"]
     )
 
 
@@ -288,6 +296,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "chatbot_service",
+        "model": "Mistral-7B-Instruct-v0.2",
         "timestamp": datetime.now().isoformat(),
         "llm_available": getattr(app.state, 'llm_available', False)
     }
@@ -299,7 +308,6 @@ async def chat(request: ChatRequest, req: Request):
     try:
         logger.info(f"Received chat request: {request.message[:50]}...")
         
-        # Process
         if getattr(req.app.state, 'llm_available', False):
             response = await process_query_llm(request.message, req.app.state.llm, req.app.state.http_client)
         else:

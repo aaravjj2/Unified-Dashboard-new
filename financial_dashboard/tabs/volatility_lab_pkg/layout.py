@@ -201,7 +201,10 @@ def create_explorer_tab():
                 create_glass_card(
                     "Surface Comparison",
                     html.Div([
-                        html.P("Select surfaces from the slider to compare", className="text-muted text-center p-5")
+                        html.Div(
+                            id='vl-explorer-display',
+                            children=[html.P("Select surfaces from the slider to compare", className="text-muted text-center p-5")]
+                        )
                     ])
                 )
             ], width=9)

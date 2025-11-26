@@ -8,12 +8,14 @@ Responsibilities:
 - Present action suggestions with confirmation flow
 - Manage chat history and context
 - Toggle chat visibility
+- Monitor service health
 """
 
 import logging
 import json
 import time
 import uuid
+import httpx
 from dash import Input, Output, State, html, no_update, callback_context
 import dash_bootstrap_components as dbc
 
@@ -23,8 +25,7 @@ from financial_dashboard.services.chat.actions import get_executor
 
 logger = logging.getLogger(__name__)
 
-# We'll call internal orchestrator/executor directly to avoid HTTP requests
-
+CHATBOT_SERVICE_URL = "http://localhost:8062"
 
 def create_action_suggestion_card(action_data):
     """
@@ -173,9 +174,6 @@ def register_chatbot_callbacks(app):
     logger.info("🤖 Registering chatbot callbacks...")
     
     # ========================================================================
-    # CALLBACK 1: Toggle Chatbot Visibility
-    # ========================================================================
-    # ========================================================================
     # CALLBACK 1: Toggle Chatbot Visibility (Client-side for speed/reliability)
     # ========================================================================
     app.clientside_callback(
@@ -233,26 +231,16 @@ def register_chatbot_callbacks(app):
         current_messages = current_messages or []
         current_messages.append(user_bubble)
         
-        # Build tab context for RAG
-        tab_context = {
-            "tab": active_tab or "unknown",
-            "timestamp": time.time()
-        }
-        
-        # TODO: Extract ticker from tab-specific stores if available
-        # For now, tab context is minimal
-        
         try:
             # Try calling the GPU-accelerated chatbot service first
-            import httpx
-            chatbot_url = "http://localhost:8062"
             service_available = False
             
             try:
+                # INCREASED TIMEOUT to 120s for Mistral-7B (first run can be slow)
                 response = httpx.post(
-                    f"{chatbot_url}/api/chat",
+                    f"{CHATBOT_SERVICE_URL}/api/chat",
                     json={"message": message, "session_id": session_id or "default"},
-                    timeout=5.0  # Short timeout for quick fallback
+                    timeout=120.0 
                 )
                 
                 if response.status_code == 200:
@@ -274,19 +262,18 @@ def register_chatbot_callbacks(app):
             
             # Fallback response when service unavailable
             if not service_available:
-                fallback_message = """I'm currently offline. The AI chatbot service isn't running.
+                fallback_message = """The AI chatbot service is currently unavailable or timed out.
 
-To enable full chatbot functionality, you can:
-1. Start the chatbot service: `python -m uvicorn financial_dashboard.services.chatbot_service:app --host 0.0.0.0 --port 8062`
-2. Or set up a Gemini API key in your environment
+If this is the first request, the model might still be loading into GPU memory. Please try again in a minute.
+
+To ensure the service is running:
+`python -m uvicorn financial_dashboard.services.chatbot_service:app --host 0.0.0.0 --port 8062`
 
 For now, you can use the dashboard's other features:
 • 📊 Market data and charts
 • 💹 Options analysis in Volatility Lab
 • 📈 Market forecasts
-• 💼 Portfolio tracking
-
-Feel free to explore the tabs above!"""
+• 💼 Portfolio tracking"""
                 
                 # Add fallback response bubble
                 ai_bubble = create_message_bubble(fallback_message, is_user=False, sources=["System"])
@@ -298,11 +285,11 @@ Feel free to explore the tabs above!"""
         except Exception as e:
             logger.exception(f"Chat error: {e}")
             error_bubble = create_message_bubble(
-                "Sorry, I'm having trouble right now. Please try the dashboard's other features!",
+                "Sorry, I'm having trouble right now. Please try again later.",
                 is_user=False
             )
             current_messages.append(error_bubble)
-            return current_messages, "", None  # FIX: Must return all 3 outputs
+            return current_messages, "", None
     
     # ========================================================================
     # CALLBACK 3: Handle Action Confirmation/Cancellation
@@ -396,27 +383,6 @@ Feel free to explore the tabs above!"""
                 if (container) {
                     container.scrollTop = container.scrollHeight;
                 }
-
-                // Also expose a small diagnostic hook for E2E: write last response snippet
-                try {
-                    var diag = document.getElementById('chat-color-diagnostic');
-                    if (diag && messages && messages.length > 0) {
-                        var last = messages[messages.length - 1];
-                        var text = '';
-                        function extractText(node) {
-                            if (!node) return '';
-                            if (typeof node === 'string') return node;
-                            if (Array.isArray(node)) return node.map(extractText).join('');
-                            if (node && node.props && node.props.children) return extractText(node.props.children);
-                            if (node && node.children) return extractText(node.children);
-                            return '';
-                        }
-                        try { text = extractText(last).toString(); } catch(e){ text = '' }
-                        diag.dataset.lastResponse = text.slice(0,200);
-                        diag.dataset.lastResponseLen = text.length;
-                    }
-                } catch(e) { /* ignore diagnostics failures */ }
-
             }, 100);
             return window.dash_clientside.no_update;
         }
@@ -426,6 +392,40 @@ Feel free to explore the tabs above!"""
         prevent_initial_call=True
     )
 
+    # ========================================================================
+    # CALLBACK 5: Health Check (Status Indicator)
+    # ========================================================================
+    @app.callback(
+        Output('chatbot-status-indicator', 'children'),
+        Output('chatbot-status-indicator', 'style'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_chatbot_status(n):
+        """Check chatbot service health and update status indicator"""
+        try:
+            response = httpx.get(f"{CHATBOT_SERVICE_URL}/health", timeout=2.0)
+            if response.status_code == 200:
+                return "● Online", {
+                    "fontSize": "12px",
+                    "marginLeft": "10px",
+                    "color": "#4ade80",  # Green
+                    "backgroundColor": "rgba(0,0,0,0.2)",
+                    "padding": "2px 8px",
+                    "borderRadius": "10px",
+                    "transition": "all 0.3s ease"
+                }
+        except Exception:
+            pass
+            
+        return "● Offline", {
+            "fontSize": "12px",
+            "marginLeft": "10px",
+            "color": "#ff6b6b",  # Red
+            "backgroundColor": "rgba(0,0,0,0.2)",
+            "padding": "2px 8px",
+            "borderRadius": "10px",
+            "transition": "all 0.3s ease"
+        }
     
     setattr(app, "_chatbot_callbacks_registered", True)
     logger.info("✅ Chatbot callbacks registered successfully")

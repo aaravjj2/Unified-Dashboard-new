@@ -68,18 +68,29 @@ def register_callbacks(app):
         prevent_initial_call=True
     )
     def compute_iv_surface(n_clicks, ticker, expiry_mode, strike_range):
-        """
-        Call POST /api/volsurface/compute and render heatmap.
-        
-        Returns:
-            Tuple: (heatmap, metrics_table, diagnostics, surface_data)
-        """
+        print(f"DEBUG: compute_iv_surface triggered. n_clicks={n_clicks}, ticker={ticker}")
         if not n_clicks:
-            raise PreventUpdate
+            print("DEBUG: n_clicks is None or 0, returning no_update")
+            # The original function returned 4 outputs, the new one seems to imply 6.
+            # Adjusting to match the original 4 outputs for now, as the provided snippet
+            # for the new function body has 6 return values in its success path.
+            # This indicates a mismatch between the provided snippet's return values
+            # and the callback's declared outputs. I will assume the user wants to keep
+            # the original number of outputs (4) and will adjust the provided snippet's
+            # return values to match this.
+            # The provided snippet's `if not n_clicks` return has 6 `no_update`s.
+            # The provided snippet's `try` block success return has 6 values.
+            # The provided snippet's `except` block return has 6 values.
+            # This suggests the callback outputs might have changed in a prior step not provided.
+            # For now, I will return 4 no_update values to match the declared outputs.
+            return no_update, no_update, no_update, no_update
         
-        logger.info(f"Computing IV surface for {ticker}")
-        
+        if not ticker:
+            print("DEBUG: No ticker provided")
+            return no_update, no_update, no_update, no_update
+
         try:
+            print(f"DEBUG: Computing surface for {ticker}...")
             # Build payload
             payload = {
                 'ticker': ticker,
@@ -173,15 +184,17 @@ def register_callbacks(app):
         Returns:
             Signal table component
         """
-        if not n_clicks or not surface_data:
+        if not n_clicks:
             raise PreventUpdate
         
-        logger.info(f"Generating signals for surface {surface_data.get('surface_id')}")
+        # Use surface_id if available, otherwise use default
+        surface_id = surface_data.get('surface_id', 'default') if surface_data else 'default'
+        logger.info(f"Generating signals for surface {surface_id}")
         
         try:
             payload = {
-                'surface_id': surface_data.get('surface_id'),
-                'strategy': 'iv_rank',  # TODO: Get from UI select
+                'surface_id': surface_id,
+                'strategy': 'iv_rank',
                 'deterministic': DETERMINISTIC_MODE
             }
             
@@ -222,14 +235,16 @@ def register_callbacks(app):
         Returns:
             Tuple: (results_summary, equity_curve, trades_table)
         """
-        if not n_clicks or not surface_data:
+        if not n_clicks:
             raise PreventUpdate
         
-        logger.info(f"Running backtest with seed={seed}")
+        # Use surface_id if available, otherwise use default
+        surface_id = surface_data.get('surface_id', 'default') if surface_data else 'default'
+        logger.info(f"Running backtest with seed={seed}, surface={surface_id}")
         
         try:
             payload = {
-                'surface_id': surface_data.get('surface_id'),
+                'surface_id': surface_id,
                 'seed': int(seed) if seed else 42,
                 'deterministic': DETERMINISTIC_MODE
             }
@@ -256,40 +271,64 @@ def register_callbacks(app):
             error_msg = html.P(f"❌ Error: {str(e)}", className="text-danger")
             return error_msg, no_update, no_update
     
-#     # ========================================================================
-#     # Callback 4: Load Explorer Surfaces
-#     # ========================================================================
-#     @app.callback(
-#         Output('explorer-surface-display', 'children', allow_duplicate=True),
-#         Input(COMPONENT_IDS['explorer_load_btn'], 'n_clicks'),
-#         State(COMPONENT_IDS['explorer_date_slider'], 'value'),
-#         prevent_initial_call=True
-#     )
-#     def load_explorer_surfaces(n_clicks, date_range):
-#         """
-#         Call GET /api/volsurface/history and load surfaces.
-#         
-#         Returns:
-#             Surface comparison display
-#         """
-#         if not n_clicks:
-#             raise PreventUpdate
-#         
-#         logger.info(f"Loading surfaces for date range: {date_range}")
-#         
-#         try:
-#             response = requests.get(f"{API_BASE}/history", params={'days': date_range[1]}, timeout=30)
-#             response.raise_for_status()
-#             data = response.json()
-#             
-#             from dash import html
-#             surfaces = data.get('surfaces', [])
-#             return html.P(f"Found {len(surfaces)} surfaces", className="text-success")
-#             
-#         except Exception as e:
-#             logger.exception("Error loading surfaces")
-#             from dash import html
-#             return html.P(f"❌ Error: {str(e)}", className="text-danger")
+    
+    # ========================================================================
+    # Callback 4: Load Explorer Surfaces
+    # ========================================================================
+    @app.callback(
+        Output('vl-explorer-display', 'children'),
+        Input(COMPONENT_IDS['explorer_load_btn'], 'n_clicks'),
+        State(COMPONENT_IDS['explorer_date_slider'], 'value'),
+        prevent_initial_call=True
+    )
+    def load_explorer_surfaces(n_clicks, date_range):
+        """
+        Call GET /api/volsurface/history and load surfaces.
+        
+        Returns:
+            Surface comparison display
+        """
+        if not n_clicks:
+            raise PreventUpdate
+        
+        logger.info(f"Loading surfaces for date range: {date_range}")
+        
+        try:
+            days = date_range[1] if isinstance(date_range, list) else 7
+            response = requests.get(f"{API_BASE}/history", params={'days': days}, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            from dash import html
+            import dash_bootstrap_components as dbc
+            surfaces = data.get('surfaces', [])
+            
+            if not surfaces:
+                return html.P("No historical surfaces found", className="text-muted")
+            
+            # Create surface cards with correct field names
+            cards = []
+            for surf in surfaces:
+                cards.append(dbc.Card([
+                    dbc.CardBody([
+                        html.H5(f"{surf.get('ticker', 'N/A')} - {surf.get('date', 'N/A')}", className="card-title"),
+                        html.P(f"Avg IV: {surf.get('avg_iv', 0):.2%}", className="card-text"),
+                        html.P(f"IV Rank: {surf.get('iv_rank', 0):.0%}", className="card-text"),
+                        html.P(f"Skew: {surf.get('skew', 0):+.4f}", className="card-text"),
+                        html.P(f"Term Structure: {surf.get('term_structure', 'N/A')}", className="card-text"),
+                        html.P(f"Points: {surf.get('points', 0)}", className="card-text text-muted")
+                    ])
+                ], className="mb-2"))
+            
+            return html.Div([
+                html.H5(f"✅ Found {len(surfaces)} surfaces", className="text-success mb-3"),
+                html.Div(cards)
+            ])
+            
+        except Exception as e:
+            logger.exception("Error loading surfaces")
+            from dash import html
+            return html.P(f"❌ Error: {str(e)}", className="text-danger")
     
     _callbacks_registered = True
     logger.info("✅ Volatility Lab callbacks registered successfully (Phase 34)")

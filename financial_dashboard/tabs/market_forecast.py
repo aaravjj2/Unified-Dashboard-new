@@ -64,19 +64,18 @@ def create_inputs_panel():
             # Ticker selection
             dbc.Row([
                 dbc.Col([
-                    html.Label("Ticker Symbol", className="small fw-bold"),
-                    dcc.Input(
+                    html.Label("Ticker", className="small fw-bold"),
+                    dcc.Dropdown(
                         id=COMPONENT_IDS['ticker_input'],
-                        type='text',
-                        placeholder='Enter ticker (e.g., AAPL, MSFT, TSLA)',
+                        options=[
+                            {'label': 'AAPL - Apple', 'value': 'AAPL'},
+                            {'label': 'MSFT - Microsoft', 'value': 'MSFT'},
+                            {'label': 'GOOGL - Google', 'value': 'GOOGL'},
+                            {'label': 'NVDA - NVIDIA', 'value': 'NVDA'},
+                        ],
                         value='AAPL',
-                        className="form-control form-control-sm",
-                        style={
-                            'textTransform': 'uppercase',
-                            'fontFamily': 'monospace',
-                            'fontWeight': '500'
-                        },
-                        debounce=True
+                        clearable=False,
+                        className="form-select-sm"
                     )
                 ], width=6),
                 dbc.Col([
@@ -316,10 +315,7 @@ def register_callbacks(app):
     from dash.exceptions import PreventUpdate
     import os
     import json
-    import json
-    from datetime import datetime, timedelta
-    import plotly.graph_objects as go
-    import pandas as pd
+    from datetime import datetime
 
     try:
         from services.forecast_adapter import ForecastAdapter
@@ -419,120 +415,10 @@ def register_callbacks(app):
                 logger.exception(f"Error forecasting {t}: {e}")
                 details_children.append(html.Div(f"{t}: error - {e}"))
 
-        # Build combined figure using Graph Objects for better quality
-        fig = go.Figure()
-
-        for res in all_results:
-            ticker = res.get('ticker')
-            
-            # 1. Historical Data
-            hist_data = res.get('historical_data', {})
-            if hist_data and 'dates' in hist_data and 'prices' in hist_data:
-                fig.add_trace(go.Scatter(
-                    x=hist_data['dates'],
-                    y=hist_data['prices'],
-                    mode='lines',
-                    name=f'{ticker} History',
-                    line=dict(color='#3b82f6', width=2),
-                    legendgroup=ticker
-                ))
-                last_date = hist_data['dates'][-1]
-            else:
-                last_date = datetime.now().strftime('%Y-%m-%d')
-
-            # 2. Forecast Data
-            # Generate future dates
-            horizon_days = res.get('horizon_days') or res.get('horizon', 30)
-            start_date = datetime.strptime(last_date, '%Y-%m-%d')
-            future_dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1, horizon_days + 1)]
-            
-            # Forecast Line - ForecastAdapter returns 'forecast_price' and 'forecast' array
-            current_price = res.get('current_price')
-            forecast_mean = res.get('forecast_price') or res.get('forecast_price_mean')
-            
-            # Skip if essential values are missing
-            if current_price is None or forecast_mean is None:
-                logger.warning(f"Skipping forecast trace for {ticker}: missing price data")
-                continue
-            
-            # Get forecast time series (ForecastAdapter returns 'forecast' array)
-            forecast_series = res.get('forecast', [])
-            if forecast_series and len(forecast_series) == horizon_days:
-                y_forecast = forecast_series
-            else:
-                # Fallback: linear interpolation
-                y_forecast = [current_price + (forecast_mean - current_price) * (i/horizon_days) for i in range(1, horizon_days + 1)]
-
-            fig.add_trace(go.Scatter(
-                x=future_dates,
-                y=y_forecast,
-                mode='lines',
-                name=f'{ticker} Forecast',
-                line=dict(color='#f59e0b', width=2, dash='dash'),
-                legendgroup=ticker
-            ))
-
-            # 3. Confidence Interval - ForecastAdapter returns 'lower_bound' and 'upper_bound' arrays
-            lower_bound = res.get('lower_bound', [])
-            upper_bound = res.get('upper_bound', [])
-            
-            if lower_bound and upper_bound and len(lower_bound) == horizon_days and len(upper_bound) == horizon_days:
-                fig.add_trace(go.Scatter(
-                    x=future_dates + future_dates[::-1],
-                    y=upper_bound + lower_bound[::-1],
-                    fill='toself',
-                    fillcolor='rgba(245, 158, 11, 0.2)',
-                    line=dict(color='rgba(255,255,255,0)'),
-                    hoverinfo="skip",
-                    showlegend=True,
-                    name=f'{ticker} {int(res.get("confidence", 0.95)*100)}% CI',
-                    legendgroup=ticker
-                ))
-
-            # 4. End Point Marker
-            fig.add_trace(go.Scatter(
-                x=[future_dates[-1]],
-                y=[y_forecast[-1]],
-                mode='markers+text',
-                name=f'{ticker} Target',
-                marker=dict(color='#f59e0b', size=10),
-                text=[f"${y_forecast[-1]:.2f}"],
-                textposition="top center",
-                showlegend=False,
-                legendgroup=ticker
-            ))
-
-        # Update Layout
-        fig.update_layout(
-            template="plotly_dark",
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(family="Inter, sans-serif", color="#e2e8f0"),
-            title=dict(text="Market Forecast Analysis", x=0.5, font=dict(size=20)),
-            xaxis=dict(
-                showgrid=True, 
-                gridcolor='rgba(255,255,255,0.1)',
-                title="Date"
-            ),
-            yaxis=dict(
-                showgrid=True, 
-                gridcolor='rgba(255,255,255,0.1)',
-                tickformat='$.2f',
-                title="Price"
-            ),
-            hovermode="x unified",
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
-            ),
-            margin=dict(l=40, r=40, t=80, b=40),
-            height=500
-        )
-
-        if not all_results:
+        # Build combined figure
+        if series_traces:
+            fig = {'data': series_traces, 'layout': {'title': 'Forecasts', 'height': 380, 'yaxis': {'tickformat': '.2%'}}}
+        else:
             fig = _empty_forecast_chart()
 
         # Build details container
@@ -543,78 +429,6 @@ def register_callbacks(app):
 
         # Return aggregated result and explanations map
         return all_results, fig, details, status, ts, explanations
-
-    # Feature Importance Chart Callback
-    @app.callback(
-        Output(COMPONENT_IDS['explain_chart'], 'figure'),
-        Input(COMPONENT_IDS['explain_store'], 'data'),
-        prevent_initial_call=True
-    )
-    def update_explain_chart(explain_data):
-        """Update feature importance chart from SHAP data."""
-        if not explain_data:
-            return _empty_explain_chart()
-        
-        try:
-            # explain_data is a dict mapping forecast_id to explanation
-            # Get the first explanation (or combine multiple)
-            all_features = []
-            all_values = []
-            
-            for forecast_id, explanation in explain_data.items():
-                if explanation and 'features' in explanation and 'shap_values' in explanation:
-                    features = explanation['features']
-                    shap_values = explanation['shap_values']
-                    
-                    # Add to lists
-                    all_features.extend(features)
-                    all_values.extend(shap_values)
-            
-            if not all_features:
-                return _empty_explain_chart()
-            
-            # Create bar chart
-            fig = go.Figure()
-            
-            fig.add_trace(go.Bar(
-                x=all_values,
-                y=all_features,
-                orientation='h',
-                marker=dict(
-                    color=all_values,
-                    colorscale='RdYlGn',
-                    showscale=True,
-                    colorbar=dict(title="SHAP Value")
-                ),
-                text=[f"{v:.3f}" for v in all_values],
-                textposition='auto',
-            ))
-            
-            fig.update_layout(
-                template="plotly_dark",
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(family="Inter, sans-serif", color="#e2e8f0"),
-                title=dict(text="Feature Importance (SHAP Values)", x=0.5, font=dict(size=16)),
-                xaxis=dict(
-                    title="SHAP Value",
-                    showgrid=True,
-                    gridcolor='rgba(255,255,255,0.1)'
-                ),
-                yaxis=dict(
-                    title="Feature",
-                    showgrid=False
-                ),
-                margin=dict(l=150, r=40, t=60, b=40),
-                height=300
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.exception(f"Error creating explanation chart: {e}")
-            return _empty_explain_chart()
-
 
     # Client-side helper: mirror store data to a hidden div and window for Playwright
     try:

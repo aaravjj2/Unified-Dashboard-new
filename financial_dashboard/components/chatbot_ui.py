@@ -65,6 +65,19 @@ def create_chatbot_ui():
                                         children=[
                                             html.I(className="fas fa-robot", style={"marginRight": "10px", "fontSize": "20px"}),
                                             html.Span("AI Financial Assistant", style={"fontSize": "18px", "fontWeight": "600"}),
+                                            html.Span(
+                                                "● Offline",
+                                                id="chatbot-status-indicator",
+                                                style={
+                                                    "fontSize": "12px",
+                                                    "marginLeft": "10px",
+                                                    "color": "#ff6b6b",  # Red for offline
+                                                    "backgroundColor": "rgba(0,0,0,0.2)",
+                                                    "padding": "2px 8px",
+                                                    "borderRadius": "10px",
+                                                    "transition": "all 0.3s ease"
+                                                }
+                                            )
                                         ]
                                     ),
                                     html.Button(

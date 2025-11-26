@@ -1369,521 +1369,12 @@ def register_callbacks(app):
     
     callback_count += 1
     
-    # ========================================================================
-    # PHASE 23 CALLBACKS: BENCHMARK & RISK SUBTAB SYNC
-    # (Moved here from dead code section - critical fix)
-    # ========================================================================
-    
-    # Import observability decorators
-    try:
-        from observability.sentry_config import sentry_trace
-        from observability.datadog_config import (
-            metric_timing,
-            record_strategy_lab_latency,
-            increment_callback_invocation
-        )
-        OBSERVABILITY_ENABLED = True
-    except ImportError:
-        logger.warning("⚠️ Observability modules not available - callbacks will run without tracing")
-        OBSERVABILITY_ENABLED = False
-        # Create no-op decorators
-        def sentry_trace(name):
-            def decorator(func):
-                return func
-            return decorator
-        def metric_timing(metric, tags=None):
-            def decorator(func):
-                return func
-            return decorator
-    
-    # ========================================================================
-    # CALLBACK 9: Update Benchmark Subtab Metrics
-    # ========================================================================
-    @app.callback(
-        [Output('sl-strategy-cagr', 'children'),
-         Output('sl-benchmark-cagr', 'children'),
-         Output('sl-alpha-value', 'children'),
-         Output('sl-beta-value', 'children'),
-         Output('sl-information-ratio', 'children'),
-         Output('sl-tracking-error', 'children'),
-         Output('sl-correlation', 'children')],
-        [Input('sl-backtest-results', 'data'),
-         Input('sl-benchmark-selector', 'value')]
-    )
-    def update_benchmark_metrics(results, benchmark_ticker):
-        """Update Benchmark subtab metrics when backtest completes."""
-        import time
-        start_time = time.time()
-        
-        if not results or not results.get('success'):
-            return ("--", "--", "--", "--", "--", "--", "--")
-        
-        try:
-            metrics = results.get('metrics', {})
-            benchmark = results.get('benchmark', {})
-            
-            strategy_cagr = metrics.get('cagr', 0.0)
-            strategy_cagr_str = f"{strategy_cagr:.2%}"
-            
-            benchmark_cagr = benchmark.get('cagr', 0.0)
-            benchmark_cagr_str = f"{benchmark_cagr:.2%}"
-            
-            alpha = strategy_cagr - benchmark_cagr
-            alpha_str = f"+{alpha:.2%}" if alpha > 0 else f"{alpha:.2%}"
-            
-            beta = benchmark.get('beta', 1.0)
-            beta_str = f"{beta:.2f}"
-            
-            tracking_error = benchmark.get('tracking_error', 0.01)
-            info_ratio = alpha / tracking_error if tracking_error > 0 else 0.0
-            info_ratio_str = f"{info_ratio:.2f}"
-            
-            tracking_error_str = f"{tracking_error:.2%}"
-            
-            correlation = benchmark.get('correlation', 0.0)
-            correlation_str = f"{correlation:.2f}"
-            
-            if OBSERVABILITY_ENABLED:
-                elapsed_ms = (time.time() - start_time) * 1000
-                record_strategy_lab_latency(elapsed_ms, operation='benchmark_metrics_update')
-                increment_callback_invocation('strategy_lab_benchmark_metrics', status='success')
-            
-            return (strategy_cagr_str, benchmark_cagr_str, alpha_str, beta_str,
-                    info_ratio_str, tracking_error_str, correlation_str)
-            
-        except Exception as e:
-            logger.error(f"❌ Benchmark metrics update failed: {e}")
-            if OBSERVABILITY_ENABLED:
-                increment_callback_invocation('strategy_lab_benchmark_metrics', status='error')
-            return ("Error", "Error", "Error", "Error", "Error", "Error", "Error")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 10: Update Benchmark Comparison Chart
-    # ========================================================================
-    @app.callback(
-        Output('sl-benchmark-comparison-chart', 'figure'),
-        [Input('sl-backtest-results', 'data'),
-         Input('sl-benchmark-selector', 'value')]
-    )
-    def update_benchmark_comparison_chart(results, benchmark_ticker):
-        """Update benchmark comparison chart."""
-        if not results or not results.get('success'):
-            return _create_placeholder_line("Run backtest to compare vs benchmark")
-        
-        try:
-            equity_curve = pd.DataFrame(results.get('equity_curve', []))
-            benchmark_data = pd.DataFrame(results.get('benchmark', {}).get('equity_curve', []))
-            
-            if equity_curve.empty:
-                return _create_placeholder_line("No equity curve data")
-            
-            fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=equity_curve['Date'],
-                y=equity_curve['Value'],
-                mode='lines',
-                name='Strategy',
-                line=dict(color='#10b981', width=2)
-            ))
-            
-            if not benchmark_data.empty:
-                fig.add_trace(go.Scatter(
-                    x=benchmark_data['Date'],
-                    y=benchmark_data['Value'],
-                    mode='lines',
-                    name=f'{benchmark_ticker} Benchmark',
-                    line=dict(color='#6b7280', width=2, dash='dash')
-                ))
-            
-            fig.update_layout(
-                height=350,
-                margin=dict(l=40, r=20, t=30, b=40),
-                xaxis_title="Date",
-                yaxis_title="Portfolio Value ($)",
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                xaxis=dict(gridcolor='#e5e7eb'),
-                yaxis=dict(gridcolor='#e5e7eb'),
-                legend=dict(x=0.02, y=0.98, bgcolor='rgba(255,255,255,0.8)')
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"❌ Benchmark chart update failed: {e}")
-            return _create_placeholder_line("Error generating chart")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 11: Update Rolling Correlation Chart
-    # ========================================================================
-    @app.callback(
-        Output('sl-rolling-correlation-chart', 'figure'),
-        [Input('sl-backtest-results', 'data'),
-         Input('sl-benchmark-selector', 'value')]
-    )
-    def update_rolling_correlation(results, benchmark_ticker):
-        """Update rolling correlation chart."""
-        if not results or not results.get('success'):
-            return _create_placeholder_line("Run backtest to see correlation")
-        
-        try:
-            equity_curve = pd.DataFrame(results.get('equity_curve', []))
-            
-            if equity_curve.empty:
-                return _create_placeholder_line("No data available")
-            
-            dates = pd.date_range(start=equity_curve['Date'].min(), end=equity_curve['Date'].max(), periods=20)
-            correlations = np.random.uniform(0.6, 0.9, size=20)
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=dates,
-                y=correlations,
-                mode='lines',
-                name='30-Day Rolling Correlation',
-                line=dict(color='#2563eb', width=2),
-                fill='tozeroy',
-                fillcolor='rgba(37, 99, 235, 0.1)'
-            ))
-            
-            fig.update_layout(
-                height=300,
-                margin=dict(l=40, r=20, t=20, b=40),
-                xaxis_title="Date",
-                yaxis_title="Correlation",
-                yaxis_range=[0, 1],
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                xaxis=dict(gridcolor='#e5e7eb'),
-                yaxis=dict(gridcolor='#e5e7eb')
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"❌ Rolling correlation update failed: {e}")
-            return _create_placeholder_line("Error generating chart")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 12: Update Rolling Beta Chart
-    # ========================================================================
-    @app.callback(
-        Output('sl-rolling-beta-chart', 'figure'),
-        [Input('sl-backtest-results', 'data'),
-         Input('sl-benchmark-selector', 'value')]
-    )
-    def update_rolling_beta(results, benchmark_ticker):
-        """Update rolling beta chart."""
-        if not results or not results.get('success'):
-            return _create_placeholder_line("Run backtest to see beta")
-        
-        try:
-            equity_curve = pd.DataFrame(results.get('equity_curve', []))
-            
-            if equity_curve.empty:
-                return _create_placeholder_line("No data available")
-            
-            dates = pd.date_range(start=equity_curve['Date'].min(), end=equity_curve['Date'].max(), periods=20)
-            betas = np.random.uniform(0.8, 1.2, size=20)
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=dates,
-                y=betas,
-                mode='lines',
-                name='60-Day Rolling Beta',
-                line=dict(color='#8b5cf6', width=2)
-            ))
-            
-            fig.add_hline(y=1.0, line_dash="dash", line_color="#9ca3af", 
-                         annotation_text="Market Beta (1.0)")
-            
-            fig.update_layout(
-                height=300,
-                margin=dict(l=40, r=20, t=20, b=40),
-                xaxis_title="Date",
-                yaxis_title="Beta",
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                xaxis=dict(gridcolor='#e5e7eb'),
-                yaxis=dict(gridcolor='#e5e7eb')
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"❌ Rolling beta update failed: {e}")
-            return _create_placeholder_line("Error generating chart")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 13: Update Benchmark Metrics Table
-    # ========================================================================
-    @app.callback(
-        Output('sl-benchmark-metrics-table', 'children'),
-        [Input('sl-backtest-results', 'data'),
-         Input('sl-benchmark-selector', 'value')]
-    )
-    def update_benchmark_metrics_table(results, benchmark_ticker):
-        """Update benchmark comparison table."""
-        if not results or not results.get('success'):
-            return html.Div("Run backtest to see metrics", className="text-muted text-center py-3")
-        
-        try:
-            metrics = results.get('metrics', {})
-            benchmark = results.get('benchmark', {})
-            
-            data = {
-                'Metric': ['CAGR', 'Sharpe Ratio', 'Max Drawdown', 'Win Rate', 'Volatility'],
-                'Strategy': [
-                    f"{metrics.get('cagr', 0):.2%}",
-                    f"{metrics.get('sharpe_ratio', 0):.2f}",
-                    f"{metrics.get('max_drawdown', 0):.2%}",
-                    f"{metrics.get('win_rate', 0):.2%}",
-                    f"{metrics.get('volatility', 0):.2%}"
-                ],
-                f'{benchmark_ticker}': [
-                    f"{benchmark.get('cagr', 0):.2%}",
-                    f"{benchmark.get('sharpe_ratio', 0):.2f}",
-                    f"{benchmark.get('max_drawdown', 0):.2%}",
-                    "N/A",
-                    f"{benchmark.get('volatility', 0):.2%}"
-                ]
-            }
-            
-            df = pd.DataFrame(data)
-            
-            table = dbc.Table.from_dataframe(
-                df,
-                striped=True,
-                bordered=True,
-                hover=True,
-                responsive=True,
-                className="mb-0"
-            )
-            
-            return table
-            
-        except Exception as e:
-            logger.error(f"❌ Benchmark table update failed: {e}")
-            return html.Div("Error generating table", className="text-danger text-center py-3")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 14: Update Risk Subtab Metrics
-    # ========================================================================
-    @app.callback(
-        [Output('sl-risk-max-dd', 'children'),
-         Output('sl-risk-volatility', 'children'),
-         Output('sl-risk-var', 'children'),
-         Output('sl-risk-sortino', 'children')],
-        Input('sl-backtest-results', 'data')
-    )
-    def update_risk_metrics(results):
-        """Update Risk subtab metrics when backtest completes."""
-        if not results or not results.get('success'):
-            return ("--", "--", "--", "--")
-        
-        try:
-            metrics = results.get('metrics', {})
-            
-            max_dd = metrics.get('max_drawdown', 0.0)
-            max_dd_str = f"{max_dd:.2%}"
-            
-            volatility = metrics.get('volatility', 0.0)
-            volatility_str = f"{volatility:.2%}"
-            
-            var_95 = volatility * 1.65
-            var_str = f"-{var_95:.2%}"
-            
-            sortino = metrics.get('sortino_ratio', 0.0)
-            sortino_str = f"{sortino:.2f}"
-            
-            if OBSERVABILITY_ENABLED:
-                increment_callback_invocation('strategy_lab_risk_metrics', status='success')
-            
-            return (max_dd_str, volatility_str, var_str, sortino_str)
-            
-        except Exception as e:
-            logger.error(f"❌ Risk metrics update failed: {e}")
-            if OBSERVABILITY_ENABLED:
-                increment_callback_invocation('strategy_lab_risk_metrics', status='error')
-            return ("Error", "Error", "Error", "Error")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 15: Update Drawdown Chart
-    # ========================================================================
-    @app.callback(
-        Output('sl-risk-drawdown-chart', 'figure'),
-        Input('sl-backtest-results', 'data')
-    )
-    def update_drawdown_chart(results):
-        """Update drawdown chart."""
-        if not results or not results.get('success'):
-            return _create_placeholder_line("Run backtest to see drawdowns")
-        
-        try:
-            equity_curve = pd.DataFrame(results.get('equity_curve', []))
-            
-            if equity_curve.empty:
-                return _create_placeholder_line("No equity curve data")
-            
-            equity_values = equity_curve['Value'].values
-            running_max = np.maximum.accumulate(equity_values)
-            drawdown = (equity_values - running_max) / running_max
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=equity_curve['Date'],
-                y=drawdown * 100,
-                mode='lines',
-                name='Drawdown',
-                line=dict(color='#ef4444', width=2),
-                fill='tozeroy',
-                fillcolor='rgba(239, 68, 68, 0.2)'
-            ))
-            
-            fig.update_layout(
-                height=300,
-                margin=dict(l=40, r=20, t=20, b=40),
-                xaxis_title="Date",
-                yaxis_title="Drawdown (%)",
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                xaxis=dict(gridcolor='#e5e7eb'),
-                yaxis=dict(gridcolor='#e5e7eb'),
-                yaxis_range=[min(drawdown * 100) * 1.1, 0]
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"❌ Drawdown chart update failed: {e}")
-            return _create_placeholder_line("Error generating chart")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 16: Update Factor Chart
-    # ========================================================================
-    @app.callback(
-        Output('sl-risk-factor-chart', 'figure'),
-        Input('sl-backtest-results', 'data')
-    )
-    def update_risk_factor_chart(results):
-        """Update factor attribution chart in Risk subtab."""
-        if not results or not results.get('success'):
-            return _create_placeholder_bar("Run backtest to see factors")
-        
-        try:
-            attribution = results.get('factor_attribution', {})
-            
-            factors = list(attribution.keys())
-            contributions = list(attribution.values())
-            
-            colors = ['#10b981' if c > 0 else '#ef4444' for c in contributions]
-            
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=factors,
-                y=contributions,
-                marker_color=colors,
-                text=[f"{c:.2%}" for c in contributions],
-                textposition='outside'
-            ))
-            
-            fig.update_layout(
-                height=300,
-                margin=dict(l=40, r=20, t=20, b=40),
-                xaxis_title="Factor",
-                yaxis_title="Return Contribution",
-                yaxis_tickformat='.1%',
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                xaxis=dict(gridcolor='#e5e7eb'),
-                yaxis=dict(gridcolor='#e5e7eb', zeroline=True, zerolinecolor='#9ca3af')
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"❌ Risk factor chart update failed: {e}")
-            return _create_placeholder_bar("Error generating chart")
-    
-    callback_count += 1
-    
-    # ========================================================================
-    # CALLBACK 17: Update Risk Decomposition Table
-    # ========================================================================
-    @app.callback(
-        Output('sl-risk-decomposition-table', 'children'),
-        Input('sl-backtest-results', 'data')
-    )
-    def update_risk_decomposition_table(results):
-        """Update risk decomposition table."""
-        if not results or not results.get('success'):
-            return html.Div("Run backtest to see risk breakdown", className="text-muted text-center py-3")
-        
-        try:
-            metrics = results.get('metrics', {})
-            
-            data = {
-                'Risk Component': ['Total Volatility', 'Systematic Risk (Beta)', 'Idiosyncratic Risk', 'Tail Risk (VaR 95%)'],
-                'Value': [
-                    f"{metrics.get('volatility', 0):.2%}",
-                    f"{metrics.get('beta', 1.0):.2f}",
-                    f"{metrics.get('volatility', 0) * 0.6:.2%}",
-                    f"{metrics.get('volatility', 0) * 1.65:.2%}"
-                ],
-                'Description': [
-                    'Annual return volatility',
-                    'Sensitivity to market moves',
-                    'Diversifiable risk',
-                    '95% worst-case loss'
-                ]
-            }
-            
-            df = pd.DataFrame(data)
-            
-            table = dbc.Table.from_dataframe(
-                df,
-                striped=True,
-                bordered=True,
-                hover=True,
-                responsive=True,
-                className="mb-0"
-            )
-            
-            return table
-            
-        except Exception as e:
-            logger.error(f"❌ Risk decomposition update failed: {e}")
-            return html.Div("Error generating table", className="text-danger text-center py-3")
-    
-    callback_count += 1
-    
-    logger.info(f"✅ Strategy Lab Phase 23 callbacks registered: Benchmark & Risk subtabs now synchronized")
     logger.info(f"✅ Strategy Lab callbacks registered successfully ({callback_count} callbacks)")
-    
-    # Mark callbacks as registered (global declared at function start)
-    _callbacks_registered = True
-    
     return callback_count
 
 
 # ============================================================================
-# HELPER FUNCTIONS (Module Level)
+# HELPER FUNCTIONS
 # ============================================================================
 
 def _create_placeholder_chart(message):
@@ -1967,3 +1458,666 @@ def _create_placeholder_bar(message):
         yaxis=dict(visible=False)
     )
     return fig
+    
+    # ========================================================================
+    # PHASE 23 CALLBACKS: BENCHMARK & RISK SUBTAB SYNC
+    # ========================================================================
+    
+    # Import observability decorators
+    try:
+        from observability.sentry_config import sentry_trace
+        from observability.datadog_config import (
+            metric_timing,
+            record_strategy_lab_latency,
+            increment_callback_invocation
+        )
+        OBSERVABILITY_ENABLED = True
+    except ImportError:
+        logger.warning("⚠️ Observability modules not available - callbacks will run without tracing")
+        OBSERVABILITY_ENABLED = False
+        # Create no-op decorators
+        def sentry_trace(name):
+            def decorator(func):
+                return func
+            return decorator
+        def metric_timing(metric, tags=None):
+            def decorator(func):
+                return func
+            return decorator
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 9: Update Benchmark Subtab Metrics
+    # ========================================================================
+    @app.callback(
+        [Output('sl-strategy-cagr', 'children'),
+         Output('sl-benchmark-cagr', 'children'),
+         Output('sl-alpha-value', 'children'),
+         Output('sl-beta-value', 'children'),
+         Output('sl-information-ratio', 'children'),
+         Output('sl-tracking-error', 'children'),
+         Output('sl-correlation', 'children')],
+        [Input('sl-backtest-results', 'data'),
+         Input('sl-benchmark-selector', 'value')]
+    )
+    @sentry_trace('strategy_lab_update_benchmark_metrics') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_benchmark_metrics']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_benchmark_metrics(results, benchmark_ticker):
+        """
+        Update Benchmark subtab metrics when backtest completes.
+        
+        Phase 23 Fix: Synchronizes Benchmark subtab with backtest results.
+        """
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return ("--", "--", "--", "--", "--", "--", "--")
+        
+        try:
+            metrics = results.get('metrics', {})
+            benchmark = results.get('benchmark', {})
+            
+            # Strategy CAGR
+            strategy_cagr = metrics.get('cagr', 0.0)
+            strategy_cagr_str = f"{strategy_cagr:.2%}"
+            
+            # Benchmark CAGR
+            benchmark_cagr = benchmark.get('cagr', 0.0)
+            benchmark_cagr_str = f"{benchmark_cagr:.2%}"
+            
+            # Alpha (excess return)
+            alpha = strategy_cagr - benchmark_cagr
+            alpha_str = f"+{alpha:.2%}" if alpha > 0 else f"{alpha:.2%}"
+            
+            # Beta (market sensitivity)
+            beta = benchmark.get('beta', 1.0)
+            beta_str = f"{beta:.2f}"
+            
+            # Information Ratio (risk-adjusted alpha)
+            tracking_error = benchmark.get('tracking_error', 0.01)
+            info_ratio = alpha / tracking_error if tracking_error > 0 else 0.0
+            info_ratio_str = f"{info_ratio:.2f}"
+            
+            # Tracking Error
+            tracking_error_str = f"{tracking_error:.2%}"
+            
+            # Correlation
+            correlation = benchmark.get('correlation', 0.0)
+            correlation_str = f"{correlation:.2f}"
+            
+            # Record observability metrics
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='benchmark_metrics_update')
+                increment_callback_invocation('strategy_lab_benchmark_metrics', status='success')
+            
+            return (
+                strategy_cagr_str,
+                benchmark_cagr_str,
+                alpha_str,
+                beta_str,
+                info_ratio_str,
+                tracking_error_str,
+                correlation_str
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ Benchmark metrics update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                try:
+                    from observability.sentry_config import capture_exception
+                    capture_exception(e, context={'callback': 'update_benchmark_metrics', 'results': results})
+                except:
+                    pass
+                increment_callback_invocation('strategy_lab_benchmark_metrics', status='error')
+            return ("Error", "Error", "Error", "Error", "Error", "Error", "Error")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 10: Update Benchmark Comparison Chart
+    # ========================================================================
+    @app.callback(
+        Output('sl-benchmark-comparison-chart', 'figure'),
+        [Input('sl-backtest-results', 'data'),
+         Input('sl-benchmark-selector', 'value')]
+    )
+    @sentry_trace('strategy_lab_benchmark_comparison_chart') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_benchmark_chart']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_benchmark_comparison_chart(results, benchmark_ticker):
+        """
+        Update benchmark comparison chart.
+        
+        Phase 23 Fix: Displays strategy vs benchmark equity curves.
+        """
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return _create_placeholder_line("Run backtest to compare vs benchmark")
+        
+        try:
+            equity_curve = pd.DataFrame(results.get('equity_curve', []))
+            benchmark_data = pd.DataFrame(results.get('benchmark', {}).get('equity_curve', []))
+            
+            if equity_curve.empty:
+                return _create_placeholder_line("No equity curve data")
+            
+            fig = go.Figure()
+            
+            # Strategy equity curve
+            fig.add_trace(go.Scatter(
+                x=equity_curve['Date'],
+                y=equity_curve['Value'],
+                mode='lines',
+                name='Strategy',
+                line=dict(color='#10b981', width=2)
+            ))
+            
+            # Benchmark equity curve
+            if not benchmark_data.empty:
+                fig.add_trace(go.Scatter(
+                    x=benchmark_data['Date'],
+                    y=benchmark_data['Value'],
+                    mode='lines',
+                    name=f'{benchmark_ticker} Benchmark',
+                    line=dict(color='#6b7280', width=2, dash='dash')
+                ))
+            
+            fig.update_layout(
+                height=350,
+                margin=dict(l=40, r=20, t=30, b=40),
+                xaxis_title="Date",
+                yaxis_title="Portfolio Value ($)",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb'),
+                legend=dict(x=0.02, y=0.98, bgcolor='rgba(255,255,255,0.8)')
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='benchmark_chart_update')
+                increment_callback_invocation('strategy_lab_benchmark_chart', status='success')
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"❌ Benchmark chart update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                try:
+                    from observability.sentry_config import capture_exception
+                    capture_exception(e, context={'callback': 'update_benchmark_comparison_chart'})
+                except:
+                    pass
+                increment_callback_invocation('strategy_lab_benchmark_chart', status='error')
+            return _create_placeholder_line("Error generating chart")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 11: Update Rolling Correlation Chart
+    # ========================================================================
+    @app.callback(
+        Output('sl-rolling-correlation-chart', 'figure'),
+        [Input('sl-backtest-results', 'data'),
+         Input('sl-benchmark-selector', 'value')]
+    )
+    @sentry_trace('strategy_lab_rolling_correlation') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_rolling_corr']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_rolling_correlation(results, benchmark_ticker):
+        """Update rolling correlation chart."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return _create_placeholder_line("Run backtest to see correlation")
+        
+        try:
+            # Calculate 30-day rolling correlation (simplified)
+            equity_curve = pd.DataFrame(results.get('equity_curve', []))
+            
+            if equity_curve.empty:
+                return _create_placeholder_line("No data available")
+            
+            # Mock rolling correlation data
+            dates = pd.date_range(start=equity_curve['Date'].min(), end=equity_curve['Date'].max(), periods=20)
+            correlations = np.random.uniform(0.6, 0.9, size=20)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=dates,
+                y=correlations,
+                mode='lines',
+                name='30-Day Rolling Correlation',
+                line=dict(color='#2563eb', width=2),
+                fill='tozeroy',
+                fillcolor='rgba(37, 99, 235, 0.1)'
+            ))
+            
+            fig.update_layout(
+                height=300,
+                margin=dict(l=40, r=20, t=20, b=40),
+                xaxis_title="Date",
+                yaxis_title="Correlation",
+                yaxis_range=[0, 1],
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb')
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='rolling_correlation_update')
+                increment_callback_invocation('strategy_lab_rolling_corr', status='success')
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"❌ Rolling correlation update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_rolling_corr', status='error')
+            return _create_placeholder_line("Error generating chart")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 12: Update Rolling Beta Chart
+    # ========================================================================
+    @app.callback(
+        Output('sl-rolling-beta-chart', 'figure'),
+        [Input('sl-backtest-results', 'data'),
+         Input('sl-benchmark-selector', 'value')]
+    )
+    @sentry_trace('strategy_lab_rolling_beta') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_rolling_beta']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_rolling_beta(results, benchmark_ticker):
+        """Update rolling beta chart."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return _create_placeholder_line("Run backtest to see beta")
+        
+        try:
+            equity_curve = pd.DataFrame(results.get('equity_curve', []))
+            
+            if equity_curve.empty:
+                return _create_placeholder_line("No data available")
+            
+            # Mock rolling beta data
+            dates = pd.date_range(start=equity_curve['Date'].min(), end=equity_curve['Date'].max(), periods=20)
+            betas = np.random.uniform(0.8, 1.2, size=20)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=dates,
+                y=betas,
+                mode='lines',
+                name='60-Day Rolling Beta',
+                line=dict(color='#8b5cf6', width=2)
+            ))
+            
+            # Add beta=1.0 reference line
+            fig.add_hline(y=1.0, line_dash="dash", line_color="#9ca3af", 
+                         annotation_text="Market Beta (1.0)")
+            
+            fig.update_layout(
+                height=300,
+                margin=dict(l=40, r=20, t=20, b=40),
+                xaxis_title="Date",
+                yaxis_title="Beta",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb')
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='rolling_beta_update')
+                increment_callback_invocation('strategy_lab_rolling_beta', status='success')
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"❌ Rolling beta update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_rolling_beta', status='error')
+            return _create_placeholder_line("Error generating chart")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 13: Update Benchmark Metrics Table
+    # ========================================================================
+    @app.callback(
+        Output('sl-benchmark-metrics-table', 'children'),
+        [Input('sl-backtest-results', 'data'),
+         Input('sl-benchmark-selector', 'value')]
+    )
+    @sentry_trace('strategy_lab_benchmark_table') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_benchmark_table']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_benchmark_metrics_table(results, benchmark_ticker):
+        """Update benchmark comparison table."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return html.Div("Run backtest to see metrics", className="text-muted text-center py-3")
+        
+        try:
+            metrics = results.get('metrics', {})
+            benchmark = results.get('benchmark', {})
+            
+            # Create comparison table
+            data = {
+                'Metric': ['CAGR', 'Sharpe Ratio', 'Max Drawdown', 'Win Rate', 'Volatility'],
+                'Strategy': [
+                    f"{metrics.get('cagr', 0):.2%}",
+                    f"{metrics.get('sharpe_ratio', 0):.2f}",
+                    f"{metrics.get('max_drawdown', 0):.2%}",
+                    f"{metrics.get('win_rate', 0):.2%}",
+                    f"{metrics.get('volatility', 0):.2%}"
+                ],
+                f'{benchmark_ticker}': [
+                    f"{benchmark.get('cagr', 0):.2%}",
+                    f"{benchmark.get('sharpe_ratio', 0):.2f}",
+                    f"{benchmark.get('max_drawdown', 0):.2%}",
+                    "N/A",
+                    f"{benchmark.get('volatility', 0):.2%}"
+                ]
+            }
+            
+            df = pd.DataFrame(data)
+            
+            table = dbc.Table.from_dataframe(
+                df,
+                striped=True,
+                bordered=True,
+                hover=True,
+                responsive=True,
+                className="mb-0"
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='benchmark_table_update')
+                increment_callback_invocation('strategy_lab_benchmark_table', status='success')
+            
+            return table
+            
+        except Exception as e:
+            logger.error(f"❌ Benchmark table update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_benchmark_table', status='error')
+            return html.Div("Error generating table", className="text-danger text-center py-3")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 14: Update Risk Subtab Metrics
+    # ========================================================================
+    @app.callback(
+        [Output('sl-risk-max-dd', 'children'),
+         Output('sl-risk-volatility', 'children'),
+         Output('sl-risk-var', 'children'),
+         Output('sl-risk-sortino', 'children')],
+        Input('sl-backtest-results', 'data')
+    )
+    @sentry_trace('strategy_lab_update_risk_metrics') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_risk_metrics']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_risk_metrics(results):
+        """
+        Update Risk subtab metrics when backtest completes.
+        
+        Phase 23 Fix: Synchronizes Risk subtab with backtest results.
+        """
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return ("--", "--", "--", "--")
+        
+        try:
+            metrics = results.get('metrics', {})
+            
+            # Max Drawdown
+            max_dd = metrics.get('max_drawdown', 0.0)
+            max_dd_str = f"{max_dd:.2%}"
+            
+            # Volatility
+            volatility = metrics.get('volatility', 0.0)
+            volatility_str = f"{volatility:.2%}"
+            
+            # VaR (Value at Risk) - simplified calculation
+            var_95 = volatility * 1.65  # 95% VaR approximation
+            var_str = f"-{var_95:.2%}"
+            
+            # Sortino Ratio
+            sortino = metrics.get('sortino_ratio', 0.0)
+            sortino_str = f"{sortino:.2f}"
+            
+            # Record observability metrics
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='risk_metrics_update')
+                increment_callback_invocation('strategy_lab_risk_metrics', status='success')
+            
+            return (max_dd_str, volatility_str, var_str, sortino_str)
+            
+        except Exception as e:
+            logger.error(f"❌ Risk metrics update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                try:
+                    from observability.sentry_config import capture_exception
+                    capture_exception(e, context={'callback': 'update_risk_metrics', 'results': results})
+                except:
+                    pass
+                increment_callback_invocation('strategy_lab_risk_metrics', status='error')
+            return ("Error", "Error", "Error", "Error")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 15: Update Drawdown Chart
+    # ========================================================================
+    @app.callback(
+        Output('sl-risk-drawdown-chart', 'figure'),
+        Input('sl-backtest-results', 'data')
+    )
+    @sentry_trace('strategy_lab_drawdown_chart') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_drawdown_chart']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_drawdown_chart(results):
+        """Update drawdown chart."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return _create_placeholder_line("Run backtest to see drawdowns")
+        
+        try:
+            equity_curve = pd.DataFrame(results.get('equity_curve', []))
+            
+            if equity_curve.empty:
+                return _create_placeholder_line("No equity curve data")
+            
+            # Calculate drawdown
+            equity_values = equity_curve['Value'].values
+            running_max = np.maximum.accumulate(equity_values)
+            drawdown = (equity_values - running_max) / running_max
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=equity_curve['Date'],
+                y=drawdown * 100,  # Convert to percentage
+                mode='lines',
+                name='Drawdown',
+                line=dict(color='#ef4444', width=2),
+                fill='tozeroy',
+                fillcolor='rgba(239, 68, 68, 0.2)'
+            ))
+            
+            fig.update_layout(
+                height=300,
+                margin=dict(l=40, r=20, t=20, b=40),
+                xaxis_title="Date",
+                yaxis_title="Drawdown (%)",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb'),
+                yaxis_range=[min(drawdown * 100) * 1.1, 0]
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='drawdown_chart_update')
+                increment_callback_invocation('strategy_lab_drawdown_chart', status='success')
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"❌ Drawdown chart update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_drawdown_chart', status='error')
+            return _create_placeholder_line("Error generating chart")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 16: Update Factor Chart
+    # ========================================================================
+    @app.callback(
+        Output('sl-risk-factor-chart', 'figure'),
+        Input('sl-backtest-results', 'data')
+    )
+    @sentry_trace('strategy_lab_risk_factor_chart') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_risk_factor']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_risk_factor_chart(results):
+        """Update factor attribution chart in Risk subtab."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return _create_placeholder_bar("Run backtest to see factors")
+        
+        try:
+            attribution = results.get('factor_attribution', {})
+            
+            factors = list(attribution.keys())
+            contributions = list(attribution.values())
+            
+            colors = ['#10b981' if c > 0 else '#ef4444' for c in contributions]
+            
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=factors,
+                y=contributions,
+                marker_color=colors,
+                text=[f"{c:.2%}" for c in contributions],
+                textposition='outside'
+            ))
+            
+            fig.update_layout(
+                height=300,
+                margin=dict(l=40, r=20, t=20, b=40),
+                xaxis_title="Factor",
+                yaxis_title="Return Contribution",
+                yaxis_tickformat='.1%',
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb', zeroline=True, zerolinecolor='#9ca3af')
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='risk_factor_chart_update')
+                increment_callback_invocation('strategy_lab_risk_factor', status='success')
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"❌ Risk factor chart update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_risk_factor', status='error')
+            return _create_placeholder_bar("Error generating chart")
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 17: Update Risk Decomposition Table
+    # ========================================================================
+    @app.callback(
+        Output('sl-risk-decomposition-table', 'children'),
+        Input('sl-backtest-results', 'data')
+    )
+    @sentry_trace('strategy_lab_risk_decomposition') if OBSERVABILITY_ENABLED else lambda x: x
+    @metric_timing('dashboard.callback.duration', tags=['callback:strategy_lab_risk_decomp']) if OBSERVABILITY_ENABLED else lambda x: x
+    def update_risk_decomposition_table(results):
+        """Update risk decomposition table."""
+        import time
+        start_time = time.time()
+        
+        if not results or not results.get('success'):
+            return html.Div("Run backtest to see risk breakdown", className="text-muted text-center py-3")
+        
+        try:
+            metrics = results.get('metrics', {})
+            
+            # Create risk decomposition data
+            data = {
+                'Risk Component': ['Total Volatility', 'Systematic Risk (Beta)', 'Idiosyncratic Risk', 'Tail Risk (VaR 95%)'],
+                'Value': [
+                    f"{metrics.get('volatility', 0):.2%}",
+                    f"{metrics.get('beta', 1.0):.2f}",
+                    f"{metrics.get('volatility', 0) * 0.6:.2%}",  # Approximation
+                    f"{metrics.get('volatility', 0) * 1.65:.2%}"  # 95% VaR
+                ],
+                'Description': [
+                    'Annual return volatility',
+                    'Sensitivity to market moves',
+                    'Diversifiable risk',
+                    '95% worst-case loss'
+                ]
+            }
+            
+            df = pd.DataFrame(data)
+            
+            table = dbc.Table.from_dataframe(
+                df,
+                striped=True,
+                bordered=True,
+                hover=True,
+                responsive=True,
+                className="mb-0"
+            )
+            
+            if OBSERVABILITY_ENABLED:
+                elapsed_ms = (time.time() - start_time) * 1000
+                record_strategy_lab_latency(elapsed_ms, operation='risk_decomposition_update')
+                increment_callback_invocation('strategy_lab_risk_decomp', status='success')
+            
+            return table
+            
+        except Exception as e:
+            logger.error(f"❌ Risk decomposition update failed: {e}")
+            if OBSERVABILITY_ENABLED:
+                increment_callback_invocation('strategy_lab_risk_decomp', status='error')
+            return html.Div("Error generating table", className="text-danger text-center py-3")
+    
+    callback_count += 1
+    
+    logger.info(f"✅ Phase 23: Added {9} new callbacks for Benchmark & Risk subtab sync")
+
+    # Mark callbacks as registered
+    _callbacks_registered = True
+    
+    logger.info(f"✅ Strategy Lab callbacks registered successfully")
+    return callback_count
+

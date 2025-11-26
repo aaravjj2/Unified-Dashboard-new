@@ -1,12 +1,15 @@
 """
 Financial Dashboard - Main Entry Point
-Assembles the modular dashboard by loading tabs and registering callbacks.
-Sprint 0: Clean architecture with dynamic tab loading and routing.
-
-Run with: python index.py
+======================================
+This is the primary entry point for the Dash application.
+It handles:
+1. Dynamic tab loading
+2. Layout composition
+3. Callback registration
+4. Server startup
 """
-import os
 import sys
+import os
 import logging
 import importlib.util
 import time
@@ -211,8 +214,8 @@ except ImportError as e:
 # Tab configuration - defines the order and modules for all tabs
 TAB_CONFIG = [
     {'id': 'home', 'name': '🎯 Command Center', 'module': 'tabs/home_v2.py'},  # Primary Command Center (clean, no placeholders)
-    {'id': 'command_center_pkg', 'name': '🔧 Command Center (Old)', 'module': 'tabs/command_center_pkg/__init__.py'},  # Backup
-    {'id': 'home_lab', 'name': '🏠 Home Lab (Legacy)', 'module': 'tabs/home_lab/__init__.py'},  # Keep legacy for fallback
+    # {'id': 'command_center_pkg', 'name': '🔧 Command Center (Old)', 'module': 'tabs/command_center_pkg/__init__.py'},  # Backup
+    # {'id': 'home_lab', 'name': '🏠 Home Lab (Legacy)', 'module': 'tabs/home_lab/__init__.py'},  # Keep legacy for fallback
     {'id': 'market_trends', 'name': 'Market Trends', 'module': 'tabs/market_trends.py'},
     {'id': 'market_forecast', 'name': 'Market Forecast', 'module': 'tabs/market_forecast.py'},
     {'id': 'volatility_lab', 'name': '⚡ Volatility Lab', 'module': 'tabs/volatility_lab_pkg/__init__.py'},  # Phase 34 rebuild
@@ -252,10 +255,14 @@ for tab_config in TAB_CONFIG:
         module_path = os.path.join(APP_DIR, tab_config['module'])
         
         # Special handling for package modules (directories with __init__.py)
-        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'research_lab', 'home_lab', 'volatility_lab', 'command_center_pkg'):
+        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'research_lab', 'home_lab', 'command_center_pkg'):
             # Use importlib.import_module to avoid importing entire tabs package
             import importlib
             tab_mod = importlib.import_module(f"financial_dashboard.tabs.{tab_config['id']}")
+        elif tab_config['id'] == 'volatility_lab':
+            # CRITICAL FIX: Import the NEW package (volatility_lab_pkg) instead of the legacy folder (volatility_lab)
+            import importlib
+            tab_mod = importlib.import_module("financial_dashboard.tabs.volatility_lab_pkg")
         else:
             if not os.path.exists(module_path):
                 logger.warning(f"Tab module not found: {module_path}")
