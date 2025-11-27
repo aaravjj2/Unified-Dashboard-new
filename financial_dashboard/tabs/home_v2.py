@@ -297,7 +297,7 @@ def layout():
                 html.H3([
                     html.I(className="bi bi-house-door me-2"),
                     "Dashboard Home"
-                ]),
+                ], style={'color': '#ffffff'}),
                 html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#ffffff'}),
                 # Visible alert area for Quick Actions feedback
                 dbc.Alert(id='home-action-alert', is_open=False, color='info', className='mt-2', style={'display': 'none'})
@@ -389,8 +389,8 @@ def register_callbacks(app):
                 
             pct_str = f"({change_pct:+.2f}%)"
             
-            return value_str, [
-                change_str + " ",
+            return html.Span(value_str, style={'color': '#ffffff'}), [
+                html.Span(change_str + " ", style={'color': '#10b981' if change >= 0 else '#ef4444'}),
                 html.Small(pct_str, className=change_class)
             ]
             
@@ -411,13 +411,17 @@ def register_callbacks(app):
                     value_str = f"${pv:,.2f}"
                     change_class = "text-success" if pl >= 0 else "text-danger"
                     change_str = f"{'+' if pl >= 0 else ''}${pl:,.2f}"
+                    pct_str = f"({pl_pct:+.2f}%)"
                     
-                    return value_str, [change_str + " ", html.Small(f"({pl_pct:+.2f}%)", className=change_class)]
+                    return html.Span(value_str, style={'color': '#ffffff'}), [
+                        html.Span(change_str + " ", style={'color': '#10b981' if pl >= 0 else '#ef4444'}),
+                        html.Small(pct_str, className=change_class)
+                    ]
             except Exception:
                 pass
 
             # 3. Final Fallback (Snapshot or Offline)
-            return "Service Offline", [html.Small("Connect Alpaca keys", style={'color': '#6c757d'})]
+            return "Service Offline", [html.Small("Connect Alpaca keys", style={'color': '#ffffff'})]
 
     @app.callback(
         Output('market-sp500-value', 'children'),
@@ -772,7 +776,7 @@ def register_callbacks(app):
                 html.H5("Market Scanner", className="mb-3"),
                 dbc.Alert("Scanning top 500 stocks for volatility anomalies...", color="info"),
                 dbc.Progress(value=75, striped=True, animated=True, className="mb-3"),
-                html.P("Found 3 potential opportunities:", className="fw-bold"),
+                html.P("Found 3 potential opportunities:", className="fw-bold", style={'color': '#ffffff'}),
                 dbc.ListGroup([
                     dbc.ListGroupItem([
                         html.Div([
@@ -823,7 +827,7 @@ def register_callbacks(app):
             return True, html.Div([
                 html.H5("Hedge Finder", className="mb-3"),
                 dbc.Alert("Analyzing portfolio risk exposure...", color="warning"),
-                html.P("Suggested Hedges:", className="fw-bold"),
+                html.P("Suggested Hedges:", className="fw-bold", style={'color': '#ffffff'}),
                 dbc.Table([
                     html.Thead(html.Tr([html.Th("Asset"), html.Th("Strategy"), html.Th("Cost")])),
                     html.Tbody([
@@ -1035,7 +1039,7 @@ def register_callbacks(app):
                 raise ValueError("No VIX data")
                 
         except Exception as e:
-            return html.Div("Data unavailable", style={'color': '#6c757d'}), ""
+            return html.Div("Data unavailable", style={'color': '#ffffff'}), ""
 
     @app.callback(
         Output('top-movers-list', 'children'),
