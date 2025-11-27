@@ -226,7 +226,7 @@ def create_morning_briefing_widget():
         dbc.CardBody([
             dcc.Loading(
                 dcc.Markdown(
-                    "Generating market briefing...",
+                    "**Click the Refresh button above to generate your morning briefing.**",
                     id="morning-briefing-content",
                     className="prose"
                 ),
@@ -876,27 +876,21 @@ def register_callbacks(app):
             
         except Exception as e:
             return dbc.Alert(f"Error loading trades: {str(e)}", color="danger", className="mb-0 small")
-
-
     @app.callback(
         Output('morning-briefing-content', 'children'),
         Input('briefing-refresh-btn', 'n_clicks'),
-        Input('interval-component', 'n_intervals')
+        prevent_initial_call=True
     )
-    def update_morning_briefing(n_click, n_interval):
+    def update_morning_briefing(n_click):
         """Generate morning briefing using Chatbot Service."""
         import logging
         logger = logging.getLogger(__name__)
         
-        # Only run on initial load (n_interval=0) or button click
-        ctx = dash.callback_context
-        trigger_id = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
+        logger.info(f"Morning Briefing Callback: Refresh button clicked (n_clicks={n_click})")
         
-        logger.info(f"Morning Briefing Callback: trigger={trigger_id}, n_interval={n_interval}")
-        
-        # Skip if interval triggered and not first load
-        if trigger_id == 'interval-component' and n_interval > 0:
-            logger.info("Skipping briefing (interval > 0)")
+        # Only generate if button was actually clicked
+        if not n_click or n_click == 0:
+            logger.info("Skipping: No button click detected")
             return dash.no_update
             
         try:
