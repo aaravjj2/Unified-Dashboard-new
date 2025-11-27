@@ -33,8 +33,24 @@ from financial_dashboard.utils.news_manager import NewsManager
 from financial_dashboard.utils.news_client import fetch_news_for_tickers
 from financial_dashboard.utils.price_fetcher import PriceFetcher
 from financial_dashboard.utils.price_client import PriceClient
+import plotly.express as px
 
 logger = logging.getLogger(__name__)
+
+# Sector ETFs for Heatmap
+SECTOR_ETFS = {
+    'Technology': 'XLK',
+    'Financials': 'XLF',
+    'Healthcare': 'XLV',
+    'Cons. Discretionary': 'XLY',
+    'Cons. Staples': 'XLP',
+    'Energy': 'XLE',
+    'Utilities': 'XLU',
+    'Industrials': 'XLI',
+    'Materials': 'XLB',
+    'Real Estate': 'XLRE',
+    'Comm. Services': 'XLC'
+}
 
 # ========================================================================
 # MODULE-LEVEL INITIALIZATION
@@ -624,6 +640,15 @@ def layout():
             html.Div(initial_news, id='news-container')
         ], style={'marginBottom': '16px'}),
         
+        # Sector Heatmap Section
+        html.Div([
+            html.H4('Sector Performance', style={'marginBottom': '12px'}),
+            dcc.Loading(
+                dcc.Graph(id='sector-heatmap', config={'displayModeBar': False}, style={'height': '400px'}),
+                type='circle'
+            )
+        ], style={'marginBottom': '24px'}),
+        
         # Results Table
         dcc.Loading(
             id='loading',
@@ -796,16 +821,16 @@ def register_callbacks(app):
             )
         
         # Check if job is still running
-        if status_info['status'] == 'running':
+        elif status_info['status'] == 'running':
             # Job still running
             return (
                 no_update,
                 no_update,
-                f"⏳ Processing... (Job: {job_id})",
+                f"⏳ Analysis running... ({status_info.get('progress', 0)}%)",
                 {
                     'padding': '8px 12px',
-                    'backgroundColor': '#fef3c7',
-                    'color': '#92400e',
+                    'backgroundColor': '#dbeafe',
+                    'color': '#1e40af',
                     'borderRadius': '4px',
                     'marginBottom': '16px'
                 },
@@ -813,10 +838,60 @@ def register_callbacks(app):
                 False,  # Keep polling
                 no_update
             )
-        
-        # Job complete - check if failed or succeeded
-        if status_info['status'] == 'failed' or status_info.get('error'):
-            # Job failed
+            
+        elif status_info['status'] == 'completed':
+            # Job complete
+            result = status_info.get('result', {})
+            
+            # Render table
+            table = _render_table(result.get('detailed', []))
+            
+            # Render news
+            news = _render_news(result.get('news', {}))
+            
+            # Update trend badge
+            trend = result.get('market_trend')
+            trend_badge = "Market Trend: Unknown"
+            trend_style = {
+                'backgroundColor': '#94a3b8',
+                'color': 'white',
+                'padding': '4px 12px',
+                'borderRadius': '4px',
+                'fontSize': '14px',
+                'fontWeight': 'bold',
+                'marginLeft': '12px'
+            }
+            
+            if trend:
+                trend_badge = f"Market Trend: {trend.get('label', 'Unknown')}"
+                trend_style['backgroundColor'] = trend.get('color', '#94a3b8')
+            
+            trend_component = html.Span(
+                trend_badge,
+                **{'data-testid': 'market-trend-badge'},
+                style=trend_style
+            )
+            
+            logger.info(f"Job {job_id} completed successfully")
+            
+            return (
+                table,
+                news,
+                f"✅ Analysis complete! ({len(result.get('detailed', []))} tickers analyzed)",
+                {
+                    'padding': '8px 12px',
+                    'backgroundColor': '#d1fae5',
+                    'color': '#065f46',
+                    'borderRadius': '4px',
+                    'marginBottom': '16px'
+                },
+                None,  # Clear job ID
+                True,  # Disable polling
+                result # Update store
+            )
+            
+        else:
+            # Job failed or unknown status
             error_msg = status_info.get('error', 'Unknown error')
             logger.error(f"Job {job_id} failed: {error_msg}")
             return (
@@ -838,59 +913,82 @@ def register_callbacks(app):
                 no_update
             )
         
-        # Job succeeded
-        result = status_info.get('result', {})
-        
-        if isinstance(result, dict) and 'error' in result:
-            # Job returned error dict
-            logger.error(f"Job {job_id} completed with error: {result['error']}")
-            return (
-                html.Div(
-                    f"Analysis failed: {result['error']}",
-                    style={'padding': '20px', 'color': '#ef4444'}
-                ),
-                no_update,
-                f"❌ Analysis failed: {result['error']}",
-                {
-                    'padding': '8px 12px',
-                    'backgroundColor': '#fee2e2',
-                    'color': '#991b1b',
-                    'borderRadius': '4px',
-                    'marginBottom': '16px'
-                },
-                None,
-                True,  # Stop polling
-                no_update
-            )
-        
-        logger.info(f"Job {job_id} completed successfully")
-        
-        # Extract data
-        detailed = result.get('detailed', [])
-        news_data = result.get('news', {})
-        
-        # Render results
-        table = _render_table(detailed)
-        news = _render_news(news_data)
-        
-        return (
-            table,
-            news,
-            f"✅ Analysis complete! ({len(detailed)} tickers analyzed)",
-            {
-                'padding': '8px 12px',
-                'backgroundColor': '#d1fae5',
-                'color': '#065f46',
-                'borderRadius': '4px',
-                'marginBottom': '16px'
-            },
-            None,  # Clear job
-            True,  # Stop polling
-            result  # Update store
-        )
+
     
     # ====================================================================
-    # CALLBACK 3: Refresh Display
+    # CALLBACK 3: Update Sector Heatmap
+    # ====================================================================
+    @app.callback(
+        Output('sector-heatmap', 'figure'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_sector_heatmap(n):
+        """Fetch sector data and render heatmap."""
+        try:
+            import yfinance as yf
+            
+            data = []
+            tickers = list(SECTOR_ETFS.values())
+            
+            # Fetch last 5 days to calculate change
+            # Use progress=False to avoid printing to stdout
+            df = yf.download(tickers, period="5d", progress=False)['Close']
+            
+            if df.empty:
+                return go.Figure()
+                
+            # Calculate % change from previous close
+            current_prices = df.iloc[-1]
+            prev_prices = df.iloc[-2]
+            
+            changes = ((current_prices - prev_prices) / prev_prices) * 100
+            
+            for sector, ticker in SECTOR_ETFS.items():
+                if ticker in changes:
+                    change = changes[ticker]
+                    data.append({
+                        'Sector': sector,
+                        'Ticker': ticker,
+                        'Change': change,
+                        'AbsChange': abs(change),
+                        'Color': change
+                    })
+            
+            if not data:
+                return go.Figure()
+                
+            # Create Treemap
+            fig = px.treemap(
+                data,
+                path=['Sector'],
+                values='AbsChange', # Size by magnitude of move
+                color='Change',
+                color_continuous_scale=['#ef4444', '#f3f4f6', '#10b981'], # Red to Green
+                color_continuous_midpoint=0,
+                custom_data=['Change', 'Ticker']
+            )
+            
+            fig.update_traces(
+                textposition='middle center',
+                texttemplate='<b>%{label}</b><br>%{customdata[1]}<br>%{customdata[0]:.2f}%',
+                hovertemplate='<b>%{label}</b> (%{customdata[1]})<br>Change: %{customdata[0]:.2f}%<extra></extra>'
+            )
+            
+            fig.update_layout(
+                margin=dict(t=0, l=0, r=0, b=0),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='white')
+            )
+            
+            return fig
+            
+        except Exception as e:
+            logger.error(f"Error updating sector heatmap: {e}")
+            return go.Figure()
+
+    # ====================================================================
+    # CALLBACK 4: Refresh Display
     # ====================================================================
     @app.callback(
         Output('results-area', 'children', allow_duplicate=True),

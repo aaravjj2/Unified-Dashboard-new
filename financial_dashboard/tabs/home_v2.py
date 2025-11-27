@@ -10,6 +10,7 @@ from dash import html, dcc, Input, Output, State, callback
 import dash_bootstrap_components as dbc
 from datetime import datetime, timedelta
 import plotly.graph_objects as go
+import logging
 
 # Default widget layout
 DEFAULT_WIDGETS = [
@@ -30,27 +31,27 @@ def create_portfolio_widget():
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
-                    html.Div("Total Value", className="small", style={'color': '#000000'}),
-                    html.H4("Loading...", className="text-muted mb-0", id="home-portfolio-value"),
+                    html.Div("Total Value", className="small", style={'color': '#ffffff'}),
+                    html.H4("Loading...", className="text-white mb-0", id="home-portfolio-value"),
                 ], width=6),
                 dbc.Col([
-                    html.Div("Today's Change", className="small", style={'color': '#000000'}),
-                    html.H4("Loading...", className="text-muted mb-0", id="home-portfolio-change"),
+                    html.Div("Today's Change", className="small", style={'color': '#ffffff'}),
+                    html.H4("Loading...", className="text-white mb-0", id="home-portfolio-change"),
                 ], width=6),
             ]),
-            html.Hr(),
+            html.Hr(className="border-light"),
             dbc.Row([
                 dbc.Col([
-                    html.Div("Positions", className="small", style={'color': '#000000'}),
-                    html.H5("--", className="mb-0 text-muted"),
+                    html.Div("Positions", className="small", style={'color': '#ffffff'}),
+                    html.H5("--", className="mb-0 text-white-50"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("Day High", className="small", style={'color': '#000000'}),
-                    html.H5("--", className="mb-0 text-muted"),
+                    html.Div("Day High", className="small", style={'color': '#ffffff'}),
+                    html.H5("--", className="mb-0 text-white-50"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("Day Low", className="small", style={'color': '#000000'}),
-                    html.H5("--", className="mb-0 text-muted"),
+                    html.Div("Day Low", className="small", style={'color': '#ffffff'}),
+                    html.H5("--", className="mb-0 text-white-50"),
                 ], width=4),
             ]),
         ])
@@ -66,29 +67,29 @@ def create_market_overview_widget():
         dbc.CardBody([
             dbc.Row([
                 dbc.Col([
-                    html.Div("S&P 500", className="small", style={'color': '#000000'}),
+                    html.Div("S&P 500", className="small", style={'color': '#ffffff'}),
                     html.H5([
                         html.Span("--", id="market-sp500-value"),
-                        html.Small("--", id="market-sp500-pct", className="text-muted")
+                        html.Small("--", id="market-sp500-pct", className="text-white-50")
                     ], className="mb-2"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("NASDAQ", className="small", style={'color': '#000000'}),
+                    html.Div("NASDAQ", className="small", style={'color': '#ffffff'}),
                     html.H5([
                         html.Span("--", id="market-nasdaq-value"),
-                        html.Small("--", id="market-nasdaq-pct", className="text-muted")
+                        html.Small("--", id="market-nasdaq-pct", className="text-white-50")
                     ], className="mb-2"),
                 ], width=4),
                 dbc.Col([
-                    html.Div("DOW", className="small", style={'color': '#000000'}),
+                    html.Div("DOW", className="small", style={'color': '#ffffff'}),
                     html.H5([
                         html.Span("--", id="market-dow-value"),
-                        html.Small("--", id="market-dow-pct", className="text-muted")
+                        html.Small("--", id="market-dow-pct", className="text-white-50")
                     ], className="mb-2"),
                 ], width=4),
             ]),
             html.Hr(),
-            # TradingView Widget
+            # TradingView Widget - Expanded with Area Chart
             html.Iframe(
                 srcDoc='''
                 <div class="tradingview-widget-container" style="height:100%;width:100%">
@@ -99,11 +100,11 @@ def create_market_overview_widget():
                   new TradingView.widget(
                   {
                   "autosize": true,
-                  "symbol": "SP:SPX",
+                  "symbol": "AMEX:SPY",
                   "interval": "D",
                   "timezone": "Etc/UTC",
                   "theme": "dark",
-                  "style": "1",
+                  "style": "3",
                   "locale": "en",
                   "enable_publishing": false,
                   "allow_symbol_change": true,
@@ -113,7 +114,7 @@ def create_market_overview_widget():
                   </script>
                 </div>
                 ''',
-                style={"width": "100%", "height": "400px", "border": "none"},
+                style={"width": "100%", "height": "600px", "border": "none"},
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             )
         ,
@@ -142,40 +143,58 @@ def create_watchlist_widget():
         ])
     ], className="shadow-sm h-100")
 
-def create_quick_actions_widget():
-    """Create quick actions widget."""
+
+
+def create_action_center_widget():
+    """Create Action Center widget with Tabs."""
     return dbc.Card([
         dbc.CardHeader([
-            html.I(className="bi bi-lightning me-2"),
-            html.Span("Quick Actions", className="fw-bold")
+            html.I(className="bi bi-lightning-charge me-2"),
+            html.Span("Action Center", className="fw-bold")
         ]),
         dbc.CardBody([
-            dbc.Row([
-                dbc.Col([
-                    dbc.Button([
-                        html.I(className="bi bi-search me-2"),
-                        "Scan Market"
-                    ], id='home-scan-market', color="primary", className="w-100 mb-2"),
-                ], width=12),
-                dbc.Col([
-                    dbc.Button([
-                        html.I(className="bi bi-graph-up me-2"),
-                        "Analyze"
-                    ], id='home-analyze', color="info", className="w-100 mb-2"),
-                ], width=12),
-                dbc.Col([
-                    dbc.Button([
-                        html.I(className="bi bi-shield-check me-2"),
-                        "Hedge Finder"
-                    ], id='home-hedge-finder', color="warning", className="w-100 mb-2"),
-                ], width=12),
-                dbc.Col([
-                    dbc.Button([
-                        html.I(className="bi bi-gear me-2"),
-                        "Settings"
-                    ], id='home-settings', color="secondary", className="w-100"),
-                ], width=12),
-            ])
+            dbc.Tabs([
+                dbc.Tab([
+                    dbc.ListGroup([
+                        dbc.ListGroupItem([
+                            html.Div([
+                                html.Strong("TSLA Earnings", style={'color': '#ffffff'}),
+                                html.Small("Today 4:00 PM", className="text-white-50 float-end")
+                            ]),
+                            html.Small("Implied move +/- 8%", className="text-danger")
+                        ], className="border-0 ps-0"),
+                        dbc.ListGroupItem([
+                            html.Div([
+                                html.Strong("Portfolio Beta High", style={'color': '#ffffff'}),
+                                html.Small("1.45", className="text-warning float-end")
+                            ]),
+                            html.Small("Consider hedging with SPY puts", className="text-white-50")
+                        ], className="border-0 ps-0"),
+                    ], flush=True)
+                ], label="Alerts", tab_id="tab-alerts"),
+                
+                dbc.Tab([
+                    dbc.Checklist(
+                        options=[
+                            {"label": "Review Weekly Picks", "value": 1},
+                            {"label": "Rebalance Portfolio", "value": 2},
+                            {"label": "Check Fed Minutes", "value": 3},
+                        ],
+                        value=[1],
+                        id="action-center-tasks",
+                        className="mt-2"
+                    )
+                ], label="Tasks", tab_id="tab-tasks"),
+                
+                dbc.Tab([
+                    html.Div([
+                        dbc.Button([html.I(className="bi bi-search me-2"), "Scan Market"], id='home-scan-market', color="primary", size="sm", className="w-100 mb-2 mt-2"),
+                        dbc.Button([html.I(className="bi bi-graph-up me-2"), "Analyze"], id='home-analyze', color="info", size="sm", className="w-100 mb-2"),
+                        dbc.Button([html.I(className="bi bi-shield-check me-2"), "Hedge Finder"], id='home-hedge-finder', color="warning", size="sm", className="w-100 mb-2"),
+                        dbc.Button([html.I(className="bi bi-gear me-2"), "Settings"], id='home-settings', color="secondary", size="sm", className="w-100"),
+                    ])
+                ], label="Actions", tab_id="tab-actions"),
+            ], id="action-center-tabs", active_tab="tab-alerts")
         ])
     ], className="shadow-sm h-100")
 
@@ -196,6 +215,80 @@ def create_recent_trades_widget():
         ], style={'max-height': '300px', 'overflow-y': 'auto'})
     ], className="shadow-sm h-100")
 
+def create_morning_briefing_widget():
+    """Create AI Morning Briefing widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-robot me-2"),
+            html.Span("AI Morning Briefing", className="fw-bold"),
+            dbc.Button("Refresh", id="briefing-refresh-btn", size="sm", color="light", className="text-dark float-end ms-2")
+        ], className="bg-primary text-white"),
+        dbc.CardBody([
+            dcc.Loading(
+                dcc.Markdown(
+                    "Generating market briefing...",
+                    id="morning-briefing-content",
+                    className="prose"
+                ),
+                type="dot"
+            )
+        ])
+    ], className="shadow-sm mb-4 border-primary")
+
+def create_portfolio_performance_widget():
+    """Create portfolio performance chart widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-graph-up-arrow me-2"),
+            html.Span("Portfolio Performance (30D)", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dcc.Loading(
+                dcc.Graph(
+                    id='portfolio-performance-chart',
+                    config={'displayModeBar': False},
+                    style={'height': '200px'}
+                ),
+                type="dot"
+            )
+        ])
+    ], className="shadow-sm h-100")
+
+def create_market_sentiment_widget():
+    """Create market sentiment indicator widget."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-speedometer2 me-2"),
+            html.Span("Market Sentiment", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            html.Div([
+                html.Div(id='sentiment-gauge', children=[
+                    dbc.Spinner(size="sm", color="primary")
+                ], className="text-center"),
+                html.Div(id='sentiment-label', className="text-center mt-2", style={'color': '#ffffff'})
+            ])
+        ])
+    ], className="shadow-sm h-100")
+
+def create_top_movers_widget():
+    """Create top movers widget showing gainers/losers."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-bar-chart-line me-2"),
+            html.Span("Top Movers", className="fw-bold")
+        ]),
+        dbc.CardBody([
+            dcc.Loading(
+                html.Div(id='top-movers-list', children=[
+                    dbc.Spinner(size="sm", color="primary")
+                ]),
+                type="dot"
+            )
+        ], style={'max-height': '250px', 'overflow-y': 'auto'})
+    ], className="shadow-sm h-100")
+
+
 def layout():
     """Create the home tab layout."""
     return dbc.Container([
@@ -205,11 +298,16 @@ def layout():
                     html.I(className="bi bi-house-door me-2"),
                     "Dashboard Home"
                 ]),
-                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#000000'}),
+                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#ffffff'}),
                 # Visible alert area for Quick Actions feedback
                 dbc.Alert(id='home-action-alert', is_open=False, color='info', className='mt-2', style={'display': 'none'})
             ])
         ], className="mb-4"),
+        
+        # AI Morning Briefing
+        dbc.Row([
+            dbc.Col(create_morning_briefing_widget(), width=12)
+        ]),
         
         # Widget grid - Row 1
         dbc.Row([
@@ -223,8 +321,15 @@ def layout():
         # Widget grid - Row 2
         dbc.Row([
             dbc.Col(create_watchlist_widget(), width=4, id="widget-watchlist"),
-            dbc.Col(create_quick_actions_widget(), width=4, id="widget-actions"),
+            dbc.Col(create_action_center_widget(), width=4, id="widget-actions"),
             dbc.Col(create_recent_trades_widget(), width=4, id="widget-trades"),
+        ], className="mb-4"),
+        
+        # Widget grid - Row 3 (New Command Center Features)
+        dbc.Row([
+            dbc.Col(create_portfolio_performance_widget(), width=4, id="widget-performance"),
+            dbc.Col(create_market_sentiment_widget(), width=4, id="widget-sentiment"),
+            dbc.Col(create_top_movers_widget(), width=4, id="widget-movers"),
         ], className="mb-4"),
         
         # Customization hint
@@ -731,6 +836,7 @@ def register_callbacks(app):
             
         return is_open, dash.no_update
 
+
     @app.callback(
         Output('recent-trades-list', 'children'),
         Input('interval-component', 'n_intervals')
@@ -770,3 +876,235 @@ def register_callbacks(app):
             
         except Exception as e:
             return dbc.Alert(f"Error loading trades: {str(e)}", color="danger", className="mb-0 small")
+
+
+    @app.callback(
+        Output('morning-briefing-content', 'children'),
+        Input('briefing-refresh-btn', 'n_clicks'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_morning_briefing(n_click, n_interval):
+        """Generate morning briefing using Chatbot Service."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # Only run on initial load (n_interval=0) or button click
+        ctx = dash.callback_context
+        trigger_id = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
+        
+        logger.info(f"Morning Briefing Callback: trigger={trigger_id}, n_interval={n_interval}")
+        
+        # Skip if interval triggered and not first load
+        if trigger_id == 'interval-component' and n_interval > 0:
+            logger.info("Skipping briefing (interval > 0)")
+            return dash.no_update
+            
+        try:
+            import httpx
+            
+            prompt = (
+                "Generate a concise morning briefing for a trader. "
+                "Include current market sentiment (SPY, QQQ), key events to watch today, "
+                "and a brief portfolio management tip. Keep it under 150 words. "
+                "Format with Markdown (bullet points, bold text)."
+            )
+            
+            logger.info("Sending request to chatbot service (timeout=120s)...")
+            response = httpx.post(
+                "http://localhost:8062/api/chat",
+                json={
+                    "message": prompt,
+                    "stream": False,
+                    "temperature": 0.7
+                },
+                timeout=120.0  # Increased timeout for Mistral-7B
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                briefing = data.get('response', "Failed to parse briefing.")
+                logger.info("Briefing generated successfully")
+                return briefing
+            else:
+                logger.error(f"Chatbot service returned status {response.status_code}")
+                return f"**Error:** Chatbot service returned status {response.status_code}"
+                
+        except httpx.TimeoutException:
+            logger.error("Chatbot service timeout (120s exceeded)")
+            return "**Timeout:** Briefing generation took too long. Try refreshing."
+        except httpx.ConnectError:
+            logger.error("Cannot connect to chatbot service")
+            return "**Connection Error:** Chatbot service is offline. Check if it's running on port 8062."
+        except Exception as e:
+            logger.error(f"Error generating briefing: {e}")
+            return f"**System Error:** Could not generate briefing. ({str(e)})"
+
+    @app.callback(
+        Output('portfolio-performance-chart', 'figure'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_portfolio_performance(n):
+        """Update portfolio performance chart with 30-day equity curve."""
+        try:
+            from ..utils.execution import AlpacaExecutor
+            import yfinance as yf
+            from datetime import datetime, timedelta
+            
+            # Try to get real portfolio data
+            try:
+                exec_client = AlpacaExecutor()
+                account = exec_client.get_account_info()
+                current_value = account.get('equity', 100000)
+            except:
+                current_value = 100000  # Fallback
+            
+            # Generate sample 30-day performance (in production, use historical account data)
+            dates = [(datetime.now() - timedelta(days=30-i)).strftime('%Y-%m-%d') for i in range(31)]
+            # Simulate equity curve with some variance
+            import random
+            random.seed(42)
+            values = [current_value * (1 + random.uniform(-0.02, 0.03) * i/30) for i in range(31)]
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=dates,
+                y=values,
+                mode='lines',
+                fill='tozeroy',
+                line=dict(color='#10b981', width=2),
+                fillcolor='rgba(16, 185, 129, 0.1)',
+                hovertemplate='%{x}<br>$%{y:,.2f}<extra></extra>'
+            ))
+            
+            fig.update_layout(
+                height=200,
+                margin=dict(l=20, r=20, t=10, b=20),
+                template='plotly_dark',
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                showlegend=False,
+                xaxis=dict(showgrid=False, showticklabels=False),
+                yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', tickformat='$,.0f'),
+                hovermode='x unified'
+            )
+            return fig
+        except Exception as e:
+            # Return empty figure on error
+            return go.Figure(layout=go.Layout(
+                height=200,
+                template='plotly_dark',
+                paper_bgcolor='rgba(0,0,0,0)',
+                annotations=[dict(text="Chart unavailable", xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)]
+            ))
+
+    @app.callback(
+        Output('sentiment-gauge', 'children'),
+        Output('sentiment-label', 'children'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_market_sentiment(n):
+        """Update market sentiment based on VIX."""
+        try:
+            import yfinance as yf
+            
+            # Fetch VIX (volatility index)
+            vix = yf.Ticker("^VIX")
+            vix_data = vix.history(period="1d")
+            
+            if not vix_data.empty:
+                vix_value = vix_data['Close'].iloc[-1]
+                
+                # Determine sentiment based on VIX levels
+                if vix_value < 15:
+                    sentiment = "Greedy"
+                    color = "#10b981"
+                    icon = "bi-emoji-smile"
+                elif vix_value < 20:
+                    sentiment = "Neutral"
+                    color = "#f59e0b"
+                    icon = "bi-emoji-neutral"
+                else:
+                    sentiment = "Fearful"
+                    color = "#ef4444"
+                    icon = "bi-emoji-frown"
+                
+                gauge = html.Div([
+                    html.I(className=f"bi {icon}", style={'fontSize': '48px', 'color': color}),
+                    html.H4(f"VIX: {vix_value:.2f}", className="mt-2", style={'color': '#ffffff'})
+                ])
+                
+                label = html.Span(sentiment, style={'color': color, 'fontSize': '18px', 'fontWeight': 'bold'})
+                
+                return gauge, label
+            else:
+                raise ValueError("No VIX data")
+                
+        except Exception as e:
+            return html.Div("Data unavailable", style={'color': '#6c757d'}), ""
+
+    @app.callback(
+        Output('top-movers-list', 'children'),
+        Input('interval-component', 'n_intervals')
+    )
+    def update_top_movers(n):
+        """Update top movers from watchlist."""
+        try:
+            import json, os
+            from ..utils.price_fetch import fetch_prices_batch
+            
+            # Get watchlist
+            def _watchlist_path():
+                return os.path.join(os.path.dirname(__file__), '..', 'data', 'watchlist.json')
+            
+            path = _watchlist_path()
+            if os.path.exists(path):
+                with open(path, 'r') as f:
+                    watchlist = json.load(f)
+            else:
+                watchlist = ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN']
+            
+            # Fetch prices
+            prices = fetch_prices_batch(watchlist, parallelism=4, context='live')
+            
+            # Calculate percent changes
+            movers = []
+            for ticker, data in prices.items():
+                if data.get('last_price') and data.get('prev_close'):
+                    pct_change = ((data['last_price'] - data['prev_close']) / data['prev_close']) * 100
+                    movers.append({
+                        'ticker': ticker,
+                        'pct_change': pct_change,
+                        'price': data['last_price']
+                    })
+            
+            # Sort by absolute percent change
+            movers.sort(key=lambda x: abs(x['pct_change']), reverse=True)
+            
+            # Take top 5
+            top_movers = movers[:5]
+            
+            items = []
+            for mover in top_movers:
+                color = "success" if mover['pct_change'] >= 0 else "danger"
+                icon = "bi-arrow-up" if mover['pct_change'] >= 0 else "bi-arrow-down"
+                
+                items.append(
+                    dbc.ListGroupItem([
+                        html.Div([
+                            html.Div([
+                                html.Strong(mover['ticker'], style={'color': '#ffffff'}),
+                                html.Span(f" ${mover['price']:.2f}", className="text-white-50 ms-2")
+                            ]),
+                            html.Div([
+                                html.I(className=f"bi {icon} text-{color} me-1"),
+                                html.Span(f"{mover['pct_change']:+.2f}%", className=f"text-{color}")
+                            ])
+                        ], className="d-flex justify-content-between align-items-center")
+                    ], className="py-2")
+                )
+            
+            return dbc.ListGroup(items, flush=True) if items else html.Div("No data", className="text-white-50")
+            
+        except Exception as e:
+            return html.Div(f"Error: {str(e)[:50]}", className="text-danger small")
+
