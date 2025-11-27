@@ -306,6 +306,177 @@ def cache_info():
         return error_response(f"Failed to get cache info: {str(e)}", 500)
 
 
+# ============================================================================
+# RAG ENDPOINTS
+# ============================================================================
+
+@research_bp.route('/ingest', methods=['POST'])
+def ingest_document():
+    """POST /api/research/ingest - Ingest document into RAG index"""
+    try:
+        data = request.get_json() or {}
+        
+        text = data.get('text', '')
+        source_url = data.get('source_url', '')
+        title = data.get('title', 'Untitled Document')
+        metadata = data.get('metadata', {})
+        
+        if not text and not source_url:
+            return error_response("Either 'text' or 'source_url' is required", 400)
+        
+        # Import ingestion pipeline
+        try:
+            from background.research_ingest import get_pipeline
+            pipeline = get_pipeline()
+        except Exception as e:
+            api_logger.error(f"Failed to import ingestion pipeline: {e}")
+            return error_response(f"Ingestion pipeline not available: {str(e)}", 500)
+        
+        # Ingest the document
+        if text:
+            doc = pipeline.ingest_text(text, title, metadata)
+        else:
+            # TODO: Implement URL fetching
+            return error_response("URL ingestion not yet implemented", 501)
+        
+        result = {
+            'doc_id': doc.doc_id,
+            'title': doc.title,
+            'chunks': len(doc.chunks),
+            'status': 'ingested',
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        
+        api_logger.info(f"ingest: ingested document {doc.doc_id}")
+        return jsonify(result), 200
+        
+    except Exception as e:
+        api_logger.exception("Error in ingest_document")
+        return error_response(f"Failed to ingest document: {str(e)}", 500)
+
+
+@research_bp.route('/query', methods=['POST'])
+def rag_query():
+    """POST /api/research/query - Execute RAG query"""
+    try:
+        data = request.get_json() or {}
+        
+        query = data.get('query', '')
+        top_k = data.get('top_k', 5)
+        sources = data.get('sources', 'all')
+        
+        if not query:
+            return error_response("'query' is required", 400)
+        
+        # Import and execute query engine
+        try:
+            from financial_dashboard.services.llm_local import get_query_engine
+            engine = get_query_engine()
+        except Exception as e:
+            api_logger.error(f"Failed to import query engine: {e}")
+            return error_response(f"Query engine not available: {str(e)}", 500)
+        
+        result = engine.query(query, top_k=top_k, sources=sources)
+        
+        api_logger.info(f"rag_query: executed query, answer_id={result.get('answer_id')}")
+        return jsonify(result), 200
+        
+    except Exception as e:
+        api_logger.exception("Error in rag_query")
+        return error_response(f"RAG query failed: {str(e)}", 500)
+
+
+@research_bp.route('/explain', methods=['POST'])
+def rag_explain():
+    """POST /api/research/explain - Get explanation for RAG answer"""
+    try:
+        data = request.get_json() or {}
+        
+        answer_id = data.get('answer_id', '')
+        
+        if not answer_id:
+            return error_response("'answer_id' is required", 400)
+        
+        # Import and get explanation
+        try:
+            from financial_dashboard.services.llm_local import get_query_engine
+            engine = get_query_engine()
+        except Exception as e:
+            api_logger.error(f"Failed to import query engine: {e}")
+            return error_response(f"Query engine not available: {str(e)}", 500)
+        
+        result = engine.explain(answer_id)
+        
+        api_logger.info(f"rag_explain: explained answer_id={answer_id}")
+        return jsonify(result), 200
+        
+    except Exception as e:
+        api_logger.exception("Error in rag_explain")
+        return error_response(f"Explain failed: {str(e)}", 500)
+
+
+@research_bp.route('/index_health', methods=['GET'])
+def rag_index_health():
+    """GET /admin/research/index_health - Get RAG index health status"""
+    try:
+        from background.research_ingest import get_pipeline
+        pipeline = get_pipeline()
+        stats = pipeline.get_stats()
+        
+        health = {
+            'status': 'ok' if stats['vector_count'] > 0 else 'empty',
+            'index_size': stats['vector_count'],
+            'doc_count': stats['doc_count'],
+            'embedding_dim': stats['embedding_dim'],
+            'embedding_model': stats['embedding_model'],
+            'last_updated': datetime.utcnow().isoformat()
+        }
+        
+        return jsonify(health), 200
+        
+    except Exception as e:
+        api_logger.exception("Error in rag_index_health")
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
+
+
+@research_bp.route('/doc', methods=['GET'])
+def get_rag_document():
+    """GET /admin/research/doc?id=... - Get raw document from RAG index"""
+    try:
+        doc_id = request.args.get('id', '')
+        
+        if not doc_id:
+            return error_response("'id' query parameter is required", 400)
+        
+        from background.research_ingest import get_pipeline
+        pipeline = get_pipeline()
+        doc = pipeline.get_document(doc_id)
+        
+        if not doc:
+            return error_response(f"Document not found: {doc_id}", 404)
+        
+        # Return document without embeddings (too large)
+        result = {
+            'doc_id': doc.doc_id,
+            'title': doc.title,
+            'content': doc.content,
+            'source_type': doc.source_type,
+            'source_url': doc.source_url,
+            'metadata': doc.metadata,
+            'chunks': doc.chunks,
+            'ingested_at': doc.ingested_at
+        }
+        
+        return jsonify(result), 200
+        
+    except Exception as e:
+        api_logger.exception("Error in get_rag_document")
+        return error_response(f"Failed to get document: {str(e)}", 500)
+
+
 # Block Azure calls
 @research_bp.before_request
 def block_azure():

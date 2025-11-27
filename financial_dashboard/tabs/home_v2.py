@@ -114,8 +114,7 @@ def create_market_overview_widget():
                   </script>
                 </div>
                 ''',
-                style={"width": "100%", "height": "600px", "border": "none"},
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                style={"width": "100%", "height": "600px", "border": "none"}
             )
         ,
     # hidden containers for action results / last job ids
@@ -231,7 +230,8 @@ def create_morning_briefing_widget():
                     className="prose"
                 ),
                 type="dot"
-            )
+            ),
+            dcc.Store(id='briefing-store', data={'generated': False})
         ])
     ], className="shadow-sm mb-4 border-primary")
 
@@ -309,10 +309,10 @@ def layout():
             dbc.Col(create_morning_briefing_widget(), width=12)
         ]),
         
-        # Widget grid - Row 1
+        # Widget grid - Row 1: Portfolio (left) and Market Overview (right, full width for TradingView)
         dbc.Row([
-            dbc.Col(create_portfolio_widget(), width=6, id="widget-portfolio"),
-            dbc.Col(create_market_overview_widget(), width=6, id="widget-market"),
+            dbc.Col(create_portfolio_widget(), width=4, id="widget-portfolio"),
+            dbc.Col(create_market_overview_widget(), width=8, id="widget-market"),
         ], className="mb-4"),
 
         # Client-side navigation placeholder
@@ -465,7 +465,7 @@ def register_callbacks(app):
             def fmt_change(ticker):
                 p = prices.get(ticker, {})
                 if not p or p.get('last_price') is None or not p.get('prev_close'):
-                    return html.Small("--", className="text-muted")
+                    return html.Small("--", className="text-white-50")
                 
                 try:
                     curr = p['last_price']
@@ -476,7 +476,7 @@ def register_callbacks(app):
                     sign = "+" if pct >= 0 else ""
                     return html.Small(f"{sign}{pct:+.2f}%", className=color)
                 except Exception:
-                    return html.Small("--", className="text-muted")
+                    return html.Small("--", className="text-white-50")
 
             # Format Indices
             sp500_val, sp500_pct = fmt_price('SPY'), fmt_change('SPY')
@@ -505,11 +505,11 @@ def register_callbacks(app):
             except Exception:
                 watchlist_len = len(['AAPL', 'TSLA', 'NVDA', 'MSFT']) # Fallback if even path reading fails
 
-            return "--", html.Small("--", className="text-muted"), \
-                   "--", html.Small("--", className="text-muted"), \
-                   "--", html.Small("--", className="text-muted"), \
+            return "--", html.Small("--", className="text-white-50"), \
+                   "--", html.Small("--", className="text-white-50"), \
+                   "--", html.Small("--", className="text-white-50"), \
                    ["--"] * watchlist_len, \
-                   [html.Small("--", className="text-muted")] * watchlist_len
+                   [html.Small("--", className="text-white-50")] * watchlist_len
 
     @app.callback(
         Output('home-action-result', 'children'),
@@ -777,7 +777,7 @@ def register_callbacks(app):
                     dbc.ListGroupItem([
                         html.Div([
                             html.H6("NVDA - High Volatility", className="mb-0"),
-                            html.Small("IV Rank: 85% | RSI: 72", className="text-muted")
+                            html.Small("IV Rank: 85% | RSI: 72", className="text-white-50")
                         ])
                     ]),
                     dbc.ListGroupItem([
@@ -802,7 +802,7 @@ def register_callbacks(app):
                     dbc.Col([
                         dbc.Card([
                             dbc.CardBody([
-                                html.H6("Beta", className="text-muted"),
+                                html.H6("Beta", className="text-white-50"),
                                 html.H3("1.25", className="text-primary")
                             ])
                         ], className="mb-3")
@@ -816,7 +816,7 @@ def register_callbacks(app):
                         ], className="mb-3")
                     ], width=6),
                 ]),
-                html.P("Your portfolio is currently overweight Technology (45%). Consider diversifying into Healthcare or Utilities.", className="text-muted small")
+                html.P("Your portfolio is currently overweight Technology (45%). Consider diversifying into Healthcare or Utilities.", className="text-white-50 small")
             ])
             
         elif button_id == "home-hedge-finder":
@@ -863,7 +863,7 @@ def register_callbacks(app):
                             html.Span(trade['ticker'], className="fw-bold"),
                             html.Span(f" {trade['side'].upper()}", className=f"badge bg-{color} ms-2")
                         ]),
-                        html.Small(trade['timestamp'], className="text-muted")
+                        html.Small(trade['timestamp'], className="text-white-50")
                     ], className="d-flex justify-content-between align-items-center mb-1"),
                     html.Div([
                         html.Small(f"{trade['qty']} shares @ ${trade['price']:.2f}"),
@@ -878,24 +878,24 @@ def register_callbacks(app):
             return dbc.Alert(f"Error loading trades: {str(e)}", color="danger", className="mb-0 small")
     @app.callback(
         Output('morning-briefing-content', 'children'),
+        Output('briefing-store', 'data'),
         Input('briefing-refresh-btn', 'n_clicks'),
-        prevent_initial_call=True
+        State('briefing-store', 'data'),
+        prevent_initial_call=False
     )
-    def update_morning_briefing(n_click):
+    def update_morning_briefing(n_click, store_data):
         """Generate morning briefing using Chatbot Service."""
         import logging
+        import httpx
         logger = logging.getLogger(__name__)
         
-        logger.info(f"Morning Briefing Callback: Refresh button clicked (n_clicks={n_click})")
+        # On initial load, just return the instruction message
+        if n_click is None or n_click == 0:
+            return "**Click the Refresh button above to generate your morning briefing.**", store_data
         
-        # Only generate if button was actually clicked
-        if not n_click or n_click == 0:
-            logger.info("Skipping: No button click detected")
-            return dash.no_update
-            
+        logger.info(f"Morning Briefing: Button clicked (n_clicks={n_click})")
+        
         try:
-            import httpx
-            
             prompt = (
                 "Generate a concise morning briefing for a trader. "
                 "Include current market sentiment (SPY, QQQ), key events to watch today, "
@@ -911,27 +911,28 @@ def register_callbacks(app):
                     "stream": False,
                     "temperature": 0.7
                 },
-                timeout=120.0  # Increased timeout for Mistral-7B
+                timeout=120.0
             )
             
             if response.status_code == 200:
                 data = response.json()
                 briefing = data.get('response', "Failed to parse briefing.")
                 logger.info("Briefing generated successfully")
-                return briefing
+                new_store = {'generated': True, 'last_update': str(datetime.now())}
+                return briefing, new_store
             else:
                 logger.error(f"Chatbot service returned status {response.status_code}")
-                return f"**Error:** Chatbot service returned status {response.status_code}"
+                return f"**Error:** Chatbot service returned status {response.status_code}", store_data
                 
         except httpx.TimeoutException:
             logger.error("Chatbot service timeout (120s exceeded)")
-            return "**Timeout:** Briefing generation took too long. Try refreshing."
+            return "**Timeout:** Briefing generation took too long. Try refreshing.", store_data
         except httpx.ConnectError:
             logger.error("Cannot connect to chatbot service")
-            return "**Connection Error:** Chatbot service is offline. Check if it's running on port 8062."
+            return "**Connection Error:** Chatbot service is offline. Check if it's running on port 8062.", store_data
         except Exception as e:
             logger.error(f"Error generating briefing: {e}")
-            return f"**System Error:** Could not generate briefing. ({str(e)})"
+            return f"**System Error:** Could not generate briefing. ({str(e)})", store_data
 
     @app.callback(
         Output('portfolio-performance-chart', 'figure'),

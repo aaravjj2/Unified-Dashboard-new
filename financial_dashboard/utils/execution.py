@@ -279,12 +279,11 @@ class AlpacaExecutor:
         """
         try:
             from alpaca.trading.requests import GetOrdersRequest
-            from alpaca.trading.enums import OrderStatus
+            from alpaca.trading.enums import QueryOrderStatus
             
             request = GetOrdersRequest(
-                status=OrderStatus.FILLED,
+                status=QueryOrderStatus.CLOSED,
                 limit=limit,
-                nested=False
             )
             
             orders = self.trading_client.get_orders(filter=request)
