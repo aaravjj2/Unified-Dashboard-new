@@ -218,26 +218,32 @@ def register_callbacks(app):
          Output("rl-rag-create-brief-btn", "disabled")],
         [Input("rl-rag-run-btn", "n_clicks")],
         [State("rl-rag-query-input", "value"),
-         State("rl-rag-source-filter", "value")],
+         State("rl-rag-source-filter", "value"),
+         State("rl-diag-llm-provider", "value")],
         prevent_initial_call=True
     )
-    def run_rag_query(n_clicks, query, source_filter):
+    def run_rag_query(n_clicks, query, source_filter, llm_provider):
         """Execute RAG query and display results."""
         if not n_clicks or not query:
             raise PreventUpdate
         
         try:
-            # Call RAG API (or mock in deterministic mode)
-            result = _execute_rag_query(query, source_filter)
+            # Call RAG API with selected LLM provider
+            result = _execute_rag_query(query, source_filter, llm_provider)
             
             answer_id = result.get("answer_id", f"ans-{datetime.now().timestamp()}")
             answer_text = result.get("answer", "No answer generated.")
             sources = result.get("sources", [])
             
+            # Indicate which LLM was used
+            llm_used = result.get("llm_used", llm_provider or "unknown")
+            
             answer_component = html.Div([
                 html.P(answer_text, className="text-light"),
-                html.Small(f"Generated at: {datetime.now().strftime('%H:%M:%S')}", 
-                          className="text-muted")
+                html.Small([
+                    html.Span(f"Generated at: {datetime.now().strftime('%H:%M:%S')} ", className="text-muted"),
+                    dbc.Badge(f"via {llm_used}", color="info", className="ms-2")
+                ])
             ])
             
             source_components = [
@@ -604,18 +610,60 @@ def _create_correlation_heatmap(corr_matrix: Dict, tickers: List[str]):
     }
 
 
-def _execute_rag_query(query: str, source_filter: str) -> Dict[str, Any]:
+def _execute_rag_query(query: str, source_filter: str, llm_provider: str = None) -> Dict[str, Any]:
     """
-    Execute RAG query.
+    Execute RAG query using actual LLM connector.
     
     In deterministic mode or if LLM unavailable, returns mock response.
-    Otherwise, calls the RAG API.
+    Otherwise, calls the LLM connector directly.
+    
+    Args:
+        query: The question to answer
+        source_filter: Source filter (all, briefs, news, docs)
+        llm_provider: LLM provider to use (openai, ollama, gpt4all, mock)
     """
     if data.is_deterministic():
         # Return deterministic mock response
-        return _mock_rag_response(query)
+        result = _mock_rag_response(query)
+        result["llm_used"] = "mock"
+        return result
     
-    # Try to call RAG API
+    # Try using the LLM connector directly
+    try:
+        from financial_dashboard.services.llm_local import get_llm_connector, RAGQueryEngine
+        
+        # Use provided provider or default to openai
+        provider = llm_provider or os.getenv("LLM_PROVIDER", "openai")
+        connector = get_llm_connector(provider)
+        
+        if connector.name != "mock" and connector.is_available():
+            # Use RAG query engine with real LLM
+            try:
+                engine = RAGQueryEngine(llm_connector=connector)
+                result = engine.query(query, top_k=5, sources=source_filter)
+                result["llm_used"] = connector.name
+                return result
+            except Exception as e:
+                logger.warning(f"RAG engine failed, falling back to direct LLM: {e}")
+                # Fall back to direct LLM call without RAG
+                prompt = f"""You are a financial research assistant. Answer the following question based on your knowledge of financial markets, investing strategies, and economic factors.
+
+Question: {query}
+
+Provide a clear, concise, and actionable answer:"""
+                answer = connector.generate(prompt, max_tokens=512)
+                return {
+                    "answer_id": f"llm-{datetime.now().timestamp()}",
+                    "answer": answer,
+                    "sources": [],
+                    "llm_used": connector.name,
+                    "generated_at": datetime.now().isoformat()
+                }
+        
+    except Exception as e:
+        logger.warning(f"LLM connector unavailable: {e}")
+    
+    # Try to call RAG API as fallback
     try:
         import requests
         api_url = os.getenv("RESEARCH_API_BASE_URL", "http://127.0.0.1:8051")
@@ -625,12 +673,16 @@ def _execute_rag_query(query: str, source_filter: str) -> Dict[str, Any]:
             timeout=30
         )
         if response.status_code == 200:
-            return response.json()
+            result = response.json()
+            result["llm_used"] = "api"
+            return result
     except Exception as e:
-        logger.warning(f"RAG API unavailable, using mock: {e}")
+        logger.warning(f"RAG API unavailable: {e}")
     
     # Fallback to mock
-    return _mock_rag_response(query)
+    result = _mock_rag_response(query)
+    result["llm_used"] = "mock"
+    return result
 
 
 def _mock_rag_response(query: str) -> Dict[str, Any]:

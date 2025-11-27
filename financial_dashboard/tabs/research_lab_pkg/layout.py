@@ -452,11 +452,13 @@ def _create_diagnostics_tab():
                     dcc.Dropdown(
                         id="rl-diag-llm-provider",
                         options=[
-                            {"label": "GPT4All (Local)", "value": "gpt4all"},
-                            {"label": "Ollama", "value": "ollama"},
-                            {"label": "Mock (Testing)", "value": "mock"}
+                            {"label": "Auto (Best Available)", "value": "auto"},
+                            {"label": "OpenAI (Cloud - Requires API Key)", "value": "openai"},
+                            {"label": "Ollama (Local Server)", "value": "ollama"},
+                            {"label": "GPT4All (Local - Recommended)", "value": "gpt4all"},
+                            {"label": "Mock (Testing Only)", "value": "mock"}
                         ],
-                        value="mock",
+                        value="auto",
                         className="mb-2"
                     )
                 ], md=4),
@@ -465,11 +467,11 @@ def _create_diagnostics_tab():
                     dcc.Dropdown(
                         id="rl-diag-embed-model",
                         options=[
-                            {"label": "all-MiniLM-L6-v2", "value": "minilm"},
+                            {"label": "all-MiniLM-L6-v2 (Default)", "value": "minilm"},
                             {"label": "BAAI/bge-small-en", "value": "bge-small"},
-                            {"label": "Mock Embeddings", "value": "mock"}
+                            {"label": "text-embedding-ada-002", "value": "ada-002"}
                         ],
-                        value="mock",
+                        value="minilm",
                         className="mb-2"
                     )
                 ], md=4),

@@ -236,9 +236,11 @@ def scan_results_table(results: List[Dict]):
         id="rl-scan-results-table",
         columns=[
             {"name": "Symbol", "id": "symbol"},
-            {"name": "Score", "id": "score"},
+            {"name": "Score", "id": "score", "type": "numeric", "format": {"specifier": ".3f"}},
             {"name": "Sector", "id": "sector"},
-            {"name": "Momentum", "id": "momentum"}
+            {"name": "Momentum", "id": "momentum", "type": "numeric", "format": {"specifier": ".3f"}},
+            {"name": "Value", "id": "value", "type": "numeric", "format": {"specifier": ".3f"}},
+            {"name": "Growth", "id": "growth", "type": "numeric", "format": {"specifier": ".3f"}}
         ],
         data=results,
         style_table={"overflowX": "auto"},
@@ -251,6 +253,32 @@ def scan_results_table(results: List[Dict]):
             "backgroundColor": "#1a1d20",
             "fontWeight": "bold"
         },
+        style_data_conditional=[
+            {
+                "if": {"filter_query": "{momentum} > 0", "column_id": "momentum"},
+                "color": "#00bc8c"
+            },
+            {
+                "if": {"filter_query": "{momentum} < 0", "column_id": "momentum"},
+                "color": "#e74c3c"
+            },
+            {
+                "if": {"filter_query": "{value} > 0", "column_id": "value"},
+                "color": "#00bc8c"
+            },
+            {
+                "if": {"filter_query": "{value} < 0", "column_id": "value"},
+                "color": "#e74c3c"
+            },
+            {
+                "if": {"filter_query": "{growth} > 0", "column_id": "growth"},
+                "color": "#00bc8c"
+            },
+            {
+                "if": {"filter_query": "{growth} < 0", "column_id": "growth"},
+                "color": "#e74c3c"
+            }
+        ],
         row_selectable="single",
         page_size=10
     )

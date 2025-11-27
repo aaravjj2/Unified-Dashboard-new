@@ -622,12 +622,16 @@ def layout():
     if error:
         initial_content = html.Div([
             html.P(f"⚠️ {error}", style={'color': '#ff6b6b', 'marginTop': '20px'}),
-            html.P(summary or "Unable to load picks data", style={'color': '#888'})
+            html.P(summary or "Unable to load picks data", style={'color': '#888'}),
+            html.P("Click 'Regenerate Picks' below to generate fresh weekly picks.", style={'color': '#FFD700', 'marginTop': '10px'})
         ])
     elif df is not None and not df.empty:
         initial_content = _build_datatable(df)
     else:
-        initial_content = html.Div("⚠️ No picks data available", style={'color': '#888', 'marginTop': '20px'})
+        initial_content = html.Div([
+            html.P("⚠️ No picks data available", style={'color': '#888', 'marginTop': '20px'}),
+            html.P("Click 'Regenerate Picks' below to generate fresh weekly picks.", style={'color': '#FFD700', 'marginTop': '10px'})
+        ])
     
     # Build a hidden JSON blob from the server-side DataFrame so tests can find
     # authoritative numeric values immediately after the page loads.

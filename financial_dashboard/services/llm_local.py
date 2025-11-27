@@ -2,14 +2,16 @@
 Local LLM Connector
 
 Provides abstraction for local LLM inference:
+- OpenAI (cloud)
 - GPT4All (local)
 - Ollama (local server)
 - Mock (for testing)
 
 Environment variables:
-- LLM_PROVIDER: gpt4all|ollama|mock (default: mock)
+- LLM_PROVIDER: openai|gpt4all|ollama|mock (default: mock)
 - OLLAMA_HOST: Ollama server URL (default: http://localhost:11434)
 - GPT4ALL_MODEL: GPT4All model name (default: orca-mini-3b-gguf2-q4_0.gguf)
+- OpenAI_API_KEY: OpenAI API key
 """
 
 import os
@@ -17,6 +19,14 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List
 import hashlib
+from pathlib import Path
+
+# Load environment variables for API keys
+from dotenv import load_dotenv
+_base = Path(__file__).parent.parent
+load_dotenv(_base / "keys.env", override=True)
+load_dotenv(_base.parent / "doppler.env", override=True)
+load_dotenv(_base.parent / "keys.env", override=True)
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +153,94 @@ class GPT4AllConnector(LLMConnector):
             raise
 
 
+class OpenAIConnector(LLMConnector):
+    """
+    OpenAI API connector for cloud LLM inference.
+    
+    Uses OpenAI's API for generation.
+    """
+    
+    def __init__(self, model: str = "gpt-3.5-turbo"):
+        self.model = model
+        self._api_key = os.getenv("OPENAI_API_KEY") or os.getenv("OpenAI_API_KEY")
+        self._available = None
+        self._validated = False
+    
+    @property
+    def name(self) -> str:
+        return "openai"
+    
+    def is_available(self) -> bool:
+        if self._available is None:
+            # Basic check - key exists and is long enough
+            if not self._api_key or len(self._api_key) < 20:
+                self._available = False
+            else:
+                # Don't validate on every check - just verify format
+                self._available = self._api_key.startswith("sk-")
+        return self._available
+    
+    def validate_key(self) -> bool:
+        """Test if the API key is actually valid."""
+        if self._validated:
+            return self._available
+        
+        if not self._api_key:
+            self._validated = True
+            self._available = False
+            return False
+        
+        try:
+            import requests
+            response = requests.get(
+                "https://api.openai.com/v1/models",
+                headers={"Authorization": f"Bearer {self._api_key}"},
+                timeout=5
+            )
+            self._available = response.status_code == 200
+            self._validated = True
+            if not self._available:
+                logger.warning(f"OpenAI API key validation failed: {response.status_code}")
+        except Exception as e:
+            logger.warning(f"OpenAI API key validation error: {e}")
+            self._available = False
+            self._validated = True
+        
+        return self._available
+    
+    def generate(self, prompt: str, max_tokens: int = 512, temperature: float = 0.7) -> str:
+        """Generate text using OpenAI API."""
+        if not self.is_available():
+            raise RuntimeError("OpenAI API key not available")
+        
+        try:
+            import requests
+            response = requests.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self._api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": self.model,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "max_tokens": max_tokens,
+                    "temperature": temperature
+                },
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                return response.json()["choices"][0]["message"]["content"]
+            else:
+                logger.warning(f"OpenAI API error: {response.status_code} - {response.text}")
+                raise RuntimeError(f"OpenAI API error: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"OpenAI generation failed: {e}")
+            raise
+
+
 class OllamaConnector(LLMConnector):
     """
     Ollama local LLM server connector.
@@ -204,36 +302,74 @@ def get_llm_connector(provider: Optional[str] = None) -> LLMConnector:
     """
     Get an LLM connector based on provider setting.
     
-    Falls back to mock if specified provider is unavailable.
+    Falls back through the chain: OpenAI -> Ollama -> GPT4All -> Mock
     
     Args:
-        provider: LLM provider name (gpt4all, ollama, mock)
+        provider: LLM provider name (openai, gpt4all, ollama, mock)
         
     Returns:
         LLMConnector instance
     """
-    provider = provider or os.getenv("LLM_PROVIDER", "mock")
+    provider = provider or os.getenv("LLM_PROVIDER", "auto")  # Default to auto
     
     # In deterministic mode, always use mock
     if os.getenv("RL_DETERMINISTIC", "0") == "1":
         logger.info("Deterministic mode: using mock LLM")
         return MockLLMConnector()
     
-    if provider == "gpt4all":
+    if provider == "openai":
+        connector = OpenAIConnector()
+        if connector.is_available() and connector.validate_key():
+            logger.info("Using OpenAI LLM connector")
+            return connector
+        logger.warning("OpenAI API key invalid, trying local LLMs...")
+        # Fallback to local
+        provider = "ollama"
+    
+    if provider == "ollama":
+        connector = OllamaConnector()
+        if connector.is_available():
+            logger.info("Using Ollama LLM connector")
+            return connector
+        logger.warning("Ollama not available, trying GPT4All...")
+        # Try GPT4All as second option
+        gpt4all_connector = GPT4AllConnector()
+        if gpt4all_connector.is_available():
+            logger.info("Using GPT4All as fallback")
+            return gpt4all_connector
+        logger.warning("No local LLM available, falling back to mock")
+        return MockLLMConnector()
+    
+    elif provider == "gpt4all":
         connector = GPT4AllConnector()
         if connector.is_available():
+            logger.info("Using GPT4All LLM connector")
             return connector
         logger.warning("GPT4All not available, falling back to mock")
         return MockLLMConnector()
     
-    elif provider == "ollama":
-        connector = OllamaConnector()
-        if connector.is_available():
-            return connector
-        logger.warning("Ollama not available, falling back to mock")
+    elif provider == "mock":
+        logger.info("Using mock LLM connector (explicitly requested)")
         return MockLLMConnector()
     
-    else:
+    else:  # auto or unknown
+        # Try in order: OpenAI -> Ollama -> GPT4All -> Mock
+        openai_connector = OpenAIConnector()
+        if openai_connector.is_available() and openai_connector.validate_key():
+            logger.info("Auto: Using OpenAI LLM")
+            return openai_connector
+        
+        ollama_connector = OllamaConnector()
+        if ollama_connector.is_available():
+            logger.info("Auto: Using Ollama LLM")
+            return ollama_connector
+        
+        gpt4all_connector = GPT4AllConnector()
+        if gpt4all_connector.is_available():
+            logger.info("Auto: Using GPT4All LLM")
+            return gpt4all_connector
+        
+        logger.info("Auto: No LLM available, using mock")
         return MockLLMConnector()
 
 

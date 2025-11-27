@@ -891,10 +891,8 @@ def register_callbacks(app):
             if not ticker_list:
                 raise ValueError("No valid tickers provided")
             
-            # Import yfinance for data fetching
+            # Import yfinance for data fetching (numpy and pandas already imported at module level)
             import yfinance as yf
-            import pandas as pd
-            import numpy as np
             
             # Fetch historical data
             logger.info(f"📊 Fetching data for {len(ticker_list)} tickers from {start_date} to {end_date}")

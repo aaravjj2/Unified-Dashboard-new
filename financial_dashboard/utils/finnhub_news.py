@@ -15,6 +15,13 @@ import json
 from pathlib import Path
 from typing import Optional
 
+# Load environment variables for API keys
+from dotenv import load_dotenv
+_base = Path(__file__).parent.parent
+load_dotenv(_base / "keys.env", override=True)
+load_dotenv(_base.parent / "doppler.env", override=True)
+load_dotenv(_base.parent / "keys.env", override=True)
+
 logger = logging.getLogger(__name__)
 
 # Rate limiter class (60 requests per minute per key)
