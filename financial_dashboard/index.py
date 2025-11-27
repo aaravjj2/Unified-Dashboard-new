@@ -222,8 +222,7 @@ TAB_CONFIG = [
     {'id': 'attribution_lab', 'name': '📊 Attribution Lab', 'module': 'tabs/attribution_lab/__init__.py'},
     {'id': 'strategy_lab', 'name': '⚡ Strategy Lab', 'module': 'tabs/strategy_lab/__init__.py'},
     # Use the rebuilt tab implementations (clean, testable rebuilds)
-    {'id': 'monthly_picks', 'name': 'Monthly Picks', 'module': 'tabs/monthly_picks_rebuild.py'},
-    {'id': 'weekly_picks', 'name': 'Weekly Picks', 'module': 'tabs/weekly_picks_rebuild.py'},
+    {'id': 'picks', 'name': '⭐ Stock Picks', 'module': 'tabs/picks_unified.py'},
     # DISABLED: Analysis Hub - renamed to .bak due to duplicate callback issues
     # {'id': 'analysis_hub', 'name': 'Analysis Hub', 'module': 'tabs/analysis_hub_refactored.py'},
     {'id': 'portfolio', 'name': 'Portfolio', 'module': 'tabs/portfolio_tracker_refactored.py'},
@@ -240,8 +239,7 @@ ENABLED_TABS = [
     'research_lab',      # PRIORITY: Force render first
     'attribution_lab',   # PRIORITY: Force render second
     'strategy_lab',      # PHASE 2: Real data integration complete
-    'weekly_picks',
-    'monthly_picks',
+    'picks',
     'market_trends',
     'market_forecast',
     'volatility_lab',

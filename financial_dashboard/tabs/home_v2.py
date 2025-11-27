@@ -553,6 +553,7 @@ def register_callbacks(app):
             # 3. Final Fallback (Snapshot or Offline)
             return "Service Offline", [html.Small("Connect Alpaca keys", style={'color': '#ffffff'})]
 
+    # ===== MARKET INDICES CALLBACK (Fixed: separate from watchlist) =====
     @app.callback(
         Output('market-sp500-value', 'children'),
         Output('market-sp500-pct', 'children'),
@@ -560,90 +561,94 @@ def register_callbacks(app):
         Output('market-nasdaq-pct', 'children'),
         Output('market-dow-value', 'children'),
         Output('market-dow-pct', 'children'),
-        Output({'type': 'watch-price', 'index': dash.ALL}, 'children'),
-        Output({'type': 'watch-change', 'index': dash.ALL}, 'children'),
         Input('interval-component', 'n_intervals')
     )
-    def refresh_market_and_watchlist(n):
-        """Fetch latest market indices and watchlist prices."""
+    def refresh_market_indices(n):
+        """Fetch latest market indices only (SPY, QQQ, DIA)."""
         try:
             from ..utils.price_fetch import fetch_prices_batch
             
-            # 1. Fetch Market Indices (SPY, QQQ, DIA)
             indices = ['SPY', 'QQQ', 'DIA']
+            prices = fetch_prices_batch(indices, parallelism=3, context='live')
             
-            # 2. Fetch Watchlist Symbols
-            try:
-                import json, os
-                wl_path = _watchlist_path()
-                if os.path.exists(wl_path):
-                    with open(wl_path, 'r') as f:
-                        watchlist = json.load(f)
-                else:
-                    watchlist = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
-            except Exception:
-                watchlist = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
-                
-            # Combine all tickers for batch fetch
-            all_tickers = indices + watchlist
-            prices = fetch_prices_batch(all_tickers, parallelism=4, context='live')
-            
-            # Helper to format price
             def fmt_price(ticker):
                 p = prices.get(ticker, {})
                 if not p or p.get('last_price') is None:
                     return "--"
                 return f"${p['last_price']:,.2f}"
                 
-            # Helper to format change
             def fmt_change(ticker):
                 p = prices.get(ticker, {})
                 if not p or p.get('last_price') is None or not p.get('prev_close'):
                     return html.Small("--", className="text-white-50")
-                
                 try:
                     curr = p['last_price']
                     prev = p['prev_close']
                     pct = ((curr - prev) / prev) * 100
-                    
                     color = "text-success" if pct >= 0 else "text-danger"
                     sign = "+" if pct >= 0 else ""
                     return html.Small(f"{sign}{pct:+.2f}%", className=color)
                 except Exception:
                     return html.Small("--", className="text-white-50")
 
-            # Format Indices
-            sp500_val, sp500_pct = fmt_price('SPY'), fmt_change('SPY')
-            nasdaq_val, nasdaq_pct = fmt_price('QQQ'), fmt_change('QQQ')
-            dow_val, dow_pct = fmt_price('DIA'), fmt_change('DIA')
-            
-            # Format Watchlist
-            w_prices = [fmt_price(s) for s in watchlist]
-            w_changes = [fmt_change(s) for s in watchlist]
-            
-            return sp500_val, sp500_pct, nasdaq_val, nasdaq_pct, dow_val, dow_pct, w_prices, w_changes
-            
+            return (fmt_price('SPY'), fmt_change('SPY'),
+                    fmt_price('QQQ'), fmt_change('QQQ'),
+                    fmt_price('DIA'), fmt_change('DIA'))
+                    
         except Exception as e:
-            print(f"Error refreshing market data: {e}")
-            # Return placeholders on error
-            # We need to know the length of watchlist to return correct number of placeholders
-            # If watchlist fetching also failed, default to a known list
-            try:
-                import json, os
-                wl_path = _watchlist_path()
-                if os.path.exists(wl_path):
-                    with open(wl_path, 'r') as f:
-                        watchlist_len = len(json.load(f))
-                else:
-                    watchlist_len = len(['AAPL', 'TSLA', 'NVDA', 'MSFT'])
-            except Exception:
-                watchlist_len = len(['AAPL', 'TSLA', 'NVDA', 'MSFT']) # Fallback if even path reading fails
+            print(f"Error refreshing market indices: {e}")
+            placeholder = html.Small("--", className="text-white-50")
+            return "--", placeholder, "--", placeholder, "--", placeholder
 
-            return "--", html.Small("--", className="text-white-50"), \
-                   "--", html.Small("--", className="text-white-50"), \
-                   "--", html.Small("--", className="text-white-50"), \
-                   ["--"] * watchlist_len, \
-                   [html.Small("--", className="text-white-50")] * watchlist_len
+    # ===== WATCHLIST CALLBACK (Fixed: uses State to get correct DOM element count) =====
+    @app.callback(
+        Output({'type': 'watch-price', 'index': dash.ALL}, 'children'),
+        Output({'type': 'watch-change', 'index': dash.ALL}, 'children'),
+        Input('interval-component', 'n_intervals'),
+        State({'type': 'watch-price', 'index': dash.ALL}, 'id'),
+    )
+    def refresh_watchlist_prices(n, watch_ids):
+        """Fetch latest watchlist prices. Uses State to get actual DOM element count."""
+        # Get actual number of watchlist items from DOM via State
+        num_items = len(watch_ids) if watch_ids else 0
+        
+        # If no watchlist items in DOM, return empty lists
+        if num_items == 0:
+            return [], []
+            
+        # Extract symbols from the pattern-match IDs
+        symbols = [item['index'] for item in watch_ids]
+        
+        try:
+            from ..utils.price_fetch import fetch_prices_batch
+            prices = fetch_prices_batch(symbols, parallelism=4, context='live')
+            
+            def fmt_price(ticker):
+                p = prices.get(ticker, {})
+                if not p or p.get('last_price') is None:
+                    return "--"
+                return f"${p['last_price']:,.2f}"
+                
+            def fmt_change(ticker):
+                p = prices.get(ticker, {})
+                if not p or p.get('last_price') is None or not p.get('prev_close'):
+                    return html.Small("--", className="text-white-50")
+                try:
+                    curr = p['last_price']
+                    prev = p['prev_close']
+                    pct = ((curr - prev) / prev) * 100
+                    color = "text-success" if pct >= 0 else "text-danger"
+                    sign = "+" if pct >= 0 else ""
+                    return html.Small(f"{sign}{pct:+.2f}%", className=color)
+                except Exception:
+                    return html.Small("--", className="text-white-50")
+
+            return [fmt_price(s) for s in symbols], [fmt_change(s) for s in symbols]
+                    
+        except Exception as e:
+            print(f"Error refreshing watchlist: {e}")
+            placeholder = html.Small("--", className="text-white-50")
+            return ["--"] * num_items, [placeholder] * num_items
 
     @app.callback(
         Output('home-action-result', 'children'),
