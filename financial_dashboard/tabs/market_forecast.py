@@ -1,150 +1,107 @@
 """
-Market Forecast Tab - Local-First Rebuild
-==========================================
+Market Forecast Tab - Upgraded with Multi-Model, Scenarios, and Fan Charts
+============================================================================
 
-Agent-1B: Complete rebuild with deterministic fixtures, Bento integration,
-and zero Azure dependencies by default.
-
-Architecture:
-- UI: Three-panel layout (Inputs, Results, Explainability)
-- Backend: Bento-first model serving with HTTP adapter
-- Persistence: PostgreSQL or JSON fallback
-- Deterministic mode: FORECAST_DETERMINISTIC=1
-
-Component IDs (stable):
-- Inputs: mf-ticker-input, mf-horizon-select, mf-confidence-select, mf-model-select, mf-run-btn, mf-mode-select
-- Results: mf-forecast-chart, mf-forecast-table, mf-forecast-download-btn
-- Explain: mf-explain-chart, mf-explain-download-btn
-- Status: mf-status-banner, mf-last-run-ts
+Features:
+- Multi-model forecasting (Prophet, ARIMA, LSTM, Ensemble)
+- Confidence interval visualization (fan charts)
+- Scenario analysis ("What-If" simulator)
+- Model performance comparison
 """
 
 import logging
-from dash import html, dcc
+from dash import html, dcc, Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
-# Component IDs (exported for callbacks)
+# Component IDs
 COMPONENT_IDS = {
-    # Inputs panel
     'ticker_input': 'mf-ticker-input',
     'horizon_select': 'mf-horizon-select',
-    'confidence_select': 'mf-confidence-select',
-    'model_select': 'mf-model-select',
+    'model_checklist': 'mf-model-checklist',
+    'interval_checklist': 'mf-interval-checklist',
+    'scenario_select': 'mf-scenario-select',
+    'scenario_param': 'mf-scenario-param',
+    'scenario_apply_btn': 'mf-scenario-apply-btn',
     'run_btn': 'mf-run-btn',
-    'mode_select': 'mf-mode-select',
-    
-    # Results panel
     'forecast_chart': 'mf-forecast-chart',
-    'forecast_table': 'mf-forecast-table',
-    'forecast_download_btn': 'mf-forecast-download-btn',
-    
-    # Explainability panel
-    'explain_chart': 'mf-explain-chart',
-    'explain_download_btn': 'mf-explain-download-btn',
-    
-    # Status/diagnostics
+    'scenario_chart': 'mf-scenario-chart',
+    'model_metrics': 'mf-model-metrics',
     'status_banner': 'mf-status-banner',
-    'last_run_ts': 'mf-last-run-ts',
-    
-    # Stores
     'forecast_store': 'mf-forecast-store',
-    'explain_store': 'mf-explain-store',
 }
 
 
 def create_inputs_panel():
-    """
-    Panel 1: Inputs - ticker, horizon, confidence, model, run button
-    """
+    """Enhanced inputs panel with model selection and scenarios."""
     return dbc.Card([
-        dbc.CardHeader(html.H5("📊 Forecast Inputs", className="mb-0")),
+        dbc.CardHeader(html.H5("📊 Forecast Configuration", className="mb-0")),
         dbc.CardBody([
-            # Ticker selection
+            # Ticker and Horizon
             dbc.Row([
                 dbc.Col([
-                    html.Label("Ticker", className="small fw-bold"),
-                    dcc.Dropdown(
+                    html.Label("Ticker", className="small fw-bold text-white"),
+                    dcc.Input(
                         id=COMPONENT_IDS['ticker_input'],
-                        options=[
-                            {'label': 'AAPL - Apple', 'value': 'AAPL'},
-                            {'label': 'MSFT - Microsoft', 'value': 'MSFT'},
-                            {'label': 'GOOGL - Google', 'value': 'GOOGL'},
-                            {'label': 'NVDA - NVIDIA', 'value': 'NVDA'},
-                        ],
+                        type='text',
                         value='AAPL',
-                        clearable=False,
-                        className="form-select-sm"
+                        placeholder='Enter ticker',
+                        className="form-control form-control-sm"
                     )
                 ], width=6),
                 dbc.Col([
-                    html.Label("Horizon", className="small fw-bold"),
+                    html.Label("Horizon (days)", className="small fw-bold text-white"),
                     dcc.Dropdown(
                         id=COMPONENT_IDS['horizon_select'],
                         options=[
-                            {'label': '1 Week', 'value': 7},
-                            {'label': '1 Month', 'value': 30},
-                            {'label': '3 Months', 'value': 90},
+                            {'label': '1 Week (7 days)', 'value': 7},
+                            {'label': '2 Weeks (14 days)', 'value': 14},
+                            {'label': '1 Month (30 days)', 'value': 30},
                         ],
-                        value=30,
+                        value=14,
                         clearable=False,
                         className="form-select-sm"
                     )
                 ], width=6),
             ], className="mb-3"),
             
-            # Confidence & Model
-            dbc.Row([
-                dbc.Col([
-                    html.Label("Confidence Level", className="small fw-bold"),
-                    dcc.Dropdown(
-                        id=COMPONENT_IDS['confidence_select'],
-                        options=[
-                            {'label': '90%', 'value': 0.90},
-                            {'label': '95%', 'value': 0.95},
-                            {'label': '99%', 'value': 0.99},
-                        ],
-                        value=0.95,
-                        clearable=False,
-                        className="form-select-sm"
-                    )
-                ], width=6),
-                dbc.Col([
-                    html.Label("Model Version", className="small fw-bold"),
-                    dcc.Dropdown(
-                        id=COMPONENT_IDS['model_select'],
-                        options=[
-                            {'label': 'XGBoost v1.0', 'value': 'xgboost_v1'},
-                            {'label': 'LSTM v1.0', 'value': 'lstm_v1'},
-                        ],
-                        value='xgboost_v1',
-                        clearable=False,
-                        className="form-select-sm"
-                    )
-                ], width=6),
-            ], className="mb-3"),
+            # Model Selection
+            html.Label("Models", className="small fw-bold text-white"),
+            dcc.Checklist(
+                id=COMPONENT_IDS['model_checklist'],
+                options=[
+                    {'label': ' Prophet (Trend + Seasonality)', 'value': 'prophet'},
+                    {'label': ' ARIMA (Autoregression)', 'value': 'arima'},
+                    {'label': ' LSTM (Deep Learning)', 'value': 'lstm'},
+                    {'label': ' Ensemble (Weighted Average)', 'value': 'ensemble'},
+                ],
+                value=['prophet', 'ensemble'],
+                className="text-white-50 small mb-3",
+                labelStyle={'display': 'block', 'marginBottom': '5px'}
+            ),
             
-            # Mode selection (sync/async)
-            dbc.Row([
-                dbc.Col([
-                    html.Label("Execution Mode", className="small fw-bold"),
-                    dcc.RadioItems(
-                        id=COMPONENT_IDS['mode_select'],
-                        options=[
-                            {'label': ' Synchronous', 'value': 'sync'},
-                            {'label': ' Asynchronous (Job Queue)', 'value': 'async'},
-                        ],
-                        value='sync',
-                        inline=True,
-                        className="small"
-                    )
-                ], width=12),
-            ], className="mb-3"),
+            # Confidence Intervals
+            html.Label("Confidence Intervals", className="small fw-bold text-white"),
+            dcc.Checklist(
+                id=COMPONENT_IDS['interval_checklist'],
+                options=[
+                    {'label': ' 50% (dark)', 'value': '50'},
+                    {'label': ' 80% (medium)', 'value': '80'},
+                    {'label': ' 95% (light)', 'value': '95'},
+                ],
+                value=['80', '95'],
+                className="text-white-50 small mb-3",
+                labelStyle={'display': 'block', 'marginBottom': '5px'}
+            ),
             
-            # Run button
+            # Run Button
             dbc.Button(
-                "▶ Run Forecast",
+                "▶ Generate Forecast",
                 id=COMPONENT_IDS['run_btn'],
                 color="success",
                 size="lg",
@@ -154,301 +111,361 @@ def create_inputs_panel():
     ], className="h-100")
 
 
-def create_results_panel():
-    """
-    Panel 2: Results - forecast chart, table, download
-    """
+def create_scenario_panel():
+    """Scenario analysis ("What-If") panel."""
+    from ..utils.scenario_simulator import ScenarioSimulator
+    
     return dbc.Card([
-        dbc.CardHeader([
-            html.H5("📈 Forecast Results", className="mb-0 d-inline"),
-            dbc.Button(
-                "💾 Download",
-                id=COMPONENT_IDS['forecast_download_btn'],
-                size="sm",
-                color="secondary",
-                className="float-end"
-            )
-        ]),
+        dbc.CardHeader(html.H5("🎯 Scenario Analysis", className="mb-0")),
         dbc.CardBody([
-            # Forecast chart
+            html.P("Test market reactions to economic events", className="small text-white-50 mb-3"),
+            
+            # Scenario selector
+            html.Label("Scenario", className="small fw-bold text-white"),
+            dcc.Dropdown(
+                id=COMPONENT_IDS['scenario_select'],
+                options=ScenarioSimulator.get_scenario_options(),
+                placeholder="Select a scenario...",
+                className="form-select-sm mb-3"
+            ),
+            
+            # Parameter input
+            html.Div(id='scenario-param-container', children=[
+                html.Label("Parameter", className="small fw-bold text-white"),
+                dcc.Slider(
+                    id=COMPONENT_IDS['scenario_param'],
+                    min=-50,
+                    max=50,
+                    step=5,
+                    value=0,
+                    marks={i: str(i) for i in range(-50, 51, 25)},
+                    className="mb-3"
+                )
+            ]),
+            
+            # Apply button
+            dbc.Button(
+                "Apply Scenario",
+                id=COMPONENT_IDS['scenario_apply_btn'],
+                color="warning",
+                size="sm",
+                className="w-100",
+                disabled=True
+            ),
+        ])
+    ], className="h-100")
+
+
+def create_results_panel():
+    """Results panel with fan chart."""
+    return dbc.Card([
+        dbc.CardHeader(html.H5("📈 Forecast Results", className="mb-0")),
+        dbc.CardBody([
             dcc.Loading(
                 dcc.Graph(
                     id=COMPONENT_IDS['forecast_chart'],
-                    figure=_empty_forecast_chart(),
-                    style={'height': '350px'}
+                    figure=_empty_chart("Click 'Generate Forecast' to see predictions"),
+                    style={'height': '500px'}
                 )
-            ),
-            
-            # Forecast summary table
-            html.Div(
-                id=COMPONENT_IDS['forecast_table'],
-                className="mt-3"
             ),
         ])
     ], className="h-100")
 
 
-def create_explain_panel():
-    """
-    Panel 3: Explainability - SHAP chart, download
-    """
+def create_scenario_results_panel():
+    """Scenario comparison results."""
     return dbc.Card([
-        dbc.CardHeader([
-            html.H5("🔍 Feature Importance", className="mb-0 d-inline"),
-            dbc.Button(
-                "💾 Download Explain",
-                id=COMPONENT_IDS['explain_download_btn'],
-                size="sm",
-                color="secondary",
-                className="float-end"
-            )
-        ]),
+        dbc.CardHeader(html.H5("📊 Scenario Impact", className="mb-0")),
         dbc.CardBody([
             dcc.Loading(
                 dcc.Graph(
-                    id=COMPONENT_IDS['explain_chart'],
-                    figure=_empty_explain_chart(),
-                    style={'height': '300px'}
+                    id=COMPONENT_IDS['scenario_chart'],
+                    figure=_empty_chart("Apply a scenario to see impact"),
+                    style={'height': '400px'}
                 )
             ),
         ])
-    ], className="h-100")
+    ])
 
 
-def _empty_forecast_chart():
-    """Empty forecast chart placeholder"""
+def create_metrics_panel():
+    """Model performance metrics."""
+    return dbc.Card([
+        dbc.CardHeader(html.H5("📊 Model Performance", className="mb-0")),
+        dbc.CardBody([
+            html.Div(id=COMPONENT_IDS['model_metrics'], children=[
+                html.P("Run forecast to see metrics", className="text-white-50 small text-center py-3")
+            ])
+        ])
+    ])
+
+
+def _empty_chart(message: str) -> go.Figure:
+    """Create empty placeholder chart."""
     fig = go.Figure()
     fig.add_annotation(
-        text="Run forecast to see predictions",
+        text=message,
         xref="paper", yref="paper",
         x=0.5, y=0.5,
         showarrow=False,
         font=dict(size=14, color="#6c757d")
     )
     fig.update_layout(
+        template='plotly_dark',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=50, r=50, t=50, b=50),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-    )
-    return fig
-
-
-def _empty_explain_chart():
-    """Empty explain chart placeholder"""
-    fig = go.Figure()
-    fig.add_annotation(
-        text="Run forecast to see feature importance",
-        xref="paper", yref="paper",
-        x=0.5, y=0.5,
-        showarrow=False,
-        font=dict(size=14, color="#6c757d")
-    )
-    fig.update_layout(
-        margin=dict(l=50, r=50, t=50, b=50),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
     )
     return fig
 
 
 def layout():
-    """
-    Main Market Forecast layout - three panels + status banner
-    """
+    """Main layout with 4-panel design."""
     return dbc.Container([
-        # Header with status
+        # Header
         dbc.Row([
             dbc.Col([
                 html.H3([
                     html.I(className="bi bi-graph-up me-2"),
                     "Market Forecast"
-                ], className="mb-1"),
+                ], className="mb-1 text-white"),
                 html.P(
-                    "Local-first predictive analytics with explainability",
-                    className="text-muted small mb-3"
+                    "Multi-model forecasting with confidence intervals and scenario analysis",
+                    className="text-white-50 small mb-3"
                 )
-            ], width=8),
-            dbc.Col([
-                html.Div(id=COMPONENT_IDS['status_banner'], className="text-end small"),
-                html.Div(id=COMPONENT_IDS['last_run_ts'], className="text-end small text-muted")
-            ], width=4)
+            ])
         ]),
         
-        # Main panels layout
+        # Status banner
         dbc.Row([
-            # Inputs panel (left)
             dbc.Col([
-                create_inputs_panel()
+                html.Div(id=COMPONENT_IDS['status_banner'])
+            ])
+        ], className="mb-3"),
+        
+        # Main content: 3 columns
+        dbc.Row([
+            # Left: Inputs
+            dbc.Col([
+                create_inputs_panel(),
+                html.Div(className="mb-3"),
+                create_scenario_panel(),
             ], width=3),
             
-            # Results panel (center)
+            # Middle: Forecast Results
             dbc.Col([
-                create_results_panel()
+                create_results_panel(),
             ], width=6),
             
-            # Explainability panel (right)
+            # Right: Metrics
             dbc.Col([
-                create_explain_panel()
+                create_metrics_panel(),
+                html.Div(className="mb-3"),
+                create_scenario_results_panel(),
             ], width=3),
         ], className="mb-4"),
         
         # Hidden stores
         dcc.Store(id=COMPONENT_IDS['forecast_store'], data=None),
-        dcc.Store(id=COMPONENT_IDS['explain_store'], data=None),
-        # Hidden debug element for Playwright to read store JSON
-        html.Div(id='mf-store-debug', style={'display': 'none'}),
         
     ], fluid=True, className="p-4")
 
 
 def register_callbacks(app):
-    """
-    Register Market Forecast callbacks
+    """Register all callbacks."""
+    logger.info("Registering Market Forecast callbacks")
     
-    Callbacks will be implemented in separate file to keep layout clean.
-    For now, this is a placeholder that logs registration.
-    """
-    logger.info("Registering Market Forecast callbacks (rebuild wiring)")
-
-    # Local imports to avoid circular dependencies at module import time
-    from dash import Input, Output, State
     from dash.exceptions import PreventUpdate
-    import os
-    import json
-    from datetime import datetime
-
-    try:
-        from services.forecast_adapter import ForecastAdapter
-    except Exception:
-        ForecastAdapter = None
-
+    from ..models import ProphetForecaster, ARIMAForecaster, LSTMForecaster, EnsembleForecaster
+    from ..utils.fan_charts import create_fan_chart, create_scenario_comparison_chart
+    from ..utils.scenario_simulator import ScenarioSimulator
+    
     @app.callback(
         Output(COMPONENT_IDS['forecast_store'], 'data'),
         Output(COMPONENT_IDS['forecast_chart'], 'figure'),
-        Output(COMPONENT_IDS['forecast_table'], 'children'),
+        Output(COMPONENT_IDS['model_metrics'], 'children'),
         Output(COMPONENT_IDS['status_banner'], 'children'),
-        Output(COMPONENT_IDS['last_run_ts'], 'children'),
-        Output(COMPONENT_IDS['explain_store'], 'data'),
+        Output(COMPONENT_IDS['scenario_apply_btn'], 'disabled'),
         Input(COMPONENT_IDS['run_btn'], 'n_clicks'),
         State(COMPONENT_IDS['ticker_input'], 'value'),
         State(COMPONENT_IDS['horizon_select'], 'value'),
-        State(COMPONENT_IDS['confidence_select'], 'value'),
-        State(COMPONENT_IDS['model_select'], 'value'),
-        State(COMPONENT_IDS['mode_select'], 'value'),
+        State(COMPONENT_IDS['model_checklist'], 'value'),
+        State(COMPONENT_IDS['interval_checklist'], 'value'),
         prevent_initial_call=True
     )
-    def handle_run(n_clicks, ticker_value, horizon, confidence, model, mode):
-        """Handle Run Forecast button clicks."""
-        if not n_clicks:
+    def run_forecast(n_clicks, ticker, horizon, selected_models, selected_intervals):
+        """Main forecast generation callback."""
+        if not n_clicks or not ticker:
             raise PreventUpdate
-
-        # Normalize inputs
-        tickers = []
-        if isinstance(ticker_value, str) and ticker_value.strip():
-            tickers = [t.strip().upper() for t in ticker_value.split(',') if t.strip()]
-        if not tickers:
-            return None, _empty_forecast_chart(), html.Div("No ticker provided."), "", "", None
-
+        
+        ticker = ticker.strip().upper()
+        
         try:
-            horizon_int = int(horizon)
-        except Exception:
-            horizon_int = 30
-
-        try:
-            confidence_float = float(confidence)
-        except Exception:
-            confidence_float = 0.95
-
-        # Prepare adapter
-        bento_url = os.getenv('MARKET_FORECAST_URL', os.getenv('MARKET_FORECAST_BENTO_URL', 'http://localhost:5001/predict'))
-        deterministic = os.getenv('MARKET_FORECAST_DETERMINISTIC', '0') in ('1', 'true', 'True')
-
-        if ForecastAdapter is None:
-            # Adapter missing - return a helpful message
-            status = dbc.Alert("Forecast service adapter not available on server.", color="danger")
-            return None, _empty_forecast_chart(), html.Div("Adapter missing"), status, datetime.utcnow().isoformat(), None
-
-        adapter = ForecastAdapter(bento_url=bento_url, deterministic=deterministic)
-
-        # Run forecasts for all requested tickers and aggregate results
-        all_results = []
-        explanations = {}
-        series_traces = []
-        details_children = []
-
-        for t in tickers:
-            fid_t = f"mf-{t}-{int(datetime.utcnow().timestamp())}"
-            try:
-                if mode == 'async':
-                    resp = adapter.queue_forecast(t, horizon_int, confidence_float, model, fid_t)
-                    fr = resp.get('result') if isinstance(resp, dict) and resp.get('result') else resp
-                else:
-                    fr = adapter.run_forecast(t, horizon_int, confidence_float, model, fid_t)
-
-                if fr is None:
-                    details_children.append(html.Div(f"{t}: no result"))
-                    continue
-
-                all_results.append(fr)
-
-                # extract time series forecast (list) if present
-                s = fr.get('forecast') or []
-                if s:
-                    series_traces.append({'x': list(range(1, len(s) + 1)), 'y': s, 'type': 'line', 'name': t})
-
-                # details block per ticker
+            # Fetch historical data
+            import yfinance as yf
+            stock = yf.Ticker(ticker)
+            
+            # Get 1 year of daily data
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=365)
+            hist = stock.history(start=start_date, end=end_date)
+            
+            if hist.empty:
+                status = dbc.Alert(f"No data available for {ticker}", color="danger")
+                return None, _empty_chart(f"No data for {ticker}"), [], status, True
+            
+            # Prepare data for models
+            data = pd.DataFrame({
+                'ds': hist.index,
+                'y': hist['Close'].values
+            })
+            
+            # Train selected models and generate forecasts
+            forecasts = {}
+            
+            if 'prophet' in selected_models:
                 try:
-                    meta = {k: fr.get(k) for k in ('ticker', 'horizon', 'confidence', 'forecast_id', 'timestamp')}
-                    details_children.append(html.Div([html.H6(f"{t}"), html.Pre(json.dumps(meta, indent=2))]))
-                except Exception:
-                    details_children.append(html.Div(f"{t}: no details"))
-
-                # explanation if available
+                    prophet = ProphetForecaster()
+                    prophet.fit(data)
+                    forecasts['prophet'] = prophet.predict(horizon)
+                except Exception as e:
+                    logger.error(f"Prophet error: {e}")
+            
+            if 'arima' in selected_models:
                 try:
-                    expl = adapter.get_explanation(fr.get('forecast_id') or fid_t)
-                    if expl:
-                        explanations[fr.get('forecast_id') or fid_t] = expl
-                except Exception:
-                    pass
-
-            except Exception as e:
-                logger.exception(f"Error forecasting {t}: {e}")
-                details_children.append(html.Div(f"{t}: error - {e}"))
-
-        # Build combined figure
-        if series_traces:
-            fig = {'data': series_traces, 'layout': {'title': 'Forecasts', 'height': 380, 'yaxis': {'tickformat': '.2%'}}}
-        else:
-            fig = _empty_forecast_chart()
-
-        # Build details container
-        details = html.Div(details_children) if details_children else html.Div("No details available")
-
-        status = dbc.Alert(f"Generated forecasts for {len(all_results)} tickers", color="success", duration=5000)
-        ts = datetime.utcnow().isoformat()
-
-        # Return aggregated result and explanations map
-        return all_results, fig, details, status, ts, explanations
-
-    # Client-side helper: mirror store data to a hidden div and window for Playwright
-    try:
-        app.clientside_callback(
-            """
-            function(store_data) {
-                try { 
-                    window.__mf_forecast_store__ = store_data || null;
-                    return JSON.stringify(store_data || null, null, 2);
-                } catch(e) { 
-                    return JSON.stringify({error: e.toString()}); 
-                }
+                    arima = ARIMAForecaster()
+                    arima.fit(data)
+                    forecasts['arima'] = arima.predict(horizon)
+                except Exception as e:
+                    logger.error(f"ARIMA error: {e}")
+            
+            if 'lstm' in selected_models:
+                try:
+                    lstm = LSTMForecaster()
+                    lstm.fit(data)
+                    forecasts['lstm'] = lstm.predict(horizon)
+                except Exception as e:
+                    logger.error(f"LSTM error: {e}")
+            
+            if 'ensemble' in selected_models:
+                try:
+                    ensemble = EnsembleForecaster()
+                    ensemble.fit(data)
+                    forecasts['ensemble'] = ensemble.predict(horizon)
+                except Exception as e:
+                    logger.error(f"Ensemble error: {e}")
+            
+            if not forecasts:
+                status = dbc.Alert("All models failed to generate forecasts", color="danger")
+                return None, _empty_chart("Model training failed"), [], status, True
+            
+            # Use first successful forecast for chart (or ensemble if available)
+            primary_forecast = forecasts.get('ensemble', list(forecasts.values())[0])
+            
+            # Create forecast dates
+            last_date = data['ds'].iloc[-1]
+            forecast_dates = pd.date_range(start=last_date + timedelta(days=1), periods=horizon)
+            
+            # Create fan chart
+            historical_dates = data['ds'].tolist()[-60:]  # Last 60 days
+            historical_values = data['y'].tolist()[-60:]
+            
+            fig = create_fan_chart(
+                historical_dates=historical_dates,
+                historical_values=historical_values,
+                forecast_dates=forecast_dates.tolist(),
+                forecast_data=primary_forecast,
+                ticker=ticker,
+                show_intervals=selected_intervals
+            )
+            
+            # Create metrics table
+            metrics_children = []
+            for model_name, forecast in forecasts.items():
+                last_price = data['y'].iloc[-1]
+                predicted_price = forecast['forecast'][-1]
+                change_pct = ((predicted_price - last_price) / last_price) * 100
+                
+                metrics_children.append(
+                    dbc.Row([
+                        dbc.Col(html.Strong(model_name.upper(), className="text-white"), width=6),
+                        dbc.Col(html.Span(f"${predicted_price:.2f}", className="text-white-50"), width=6),
+                    ], className="mb-2")
+                )
+                metrics_children.append(
+                    html.Small(f"Change: {change_pct:+.2f}%", 
+                              className="text-success" if change_pct >= 0 else "text-danger",
+                              style={'display': 'block', 'marginBottom': '10px'})
+                )
+            
+            # Store forecast data
+            store_data = {
+                'ticker': ticker,
+                'horizon': horizon,
+                'forecasts': {k: v['forecast'] for k, v in forecasts.items()},
+                'primary_forecast': primary_forecast,
+                'forecast_dates': [str(d) for d in forecast_dates],
+                'last_price': float(data['y'].iloc[-1]),
             }
-            """,
-            Output('mf-store-debug', 'children'),
-            Input(COMPONENT_IDS['forecast_store'], 'data')
-        )
-    except Exception:
-        # If clientside callbacks aren't available in this environment, ignore
-        logger.exception('Failed to register clientside store mirror')
+            
+            status = dbc.Alert(f"✓ Forecast generated for {ticker} ({len(forecasts)} models)", 
+                             color="success", duration=5000)
+            
+            return store_data, fig, metrics_children, status, False
+            
+        except Exception as e:
+            logger.exception(f"Forecast error: {e}")
+            status = dbc.Alert(f"Error: {str(e)}", color="danger")
+            return None, _empty_chart(f"Error: {str(e)}"), [], status, True
+    
+    @app.callback(
+        Output(COMPONENT_IDS['scenario_chart'], 'figure'),
+        Output(COMPONENT_IDS['status_banner'], 'children', allow_duplicate=True),
+        Input(COMPONENT_IDS['scenario_apply_btn'], 'n_clicks'),
+        State(COMPONENT_IDS['forecast_store'], 'data'),
+        State(COMPONENT_IDS['scenario_select'], 'value'),
+        State(COMPONENT_IDS['scenario_param'], 'value'),
+        prevent_initial_call=True
+    )
+    def apply_scenario(n_clicks, store_data, scenario_type, param_value):
+        """Apply scenario to baseline forecast."""
+        if not n_clicks or not store_data or not scenario_type:
+            raise PreventUpdate
+        
+        try:
+            baseline_forecast = store_data['primary_forecast']['forecast']
+            forecast_dates = pd.to_datetime(store_data['forecast_dates'])
+            ticker = store_data['ticker']
+            
+            # Apply scenario
+            result = ScenarioSimulator.apply_scenario(
+                baseline_forecast=baseline_forecast,
+                scenario_type=scenario_type,
+                param_value=param_value,
+                decay_rate=0.9
+            )
+            
+            # Create comparison chart
+            fig = create_scenario_comparison_chart(
+                forecast_dates=forecast_dates.tolist(),
+                baseline_forecast=baseline_forecast,
+                scenario_forecast=result['adjusted_forecast'],
+                scenario_name=result['scenario_info']['name'],
+                ticker=ticker
+            )
+            
+            status = dbc.Alert(
+                f"✓ Scenario applied: {result['scenario_info']['name']} "
+                f"(Initial impact: {result['scenario_info']['initial_impact_pct']:.2f}%)",
+                color="info", duration=5000
+            )
+            
+            return fig, status
+            
+        except Exception as e:
+            logger.exception(f"Scenario error: {e}")
+            status = dbc.Alert(f"Scenario error: {str(e)}", color="danger")
+            return _empty_chart(f"Error: {str(e)}"), status
 
 
 __all__ = ['layout', 'register_callbacks', 'COMPONENT_IDS']

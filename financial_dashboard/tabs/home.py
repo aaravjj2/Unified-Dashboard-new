@@ -323,27 +323,27 @@ def register_callbacks(app):
         Output('market-dow-pct', 'children'),
         Output({'type': 'watch-price', 'index': dash.ALL}, 'children'),
         Output({'type': 'watch-change', 'index': dash.ALL}, 'children'),
-        Input('interval-component', 'n_intervals')
+        Input('interval-component', 'n_intervals'),
+        State({'type': 'watch-price', 'index': dash.ALL}, 'id'),  # Get the actual IDs of watch-price elements
     )
-    def refresh_market_and_watchlist(n):
+    def refresh_market_and_watchlist(n, watch_ids):
         """Fetch latest market indices and watchlist prices."""
         try:
             from ..utils.price_fetch import fetch_prices_batch
             
+            # CRITICAL FIX: Use the actual watch_ids to determine how many outputs to return
+            # watch_ids is a list of {'type': 'watch-price', 'index': 'AAPL'} dicts
+            expected_watch_count = len(watch_ids) if watch_ids else 0
+            
             # 1. Fetch Market Indices (SPY, QQQ, DIA)
             indices = ['SPY', 'QQQ', 'DIA']
             
-            # 2. Fetch Watchlist Symbols
-            try:
-                import json, os
-                wl_path = _watchlist_path()
-                if os.path.exists(wl_path):
-                    with open(wl_path, 'r') as f:
-                        watchlist = json.load(f)
-                else:
-                    watchlist = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
-            except Exception:
-                watchlist = ['AAPL', 'TSLA', 'NVDA', 'MSFT']
+            # 2. Build watchlist from actual DOM element IDs
+            if expected_watch_count == 0:
+                watchlist = []
+            else:
+                # Extract symbols from the pattern-matching IDs
+                watchlist = [w['index'] for w in watch_ids if isinstance(w, dict) and 'index' in w]
                 
             # Combine all tickers for batch fetch
             all_tickers = indices + watchlist
@@ -378,33 +378,27 @@ def register_callbacks(app):
             nasdaq_val, nasdaq_pct = fmt_price('QQQ'), fmt_change('QQQ')
             dow_val, dow_pct = fmt_price('DIA'), fmt_change('DIA')
             
-            # Format Watchlist
-            w_prices = [fmt_price(s) for s in watchlist]
-            w_changes = [fmt_change(s) for s in watchlist]
+            # Format Watchlist - ensure we return exactly expected_watch_count items
+            w_prices = [fmt_price(s) for s in watchlist[:expected_watch_count]]
+            w_changes = [fmt_change(s) for s in watchlist[:expected_watch_count]]
+            
+            # Pad with placeholders if watchlist is shorter than expected
+            while len(w_prices) < expected_watch_count:
+                w_prices.append("--")
+                w_changes.append(html.Small("--", className="text-muted"))
             
             return sp500_val, sp500_pct, nasdaq_val, nasdaq_pct, dow_val, dow_pct, w_prices, w_changes
             
         except Exception as e:
             print(f"Error refreshing market data: {e}")
-            # Return placeholders on error
-            # We need to know the length of watchlist to return correct number of placeholders
-            # If watchlist fetching also failed, default to a known list
-            try:
-                import json, os
-                wl_path = _watchlist_path()
-                if os.path.exists(wl_path):
-                    with open(wl_path, 'r') as f:
-                        watchlist_len = len(json.load(f))
-                else:
-                    watchlist_len = len(['AAPL', 'TSLA', 'NVDA', 'MSFT'])
-            except Exception:
-                watchlist_len = len(['AAPL', 'TSLA', 'NVDA', 'MSFT']) # Fallback if even path reading fails
+            # Return placeholders on error - use watch_ids length
+            expected_watch_count = len(watch_ids) if watch_ids else 0
 
             return "--", html.Small("--", className="text-muted"), \
                    "--", html.Small("--", className="text-muted"), \
                    "--", html.Small("--", className="text-muted"), \
-                   ["--"] * watchlist_len, \
-                   [html.Small("--", className="text-muted")] * watchlist_len
+                   ["--"] * expected_watch_count, \
+                   [html.Small("--", className="text-muted")] * expected_watch_count
 
     @app.callback(
         Output('home-action-result', 'children'),
