@@ -228,20 +228,186 @@ def register_callbacks(app):
 def register_portfolio_callbacks(app):
     """Register callbacks for auto-trading portfolio tab."""
     
-    # Placeholder for now - will implement in next phase
+    # Update portfolio summary and positions
+    @app.callback(
+        Output("portfolio-total-value", "children"),
+        Output("portfolio-total-pnl", "children"),
+        Output("portfolio-cash", "children"),
+        Output("portfolio-positions-count", "children"),
+        Output("portfolio-win-rate", "children"),
+        Output("portfolio-positions-container", "children"),
+        Output("portfolio-orders-container", "children"),
+        Input("portfolio-refresh-interval", "n_intervals"),
+        prevent_initial_call=False
+    )
+    def update_portfolio_data(n_intervals):
+        """Update portfolio data from Alpaca."""
+        try:
+            from utils.picks_portfolio_manager import PicksPortfolioManager
+            
+            # Initialize manager
+            manager = PicksPortfolioManager()
+            
+            # Get account info
+            account = manager.get_account_info()
+            total_value = account.get('total_value', 0)
+            cash = account.get('cash', 0)
+            equity = account.get('equity', 0)
+            
+            # Calculate P/L (assuming starting capital of $10k)
+            starting_capital = 10000
+            total_pnl = total_value - starting_capital
+            total_pnl_pct = (total_pnl / starting_capital) * 100 if starting_capital > 0 else 0
+            
+            # Get positions
+            positions_df = manager.get_positions()
+            num_positions = len(positions_df) if not positions_df.empty else 0
+            
+            # Calculate win rate (positions with positive P/L)
+            if not positions_df.empty and 'unrealized_plpc' in positions_df.columns:
+                winning = len(positions_df[positions_df['unrealized_plpc'] > 0])
+                win_rate = (winning / num_positions) * 100 if num_positions > 0 else 0
+                win_rate_str = f"{win_rate:.0f}%"
+            else:
+                win_rate_str = "--"
+            
+            # Format summary values
+            total_value_str = f"${total_value:,.2f}"
+            pnl_color = "text-success" if total_pnl >= 0 else "text-danger"
+            pnl_str = f"${total_pnl:+,.2f} ({total_pnl_pct:+.2f}%)"
+            cash_str = f"${cash:,.2f}"
+            positions_str = f"{num_positions}/20"
+            
+            # Build positions table
+            if not positions_df.empty:
+                positions_table = dash_table.DataTable(
+                    data=positions_df.to_dict('records'),
+                    columns=[
+                        {'name': 'Ticker', 'id': 'ticker'},
+                        {'name': 'Qty', 'id': 'quantity'},
+                        {'name': 'Entry $', 'id': 'entry_price', 'type': 'numeric', 'format': {'specifier': '$.2f'}},
+                        {'name': 'Current $', 'id': 'current_price', 'type': 'numeric', 'format': {'specifier': '$.2f'}},
+                        {'name': 'P/L $', 'id': 'unrealized_pl', 'type': 'numeric', 'format': {'specifier': '$+.2f'}},
+                        {'name': 'P/L %', 'id': 'unrealized_plpc', 'type': 'numeric', 'format': {'specifier': '+.2f%'}},
+                    ],
+                    style_table={'overflowX': 'auto'},
+                    style_header={
+                        'backgroundColor': '#333',
+                        'color': '#e0e0e0',
+                        'fontWeight': 'bold',
+                        'fontSize': '12px'
+                    },
+                    style_cell={
+                        'backgroundColor': '#2c2c2c',
+                        'color': '#e0e0e0',
+                        'fontSize': '13px',
+                        'textAlign': 'left'
+                    },
+                    style_data_conditional=[
+                        {
+                            'if': {'filter_query': '{unrealized_plpc} > 0'},
+                            'color': '#4CAF50',
+                            'fontWeight': 'bold'
+                        },
+                        {
+                            'if': {'filter_query': '{unrealized_plpc} < 0'},
+                            'color': '#ff6b6b',
+                            'fontWeight': 'bold'
+                        }
+                    ]
+                )
+            else:
+                positions_table = dbc.Alert([
+                    html.I(className="bi bi-info-circle me-2"),
+                    "No active positions. Deploy picks from Weekly or Monthly tabs to start trading."
+                ], color="info", className="text-center")
+            
+            # Get recent orders
+            orders_df = manager.get_orders(limit=20)
+            
+            if not orders_df.empty:
+                orders_df['date'] = pd.to_datetime(orders_df['date']).dt.strftime('%Y-%m-%d %H:%M')
+                orders_table = dash_table.DataTable(
+                    data=orders_df.head(10).to_dict('records'),
+                    columns=[
+                        {'name': 'Date', 'id': 'date'},
+                        {'name': 'Ticker', 'id': 'ticker'},
+                        {'name': 'Side', 'id': 'side'},
+                        {'name': 'Qty', 'id': 'quantity'},
+                        {'name': 'Filled', 'id': 'filled_qty'},
+                        {'name': 'Status', 'id': 'status'},
+                    ],
+                    style_table={'overflowX': 'auto'},
+                    style_header={
+                        'backgroundColor': '#333',
+                        'color': '#e0e0e0',
+                        'fontWeight': 'bold',
+                        'fontSize': '12px'
+                    },
+                    style_cell={
+                        'backgroundColor': '#2c2c2c',
+                        'color': '#e0e0e0',
+                        'fontSize': '13px',
+                        'textAlign': 'left'
+                    }
+                )
+            else:
+                orders_table = dbc.Alert("No orders yet", color="dark", className="text-center text-muted")
+            
+            return (
+                total_value_str,
+                html.Span(pnl_str, className=f"{pnl_color} mb-0"),
+                cash_str,
+                positions_str,
+                win_rate_str,
+                positions_table,
+                orders_table
+            )
+            
+        except Exception as e:
+            logger.exception(f"Error updating portfolio: {e}")
+            return (
+                "$10,000.00",
+                html.Span("$0.00 (0.00%)", className="text-muted mb-0"),
+                "$10,000.00",
+                "0/20",
+                "--",
+                dbc.Alert(f"Error loading portfolio: {str(e)}", color="danger"),
+                dbc.Alert("Error loading orders", color="danger")
+            )
+    
+    # Close all positions callback
     @app.callback(
         Output("portfolio-status-message", "children"),
         Input("portfolio-close-all-btn", "n_clicks"),
         prevent_initial_call=True
     )
     def close_all_positions(n_clicks):
-        """Close all positions (placeholder for now)."""
+        """Close all positions."""
         if not n_clicks:
             raise PreventUpdate
         
-        return dbc.Alert(
-            "⚠️ Auto-trading portfolio not yet connected. Coming soon!",
-            color="warning"
-        )
+        try:
+            from utils.picks_portfolio_manager import PicksPortfolioManager
+            
+            manager = PicksPortfolioManager()
+            result = manager.close_all_positions()
+            
+            if result['status'] == 'success':
+                return dbc.Alert(
+                    "✅ All positions closed successfully!",
+                    color="success"
+                )
+            else:
+                return dbc.Alert(
+                    f"⚠️ Error: {result['message']}",
+                    color="warning"
+                )
+                
+        except Exception as e:
+            return dbc.Alert(
+                f"❌ Error closing positions: {str(e)}",
+                color="danger"
+            )
     
-    logger.info("✓ Portfolio callbacks registered (placeholder)")
+    logger.info("✓ Portfolio callbacks registered")

@@ -3,16 +3,15 @@
 (function() {
     'use strict';
     
-    console.log('[Analysis Hub] Tab activation script loaded');
+    // Silent initialization - only log when actually fixing something
+    let hasLogged = false;
 
-    function activateFirstTab() {
+    function activateFirstTab(isFinalAttempt) {
         try {
             // Find all tab panes
             const tabPanes = document.querySelectorAll('.tab-pane');
             
             if (tabPanes.length > 0) {
-                console.debug(`[Analysis Hub] Found ${tabPanes.length} tab panes`);
-                
                 // Check if any pane is already active
                 const hasActive = Array.from(tabPanes).some(pane => pane.classList.contains('active'));
                 
@@ -26,11 +25,8 @@
                     if (firstTabLink) {
                         firstTabLink.classList.add('active');
                         firstTabLink.setAttribute('aria-selected', 'true');
-                        console.debug('[Analysis Hub] Activated first tab link');
                     }
                     console.log('[Analysis Hub] ✓ First tab activated successfully');
-                } else {
-                    console.log('[Analysis Hub] Active tab already exists');
                 }
                 
                 // Fix tab labels if they're empty
@@ -38,7 +34,11 @@
                 
                 return true;
             } else {
-                console.log('[Analysis Hub] No tab panes found, retrying...');
+                // Only log on final attempt to reduce console noise
+                if (isFinalAttempt && !hasLogged) {
+                    hasLogged = true;
+                    // This is expected on pages without Analysis Hub tabs - silent fail
+                }
                 return false;
             }
         } catch (e) {
@@ -73,20 +73,21 @@
     // Try to activate tabs when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(activateFirstTab, 100);
+            setTimeout(function() { activateFirstTab(false); }, 100);
         });
     } else {
-        setTimeout(activateFirstTab, 100);
+        setTimeout(function() { activateFirstTab(false); }, 100);
     }
 
     // Also retry a few times in case Dash hasn't rendered the tabs yet
     let retries = 0;
-    const maxRetries = 10;
+    const maxRetries = 5;  // Reduced from 10
     const retryInterval = setInterval(function() {
         retries++;
-        if (activateFirstTab() || retries >= maxRetries) {
+        const isFinal = retries >= maxRetries;
+        if (activateFirstTab(isFinal) || isFinal) {
             clearInterval(retryInterval);
-            console.log(`[Analysis Hub] Tab activation ${retries <= maxRetries ? 'succeeded' : 'gave up'} after ${retries} attempts`);
+            // Only log success when tabs were actually found and fixed
         }
     }, 500);
 

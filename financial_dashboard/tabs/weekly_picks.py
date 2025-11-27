@@ -1083,6 +1083,8 @@ def register_callbacks(app, SH=None):
             from picker.universe import StockUniverse
             from picker.ensemble_picker import EnsemblePicker, save_weekly_picks
             from datetime import date
+            import os
+            from pathlib import Path
             
             # Get stock universe (S&P 500 top 100)
             universe = StockUniverse.get_sp500(limit=50)  # Limit to 50 for speed
@@ -1100,11 +1102,75 @@ def register_callbacks(app, SH=None):
             week_start = today - pd.Timedelta(days=today.weekday())
             save_weekly_picks(picks, week_start)
             
+            # ALSO save to CSV for backward compatibility
+            try:
+                csv_dir = Path(__file__).parent.parent / 'models' / 'full_run'
+                csv_dir.mkdir(parents=True, exist_ok=True)
+                csv_path = csv_dir / f"picks_{week_start.strftime('%Y%m%d')}.csv"
+                
+                # Save picks DataFrame to CSV
+                picks.to_csv(csv_path, index=False)
+                logger.info(f"✓ Also saved picks to CSV: {csv_path}")
+            except Exception as e:
+                logger.warning(f"Could not save to CSV: {e}")
+            
+            # Fetch live prices for the new picks immediately
+            tickers = picks['ticker'].tolist()
+            logger.info(f"Fetching live prices for {len(tickers)} tickers...")
+            
+            try:
+                import yfinance as yf
+                from datetime import datetime
+                
+                # Fetch current prices
+                price_data = {}
+                for ticker in tickers:
+                    try:
+                        stock = yf.Ticker(ticker)
+                        info = stock.info
+                        current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+                        
+                        if current_price:
+                            # Calculate start price (week ago)
+                            hist = stock.history(period='1mo')
+                            if len(hist) >= 7:
+                                week_ago_price = hist['Close'].iloc[-7]
+                                daily_change = current_price - hist['Close'].iloc[-2] if len(hist) >= 2 else 0
+                                profit_loss = (current_price - week_ago_price) * (INVESTMENT_PER_STOCK / week_ago_price)
+                            else:
+                                week_ago_price = current_price
+                                daily_change = 0
+                                profit_loss = 0
+                            
+                            price_data[ticker] = {
+                                'current_price': current_price,
+                                'daily_change': daily_change,
+                                'week_start_price': week_ago_price,
+                                'profit_loss': profit_loss,
+                                'source': 'yfinance'
+                            }
+                    except Exception as e:
+                        logger.warning(f"Could not fetch price for {ticker}: {e}")
+                
+                # Store in shared cache
+                if hasattr(SH, 'RESULTS_CACHE'):
+                    if 'results' not in SH.RESULTS_CACHE:
+                        SH.RESULTS_CACHE['results'] = {}
+                    if 'prices' not in SH.RESULTS_CACHE['results']:
+                        SH.RESULTS_CACHE['results']['prices'] = {}
+                    
+                    # Update with new prices
+                    SH.RESULTS_CACHE['results']['prices'].update(price_data)
+                    logger.info(f"✓ Updated price cache with {len(price_data)} prices")
+                    
+            except Exception as e:
+                logger.error(f"Failed to fetch live prices: {e}")
+            
             # Clear cache to force refresh
             _PICKS_CACHE['data'] = None
             _PICKS_CACHE['timestamp'] = None
             
-            # Reload data
+            # Reload data with fresh prices
             df, error, summary = _load_and_enrich_picks()
             
             if error:
@@ -1129,7 +1195,6 @@ def register_callbacks(app, SH=None):
                     'fontSize': '14px'
                 })
             ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #4CAF50'})
-            
             return status_msg, new_table, df.to_dict('records') if df is not None else None
             
         except Exception as e:
