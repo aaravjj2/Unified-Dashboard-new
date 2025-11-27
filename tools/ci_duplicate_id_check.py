@@ -87,22 +87,18 @@ def get_tab_name(filepath):
         tabs_idx = parts.index("tabs")
         if tabs_idx + 1 < len(parts):
             tab_name = parts[tabs_idx + 1]
-            # Remove _pkg suffix to normalize tab names
-            if tab_name.endswith("_pkg"):
-                tab_name = tab_name[:-4]
-            if tab_name.endswith("_v2"):
-                tab_name = tab_name[:-3]
-            return tab_name
+            return normalize_tab_name(tab_name)
     return None
 
 
-def are_in_same_tab(file1, file2):
-    """Check if two files are in the same tab (package)."""
-    tab1 = get_tab_name(file1)
-    tab2 = get_tab_name(file2)
-    if tab1 and tab2:
-        return tab1 == tab2
-    return False
+def normalize_tab_name(tab_name):
+    """Normalize tab name by removing version and package suffixes."""
+    # Remove _pkg suffix to normalize tab names
+    if tab_name.endswith("_pkg"):
+        tab_name = tab_name[:-4]
+    if tab_name.endswith("_v2"):
+        tab_name = tab_name[:-3]
+    return tab_name
 
 
 # Build ID usage map, excluding backup/legacy/test files
@@ -126,8 +122,8 @@ for id_val, files in id_usage.items():
         if tab:
             tabs.add(tab)
         else:
-            # File is not in a tab, consider it unique
-            tabs.add(f)
+            # File is not in a tab, use a unique identifier
+            tabs.add(f"__non_tab__{f}")
     if len(tabs) > 1:
         cross_tab_duplicates[id_val] = files
 
@@ -163,17 +159,8 @@ for src, targets in resolved_graph.items():
                 src_tab_idx = src_parts.index("tabs") + 1
                 t_tab_idx = t_parts.index("tabs") + 1
                 if src_tab_idx < len(src_parts) and t_tab_idx < len(t_parts):
-                    src_tab = src_parts[src_tab_idx]
-                    t_tab = t_parts[t_tab_idx]
-                    # Normalize tab names
-                    if src_tab.endswith("_pkg"):
-                        src_tab = src_tab[:-4]
-                    if t_tab.endswith("_pkg"):
-                        t_tab = t_tab[:-4]
-                    if src_tab.endswith("_v2"):
-                        src_tab = src_tab[:-3]
-                    if t_tab.endswith("_v2"):
-                        t_tab = t_tab[:-3]
+                    src_tab = normalize_tab_name(src_parts[src_tab_idx])
+                    t_tab = normalize_tab_name(t_parts[t_tab_idx])
                     # Only warn if importing from a different tab
                     if src_tab != t_tab:
                         cross_tab_warnings.append((src, t))
