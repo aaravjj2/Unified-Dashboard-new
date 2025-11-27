@@ -1326,48 +1326,61 @@ def register_callbacks(app):
         if not results or not results.get('success'):
             return _create_placeholder_chart("Run backtest to see comparison")
         
-        # Reconstruct DataFrames
-        equity_df = pd.DataFrame(results['equity_curve'])
-        benchmark_df = pd.DataFrame(results['benchmark'])
-        equity_df['Date'] = pd.to_datetime(equity_df['Date'])
-        benchmark_df['Date'] = pd.to_datetime(benchmark_df['Date'])
-        
-        # Normalize to 100
-        equity_df['Normalized'] = 100 * equity_df['Value'] / equity_df['Value'].iloc[0]
-        benchmark_df['Normalized'] = 100 * benchmark_df['Value'] / benchmark_df['Value'].iloc[0]
-        
-        fig = go.Figure()
-        
-        fig.add_trace(go.Scatter(
-            x=equity_df['Date'],
-            y=equity_df['Normalized'],
-            mode='lines',
-            name='Strategy',
-            line=dict(color='#2563eb', width=2)
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=benchmark_df['Date'],
-            y=benchmark_df['Normalized'],
-            mode='lines',
-            name='SPY Benchmark',
-            line=dict(color='#6b7280', width=2, dash='dash')
-        ))
-        
-        fig.update_layout(
-            height=350,
-            margin=dict(l=40, r=20, t=40, b=40),
-            hovermode='x unified',
-            legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
-            xaxis_title="Date",
-            yaxis_title="Normalized Performance (Base 100)",
-            plot_bgcolor='white',
-            paper_bgcolor='white',
-            xaxis=dict(gridcolor='#e5e7eb'),
-            yaxis=dict(gridcolor='#e5e7eb')
-        )
-        
-        return fig
+        try:
+            # Reconstruct DataFrames
+            equity_df = pd.DataFrame(results['equity_curve'])
+            
+            # FIX: Benchmark data has equity_curve nested inside
+            benchmark_data = results.get('benchmark', {})
+            benchmark_curve = benchmark_data.get('equity_curve', [])
+            if not benchmark_curve:
+                logger.warning("No benchmark equity curve data available")
+                benchmark_df = equity_df.copy()  # Fallback to strategy curve
+            else:
+                benchmark_df = pd.DataFrame(benchmark_curve)
+            
+            equity_df['Date'] = pd.to_datetime(equity_df['Date'])
+            benchmark_df['Date'] = pd.to_datetime(benchmark_df['Date'])
+            
+            # Normalize to 100
+            equity_df['Normalized'] = 100 * equity_df['Value'] / equity_df['Value'].iloc[0]
+            benchmark_df['Normalized'] = 100 * benchmark_df['Value'] / benchmark_df['Value'].iloc[0]
+            
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=equity_df['Date'],
+                y=equity_df['Normalized'],
+                mode='lines',
+                name='Strategy',
+                line=dict(color='#2563eb', width=2)
+            ))
+            
+            fig.add_trace(go.Scatter(
+                x=benchmark_df['Date'],
+                y=benchmark_df['Normalized'],
+                mode='lines',
+                name='SPY Benchmark',
+                line=dict(color='#6b7280', width=2, dash='dash')
+            ))
+            
+            fig.update_layout(
+                height=350,
+                margin=dict(l=40, r=20, t=40, b=40),
+                hovermode='x unified',
+                legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
+                xaxis_title="Date",
+                yaxis_title="Normalized Performance (Base 100)",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                xaxis=dict(gridcolor='#e5e7eb'),
+                yaxis=dict(gridcolor='#e5e7eb')
+            )
+            
+            return fig
+        except Exception as e:
+            logger.error(f"Error updating benchmark comparison: {e}")
+            return _create_placeholder_chart("Error loading benchmark data")
     
     callback_count += 1
     

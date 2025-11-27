@@ -9,29 +9,27 @@ import pytest
 
 def pytest_addoption(parser):
     """Add custom CLI options."""
-    parser.addoption(
-        "--headed",
-        action="store_true",
-        default=False,
-        help="Run tests in headed (visible browser) mode"
-    )
-    parser.addoption(
-        "--slow-mo",
-        type=int,
-        default=0,
-        help="Slow down browser operations by specified ms"
-    )
+    # NOTE: --headed is already defined by pytest-playwright, so we skip it
+    # Only add custom options not defined by pytest-playwright
+    try:
+        parser.addoption(
+            "--slow-mo",
+            type=int,
+            default=0,
+            help="Slow down browser operations by specified ms"
+        )
+    except ValueError:
+        # Option already exists
+        pass
 
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args, pytestconfig):
     """Configure browser launch arguments."""
-    headed = pytestconfig.getoption("--headed")
-    slow_mo = pytestconfig.getoption("--slow-mo")
+    slow_mo = pytestconfig.getoption("--slow-mo", default=0)
     
     return {
         **browser_type_launch_args,
-        "headless": not headed,  # HEADLESS=False when --headed flag is used
         "slow_mo": slow_mo,
     }
 

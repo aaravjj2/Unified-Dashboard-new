@@ -27,8 +27,11 @@ def _get_layout_module():
     """Lazily import layout module."""
     global _layout_module
     if _layout_module is None:
-        from . import layout as _mod
-        _layout_module = _mod
+        from .layout import create_layout as _create_layout_fn
+        # Create a simple namespace object to hold the function
+        class _LayoutModule:
+            create_layout = staticmethod(_create_layout_fn)
+        _layout_module = _LayoutModule
     return _layout_module
 
 
@@ -36,8 +39,11 @@ def _get_callbacks_module():
     """Lazily import callbacks module."""
     global _callbacks_module
     if _callbacks_module is None:
-        from . import callbacks as _mod
-        _callbacks_module = _mod
+        from .callbacks import register_callbacks as _register_callbacks_fn
+        # Create a simple namespace object to hold the function
+        class _CallbacksModule:
+            register_callbacks = staticmethod(_register_callbacks_fn)
+        _callbacks_module = _CallbacksModule
     return _callbacks_module
 
 

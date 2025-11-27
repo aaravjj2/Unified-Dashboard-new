@@ -126,8 +126,7 @@ def create_market_overview_widget():
     ], className="shadow-sm h-100")
 
 def create_watchlist_widget():
-    """Create watchlist widget. Uses `data/watchlist.json` for persistence."""
-    # Render container; items are filled by callbacks
+    """Create horizontal watchlist widget."""
     return dbc.Card([
         dbc.CardHeader([
             html.I(className="bi bi-star me-2"),
@@ -135,8 +134,8 @@ def create_watchlist_widget():
         ]),
         dbc.CardBody([
             dbc.Row([
-                dbc.Col(dcc.Input(id='watch-add-input', placeholder='Enter ticker (e.g. AAPL)', persistence=True), width=7),
-                dbc.Col(dbc.Button('Add', id='watch-add-btn', color='primary', className='w-100'), width=5),
+                dbc.Col(dcc.Input(id='watch-add-input', placeholder='Add ticker...', persistence=True, className="form-control-sm"), width=9),
+                dbc.Col(dbc.Button('Add', id='watch-add-btn', color='primary', size='sm', className='w-100'), width=3),
             ], className='mb-3'),
             html.Div(id='watchlist-items-container')
         ])
@@ -227,7 +226,7 @@ def create_morning_briefing_widget():
                 dcc.Markdown(
                     "**Click the Refresh button above to generate your morning briefing.**",
                     id="morning-briefing-content",
-                    className="prose"
+                    className="prose text-white"
                 ),
                 type="dot"
             ),
@@ -309,19 +308,23 @@ def layout():
             dbc.Col(create_morning_briefing_widget(), width=12)
         ]),
         
-        # Widget grid - Row 1: Portfolio (left) and Market Overview (right, full width for TradingView)
+        # Widget grid - Row 1: Portfolio (left) and Action Center (right)
         dbc.Row([
-            dbc.Col(create_portfolio_widget(), width=4, id="widget-portfolio"),
-            dbc.Col(create_market_overview_widget(), width=8, id="widget-market"),
+            dbc.Col(create_portfolio_widget(), width=6, id="widget-portfolio"),
+            dbc.Col(create_action_center_widget(), width=6, id="widget-actions"),
+        ], className="mb-4"),
+        
+        # Widget grid - Row 2: Market Overview (full width for TradingView)
+        dbc.Row([
+            dbc.Col(create_market_overview_widget(), width=12, id="widget-market"),
         ], className="mb-4"),
 
         # Client-side navigation placeholder
         dcc.Location(id='home-nav', refresh=False),
         
-        # Widget grid - Row 2
+        # Widget grid - Row 3: Watchlist (horizontal) and Recent Trades
         dbc.Row([
-            dbc.Col(create_watchlist_widget(), width=4, id="widget-watchlist"),
-            dbc.Col(create_action_center_widget(), width=4, id="widget-actions"),
+            dbc.Col(create_watchlist_widget(), width=8, id="widget-watchlist"),
             dbc.Col(create_recent_trades_widget(), width=4, id="widget-trades"),
         ], className="mb-4"),
         
@@ -621,11 +624,10 @@ def register_callbacks(app):
         prevent_initial_call=False
     )
     def update_watchlist(n_intervals, add_n_clicks, add_value, remove_n_clicks_list):
-        """Unified watchlist handler: interval refresh, add item, and remove item all use the same output.
-
-        Using a single callback prevents Dash 'Duplicate callback outputs' errors and keeps state persistence simple.
-        """
+        """Enhanced watchlist with volume, day range, and rich data display."""
         import json, os, ast
+        from ..utils.price_fetch import fetch_prices_batch
+        
         ctx = dash.callback_context
         path = _watchlist_path()
         default = ["AAPL", "TSLA", "NVDA", "MSFT"]
@@ -655,7 +657,6 @@ def register_callbacks(app):
                         except Exception:
                             pass
             elif 'watch-remove' in trig:
-                # parse the pattern-matching id to get the symbol
                 try:
                     idx = trig.split('.')[0]
                     key = ast.literal_eval(idx)
@@ -670,18 +671,69 @@ def register_callbacks(app):
                 except Exception:
                     pass
 
-        # Build rows for current list
-        rows = []
-        for s in arr:
-            rows.append(
-                dbc.Row([
-                    dbc.Col(html.Strong(s), width=4),
-                    dbc.Col(html.Span("--", id={'type':'watch-price', 'index': s}), width=4),
-                    dbc.Col(html.Span("--", id={'type':'watch-change', 'index': s}), width=3),
-                    dbc.Col(dbc.Button('Remove', id={'type':'watch-remove', 'index': s}, color='danger', size='sm'), width=1),
-                ], className='mb-2')
-            )
-        return rows
+        if not arr:
+            return html.Div("No symbols in watchlist", className="text-white-50 text-center py-3")
+
+        # Fetch prices for all watchlist symbols
+        try:
+            prices = fetch_prices_batch(arr, parallelism=4, context='live')
+        except Exception as e:
+            print(f"Error fetching watchlist prices: {e}")
+            prices = {}
+
+        # Build enhanced cards
+        cards = []
+        for ticker in arr:
+            price_data = prices.get(ticker, {})
+            last_price = price_data.get('last_price')
+            prev_close = price_data.get('prev_close')
+            volume = price_data.get('volume', 0)
+            day_high = price_data.get('day_high')
+            day_low = price_data.get('day_low')
+            
+            # Calculate change
+            if last_price and prev_close:
+                change = last_price - prev_close
+                change_pct = (change / prev_close) * 100
+                change_color = '#10b981' if change >= 0 else '#ef4444'
+                change_text = f"+${change:.2f} (+{change_pct:.2f}%)" if change >= 0 else f"${change:.2f} ({change_pct:.2f}%)"
+            else:
+                change_color = '#6c757d'
+                change_text = "--"
+            
+            # Format volume - handle None
+            if volume and volume > 1_000_000:
+                volume_str = f"{volume/1_000_000:.1f}M"
+            elif volume and volume > 1_000:
+                volume_str = f"{volume/1_000:.1f}K"
+            elif volume:
+                volume_str = str(volume)
+            else:
+                volume_str = "--"
+            
+            # Create compact horizontal card
+            card = dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.Div([
+                            html.Strong(ticker, className="fs-6", style={'color': '#ffffff'}),
+                            dbc.Button("×", id={'type': 'watch-remove', 'index': ticker}, 
+                                      size="sm", color="link", className="text-danger p-0 float-end", 
+                                      style={'fontSize': '18px'})
+                        ], className="mb-2"),
+                        html.Div(f"${last_price:.2f}" if last_price else "--", 
+                                 className="fs-5 fw-bold", style={'color': '#ffffff'}),
+                        html.Small(change_text, style={'color': change_color}, className="d-block mb-2"),
+                        html.Hr(className="my-2 border-secondary"),
+                        html.Small(["Vol: ", html.Span(volume_str, style={'color': '#ffffff'})], className="text-white-50 d-block mb-1"),
+                        html.Small(["Range: ", html.Span(f"${day_low:.2f}-${day_high:.2f}" if day_low and day_high else "--", style={'color': '#ffffff'})], className="text-white-50 d-block")
+                    ], className="p-2")
+                ], className="bg-dark border-secondary h-100")
+            ], width=3)
+            
+            cards.append(card)
+        
+        return dbc.Row(cards)
 
     @app.callback(
         Output('market-mini-chart', 'figure'),
@@ -1086,23 +1138,20 @@ def register_callbacks(app):
             for mover in top_movers:
                 color = "success" if mover['pct_change'] >= 0 else "danger"
                 icon = "bi-arrow-up" if mover['pct_change'] >= 0 else "bi-arrow-down"
+                color = "#10b981" if mover['pct_change'] >= 0 else "#ef4444" # Use hex colors directly
                 
                 items.append(
                     dbc.ListGroupItem([
                         html.Div([
-                            html.Div([
-                                html.Strong(mover['ticker'], style={'color': '#ffffff'}),
-                                html.Span(f" ${mover['price']:.2f}", className="text-white-50 ms-2")
-                            ]),
-                            html.Div([
-                                html.I(className=f"bi {icon} text-{color} me-1"),
-                                html.Span(f"{mover['pct_change']:+.2f}%", className=f"text-{color}")
-                            ])
+                            html.Strong(mover['ticker'], style={'color': '#000000'}),
+                            html.Span(f" ${mover['price']:.2f}", className="ms-2", style={'color': '#000000'}),
+                            html.Span(f" {mover['pct_change']:+.2f}%", 
+                                     className="ms-2 fw-bold", 
+                                     style={'color': color})
                         ], className="d-flex justify-content-between align-items-center")
                     ], className="py-2")
                 )
             
-            return dbc.ListGroup(items, flush=True) if items else html.Div("No data", className="text-white-50")
             
         except Exception as e:
             return html.Div(f"Error: {str(e)[:50]}", className="text-danger small")
