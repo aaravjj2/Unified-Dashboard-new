@@ -270,6 +270,47 @@ def create_market_sentiment_widget():
         ])
     ], className="shadow-sm h-100")
 
+
+def create_section_header(title, icon, color="primary"):
+    """Create a styled section header for visual hierarchy."""
+    return html.Div([
+        html.H5([
+            html.I(className=f"bi {icon} me-2"),
+            title
+        ], className=f"text-{color} mb-0 fw-bold"),
+        html.Hr(className="mt-2 mb-3", style={'borderColor': f'var(--bs-{color})', 'opacity': '0.5'})
+    ], className="mt-4")
+
+
+def create_quick_stats_bar():
+    """Create a prominent quick stats bar at the top."""
+    return dbc.Card([
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div("Portfolio Value", className="small text-muted"),
+                    html.H4("$--", id="home-portfolio-value-quick", className="text-white mb-0")
+                ], width=3, className="text-center border-end border-secondary"),
+                dbc.Col([
+                    html.Div("Today's P&L", className="small text-muted"),
+                    html.H4("$--", id="home-pnl-quick", className="text-success mb-0")
+                ], width=3, className="text-center border-end border-secondary"),
+                dbc.Col([
+                    html.Div("Market Status", className="small text-muted"),
+                    html.H4([
+                        html.Span("●", className="text-success me-2", style={'fontSize': '12px'}),
+                        "Open"
+                    ], id="home-market-status-quick", className="text-white mb-0")
+                ], width=3, className="text-center border-end border-secondary"),
+                dbc.Col([
+                    html.Div("Active Alerts", className="small text-muted"),
+                    dbc.Badge("0", id="home-alerts-count", color="info", className="fs-5 px-3 py-2")
+                ], width=3, className="text-center")
+            ])
+        ], className="py-3")
+    ], className="shadow mb-4 border-primary", style={'borderWidth': '2px', 'borderStyle': 'solid'})
+
+
 def create_top_movers_widget():
     """Create top movers widget showing gainers/losers."""
     return dbc.Card([
@@ -289,30 +330,42 @@ def create_top_movers_widget():
 
 
 def layout():
-    """Create the home tab layout."""
+    """Create the home tab layout with improved UI/UX structure."""
     return dbc.Container([
+        # Header with Quick Stats Bar
         dbc.Row([
             dbc.Col([
                 html.H3([
-                    html.I(className="bi bi-house-door me-2"),
-                    "Dashboard Home"
-                ], style={'color': '#ffffff'}),
-                html.P(f"Welcome back! Last login: {datetime.now().strftime('%Y-%m-%d %H:%M')}", style={'color': '#ffffff'}),
+                    html.I(className="bi bi-command me-2"),
+                    "Command Center"
+                ], style={'color': '#ffffff'}, className="mb-0"),
+                html.P(f"Welcome back! {datetime.now().strftime('%A, %B %d, %Y')}", 
+                       className="text-muted mb-3"),
                 # Visible alert area for Quick Actions feedback
-                dbc.Alert(id='home-action-alert', is_open=False, color='info', className='mt-2', style={'display': 'none'})
+                dbc.Alert(id='home-action-alert', is_open=False, color='info', 
+                         className='mt-2', dismissable=True)
             ])
-        ], className="mb-4"),
+        ], className="mb-3"),
+        
+        # Quick Stats Bar - Prominent metrics at top
+        create_quick_stats_bar(),
         
         # AI Morning Briefing
         dbc.Row([
             dbc.Col(create_morning_briefing_widget(), width=12)
         ]),
         
+        # Section: Portfolio & Actions
+        create_section_header("Portfolio & Actions", "bi-lightning-charge", "primary"),
+        
         # Widget grid - Row 1: Portfolio (left) and Action Center (right)
         dbc.Row([
             dbc.Col(create_portfolio_widget(), width=6, id="widget-portfolio"),
             dbc.Col(create_action_center_widget(), width=6, id="widget-actions"),
         ], className="mb-4"),
+        
+        # Section: Market Data
+        create_section_header("Market Data", "bi-graph-up", "info"),
         
         # Widget grid - Row 2: Market Overview (full width for TradingView)
         dbc.Row([
@@ -322,26 +375,55 @@ def layout():
         # Client-side navigation placeholder
         dcc.Location(id='home-nav', refresh=False),
         
+        # Section: Watchlist & Trading
+        create_section_header("Watchlist & Trading", "bi-star", "warning"),
+        
         # Widget grid - Row 3: Watchlist (horizontal) and Recent Trades
         dbc.Row([
             dbc.Col(create_watchlist_widget(), width=8, id="widget-watchlist"),
             dbc.Col(create_recent_trades_widget(), width=4, id="widget-trades"),
         ], className="mb-4"),
         
-        # Widget grid - Row 3 (New Command Center Features)
+        # Section: Analytics & Insights
+        create_section_header("Analytics & Insights", "bi-bar-chart-line", "success"),
+        
+        # Widget grid - Row 4: Analytics widgets
         dbc.Row([
             dbc.Col(create_portfolio_performance_widget(), width=4, id="widget-performance"),
             dbc.Col(create_market_sentiment_widget(), width=4, id="widget-sentiment"),
             dbc.Col(create_top_movers_widget(), width=4, id="widget-movers"),
         ], className="mb-4"),
         
-        # Customization hint
+        # Keyboard Shortcuts Info (collapsible)
+        dbc.Collapse([
+            dbc.Card([
+                dbc.CardBody([
+                    html.H6("⌨️ Keyboard Shortcuts", className="text-white mb-3"),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Code("Ctrl+S", className="bg-dark px-2 py-1 me-2"),
+                            "Scan Market"
+                        ], width=4, className="text-muted small mb-2"),
+                        dbc.Col([
+                            html.Code("Ctrl+A", className="bg-dark px-2 py-1 me-2"),
+                            "Analyze Portfolio"
+                        ], width=4, className="text-muted small mb-2"),
+                        dbc.Col([
+                            html.Code("Ctrl+R", className="bg-dark px-2 py-1 me-2"),
+                            "Refresh All"
+                        ], width=4, className="text-muted small mb-2"),
+                    ])
+                ], className="py-2")
+            ], className="bg-dark border-secondary mb-3")
+        ], id="shortcuts-collapse", is_open=False),
+        
+        # Footer with tips
         dbc.Row([
             dbc.Col([
                 dbc.Alert([
-                    html.I(className="bi bi-info-circle me-2"),
-                    "Tip: Customize your dashboard layout in Settings (drag & drop coming soon!)"
-                ], color="info", className="mb-0")
+                    html.I(className="bi bi-lightbulb me-2"),
+                    "Quick tip: Use the Action Center above for fast market scanning and portfolio analysis."
+                ], color="dark", className="mb-0 border-secondary text-muted")
             ])
         ]),
 
@@ -353,11 +435,56 @@ def layout():
                 dbc.Button("Close", id="quick-action-modal-close", className="ms-auto", n_clicks=0)
             ),
         ], id="quick-action-modal", is_open=False, size="lg", centered=True),
+        
+        # Hidden stores for quick stats
+        dcc.Store(id='quick-stats-store', data={}),
 
     ], fluid=True, className="p-4")
 
+
 def register_callbacks(app):
     """Register callbacks for the home tab."""
+    
+    # Quick Stats Bar Update Callback
+    @app.callback(
+        Output("home-portfolio-value-quick", "children"),
+        Output("home-pnl-quick", "children"),
+        Output("home-pnl-quick", "className"),
+        Output("home-market-status-quick", "children"),
+        Output("home-alerts-count", "children"),
+        Input("interval-component", "n_intervals"),
+        prevent_initial_call=False
+    )
+    def update_quick_stats(n):
+        """Update the quick stats bar with current data."""
+        try:
+            from ..utils.execution import AlpacaExecutor
+            exec_client = AlpacaExecutor()
+            account = exec_client.get_account_info()
+            
+            pv = account.get('portfolio_value', 0)
+            equity = account.get('equity', 0)
+            last_equity = account.get('last_equity', 0)
+            
+            # Calculate P&L
+            pnl = equity - last_equity
+            pnl_class = "text-success mb-0" if pnl >= 0 else "text-danger mb-0"
+            pnl_str = f"+${pnl:,.2f}" if pnl >= 0 else f"${pnl:,.2f}"
+            
+            # Market status (simplified - based on time)
+            from datetime import datetime
+            now = datetime.now()
+            hour = now.hour
+            if 9 <= hour < 16 and now.weekday() < 5:
+                market_status = [html.Span("●", className="text-success me-2", style={'fontSize': '12px'}), "Open"]
+            else:
+                market_status = [html.Span("●", className="text-secondary me-2", style={'fontSize': '12px'}), "Closed"]
+            
+            return f"${pv:,.2f}", pnl_str, pnl_class, market_status, "0"
+            
+        except Exception:
+            return "$--", "$--", "text-muted mb-0", [html.Span("●", className="text-warning me-2", style={'fontSize': '12px'}), "Offline"], "0"
+    
     @app.callback(
         Output("home-portfolio-value", "children"),
         Output("home-portfolio-change", "children"),

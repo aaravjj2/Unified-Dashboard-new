@@ -1078,85 +1078,69 @@ def register_callbacks(app, SH=None):
         
         logger.info(f"🔮 Regenerate picks clicked: n_clicks={n_clicks}")
         
-        # Show loading message
-        loading_msg = html.Div([
-            html.Span("⏳ ", style={'fontSize': '20px'}),
-            html.Span("Regenerating picks... This may take 20-30 seconds.", style={
-                'color': '#FF9800',
-                'fontWeight': 'bold',
-                'fontSize': '14px'
-            })
-        ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #FF9800'})
-        
         try:
-            # Run the generator
-            import subprocess
-            result = subprocess.run(
-                ['python3', '-m', 'jobs.weekly_picks_generator'],
-                capture_output=True,
-                text=True,
-                timeout=60,
-                cwd=str(Path(__file__).parent.parent.parent)
-            )
+            # Import picker modules
+            from picker.universe import StockUniverse
+            from picker.ensemble_picker import EnsemblePicker, save_weekly_picks
+            from datetime import date
             
-            if result.returncode == 0:
-                # Clear cache so next load fetches fresh data
-                _PICKS_CACHE['data'] = None
-                _PICKS_CACHE['timestamp'] = None
-                
-                # Reload data
-                df, error, summary = _load_and_enrich_picks()
-                
-                if error:
-                    status_msg = html.Div([
-                        html.Span("⚠️ ", style={'fontSize': '20px'}),
-                        html.Span(f"Generator completed but error loading data: {error}", style={
-                            'color': '#ff6b6b',
-                            'fontSize': '14px'
-                        })
-                    ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
-                    return status_msg, no_update, no_update
-                
-                # Build new table
-                content = html.Div([info_div, summary_boxes, _build_datatable(df)])
-                
+            # Get stock universe (S&P 500 top 100)
+            universe = StockUniverse.get_sp500(limit=50)  # Limit to 50 for speed
+            logger.info(f"Using universe of {len(universe)} stocks")
+            
+            # Create picker with default weights
+            picker = EnsemblePicker()
+            
+            # Generate picks (will take 20-30 seconds)
+            logger.info("Generating weekly picks...")
+            picks = picker.generate_weekly_picks(universe, n=20)
+            
+            # Save to database
+            today = date.today()
+            week_start = today - pd.Timedelta(days=today.weekday())
+            save_weekly_picks(picks, week_start)
+            
+            # Clear cache to force refresh
+            _PICKS_CACHE['data'] = None
+            _PICKS_CACHE['timestamp'] = None
+            
+            # Reload data
+            df, error, summary = _load_and_enrich_picks()
+            
+            if error:
                 status_msg = html.Div([
-                    html.Span("✅ ", style={'fontSize': '20px'}),
-                    html.Span(f"Successfully generated {summary.get('total', 0)} new picks for week {summary.get('latest_week', 'N/A')}", style={
-                        'color': '#4CAF50',
-                        'fontWeight': 'bold',
-                        'fontSize': '14px'
-                    })
-                ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #4CAF50'})
-                
-                return status_msg, content, df.to_dict('records') if df is not None else None
-            else:
-                error_msg = result.stderr[:500] if result.stderr else "Unknown error"
-                status_msg = html.Div([
-                    html.Span("❌ ", style={'fontSize': '20px'}),
-                    html.Span(f"Generator failed: {error_msg}", style={
+                    html.Span("⚠️ ", style={'fontSize': '20px'}),
+                    html.Span(f"Generator completed but error loading data: {error}", style={
                         'color': '#ff6b6b',
-                        'fontSize': '12px'
+                        'fontSize': '14px'
                     })
                 ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
                 return status_msg, no_update, no_update
-                
-        except subprocess.TimeoutExpired:
+            
+            # Build new table
+            new_table = _build_datatable(df)
+            
+            # Success message
             status_msg = html.Div([
-                html.Span("⏱️ ", style={'fontSize': '20px'}),
-                html.Span("Generator timed out after 60 seconds", style={
-                    'color': '#ff6b6b',
+                html.Span("✅ ", style={'fontSize': '20px'}),
+                html.Span(f"Successfully generated 20 new weekly picks! Top pick: {picks.iloc[0]['ticker']} (score: {picks.iloc[0]['combined_score']:.0f}/100)", style={
+                    'color': '#4CAF50',
+                    'fontWeight': 'bold',
                     'fontSize': '14px'
                 })
-            ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
-            return status_msg, no_update, no_update
+            ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #4CAF50'})
+            
+            return status_msg, new_table, df.to_dict('records') if df is not None else None
+            
         except Exception as e:
-            logger.exception("Error running generator")
-            status_msg = html.Div([
+            logger.exception(f"Regenerate picks error: {e}")
+            
+            error_msg = html.Div([
                 html.Span("❌ ", style={'fontSize': '20px'}),
-                html.Span(f"Error: {str(e)}", style={
+                html.Span(f"Error generating picks: {str(e)}", style={
                     'color': '#ff6b6b',
                     'fontSize': '14px'
                 })
             ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
-            return status_msg, no_update, no_update
+            
+            return error_msg, no_update, no_update

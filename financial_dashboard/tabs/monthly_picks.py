@@ -969,25 +969,72 @@ def register_callbacks(app, SH=None):
         """Regenerate picks by running ML model."""
         logger.info(f"🔮 Monthly Picks regenerate clicked: n_clicks={n_clicks}")
         
-        result_msg = html.Div([
-            html.H4("🔮 Regenerate Monthly Picks", style={'color': '#9C27B0', 'marginBottom': '20px'}),
-            html.P([
-                "This feature will trigger the ML pipeline to generate fresh monthly picks. ",
-                "Current picks are from: ",
-                html.Code("models/full_run/picks_20251001.csv", style={'color': '#4CAF50'})
-            ], style={'marginBottom': '15px'}),
-            html.Div([
-                html.Strong("✨ ML Pipeline Steps:"),
-                html.Ul([
-                    html.Li("Fetch latest market data"),
-                    html.Li("Calculate technical indicators"),
-                    html.Li("Run ML composite scoring"),
-                    html.Li("Rank and select top 20 stocks"),
-                    html.Li("Save new picks CSV"),
-                ], style={'marginLeft': '20px'})
-            ], style={'padding': '20px', 'background': '#2c2c2c', 'borderRadius': '8px', 'marginTop': '20px'}),
-            html.P("⚡ Feature ready - integration with Dagster pipeline pending", 
-                   style={'color': '#FFD700', 'marginTop': '20px', 'fontStyle': 'italic'})
-        ], style={'padding': '40px', 'maxWidth': '800px'})
-        
-        return result_msg
+        try:
+            # Import picker modules
+            from picker.universe import StockUniverse
+            from picker.ensemble_picker import EnsemblePicker, save_monthly_picks
+            from datetime import date
+            
+            # Get stock universe (S&P 500 + NASDAQ top stocks)
+            universe = StockUniverse.get_combined_universe()
+            logger.info(f"Using universe of {len(universe)} stocks")
+            
+            # Create picker with default weights
+            picker = EnsemblePicker()
+            
+            # Generate picks (will take 30-60 seconds)
+            logger.info("Generating monthly picks...")
+            picks = picker.generate_monthly_picks(universe, n=20)
+            
+            # Save to database
+            today = date.today()
+            month_start = date(today.year, today.month, 1)
+            save_monthly_picks(picks, month_start)
+            
+            # Clear cache to force refresh
+            _PICKS_CACHE['data'] = None
+            _PICKS_CACHE['timestamp'] = None
+            
+            # Reload data
+            df, error, summary = _load_and_enrich_picks()
+            
+            if error:
+                result_msg = html.Div([
+                    html.Span("⚠️ ", style={'fontSize': '20px'}),
+                    html.Span(f"Generator completed but error loading data: {error}", style={
+                        'color': '#ff6b6b',
+                        'fontSize': '14px'
+                    })
+                ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
+                return result_msg
+            
+            # Build new table
+            new_table = _build_datatable(df)
+            
+            # Success message
+            result_msg = html.Div([
+                html.Div([
+                    html.Span("✅ ", style={'fontSize': '20px'}),
+                    html.Span(f"Successfully generated 20 new monthly picks!", style={
+                        'color': '#4CAF50',
+                        'fontWeight': 'bold',
+                        'fontSize': '14px'
+                    })
+                ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #4CAF50', 'marginBottom': '20px'}),
+                new_table
+            ])
+            
+            return result_msg
+            
+        except Exception as e:
+            logger.exception(f"Regenerate picks error: {e}")
+            
+            error_msg = html.Div([
+                html.Span("❌ ", style={'fontSize': '20px'}),
+                html.Span(f"Error generating picks: {str(e)}", style={
+                    'color': '#ff6b6b',
+                    'fontSize': '14px'
+                })
+            ], style={'padding': '10px', 'background': '#2c2c2c', 'borderRadius': '4px', 'border': '2px solid #ff6b6b'})
+            
+            return error_msg
