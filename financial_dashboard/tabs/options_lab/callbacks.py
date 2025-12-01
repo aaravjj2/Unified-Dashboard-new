@@ -234,10 +234,10 @@ def register_callbacks(app):
             puts = pd.DataFrame(chain_data.get('puts', []))
             
             # Combine or filter based on option_type
-            if option_type == 'calls':
+            if option_type == 'call':
                 df = calls.copy()
                 df['type'] = 'Call'
-            elif option_type == 'puts':
+            elif option_type == 'put':
                 df = puts.copy()
                 df['type'] = 'Put'
             else:  # both
@@ -1053,7 +1053,9 @@ def register_callbacks(app):
                 title=f"5-Day Price Forecast - {ticker} {option_type.upper()} ${float(strike):.0f}",
                 xaxis_title="Date",
                 yaxis_title="Option Price ($)",
-                template="plotly_white",
+                template="plotly_dark",
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(22,33,62,0.8)',
                 height=280,
                 margin=dict(l=40, r=40, t=50, b=40)
             )
@@ -1087,7 +1089,9 @@ def register_callbacks(app):
                 title="P&L at Expiration (per contract)",
                 xaxis_title="Stock Price ($)",
                 yaxis_title="Profit/Loss ($)",
-                template="plotly_white",
+                template="plotly_dark",
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(22,33,62,0.8)',
                 height=250,
                 margin=dict(l=40, r=40, t=50, b=40)
             )
@@ -1856,10 +1860,12 @@ def register_callbacks(app):
             
             # Generate sample chain data
             chain_df = scanner.generate_sample_chain(ticker or 'SPY')
+            spot_price = float(chain_df['strike'].median()) if not chain_df.empty else 0.0
             
             # Calculate metrics
-            gex_data = scanner.calculate_gex(chain_df)
-            max_pain = scanner.calculate_max_pain(chain_df)
+            gex_data = scanner.calculate_gex(chain_df, spot_price)
+            max_pain_stats = scanner.calculate_max_pain(chain_df)
+            max_pain_value = max_pain_stats.get('max_pain')
             flow_data = scanner.scan_unusual_activity(
                 chain_df, 
                 min_premium_k=min_premium or 100,
@@ -1878,18 +1884,22 @@ def register_callbacks(app):
                 table = html.P("No unusual activity detected", className="text-muted")
             
             # Create GEX chart
-            gex_fig = create_gex_chart(gex_data, ticker or 'SPY')
+            gex_fig = create_gex_chart(gex_data, spot_price)
             
             # Create max pain chart
             mp_fig = go.Figure()
-            if not chain_df.empty:
-                strikes = chain_df['strike'].unique()
-                pain_values = []
-                for s in strikes:
-                    pain_values.append(scanner.calculate_max_pain(chain_df[chain_df['strike'] <= s]))
+            pain_by_strike = max_pain_stats.get('pain_by_strike', {}) if isinstance(max_pain_stats, dict) else {}
+            if pain_by_strike:
+                strikes = list(pain_by_strike.keys())
+                pain_values = list(pain_by_strike.values())
                 mp_fig.add_trace(go.Bar(x=strikes, y=pain_values, name='Pain'))
-                mp_fig.add_vline(x=max_pain, line_dash="dash", line_color="red",
-                                annotation_text=f"Max Pain: ${max_pain:.2f}")
+                if max_pain_value is not None:
+                    mp_fig.add_vline(
+                        x=max_pain_value,
+                        line_dash="dash",
+                        line_color="red",
+                        annotation_text=f"Max Pain: ${max_pain_value:.2f}"
+                    )
             mp_fig.update_layout(
                 title=f'{ticker or "SPY"} Max Pain Analysis',
                 template='plotly_dark',
@@ -1899,7 +1909,7 @@ def register_callbacks(app):
             )
             
             # Stats
-            net_gex = sum(gex_data.values()) if gex_data else 0
+            net_gex = gex_data.get('net_gex', 0) if isinstance(gex_data, dict) else 0
             call_sweeps = len(flow_data[flow_data['type'] == 'call']) if not flow_data.empty else 0
             put_sweeps = len(flow_data[flow_data['type'] == 'put']) if not flow_data.empty else 0
             
@@ -1907,7 +1917,7 @@ def register_callbacks(app):
                 table,
                 gex_fig,
                 mp_fig,
-                f"${max_pain:.2f}",
+                f"${max_pain_value:.2f}" if max_pain_value is not None else "--",
                 f"${net_gex/1e6:.2f}M",
                 str(call_sweeps),
                 str(put_sweeps)
@@ -1933,10 +1943,11 @@ def register_callbacks(app):
          Output('ol-iv-gauge', 'figure'),
          Output('ol-iv-crush-estimate', 'children')],
         [Input('ol-iv-analyze-btn', 'n_clicks')],
-        [State('ol-iv-ticker', 'value')],
+        [State('ol-iv-ticker', 'value'),
+         State('options-chain-store', 'data')],
         prevent_initial_call=True
     )
-    def analyze_iv(n_clicks, ticker):
+    def analyze_iv(n_clicks, ticker, chain_store):
         """Analyze IV metrics for a ticker."""
         try:
             from .iv_analysis import (
@@ -1945,47 +1956,91 @@ def register_callbacks(app):
                 create_skew_chart,
                 create_iv_percentile_gauge
             )
+            from .data_loader import _generate_mock_chain
             
             analyzer = get_iv_analyzer()
-            ticker = ticker or 'AAPL'
-            
-            # Generate sample data
-            iv_history = analyzer.generate_sample_iv_history(ticker)
-            
-            # Calculate metrics
-            percentile_30 = analyzer.calculate_iv_percentile(iv_history, window=30)
-            percentile_1y = analyzer.calculate_iv_percentile(iv_history, window=252)
-            iv_rank = analyzer.calculate_iv_rank(iv_history)
-            
-            # Term structure analysis
-            term_structure = analyzer.analyze_term_structure(iv_history)
-            term_state = term_structure.get('state', 'Unknown')
-            
-            # Skew analysis
-            skew_data = analyzer.analyze_skew(iv_history)
-            
+
+            if not n_clicks:
+                raise PreventUpdate
+            ticker = ticker or (chain_store or {}).get('ticker') or 'AAPL'
+
+            def _chain_to_df(raw_chain):
+                """Normalize stored chain data into a single DataFrame."""
+                calls = pd.DataFrame(raw_chain.get('calls', [])) if raw_chain else pd.DataFrame()
+                puts = pd.DataFrame(raw_chain.get('puts', [])) if raw_chain else pd.DataFrame()
+                frames = []
+                if not calls.empty:
+                    calls = calls.copy()
+                    calls['type'] = 'call'
+                    if 'expiration' not in calls.columns and 'expDate' in calls.columns:
+                        calls.rename(columns={'expDate': 'expiration'}, inplace=True)
+                    frames.append(calls)
+                if not puts.empty:
+                    puts = puts.copy()
+                    puts['type'] = 'put'
+                    if 'expiration' not in puts.columns and 'expDate' in puts.columns:
+                        puts.rename(columns={'expDate': 'expiration'}, inplace=True)
+                    frames.append(puts)
+                if frames:
+                    return pd.concat(frames, ignore_index=True)
+                return pd.DataFrame()
+
+            if chain_store and not chain_store.get('error'):
+                chain_dict = chain_store
+            else:
+                chain_dict = _generate_mock_chain(ticker)
+
+            chain_df = _chain_to_df(chain_dict)
+            spot_price = chain_dict.get('spot_price') or (chain_df['strike'].mean() if not chain_df.empty else 100)
+
+            if chain_df.empty:
+                raise ValueError("No options chain data available for IV analysis")
+
+            # Generate IV history (percent scale)
+            iv_history_raw = analyzer.generate_sample_iv_history(ticker)
+            iv_history_pct = [val * 100 for val in iv_history_raw]
+            current_iv = iv_history_pct[-1] if iv_history_pct else 30.0
+            percentile_data = analyzer.calculate_iv_percentile(current_iv, iv_history_pct)
+            percentile_30 = percentile_data.get(30)
+            percentile_1y = percentile_data.get(252)
+            iv_rank = analyzer.calculate_iv_rank(current_iv, iv_history_pct)
+
+            # Term structure & skew use actual chain data
+            term_structure = analyzer.analyze_term_structure(chain_df, spot_price)
+            term_state = term_structure.get('shape', 'Unknown').replace('_', ' ').title()
+
+            skew_data = analyzer.analyze_skew(chain_df, spot_price)
+
             # Create charts
             ts_fig = create_term_structure_chart(term_structure, ticker)
-            skew_fig = create_skew_chart(skew_data, ticker)
-            gauge_fig = create_iv_percentile_gauge(percentile_1y, ticker)
-            
+            skew_fig = create_skew_chart(skew_data, spot_price, ticker)
+            gauge_fig = create_iv_percentile_gauge(percentile_data, current_iv)
+
             # IV crush estimate
-            crush = analyzer.calculate_earnings_iv_crush(iv_history)
+            crush = analyzer.calculate_earnings_iv_crush(current_iv, historical_crush_pct=35)
             crush_html = html.Div([
                 html.P([
-                    html.Strong("Expected IV Crush: "),
-                    f"{crush.get('expected_crush', 0)*100:.1f}%"
+                    html.Strong("Pre-Earnings IV: "),
+                    f"{crush.get('pre_earnings_iv', current_iv):.1f}%"
                 ]),
                 html.P([
-                    html.Strong("Historical Avg Post-Earnings Drop: "),
-                    f"{crush.get('avg_drop', 0)*100:.1f}%"
-                ], className="text-muted small")
+                    html.Strong("Expected IV Crush: "),
+                    f"{crush.get('expected_crush_pct', 0):.1f}%"
+                ]),
+                html.P([
+                    html.Strong("Projected Post-Earnings IV: "),
+                    f"{crush.get('expected_post_iv', current_iv):.1f}%"
+                ], className="text-muted mb-1"),
+                html.Small(crush.get('recommendation', 'Monitor IV into the event'), className="text-muted")
             ])
-            
+
+            def _fmt(value):
+                return f"{value:.0f}%" if value is not None else "--"
+
             return (
-                f"{percentile_30:.0f}%",
-                f"{percentile_1y:.0f}%",
-                f"{iv_rank*100:.0f}%",
+                _fmt(percentile_30),
+                _fmt(percentile_1y),
+                _fmt(iv_rank),
                 term_state,
                 ts_fig,
                 skew_fig,

@@ -238,6 +238,29 @@ async def fetch_volatility_data(symbol: str, http_client: httpx.AsyncClient) -> 
     return None
 
 
+async def fetch_morning_brief(http_client: httpx.AsyncClient) -> Optional[Dict]:
+    """Fetch AI Morning Brief data for chatbot context"""
+    try:
+        from .ai_morning_brief import AIMorningBriefService
+        service = AIMorningBriefService()
+        brief = service.generate_morning_brief()
+        return brief
+    except Exception as e:
+        logger.warning(f"Failed to fetch morning brief: {e}")
+    return None
+
+
+async def fetch_market_summary(http_client: httpx.AsyncClient) -> Optional[Dict]:
+    """Fetch live market summary for chatbot context"""
+    try:
+        from .live_market_data import get_live_market_service
+        service = get_live_market_service()
+        return service.get_market_summary()
+    except Exception as e:
+        logger.warning(f"Failed to fetch market summary: {e}")
+    return None
+
+
 async def fetch_strategy_backtest_summary(http_client: httpx.AsyncClient) -> Optional[Dict]:
     """Fetch recent strategy backtest results"""
     try:
@@ -330,8 +353,42 @@ async def process_query_llm(query: str, llm, http_client: httpx.AsyncClient) -> 
             sources.append("Alpaca Portfolio")
         else:
             context_parts.append("Portfolio: No open positions found or API unavailable.")
+    
+    # 3. Check for morning brief / market overview keywords
+    if any(k in query.upper() for k in ["MORNING BRIEF", "MARKET OVERVIEW", "MARKET TODAY", 
+                                         "WHAT'S HAPPENING", "MARKET SUMMARY", "TODAY'S MARKET",
+                                         "FEAR GREED", "SENTIMENT", "SECTOR", "HOW IS THE MARKET"]):
+        market_summary = await fetch_market_summary(http_client)
+        if market_summary:
+            # Format market indices
+            indices_str = "Market Indices:\n"
+            for sym, data in market_summary.get('indices', {}).items():
+                indices_str += f"- {data['name']} ({sym}): ${data['price']:.2f} ({data['change_pct']:+.2f}%)\n"
+            context_parts.append(indices_str)
+            
+            # Format Fear & Greed
+            fg = market_summary.get('fear_greed', {})
+            if fg:
+                fg_str = f"Fear & Greed Index: {fg.get('value', 'N/A')} ({fg.get('classification', 'N/A')})"
+                context_parts.append(fg_str)
+            
+            # Format sector performance
+            sectors = market_summary.get('sectors', {})
+            if sectors:
+                top_sectors = sorted(sectors.items(), key=lambda x: x[1].get('day_change', 0), reverse=True)[:3]
+                bottom_sectors = sorted(sectors.items(), key=lambda x: x[1].get('day_change', 0))[:3]
+                
+                sector_str = "Top Performing Sectors:\n"
+                for name, data in top_sectors:
+                    sector_str += f"- {name}: {data['day_change']:+.2f}%\n"
+                sector_str += "\nWorst Performing Sectors:\n"
+                for name, data in bottom_sectors:
+                    sector_str += f"- {name}: {data['day_change']:+.2f}%\n"
+                context_parts.append(sector_str)
+            
+            sources.append("Live Market Data")
 
-    # 3. Construct Prompt
+    # 4. Construct Prompt
     current_date = datetime.now().strftime("%B %d, %Y")
     
     system_prompt = f"""You are a professional financial assistant for a trading dashboard.

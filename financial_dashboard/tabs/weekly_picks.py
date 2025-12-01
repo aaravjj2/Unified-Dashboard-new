@@ -362,6 +362,7 @@ def _load_and_enrich_picks():
         
         # Try loading from JSON in data/picks directory first
         json_df = None
+        csv_path = None
         try:
             import json as _json
             picks_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'picks')
@@ -377,6 +378,7 @@ def _load_and_enrich_picks():
                     if picks:
                         json_df = pd.DataFrame(picks)
                         logger.info(f"Loaded {len(json_df)} picks from JSON")
+                        csv_path = json_path
         except Exception as e:
             logger.warning(f"Failed to load from JSON: {e}")
         

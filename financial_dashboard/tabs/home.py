@@ -214,6 +214,103 @@ def create_recent_trades_widget():
         ])
     ], className="shadow-sm h-100")
 
+
+def create_morning_brief_widget():
+    """Create AI Morning Brief widget for home dashboard."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.I(className="bi bi-sun me-2"),
+            html.Span("AI Morning Brief", className="fw-bold"),
+            dbc.Badge("LIVE", color="success", className="ms-2 pulse-badge"),
+            dbc.Button(
+                html.I(className="bi bi-arrow-clockwise"),
+                id="refresh-morning-brief-btn",
+                color="link",
+                size="sm",
+                className="float-end"
+            )
+        ]),
+        dbc.CardBody([
+            # Loading state
+            dcc.Loading(
+                id="morning-brief-loading",
+                type="default",
+                children=[
+                    html.Div(id="morning-brief-content", children=[
+                        # Market Sentiment
+                        dbc.Row([
+                            dbc.Col([
+                                html.H6("Market Sentiment", className="text-muted mb-2"),
+                                dbc.Progress(
+                                    value=65,
+                                    color="success",
+                                    className="mb-1",
+                                    style={"height": "8px"}
+                                ),
+                                html.Small("Bullish (Fear & Greed: 65)", className="text-success")
+                            ], width=12)
+                        ], className="mb-3"),
+                        
+                        html.Hr(className="my-2"),
+                        
+                        # Key Insights
+                        html.Div([
+                            html.H6([
+                                html.I(className="bi bi-lightbulb me-2 text-warning"),
+                                "Key Insights"
+                            ], className="mb-2"),
+                            html.Ul([
+                                html.Li("Tech sector showing strength, +1.2% pre-market", className="small mb-1"),
+                                html.Li("Fed meeting today - volatility expected 2-4PM", className="small mb-1"),
+                                html.Li("NVDA earnings beat estimates, AI rally continues", className="small mb-1"),
+                            ], className="ps-3 mb-0")
+                        ], className="mb-3"),
+                        
+                        html.Hr(className="my-2"),
+                        
+                        # Trading Signals
+                        html.Div([
+                            html.H6([
+                                html.I(className="bi bi-graph-up-arrow me-2 text-info"),
+                                "AI Trading Signals"
+                            ], className="mb-2"),
+                            dbc.Row([
+                                dbc.Col([
+                                    dbc.Badge("BUY", color="success", className="me-1"),
+                                    html.Span("NVDA", className="fw-bold"),
+                                    html.Span(" - Momentum", className="small text-muted")
+                                ], width=12, className="mb-1"),
+                                dbc.Col([
+                                    dbc.Badge("HOLD", color="warning", className="me-1"),
+                                    html.Span("AAPL", className="fw-bold"),
+                                    html.Span(" - Wait for dip", className="small text-muted")
+                                ], width=12, className="mb-1"),
+                                dbc.Col([
+                                    dbc.Badge("SELL", color="danger", className="me-1"),
+                                    html.Span("TSLA", className="fw-bold"),
+                                    html.Span(" - Take profits", className="small text-muted")
+                                ], width=12, className="mb-1"),
+                            ])
+                        ], className="mb-2"),
+                        
+                        # View Full Brief button
+                        dbc.Button(
+                            [
+                                html.I(className="bi bi-arrow-right-circle me-2"),
+                                "View Full AI Brief"
+                            ],
+                            id="view-full-brief-btn",
+                            color="primary",
+                            size="sm",
+                            className="w-100 mt-2"
+                        )
+                    ])
+                ]
+            )
+        ])
+    ], className="shadow-sm h-100", style={"background": "linear-gradient(135deg, rgba(0,100,200,0.05) 0%, rgba(0,200,100,0.05) 100%)"})
+
+
 def layout():
     """Create the home tab layout."""
     return dbc.Container([
@@ -294,11 +391,16 @@ def layout():
         # Client-side navigation placeholder
         dcc.Location(id='home-nav', refresh=False),
         
-        # Widget grid - Row 2
+        # Widget grid - Row 2: Morning Brief + Quick Actions + Recent Trades
         dbc.Row([
-            dbc.Col(create_watchlist_widget(), width=4, id="widget-watchlist"),
+            dbc.Col(create_morning_brief_widget(), width=4, id="widget-morning-brief"),
             dbc.Col(create_quick_actions_widget(), width=4, id="widget-actions"),
             dbc.Col(create_recent_trades_widget(), width=4, id="widget-trades"),
+        ], className="mb-4"),
+        
+        # Widget grid - Row 3: Watchlist
+        dbc.Row([
+            dbc.Col(create_watchlist_widget(), width=12, id="widget-watchlist"),
         ], className="mb-4"),
         
         # Customization hint

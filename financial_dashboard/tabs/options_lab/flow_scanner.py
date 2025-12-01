@@ -66,6 +66,78 @@ class OptionsFlowScanner:
         
         return pd.DataFrame(data)
 
+    def scan_unusual_activity(
+        self,
+        chain_data: pd.DataFrame,
+        min_premium_k: float = 100,
+        volume_oi_threshold: float = 0.5
+    ) -> pd.DataFrame:
+        """Return a filtered DataFrame of eye-catching trades."""
+        if chain_data is None or chain_data.empty:
+            return pd.DataFrame()
+
+        df = chain_data.copy()
+
+        if 'type' not in df.columns:
+            df['type'] = 'call'
+        if 'expiration' not in df.columns and 'expDate' in df.columns:
+            df['expiration'] = df['expDate']
+        df['expiry'] = df.get('expiration', '')
+        df['open_interest'] = df.get('openInterest', 0)
+
+        safe_volume = df.get('volume', 0).fillna(0)
+        safe_oi = df['open_interest'].replace(0, np.nan).fillna(1)
+        df['volume_oi_ratio'] = safe_volume / safe_oi
+        df['premium_total'] = df.get('lastPrice', 0).fillna(0) * safe_volume * 100
+
+        premium_threshold = max(min_premium_k, 1) * 1_000
+        ratio_threshold = max(volume_oi_threshold, 0)
+
+        filtered = df[
+            (df['premium_total'] >= premium_threshold) &
+            (df['volume_oi_ratio'] >= ratio_threshold)
+        ].copy()
+
+        if filtered.empty:
+            return filtered
+
+        filtered['type'] = filtered['type'].fillna('call')
+        filtered['signal'] = np.where(
+            filtered['type'].str.lower() == 'call',
+            'Bullish Sweep',
+            'Bearish Sweep'
+        )
+        filtered['ticker'] = filtered.get('ticker', 'UNKNOWN').fillna('UNKNOWN')
+        filtered['open_interest'] = filtered['open_interest'].fillna(0)
+
+        columns = [
+            'ticker', 'type', 'strike', 'expiry', 'volume',
+            'open_interest', 'premium_total', 'signal', 'volume_oi_ratio'
+        ]
+        for col in columns:
+            if col not in filtered.columns:
+                filtered[col] = np.nan
+
+        filtered.sort_values('premium_total', ascending=False, inplace=True)
+        return filtered[columns]
+
+    def calculate_gex(self, chain_data: pd.DataFrame, spot_price: Optional[float] = None) -> Dict:
+        """Wrapper that exposes module-level GEX calculation via the scanner."""
+        if chain_data is None or chain_data.empty:
+            return {'gex_by_strike': {}, 'net_gex': 0, 'gex_flip': None, 'interpretation': 'N/A'}
+
+        if spot_price is None:
+            if 'spot_price' in chain_data.columns:
+                spot_price = float(chain_data['spot_price'].iloc[0])
+            else:
+                spot_price = float(chain_data['strike'].median())
+
+        return _calculate_gex_internal(chain_data, spot_price)
+
+    def calculate_max_pain(self, chain_data: pd.DataFrame) -> Dict:
+        """Expose max-pain stats so callbacks can consume a single object."""
+        return _calculate_max_pain_stats(chain_data)
+
     def analyze_flow(self, chain_data: pd.DataFrame, spot_price: float) -> Dict:
         """
         Analyze options chain for unusual activity.
@@ -228,7 +300,7 @@ class OptionsFlowScanner:
         return fig
 
 
-def calculate_gex(chain_data: pd.DataFrame, spot_price: float) -> Dict:
+def _calculate_gex_internal(chain_data: pd.DataFrame, spot_price: float) -> Dict:
     """
     Calculate Gamma Exposure (GEX) for market maker hedging analysis.
     
@@ -284,6 +356,11 @@ def calculate_gex(chain_data: pd.DataFrame, spot_price: float) -> Dict:
         return {'gex_by_strike': {}, 'net_gex': 0, 'gex_flip': None}
 
 
+def calculate_gex(chain_data: pd.DataFrame, spot_price: float) -> Dict:
+    """Backwards-compatible wrapper for existing imports."""
+    return _calculate_gex_internal(chain_data, spot_price)
+
+
 def create_gex_chart(gex_data: Dict, spot_price: float) -> go.Figure:
     """Create GEX visualization chart."""
     gex_by_strike = gex_data.get('gex_by_strike', {})
@@ -330,7 +407,7 @@ def create_gex_chart(gex_data: Dict, spot_price: float) -> go.Figure:
     return fig
 
 
-def calculate_max_pain(chain_data: pd.DataFrame) -> Dict:
+def _calculate_max_pain_stats(chain_data: pd.DataFrame) -> Dict:
     """
     Calculate max pain strike - where options expire worthless.
     This is where market makers have minimum payout.
@@ -374,6 +451,11 @@ def calculate_max_pain(chain_data: pd.DataFrame) -> Dict:
     except Exception as e:
         logger.error(f"Max pain calculation error: {e}")
         return {'max_pain': None, 'pain_by_strike': {}}
+
+
+def calculate_max_pain(chain_data: pd.DataFrame) -> Dict:
+    """Compatibility wrapper for legacy imports."""
+    return _calculate_max_pain_stats(chain_data)
 
 
 # Singleton scanner instance

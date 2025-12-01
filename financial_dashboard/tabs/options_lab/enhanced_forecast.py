@@ -449,6 +449,150 @@ def get_forecaster() -> EnhancedOptionsForecaster:
     return _forecaster
 
 
+def generate_ai_analysis(result: ForecastResult) -> Dict[str, Any]:
+    """
+    Generate comprehensive AI analysis with recommendations and action plan.
+    
+    Args:
+        result: ForecastResult from forecaster
+    
+    Returns:
+        Dict with analysis, recommendation, and action_plan
+    """
+    # Analyze the forecast result
+    analysis = {
+        'summary': '',
+        'key_insights': [],
+        'risks': [],
+        'recommendation': '',
+        'action_plan': [],
+        'alternative_strategies': [],
+        'exit_strategy': {}
+    }
+    
+    # Generate summary based on signal
+    if "STRONG BUY" in result.signal:
+        analysis['summary'] = f"Strong bullish setup detected with {result.confidence*100:.0f}% confidence. Multiple factors align favorably including positive expected value (${result.expected_value:.2f}), favorable risk/reward ({result.risk_reward_ratio:.1f}x), and {result.probability_profit*100:.0f}% probability of profit."
+    elif "BUY" in result.signal:
+        analysis['summary'] = f"Moderately bullish outlook with {result.confidence*100:.0f}% confidence. The analysis shows positive expected value and reasonable risk metrics, though some caution is warranted."
+    elif "STRONG SELL" in result.signal:
+        analysis['summary'] = f"Strong bearish signal detected with {result.confidence*100:.0f}% confidence. Risk/reward is unfavorable and probability of profit is low at {result.probability_profit*100:.0f}%."
+    elif "SELL" in result.signal:
+        analysis['summary'] = f"Bearish outlook with {result.confidence*100:.0f}% confidence. Current conditions suggest closing or reducing position exposure."
+    else:
+        analysis['summary'] = f"Neutral market conditions with no clear directional bias. Expected value is ${result.expected_value:.2f} with {result.probability_profit*100:.0f}% probability of profit."
+    
+    # Key insights
+    analysis['key_insights'] = []
+    
+    # IV Regime insight
+    if result.iv_regime == IVRegime.LOW:
+        analysis['key_insights'].append("📉 IV is LOW - Premium is cheap, good time to BUY options (long gamma)")
+    elif result.iv_regime == IVRegime.HIGH:
+        analysis['key_insights'].append("📈 IV is HIGH - Premium is expensive, consider SELLING options (short gamma)")
+    elif result.iv_regime == IVRegime.EXTREME:
+        analysis['key_insights'].append("🔥 IV is EXTREME - Volatility crush likely, premium sellers advantage")
+    else:
+        analysis['key_insights'].append("➡️ IV is NORMAL - No significant volatility edge either way")
+    
+    # Trend insight
+    if result.trend_direction in [TrendDirection.STRONG_BULLISH, TrendDirection.BULLISH]:
+        analysis['key_insights'].append(f"📈 Price trend is {result.trend_direction.value.replace('_', ' ').upper()} - Momentum favors calls")
+    elif result.trend_direction in [TrendDirection.STRONG_BEARISH, TrendDirection.BEARISH]:
+        analysis['key_insights'].append(f"📉 Price trend is {result.trend_direction.value.replace('_', ' ').upper()} - Momentum favors puts")
+    else:
+        analysis['key_insights'].append("➡️ Price trend is NEUTRAL - Consider neutral strategies like iron condors")
+    
+    # Probability insight
+    if result.probability_profit > 0.65:
+        analysis['key_insights'].append(f"✅ High probability trade - {result.probability_profit*100:.0f}% chance of profit")
+    elif result.probability_profit < 0.35:
+        analysis['key_insights'].append(f"⚠️ Low probability trade - Only {result.probability_profit*100:.0f}% chance of profit")
+    
+    # Greeks insight
+    if abs(result.theta_decay_1d) > result.current_price * 0.02:
+        analysis['key_insights'].append(f"⏰ Significant theta decay - Losing ${abs(result.theta_decay_1d):.2f}/day to time decay")
+    
+    # Risks
+    analysis['risks'] = []
+    if result.max_loss > result.max_gain:
+        analysis['risks'].append(f"Max loss (${result.max_loss:.2f}) exceeds max gain (${result.max_gain:.2f})")
+    if result.iv_regime in [IVRegime.HIGH, IVRegime.EXTREME]:
+        analysis['risks'].append("Elevated IV increases premium cost and volatility crush risk")
+    if result.probability_profit < 0.5:
+        analysis['risks'].append(f"Below 50% probability of profit ({result.probability_profit*100:.0f}%)")
+    if result.theta_decay_1d < -0.5:
+        analysis['risks'].append(f"Heavy time decay: ${result.theta_decay_1d:.2f}/day")
+    
+    # Recommendation
+    if "BUY" in result.signal:
+        if result.probability_profit > 0.6:
+            analysis['recommendation'] = f"ENTER POSITION - Strong setup with {result.probability_profit*100:.0f}% win rate"
+        else:
+            analysis['recommendation'] = f"CONSIDER ENTRY - Acceptable setup but manage size due to {result.probability_profit*100:.0f}% win rate"
+    elif "SELL" in result.signal:
+        analysis['recommendation'] = "CLOSE/REDUCE POSITION - Unfavorable risk/reward profile"
+    else:
+        analysis['recommendation'] = "WAIT FOR BETTER SETUP - No clear edge in current conditions"
+    
+    # Action Plan
+    analysis['action_plan'] = []
+    
+    if "BUY" in result.signal:
+        analysis['action_plan'] = [
+            f"1️⃣ Entry: Enter at current price ${result.current_price:.2f} or wait for pullback to ${result.conf_low_1d:.2f}",
+            f"2️⃣ Position Size: Risk no more than 2% of portfolio on this trade",
+            f"3️⃣ Stop Loss: Set stop at ${result.current_price * 0.7:.2f} (-30% from entry)",
+            f"4️⃣ Profit Target: First target ${result.forecast_5d:.2f}, second target ${result.forecast_expiry:.2f}",
+            f"5️⃣ Time Management: Review position daily, close if theta exceeds 50% of remaining value",
+            f"6️⃣ Exit Trigger: Close immediately if underlying breaks key support levels"
+        ]
+    elif "SELL" in result.signal:
+        analysis['action_plan'] = [
+            "1️⃣ Close existing long positions to limit further losses",
+            "2️⃣ Consider opening put protection if holding underlying stock",
+            "3️⃣ Wait for IV normalization before re-entry",
+            "4️⃣ Look for mean reversion signals before going long again"
+        ]
+    else:
+        analysis['action_plan'] = [
+            "1️⃣ Wait for clearer directional signal before entering",
+            "2️⃣ Consider neutral strategies: Iron Condor, Iron Butterfly, or Calendar Spread",
+            "3️⃣ If already in position, tighten stops and reduce size",
+            "4️⃣ Monitor for breakout above/below current range"
+        ]
+    
+    # Alternative strategies based on IV regime
+    analysis['alternative_strategies'] = []
+    if result.iv_regime in [IVRegime.HIGH, IVRegime.EXTREME]:
+        analysis['alternative_strategies'] = [
+            {"name": "Iron Condor", "reason": "Sell premium in high IV, profit from time decay"},
+            {"name": "Put Credit Spread", "reason": "Bullish bias + collect premium in elevated IV"},
+            {"name": "Covered Call", "reason": "Generate income while IV is high"}
+        ]
+    elif result.iv_regime == IVRegime.LOW:
+        analysis['alternative_strategies'] = [
+            {"name": "Long Straddle", "reason": "Buy cheap premium, profit from volatility expansion"},
+            {"name": "Calendar Spread", "reason": "Benefit from IV term structure"},
+            {"name": "LEAPS Call", "reason": "Low cost long-term bullish exposure"}
+        ]
+    else:
+        analysis['alternative_strategies'] = [
+            {"name": "Vertical Spread", "reason": "Defined risk directional play"},
+            {"name": "Butterfly", "reason": "Low cost, defined risk around target price"}
+        ]
+    
+    # Exit strategy
+    analysis['exit_strategy'] = {
+        'profit_target': f"Take 50% profit at ${result.forecast_5d:.2f}, remainder at ${result.forecast_expiry:.2f}",
+        'stop_loss': f"Hard stop at ${result.current_price * 0.7:.2f} (-30%)",
+        'time_stop': "Close 7 days before expiration if not in profit",
+        'volatility_stop': "Close if IV drops 20%+ from entry (for long options)"
+    }
+    
+    return analysis
+
+
 def generate_enhanced_forecast_ui(result: ForecastResult) -> Any:
     """
     Generate enhanced Dash UI components from forecast result.
@@ -528,6 +672,8 @@ def generate_enhanced_forecast_ui(result: ForecastResult) -> Any:
     forecast_fig.update_layout(
         title="📈 Price Forecast",
         template="plotly_dark",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(22,33,62,0.8)',
         height=280,
         margin=dict(l=40, r=40, t=50, b=40),
         showlegend=False
@@ -556,6 +702,8 @@ def generate_enhanced_forecast_ui(result: ForecastResult) -> Any:
     prob_fig.update_layout(
         title="📊 P&L Distribution",
         template="plotly_dark",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(22,33,62,0.8)',
         height=220,
         margin=dict(l=40, r=40, t=50, b=40),
         showlegend=False,
@@ -595,6 +743,8 @@ def generate_enhanced_forecast_ui(result: ForecastResult) -> Any:
     
     greeks_fig.update_layout(
         template="plotly_dark",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(22,33,62,0.8)',
         height=200,
         margin=dict(l=40, r=40, t=40, b=40),
         showlegend=False
@@ -706,9 +856,138 @@ def generate_enhanced_forecast_ui(result: ForecastResult) -> Any:
             html.Span(f"ν1%: ${result.vega_pnl_1vol:.2f}")
         ], color="dark", className="py-2"),
         
+        # === AI ANALYSIS SECTION ===
+        _generate_ai_analysis_ui(result),
+        
         # Model info
         html.P([
             html.Small(f"Model: {result.model_used} | Generated: {result.timestamp}", 
                       className="text-muted")
         ], className="text-end mb-0")
+    ])
+
+
+def _generate_ai_analysis_ui(result: ForecastResult) -> Any:
+    """Generate the AI analysis UI section."""
+    from dash import html
+    import dash_bootstrap_components as dbc
+    
+    # Get AI analysis
+    analysis = generate_ai_analysis(result)
+    
+    # Determine recommendation color
+    if "ENTER" in analysis['recommendation'] or "Strong" in analysis['recommendation']:
+        rec_color = "success"
+    elif "CLOSE" in analysis['recommendation'] or "REDUCE" in analysis['recommendation']:
+        rec_color = "danger"
+    else:
+        rec_color = "warning"
+    
+    return html.Div([
+        # AI Analysis Header
+        html.Hr(className="my-4"),
+        html.H5([
+            html.I(className="bi bi-robot me-2"),
+            "🤖 AI Analysis & Recommendations"
+        ], className="mb-3 text-info"),
+        
+        # Summary
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-lightbulb me-2"),
+                "Analysis Summary"
+            ], className="bg-dark text-white"),
+            dbc.CardBody([
+                html.P(analysis['summary'], className="mb-0")
+            ])
+        ], className="mb-3"),
+        
+        # Key Insights
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-search me-2"),
+                "Key Insights"
+            ], className="bg-dark text-white"),
+            dbc.CardBody([
+                html.Ul([
+                    html.Li(insight, className="mb-2") 
+                    for insight in analysis['key_insights']
+                ], className="mb-0")
+            ])
+        ], className="mb-3"),
+        
+        # Recommendation (prominent)
+        dbc.Alert([
+            html.H5([
+                html.I(className="bi bi-check-circle me-2"),
+                "Recommendation"
+            ], className="mb-2"),
+            html.Strong(analysis['recommendation'], className="h5")
+        ], color=rec_color, className="mb-3"),
+        
+        # Action Plan
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-list-check me-2"),
+                "📋 Action Plan"
+            ], className="bg-primary text-white"),
+            dbc.CardBody([
+                html.Div([
+                    html.P(step, className="mb-2", style={'fontSize': '14px'})
+                    for step in analysis['action_plan']
+                ])
+            ])
+        ], className="mb-3"),
+        
+        # Risk Warnings (if any)
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-exclamation-triangle me-2"),
+                "⚠️ Risk Factors"
+            ], className="bg-warning text-dark"),
+            dbc.CardBody([
+                html.Ul([
+                    html.Li(risk, className="text-danger mb-1")
+                    for risk in analysis['risks']
+                ], className="mb-0") if analysis['risks'] else html.P("No significant risk factors identified", className="text-success mb-0")
+            ])
+        ], className="mb-3"),
+        
+        # Two column layout for alternatives and exit
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-arrow-left-right me-2"),
+                        "Alternative Strategies"
+                    ], className="bg-dark text-white"),
+                    dbc.CardBody([
+                        html.Div([
+                            html.Div([
+                                html.Strong(alt['name'], className="text-info"),
+                                html.Br(),
+                                html.Small(alt['reason'], className="text-muted")
+                            ], className="mb-2")
+                            for alt in analysis['alternative_strategies']
+                        ])
+                    ])
+                ])
+            ], width=6),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-door-open me-2"),
+                        "Exit Strategy"
+                    ], className="bg-dark text-white"),
+                    dbc.CardBody([
+                        html.Div([
+                            html.P([html.Strong("🎯 Profit Target: "), analysis['exit_strategy']['profit_target']], className="mb-2", style={'fontSize': '13px'}),
+                            html.P([html.Strong("🛑 Stop Loss: "), analysis['exit_strategy']['stop_loss']], className="mb-2", style={'fontSize': '13px'}),
+                            html.P([html.Strong("⏰ Time Stop: "), analysis['exit_strategy']['time_stop']], className="mb-2", style={'fontSize': '13px'}),
+                            html.P([html.Strong("📊 Vol Stop: "), analysis['exit_strategy']['volatility_stop']], className="mb-0", style={'fontSize': '13px'})
+                        ])
+                    ])
+                ])
+            ], width=6)
+        ], className="mb-3")
     ])

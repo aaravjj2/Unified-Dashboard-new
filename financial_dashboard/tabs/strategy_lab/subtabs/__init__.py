@@ -11,5 +11,6 @@ from . import execution  # Now includes backtest config
 from . import results
 from . import benchmark
 from . import risk
+from . import bots  # Trading bots automation
 
-__all__ = ['setup', 'execution', 'results', 'benchmark', 'risk']
+__all__ = ['setup', 'execution', 'results', 'benchmark', 'risk', 'bots']

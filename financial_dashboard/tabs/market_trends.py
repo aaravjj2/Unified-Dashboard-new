@@ -95,64 +95,154 @@ def _sanitize_for_json(obj):
     return str(obj)
 
 
+# Module-level FinBERT analyzer (lazy loaded)
+_finbert_analyzer = None
+
+
+def _get_finbert_analyzer():
+    """Lazy load FinBERT analyzer for better sentiment analysis."""
+    global _finbert_analyzer
+    if _finbert_analyzer is None:
+        try:
+            from financial_dashboard.models.finbert_sentiment import FinBERTSentimentAnalyzer
+            _finbert_analyzer = FinBERTSentimentAnalyzer()
+            if _finbert_analyzer.initialize():
+                logger.info("✅ FinBERT analyzer loaded for news sentiment")
+            else:
+                _finbert_analyzer = False  # Mark as unavailable
+        except Exception as e:
+            logger.warning(f"FinBERT unavailable, using keyword-based sentiment: {e}")
+            _finbert_analyzer = False
+    return _finbert_analyzer if _finbert_analyzer else None
+
+
 def _headline_sentiment(text: str, ticker: str = '') -> Dict[str, Any]:
     """
-    Lightweight headline sentiment classifier.
+    Enhanced headline sentiment classifier.
 
     Returns a dict with keys:
       - 'sentiment': one of 'Bullish'|'Bearish'|'Neutral'
       - 'score': float where positive = bullish, negative = bearish
+      - 'confidence': 'high'|'medium'|'low'
+      - 'method': 'finbert'|'keyword'
 
-    This is a deterministic, explainable, keyword-weighted classifier
-    designed to run offline and be easily extended.
+    Uses FinBERT when available, falls back to expanded keyword-based classifier.
     """
     if not text:
-        return {'sentiment': 'Neutral', 'score': 0.0}
+        return {'sentiment': 'Neutral', 'score': 0.0, 'confidence': 'low', 'method': 'none'}
 
+    # Try FinBERT first for more accurate sentiment
+    analyzer = _get_finbert_analyzer()
+    if analyzer:
+        try:
+            result = analyzer.analyze_text(text)
+            compound = result.get('compound', 0.0)
+            
+            # Map compound score to sentiment
+            if compound >= 0.2:
+                sentiment = 'Bullish'
+                confidence = 'high' if compound >= 0.5 else 'medium'
+            elif compound <= -0.2:
+                sentiment = 'Bearish'
+                confidence = 'high' if compound <= -0.5 else 'medium'
+            else:
+                sentiment = 'Neutral'
+                confidence = 'high' if abs(compound) < 0.1 else 'medium'
+            
+            return {
+                'sentiment': sentiment,
+                'score': round(compound, 3),
+                'confidence': confidence,
+                'method': 'finbert'
+            }
+        except Exception as e:
+            logger.debug(f"FinBERT analysis failed, using keyword fallback: {e}")
+
+    # Enhanced keyword-based fallback
     txt = text.lower()
 
-    # Weighted keyword lists (keyword -> weight)
+    # Expanded weighted keyword lists (keyword -> weight)
     bullish_keywords = {
-        'beat': 1.5, 'beats': 1.5, 'beats expectations': 2.0, 'outperform': 1.5,
-        'upgrade': 1.5, 'surge': 1.3, 'soar': 1.4, 'rise': 1.1, 'rally': 1.2,
-        'gain': 1.0, 'gains': 1.0, 'strong': 1.0, 'record': 1.2, 'growth': 1.1,
-        'positive': 0.9, 'buy': 0.8, 'bull': 0.7, 'acquisition': 0.8, 'beat guidance': 2.0
+        # Strong bullish signals
+        'beat': 1.2, 'beats': 1.2, 'beats expectations': 1.8, 'exceeds': 1.3,
+        'outperform': 1.3, 'outperforms': 1.3, 'upgrade': 1.4, 'upgraded': 1.4,
+        'surge': 1.2, 'surges': 1.2, 'soar': 1.3, 'soars': 1.3, 'jump': 1.0, 'jumps': 1.0,
+        'rally': 1.1, 'rallies': 1.1, 'breakout': 1.2, 'breakthrough': 1.1,
+        # Moderate bullish
+        'rise': 0.8, 'rises': 0.8, 'rising': 0.7, 'gain': 0.8, 'gains': 0.8,
+        'strong': 0.7, 'strength': 0.6, 'record': 0.9, 'record high': 1.4,
+        'growth': 0.8, 'growing': 0.7, 'expand': 0.6, 'expansion': 0.7,
+        'profit': 0.8, 'profitable': 0.7, 'revenue growth': 1.0,
+        'positive': 0.6, 'optimistic': 0.8, 'bullish': 1.0,
+        'buy': 0.6, 'buying': 0.5, 'acquisition': 0.7, 'deal': 0.5,
+        'raise guidance': 1.3, 'beat guidance': 1.5, 'above estimates': 1.2,
+        # Tech/AI specific
+        'ai breakthrough': 1.3, 'new product': 0.8, 'partnership': 0.6,
+        'innovation': 0.7, 'market share': 0.6, 'demand surge': 1.1,
+        'orders': 0.5, 'backlog': 0.6, 'momentum': 0.7
     }
 
     bearish_keywords = {
-        'miss': -1.5, 'missed': -1.5, 'downgrade': -1.6, 'underperform': -1.5,
-        'drop': -1.1, 'decline': -1.0, 'fall': -1.0, 'weak': -1.0, 'loss': -1.3,
-        'losses': -1.3, 'plummet': -1.6, 'negative': -0.9, 'sell': -0.8,
-        'warning': -1.4, 'cut guidance': -1.8, 'lower guidance': -1.6, 'recall': -1.2
+        # Strong bearish signals
+        'miss': -1.2, 'misses': -1.2, 'missed': -1.2, 'missed expectations': -1.5,
+        'downgrade': -1.4, 'downgraded': -1.4, 'underperform': -1.3,
+        'plunge': -1.4, 'plunges': -1.4, 'crash': -1.5, 'crashes': -1.5,
+        'collapse': -1.4, 'tumble': -1.2, 'tumbles': -1.2, 'plummet': -1.4,
+        # Moderate bearish
+        'drop': -0.9, 'drops': -0.9, 'decline': -0.8, 'declines': -0.8, 'declining': -0.7,
+        'fall': -0.8, 'falls': -0.8, 'falling': -0.7, 'slip': -0.6, 'slips': -0.6,
+        'weak': -0.8, 'weakness': -0.7, 'weaker': -0.8, 'disappointing': -1.0,
+        'loss': -1.0, 'losses': -1.0, 'losing': -0.8, 'lose': -0.7,
+        'negative': -0.6, 'pessimistic': -0.8, 'bearish': -1.0,
+        'sell': -0.6, 'selling': -0.5, 'selloff': -1.1, 'sell-off': -1.1,
+        'warning': -1.1, 'warns': -1.0, 'caution': -0.7, 'concern': -0.6, 'concerns': -0.6,
+        'cut guidance': -1.4, 'lower guidance': -1.3, 'below estimates': -1.2,
+        'recall': -1.0, 'lawsuit': -0.9, 'investigation': -0.8,
+        # Market specific
+        'recession': -1.2, 'inflation': -0.5, 'layoff': -0.9, 'layoffs': -1.0,
+        'cuts': -0.6, 'cost cutting': -0.4, 'slowdown': -0.8, 'slowing': -0.7,
+        'headwinds': -0.7, 'challenges': -0.5, 'uncertainty': -0.6
     }
 
     score = 0.0
+    matched_keywords = []
 
     # Count occurrences and weight
     for kw, w in bullish_keywords.items():
         if kw in txt:
             score += w
+            matched_keywords.append((kw, w))
 
     for kw, w in bearish_keywords.items():
         if kw in txt:
             score += w
+            matched_keywords.append((kw, w))
 
-    # Slight boost if ticker is explicitly mentioned along with a directional verb
+    # Slight boost if ticker is explicitly mentioned along with sentiment
     if ticker and ticker.lower() in txt:
-        if any(kw in txt for kw in ['beat', 'beats', 'upgrade', 'surge', 'rally', 'gain']):
-            score += 0.25
-        if any(kw in txt for kw in ['miss', 'missed', 'downgrade', 'drop', 'decline', 'loss']):
-            score -= 0.25
+        if any(kw in txt for kw in ['beat', 'beats', 'upgrade', 'surge', 'rally', 'gain', 'soar']):
+            score += 0.3
+        if any(kw in txt for kw in ['miss', 'missed', 'downgrade', 'drop', 'decline', 'loss', 'warning']):
+            score -= 0.3
 
-    # Interpret score into buckets
-    if score >= 1.5:
+    # Lower thresholds for better sensitivity (was 1.5/-1.5)
+    if score >= 0.5:
         sentiment = 'Bullish'
-    elif score <= -1.5:
+    elif score <= -0.5:
         sentiment = 'Bearish'
     else:
         sentiment = 'Neutral'
+    
+    # Determine confidence based on score magnitude and keyword matches
+    abs_score = abs(score)
+    if abs_score >= 1.5 and len(matched_keywords) >= 2:
+        confidence = 'high'
+    elif abs_score >= 0.7:
+        confidence = 'medium'
+    else:
+        confidence = 'low'
 
-    return {'sentiment': sentiment, 'score': round(score, 2)}
+    return {'sentiment': sentiment, 'score': round(score, 2), 'confidence': confidence, 'method': 'keyword'}
 
 
 def _render_table(records: List[Dict]) -> html.Div:
@@ -234,16 +324,28 @@ def _render_news(news_data: Dict[str, List[Dict]]) -> html.Div:
             url = item.get('url', '#')
             source = item.get('source', 'Unknown')
 
-            # Prefer persisted sentiment if present, otherwise compute on the fly
-            sentiment = item.get('sentiment') or _headline_sentiment(headline, ticker).get('sentiment')
-            score = item.get('sentiment_score') or _headline_sentiment(headline, ticker).get('score')
+            # Compute sentiment with enhanced analyzer
+            sentiment_result = _headline_sentiment(headline, ticker)
+            sentiment = item.get('sentiment') or sentiment_result.get('sentiment')
+            score = item.get('sentiment_score') or sentiment_result.get('score')
+            confidence = sentiment_result.get('confidence', 'medium')
+            method = sentiment_result.get('method', 'keyword')
 
+            # Enhanced badge styling with confidence indication
             if sentiment == 'Bullish':
-                badge_style = {'backgroundColor': '#10b981', 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                base_color = '#10b981' if confidence != 'low' else '#6ee7b7'
+                badge_style = {'backgroundColor': base_color, 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                emoji = '📈' if confidence == 'high' else '↗️'
             elif sentiment == 'Bearish':
-                badge_style = {'backgroundColor': '#ef4444', 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                base_color = '#ef4444' if confidence != 'low' else '#fca5a5'
+                badge_style = {'backgroundColor': base_color, 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                emoji = '📉' if confidence == 'high' else '↘️'
             else:
-                badge_style = {'backgroundColor': '#9ca3af', 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                badge_style = {'backgroundColor': '#6b7280', 'color': 'white', 'padding': '2px 8px', 'borderRadius': '12px', 'fontSize': '12px', 'marginLeft': '8px'}
+                emoji = '➡️'
+
+            # Show score indicator for non-neutral sentiments
+            score_indicator = f" ({score:+.2f})" if score != 0 else ""
 
             news_items.append(
                 html.Div([
@@ -254,16 +356,16 @@ def _render_news(news_data: Dict[str, List[Dict]]) -> html.Div:
                         style={'color': '#3b82f6', 'textDecoration': 'none'}
                     ),
                     html.Span(
-                        f"{sentiment}",
+                        f"{emoji} {sentiment}{score_indicator}",
                         className='news-sentiment-badge',
-                        **{'data-sentiment': sentiment, 'data-sentiment-score': str(score)},
+                        **{'data-sentiment': sentiment, 'data-sentiment-score': str(score), 'data-confidence': confidence, 'data-method': method},
                         style=badge_style
                     ),
                     html.Span(
                         f" - {ticker} ({source})",
                         style={'color': '#6b7280', 'fontSize': '12px', 'marginLeft': '8px'}
                     )
-                ], style={'marginBottom': '8px'})
+                ], style={'marginBottom': '10px', 'padding': '4px 0'})
             )
     
     return html.Div(
@@ -585,6 +687,56 @@ def layout():
         }
     )
     
+    # Try to get live market data for enhanced display
+    fear_greed_widget = html.Div()
+    indices_row = html.Div()
+    try:
+        from financial_dashboard.services.live_market_data import get_live_market_service
+        live_service = get_live_market_service()
+        
+        # Fear & Greed Index Widget
+        fg = live_service.get_fear_greed_index()
+        fg_color = '#10b981' if fg.value >= 60 else '#ef4444' if fg.value <= 40 else '#f59e0b'
+        fear_greed_widget = dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-speedometer2 me-2"),
+                "Fear & Greed Index"
+            ]),
+            dbc.CardBody([
+                html.Div([
+                    html.H1(str(fg.value), style={'color': fg_color, 'fontSize': '48px', 'marginBottom': '0'}),
+                    html.P(fg.classification, style={'color': fg_color, 'fontWeight': 'bold', 'fontSize': '18px'}),
+                    dbc.Progress(value=fg.value, color="success" if fg.value >= 60 else "danger" if fg.value <= 40 else "warning", 
+                                className="mb-2", style={'height': '10px'}),
+                    html.Small(f"Yesterday: {fg.previous_close}", className="text-muted")
+                ], style={'textAlign': 'center'})
+            ])
+        ], className="h-100", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+        
+        # Market Indices Row
+        indices = live_service.get_market_indices()
+        index_cards = []
+        for symbol, idx in list(indices.items())[:4]:
+            color = 'success' if idx.change_pct >= 0 else 'danger'
+            index_cards.append(
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H6(idx.name, className="text-muted mb-1"),
+                            html.H4(f"${idx.price:,.2f}", className="mb-0"),
+                            html.Span(
+                                f"{idx.change:+.2f} ({idx.change_pct:+.2f}%)",
+                                className=f"text-{color}"
+                            )
+                        ], style={'padding': '12px'})
+                    ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+                ], width=3)
+            )
+        indices_row = dbc.Row(index_cards, className="mb-4")
+        
+    except Exception as e:
+        logger.warning(f"Could not load live market data for layout: {e}")
+    
     return html.Div([
         # === IMPROVEMENTS: Toolbar with filters ===
         html.Div([
@@ -598,15 +750,8 @@ def layout():
             ) if SHARED_UI_AVAILABLE else html.Div()
         ]),
         
-        # === IMPROVEMENTS: Summary Statistics ===
-        html.Div([
-            create_summary_stats_row([
-                {'title': 'SPY', 'value': '$--', 'icon': 'fa-chart-line', 'color': 'primary'},
-            {'title': 'Trending Up', 'value': '--', 'icon': 'fa-arrow-up', 'color': 'success'},
-            {'title': 'Trending Down', 'value': '--', 'icon': 'fa-arrow-down', 'color': 'danger'},
-            {'title': 'Volatility', 'value': '--%', 'icon': 'fa-bolt', 'color': 'warning'}
-            ]) if SHARED_UI_AVAILABLE else html.Div()
-        ]),
+        # === LIVE MARKET INDICES ROW ===
+        indices_row,
         
         # === IMPROVEMENTS: Notification Toast ===
         html.Div([
@@ -615,96 +760,124 @@ def layout():
         
         # Header
         html.Div([
-            html.H3('Market Trends'),
-                trend_badge,
-                provider_summary
+            html.H3([
+                html.I(className="bi bi-graph-up-arrow me-2"),
+                'Market Trends'
+            ]),
+            trend_badge,
+            provider_summary
         ], style={'display': 'flex', 'alignItems': 'center', 'marginBottom': '16px'}),
         
-        # Controls
-        html.Div([
-            html.Label('Tickers (comma separated)'),
-            dcc.Textarea(
-                id='tickers-input',
-                value='NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA',
-                style={'width': '100%', 'maxWidth': '600px', 'resize': 'vertical'},
-                rows=2
-            ),
-        ], style={'marginBottom': '12px'}),
+        # Main content grid
+        dbc.Row([
+            # Left Column - Fear & Greed + News
+            dbc.Col([
+                # Fear & Greed Widget
+                fear_greed_widget,
+                
+                # News Section
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-newspaper me-2"),
+                        "Latest Headlines"
+                    ]),
+                    dbc.CardBody([
+                        html.Div(initial_news, id='news-container')
+                    ])
+                ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+            ], width=4),
+            
+            # Right Column - Analysis & Charts
+            dbc.Col([
+                # Controls Card
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-sliders me-2"),
+                        "Analysis Controls"
+                    ]),
+                    dbc.CardBody([
+                        html.Div([
+                            html.Label('Tickers (comma separated)', className="mb-1"),
+                            dcc.Textarea(
+                                id='tickers-input',
+                                value='NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA',
+                                style={'width': '100%', 'resize': 'vertical', 'backgroundColor': 'rgba(0,0,0,0.2)', 
+                                       'color': 'white', 'border': '1px solid rgba(255,255,255,0.2)'},
+                                rows=2
+                            ),
+                        ], style={'marginBottom': '12px'}),
+                        
+                        dbc.ButtonGroup([
+                            dbc.Button(
+                                [html.I(className="bi bi-play-fill me-1"), 'Run Analysis'],
+                                id='mt-run-analysis-btn',
+                                n_clicks=0,
+                                color="primary"
+                            ),
+                            dbc.Button(
+                                [html.I(className="bi bi-arrow-clockwise me-1"), 'Refresh'],
+                                id='mt-refresh-display-btn',
+                                n_clicks=0,
+                                color="success",
+                                outline=True
+                            ),
+                        ]),
+                        
+                        # Status
+                        html.Div(
+                            id='status',
+                            children='Ready',
+                            style={
+                                'padding': '8px 12px',
+                                'backgroundColor': 'rgba(59, 130, 246, 0.1)',
+                                'borderRadius': '4px',
+                                'marginTop': '12px',
+                                'display': 'block'
+                            }
+                        ),
+                    ])
+                ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
+                
+                # Sector Heatmap
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-grid-3x3-gap me-2"),
+                        "Sector Performance"
+                    ]),
+                    dbc.CardBody([
+                        dcc.Loading(
+                            dcc.Graph(id='sector-heatmap', config={'displayModeBar': False}, style={'height': '350px'}),
+                            type='circle'
+                        )
+                    ])
+                ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
+            ], width=8),
+        ]),
         
-        html.Div([
-            html.Button(
-                'Run Analysis',
-                id='mt-run-analysis-btn',
-                n_clicks=0,
-                style={
-                    'backgroundColor': '#3b82f6',
-                    'color': 'white',
-                    'padding': '8px 16px',
-                    'border': 'none',
-                    'borderRadius': '4px',
-                    'cursor': 'pointer'
-                }
-            ),
-            html.Button(
-                'Refresh Display',
-                id='mt-refresh-display-btn',
-                n_clicks=0,
-                style={
-                    'backgroundColor': '#10b981',
-                    'color': 'white',
-                    'padding': '8px 16px',
-                    'border': 'none',
-                    'borderRadius': '4px',
-                    'cursor': 'pointer',
-                    'marginLeft': '8px'
-                }
-            ),
-        ], style={'marginBottom': '16px'}),
-        
-        # Status
-        html.Div(
-            id='status',
-            children='Ready',
-            style={
-                'padding': '8px 12px',
-                'backgroundColor': '#f3f4f6',
-                'borderRadius': '4px',
-                'marginBottom': '16px',
-                'display': 'block'
-            }
-        ),
-        
-        # News Section
-        html.Div([
-            html.H4('Recent Headlines', style={'marginBottom': '12px'}),
-            html.Div(initial_news, id='news-container')
-        ], style={'marginBottom': '16px'}),
-        
-        # Sector Heatmap Section
-        html.Div([
-            html.H4('Sector Performance', style={'marginBottom': '12px'}),
-            dcc.Loading(
-                dcc.Graph(id='sector-heatmap', config={'displayModeBar': False}, style={'height': '400px'}),
-                type='circle'
-            )
-        ], style={'marginBottom': '24px'}),
-        
-        # Results Table
-        dcc.Loading(
-            id='loading',
-            children=[
-                html.Div(
-                    initial_table,
-                    id='results-area',
-                    style={'marginTop': '16px'}
+        # Results Table (Full Width)
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-table me-2"),
+                "Ticker Analysis Results"
+            ]),
+            dbc.CardBody([
+                dcc.Loading(
+                    id='loading',
+                    children=[
+                        html.Div(
+                            initial_table,
+                            id='results-area',
+                            style={'marginTop': '0'}
+                        )
+                    ],
+                    type='circle'
                 )
-            ],
-            type='circle'
-        ),
+            ])
+        ], className="mt-4", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
         
         # Hidden stores: trends-results-store is centralized in `layout_placeholders.py`.
         
-    ], style={'padding': '20px', 'maxWidth': '1200px', 'margin': '0 auto'})
+    ], style={'padding': '20px', 'maxWidth': '1400px', 'margin': '0 auto'})
 
 
 # ========================================================================

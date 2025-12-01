@@ -24,7 +24,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
 # Import modular subtabs
-from .subtabs import setup, backtest, execution, results, benchmark, risk
+from .subtabs import setup, backtest, execution, results, benchmark, risk, bots
 
 logger = logging.getLogger(__name__)
 
@@ -733,6 +733,7 @@ A comprehensive environment for building and testing quantitative trading strate
 2. Run backtest in "Backtest" tab
 3. Review results in "Results" tab
 4. Compare against benchmarks in "Benchmark" tab
+5. Run live trading bots in "Trading Bots" tab
 
 **🎓 Learn More**: Each tab includes detailed tooltips and explanations.
                 """, className="small", style={
@@ -753,6 +754,7 @@ A comprehensive environment for building and testing quantitative trading strate
             dbc.Tab(results.layout(), label="📈 Results", tab_id="results-tab"),
             dbc.Tab(benchmark.layout(), label="🎯 Benchmark", tab_id="benchmark-tab"),
             dbc.Tab(risk.layout(), label="⚠️ Risk", tab_id="risk-tab"),
+            dbc.Tab(bots.get_layout(), label="🤖 Trading Bots", tab_id="bots-tab"),
         ], id="strategy-lab-tabs", active_tab="setup-tab", className="mb-4"),
         
         # Hidden stores for data management

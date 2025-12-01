@@ -352,7 +352,27 @@ def _create_chain_viewer_subtab():
             ])
         ], className="mb-3"),
 
-        # TradingView Signals Widget - Hidden by default (optional integration)
+        # TradingView Signals Widget
+        dbc.Card([
+            dbc.CardHeader([
+                html.I(className="bi bi-broadcast me-2"),
+                "TradingView Signals",
+                dbc.Button(
+                    [html.I(className="bi bi-arrow-clockwise me-1"), "Fetch"],
+                    id='tradingview-fetch-btn',
+                    color="primary",
+                    size="sm",
+                    className="float-end"
+                )
+            ]),
+            dbc.CardBody([
+                html.Div(id='tradingview-signals-container', children=[
+                    html.P("Click 'Fetch' to load TradingView signals for the selected ticker.",
+                           className="text-muted small")
+                ])
+            ])
+        ], className="mb-3"),
+        
         html.Div([
             html.Div(id='tradingview-preview', style={'display': 'none'}),
             html.Div(id='ol-tv-signal-widget', style={'display': 'none'}),
