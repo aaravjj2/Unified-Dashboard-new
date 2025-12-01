@@ -5,20 +5,20 @@ Market Forecast Tab - Complete Overhaul with Enhanced Visualization
 A professional-grade market forecasting dashboard featuring:
 - Multi-model forecasting (Prophet, ARIMA, LSTM, Ensemble)
 - Crystal-clear fan charts with confidence intervals
-- Real-time price data via yfinance with API key support
+- Real-time price data via unified price fetching (Alpaca → yfinance fallback)
 - Scenario analysis for what-if simulations
 - Model performance comparison metrics
 - Clean, intuitive UI with dark theme
 
-API Keys Used:
-- FINNHUB_API_KEY (optional): Enhanced market data
-- ALPHAVANTAGE_API_KEY (optional): Additional data source
-- yfinance: Primary data source (no key needed)
+Data Sources (priority order):
+- Alpaca (requires API key)
+- yfinance (fallback, no key needed)
 """
 
 import logging
 import os
 import sys
+import time
 from dash import html, dcc, Input, Output, State, callback_context
 import dash_bootstrap_components as dbc
 # Shared UI components for improvements
@@ -89,6 +89,98 @@ COMPONENT_IDS = {
     'price_info': 'mf-price-info',
     'sentiment_display': 'mf-sentiment-display',
 }
+
+
+def fetch_historical_price_data(ticker: str, lookback_days: int = 365) -> tuple:
+    """
+    Unified historical data fetching with source tracking.
+    
+    Uses Alpaca → yfinance fallback chain via fetch_historical_data utility.
+    Returns (DataFrame/None, metadata dict) with source and timing info.
+    
+    Args:
+        ticker: Stock ticker symbol
+        lookback_days: Number of days to look back
+    
+    Returns:
+        Tuple of (pandas DataFrame with OHLCV data, metadata dict)
+    """
+    fetch_start = time.time()
+    metadata = {
+        'source': 'unknown',
+        'fetch_duration_ms': 0,
+        'data_timestamp': None,
+        'ticker': ticker
+    }
+    
+    try:
+        # Try unified price fetching first
+        from financial_dashboard.utils.price_fetch import fetch_historical_data
+        
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=lookback_days + 10)
+        
+        prices_df = fetch_historical_data(
+            tickers=[ticker],
+            start_date=start_date.strftime('%Y-%m-%d'),
+            end_date=end_date.strftime('%Y-%m-%d'),
+            use_alpaca=True
+        )
+        
+        metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+        
+        if not prices_df.empty and ticker in prices_df.columns:
+            # We need full OHLCV for forecast models, so if we only got close prices
+            # we still use the close column for modeling
+            close_prices = prices_df[ticker].dropna()
+            
+            # Create a synthetic OHLCV DataFrame
+            hist = pd.DataFrame({
+                'Open': close_prices,
+                'High': close_prices * 1.001,  # Small offset for synthetic OHLCV
+                'Low': close_prices * 0.999,
+                'Close': close_prices,
+                'Volume': 1000000
+            }, index=close_prices.index)
+            
+            metadata['source'] = 'alpaca_or_yfinance'
+            metadata['data_timestamp'] = close_prices.index[-1].isoformat() if hasattr(close_prices.index[-1], 'isoformat') else str(close_prices.index[-1])
+            metadata['data_points'] = len(hist)
+            
+            logger.info(f"✅ Fetched {len(hist)} price points for {ticker} via unified fetcher ({metadata['fetch_duration_ms']}ms)")
+            return hist, metadata
+            
+    except ImportError as e:
+        logger.warning(f"Unified price fetch not available: {e}")
+    except Exception as e:
+        logger.warning(f"Unified price fetch failed for {ticker}: {e}")
+    
+    # Fallback to direct yfinance
+    try:
+        import yfinance as yf
+        
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=lookback_days + 10)
+        
+        stock = yf.Ticker(ticker)
+        hist = stock.history(start=start_date, end=end_date, auto_adjust=True)
+        
+        metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+        
+        if not hist.empty:
+            metadata['source'] = 'yfinance'
+            metadata['data_timestamp'] = hist.index[-1].isoformat() if hasattr(hist.index[-1], 'isoformat') else str(hist.index[-1])
+            metadata['data_points'] = len(hist)
+            
+            logger.info(f"✅ Fetched {len(hist)} price points for {ticker} via yfinance ({metadata['fetch_duration_ms']}ms)")
+            return hist, metadata
+            
+    except Exception as e:
+        logger.error(f"yfinance fallback failed for {ticker}: {e}")
+        metadata['error'] = str(e)
+    
+    metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+    return None, metadata
 
 
 def create_header():
@@ -586,19 +678,19 @@ def register_callbacks(app, SH=None):
                 sentiment_available = True
             except ImportError:
                 sentiment_available = False
+
+            # Initialize optional ServingClient for sentinel and embeddings
+            try:
+                from financial_dashboard.serving.serving_client import ServingClient
+                sc = ServingClient()
+            except Exception:
+                sc = None
             
-            # Fetch historical data using yfinance
-            import yfinance as yf
-            
+            # Fetch historical data using unified price fetcher (Alpaca → yfinance fallback)
             logger.info(f"Fetching data for {ticker}...")
-            stock = yf.Ticker(ticker)
+            hist, data_metadata = fetch_historical_price_data(ticker, lookback_days=365)
             
-            # Get 1 year of daily data
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=365)
-            hist = stock.history(start=start_date, end=end_date)
-            
-            if hist.empty or len(hist) < 30:
+            if hist is None or len(hist) < 30:
                 status = dbc.Alert([
                     html.I(className="bi bi-exclamation-triangle me-2"),
                     f"No data available for {ticker}. Please check the ticker symbol."
@@ -611,20 +703,77 @@ def register_callbacks(app, SH=None):
             change = current_price - prev_close
             change_pct = (change / prev_close) * 100
             
+            # Add data source indicator
+            source_badge = dbc.Badge(
+                f"via {data_metadata.get('source', 'unknown')}",
+                color="secondary",
+                className="ms-2",
+                style={'fontSize': '0.65rem'}
+            )
+            
             price_info = html.Span([
                 f"${current_price:.2f} ",
                 html.Span(
                     f"{'▲' if change >= 0 else '▼'} {abs(change):.2f} ({abs(change_pct):.2f}%)",
                     className=f"{'text-success' if change >= 0 else 'text-danger'} small"
-                )
+                ),
+                source_badge
             ])
             
             # Get AI sentiment
             sentiment_data = None
             if sentiment_available:
                 try:
-                    sentiment_data = get_market_sentiment(ticker, days=7)
-                    logger.info(f"Sentiment for {ticker}: {sentiment_data.get('signal', 'N/A')}")
+                    # If ServingClient exists (bento/triton), use it to analyze fetched headlines
+                    if sc and sc.mode in ['bento', 'triton']:
+                        # Fetch headlines via NewsManager if available
+                        try:
+                            from financial_dashboard.utils.news_manager import NewsManager
+                            nm = NewsManager(ttl_seconds=300)
+                            news_df = nm.fetch_news([ticker], max_per_ticker=10)
+                            # Flatten headlines
+                            headlines = []
+                            for hdf in news_df.values():
+                                for r in hdf:
+                                    if r.get('title'):
+                                        headlines.append(r['title'])
+                        except Exception:
+                            headlines = []
+
+                        if headlines:
+                            sc_res = sc.analyze_sentiment(headlines, ticker=ticker)
+                            if sc_res.get('status') == 'success':
+                                # Aggregate simple signal from responses
+                                try:
+                                    preds = sc_res['data'].get('sentiments') if isinstance(sc_res['data'], dict) and 'sentiments' in sc_res['data'] else sc_res['data']
+                                    # Convert to a structure akin to get_market_sentiment
+                                    mean_score = 0
+                                    count = len(preds)
+                                    pos = 0
+                                    neg = 0
+                                    for p in preds:
+                                        label = p.get('sentiment') if isinstance(p, dict) else p.get('label')
+                                        score = p.get('score', 0) if isinstance(p, dict) else 0
+                                        if label == 'positive':
+                                            pos += 1
+                                            mean_score += score
+                                        elif label == 'negative':
+                                            neg += 1
+                                            mean_score -= score
+                                    mean_score = mean_score / count if count > 0 else 0
+                                    signal = 'bullish' if mean_score > 0.15 else 'bearish' if mean_score < -0.15 else 'neutral'
+                                    sentiment_data = {
+                                        'ticker': ticker,
+                                        'sentiment_count': count,
+                                        'sentiment_mean': float(mean_score),
+                                        'signal': signal,
+                                        'confidence': min(abs(mean_score) * 2, 1.0)
+                                    }
+                                except Exception:
+                                    sentiment_data = None
+                    else:
+                        sentiment_data = get_market_sentiment(ticker, days=7)
+                        logger.info(f"Sentiment for {ticker}: {sentiment_data.get('signal', 'N/A')}")
                 except Exception as e:
                     logger.warning(f"Sentiment analysis failed: {e}")
             
@@ -678,46 +827,84 @@ def register_callbacks(app, SH=None):
                 'y': hist['Close'].values
             })
             
-            # Train selected models and generate forecasts
+            # Train selected models and generate forecasts with defensive handling
             forecasts = {}
             model_errors = {}
+            inference_sources = {}  # Track which backend was used for each model
             
+            # Try ServingClient first for supported models (Bento/Triton)
+            if sc and sc.mode in ['bento', 'triton']:
+                try:
+                    # Use serving client for ensemble/forecast if available
+                    if 'ensemble' in (selected_models or []):
+                        sc_res = sc.predict_forecast(ticker, horizon, 'ensemble', confidence=0.95)
+                        if sc_res.get('status') == 'success':
+                            fc_data = sc_res.get('data', {})
+                            if 'forecast' in fc_data:
+                                forecast_vals = fc_data['forecast']
+                                if isinstance(forecast_vals, list):
+                                    if isinstance(forecast_vals[0], dict):
+                                        vals = [f.get('yhat', f.get('value', 0)) for f in forecast_vals]
+                                    else:
+                                        vals = forecast_vals
+                                    # Create forecast dict similar to local models
+                                    forecast_arr = np.array(vals)
+                                    std = np.std(forecast_arr) * np.sqrt(np.arange(1, len(vals) + 1))
+                                    forecasts['ensemble'] = {
+                                        'forecast': vals,
+                                        'lower_50': (forecast_arr - 0.675 * std).tolist(),
+                                        'upper_50': (forecast_arr + 0.675 * std).tolist(),
+                                        'lower_80': (forecast_arr - 1.28 * std).tolist(),
+                                        'upper_80': (forecast_arr + 1.28 * std).tolist(),
+                                        'lower_95': (forecast_arr - 1.96 * std).tolist(),
+                                        'upper_95': (forecast_arr + 1.96 * std).tolist(),
+                                    }
+                                    inference_sources['ensemble'] = f'serving_{sc.mode}'
+                                    logger.info(f"✅ Ensemble forecast via {sc.mode}")
+                except Exception as e:
+                    logger.warning(f"ServingClient forecast failed: {e}")
+            
+            # Fall back to local models for any not handled by serving
             if models_available:
-                if 'prophet' in (selected_models or []):
+                if 'prophet' in (selected_models or []) and 'prophet' not in forecasts:
                     try:
                         prophet = ProphetForecaster()
                         prophet.fit(data)
                         forecasts['prophet'] = prophet.predict(horizon)
+                        inference_sources['prophet'] = 'local'
                         logger.info("✅ Prophet forecast complete")
                     except Exception as e:
                         logger.error(f"Prophet error: {e}")
                         model_errors['prophet'] = str(e)
                 
-                if 'arima' in (selected_models or []):
+                if 'arima' in (selected_models or []) and 'arima' not in forecasts:
                     try:
                         arima = ARIMAForecaster()
                         arima.fit(data)
                         forecasts['arima'] = arima.predict(horizon)
+                        inference_sources['arima'] = 'local'
                         logger.info("✅ ARIMA forecast complete")
                     except Exception as e:
                         logger.error(f"ARIMA error: {e}")
                         model_errors['arima'] = str(e)
                 
-                if 'lstm' in (selected_models or []):
+                if 'lstm' in (selected_models or []) and 'lstm' not in forecasts:
                     try:
                         lstm = LSTMForecaster(epochs=30)
                         lstm.fit(data)
                         forecasts['lstm'] = lstm.predict(horizon)
+                        inference_sources['lstm'] = 'local'
                         logger.info("✅ LSTM forecast complete")
                     except Exception as e:
                         logger.error(f"LSTM error: {e}")
                         model_errors['lstm'] = str(e)
                 
-                if 'ensemble' in (selected_models or []):
+                if 'ensemble' in (selected_models or []) and 'ensemble' not in forecasts:
                     try:
                         ensemble = EnsembleForecaster()
                         ensemble.fit(data)
                         forecasts['ensemble'] = ensemble.predict(horizon)
+                        inference_sources['ensemble'] = 'local'
                         logger.info("✅ Ensemble forecast complete")
                     except Exception as e:
                         logger.error(f"Ensemble error: {e}")
@@ -727,6 +914,7 @@ def register_callbacks(app, SH=None):
             if not forecasts:
                 logger.warning("All models failed, using statistical fallback")
                 forecasts['statistical'] = _statistical_forecast(data['y'].values, horizon)
+                inference_sources['statistical'] = 'statistical_fallback'
             
             # Create forecast dates
             last_date = data['ds'].iloc[-1]
@@ -769,7 +957,7 @@ def register_callbacks(app, SH=None):
                 model_errors=model_errors
             )
             
-            # Store forecast data
+            # Store forecast data with enhanced metadata
             store_data = {
                 'ticker': ticker,
                 'horizon': horizon,
@@ -780,11 +968,26 @@ def register_callbacks(app, SH=None):
                                      for k, v in primary_forecast.items()},
                 'forecast_dates': [str(d) for d in forecast_dates],
                 'last_price': float(current_price),
+                # Enhanced metadata
+                'metadata': {
+                    'data_source': data_metadata.get('source', 'unknown'),
+                    'data_fetch_duration_ms': data_metadata.get('fetch_duration_ms', 0),
+                    'data_timestamp': data_metadata.get('data_timestamp'),
+                    'data_points': data_metadata.get('data_points', len(hist)),
+                    'inference_sources': inference_sources,
+                    'model_errors': model_errors,
+                    'generated_at': datetime.now().isoformat()
+                }
             }
             
+            # Status message with source info
+            source_info = f" (data: {data_metadata.get('source', 'unknown')})" if data_metadata.get('source') else ""
+            # Add inference info
+            unique_sources = set(inference_sources.values())
+            inference_info = f", inference: {', '.join(unique_sources)}" if unique_sources else ""
             status = dbc.Alert([
                 html.I(className="bi bi-check-circle me-2"),
-                f"Forecast generated for {ticker} • {len(forecasts)} model(s) • {horizon} days"
+                f"Forecast generated for {ticker} • {len(forecasts)} model(s) • {horizon} days{source_info}{inference_info}"
             ], color="success", dismissable=True, duration=5000)
             
             return store_data, main_fig, comparison_fig, metrics_children, status, False, price_info, sentiment_display

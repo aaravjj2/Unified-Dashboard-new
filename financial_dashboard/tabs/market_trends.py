@@ -43,6 +43,11 @@ from financial_dashboard import _shared as SH
 from financial_dashboard.utils import market_trend as MT
 from financial_dashboard.utils.cache_manager import CacheManager
 from financial_dashboard.utils.news_manager import NewsManager
+try:
+    from financial_dashboard.serving.serving_client import ServingClient
+    _SC = ServingClient()
+except Exception:
+    _SC = None
 from financial_dashboard.utils.news_client import fetch_news_for_tickers
 from financial_dashboard.utils.price_fetcher import PriceFetcher
 from financial_dashboard.utils.price_client import PriceClient
@@ -134,6 +139,7 @@ def _headline_sentiment(text: str, ticker: str = '') -> Dict[str, Any]:
 
     # Try FinBERT first for more accurate sentiment
     analyzer = _get_finbert_analyzer()
+    sc = _SC
     if analyzer:
         try:
             result = analyzer.analyze_text(text)
@@ -158,6 +164,24 @@ def _headline_sentiment(text: str, ticker: str = '') -> Dict[str, Any]:
             }
         except Exception as e:
             logger.debug(f"FinBERT analysis failed, using keyword fallback: {e}")
+    # If we have a remote serving client, prefer that for inference
+    if sc and sc.mode != 'local':
+        try:
+            sc_res = sc.analyze_sentiment([text])
+            if sc_res.get('status') == 'success' and 'data' in sc_res:
+                data = sc_res['data']
+                # Support BentoML response format with "sentiments"
+                preds = data.get('sentiments') if isinstance(data, dict) and 'sentiments' in data else data
+                if isinstance(preds, list) and preds:
+                    first = preds[0]
+                    label = first.get('sentiment') if 'sentiment' in first else first.get('label', 'neutral')
+                    score = first.get('score', 0.0)
+                    if label == 'positive' or label == 'bullish':
+                        return {'sentiment': 'Bullish', 'score': round(score, 3), 'confidence': 'medium', 'method': 'bento/triton'}
+                    if label == 'negative' or label == 'bearish':
+                        return {'sentiment': 'Bearish', 'score': round(-score, 3), 'confidence': 'medium', 'method': 'bento/triton'}
+        except Exception:
+            pass
 
     # Enhanced keyword-based fallback
     txt = text.lower()

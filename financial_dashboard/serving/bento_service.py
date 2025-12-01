@@ -221,7 +221,7 @@ def get_triton_model_config(model_name: str) -> Dict[str, Any]:
             "platform": "pytorch_libtorch",
             "max_batch_size": 32,
             "input": [
-                {"name": "price_history", "data_type": "FP32", "dims": [-1, 60]},  # 60-day history
+                {"name": "price_history", "data_type": "FP32", "dims": [60]},  # 60-day history
                 {"name": "ticker_id", "data_type": "INT32", "dims": [1]}
             ],
             "output": [
@@ -236,8 +236,8 @@ def get_triton_model_config(model_name: str) -> Dict[str, Any]:
             "platform": "pytorch_libtorch",
             "max_batch_size": 64,
             "input": [
-                {"name": "input_ids", "data_type": "INT64", "dims": [-1, 512]},
-                {"name": "attention_mask", "data_type": "INT64", "dims": [-1, 512]}
+                {"name": "input_ids", "data_type": "INT64", "dims": [512]},
+                {"name": "attention_mask", "data_type": "INT64", "dims": [512]}
             ],
             "output": [
                 {"name": "logits", "data_type": "FP32", "dims": [3]}  # positive, neutral, negative
@@ -250,11 +250,11 @@ def get_triton_model_config(model_name: str) -> Dict[str, Any]:
             "platform": "onnxruntime_onnx",
             "max_batch_size": 128,
             "input": [
-                {"name": "input_ids", "data_type": "INT64", "dims": [-1, 256]},
-                {"name": "attention_mask", "data_type": "INT64", "dims": [-1, 256]}
+                {"name": "input_ids", "data_type": "INT64", "dims": [256]},
+                {"name": "attention_mask", "data_type": "INT64", "dims": [256]}
             ],
             "output": [
-                {"name": "embeddings", "data_type": "FP32", "dims": [384]}
+                {"name": "embeddings", "data_type": "FP32", "dims": [256, 384]}
             ],
             "instance_group": [{"kind": "KIND_GPU", "count": 1}],
             "dynamic_batching": {"max_queue_delay_microseconds": 25000}

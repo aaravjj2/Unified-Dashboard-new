@@ -46,31 +46,35 @@ class TritonModelExporter:
         """
         try:
             from sentence_transformers import SentenceTransformer
-            
+
             model = SentenceTransformer("all-MiniLM-L6-v2")
             
             # Create model directory
             model_dir = self.repo_path / model_name / "1"
             model_dir.mkdir(parents=True, exist_ok=True)
             
-            # Export to ONNX
+            # Get underlying transformer module now - ensure variable exists for both export branches
+            transformer = model._first_module()
+            # Ensure transformer module is on a device (use CUDA if available)
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            try:
+                transformer.auto_model.to(device)
+            except Exception:
+                # best-effort; some transformer wrappers don't expose auto_model
+                pass
+
+            # Export to ONNX (prefers ONNX; fallback to TorchScript)
             onnx_path = model_dir / "model.onnx"
-            
-            # Use dummy input for export
-            dummy_input = model.tokenize(["sample text for export"])
-            
-            # Export via ONNX
+
+            onnx_exported = False
             try:
                 import onnx
                 from torch.onnx import export as onnx_export
-                
-                # Get the underlying transformer
-                transformer = model._first_module()
-                
+
                 # Create dummy tensors
-                input_ids = torch.zeros(1, 256, dtype=torch.long)
-                attention_mask = torch.ones(1, 256, dtype=torch.long)
-                
+                input_ids = torch.zeros(1, 256, dtype=torch.long, device=device)
+                attention_mask = torch.ones(1, 256, dtype=torch.long, device=device)
+
                 # Export
                 torch.onnx.export(
                     transformer.auto_model,
@@ -85,29 +89,49 @@ class TritonModelExporter:
                     opset_version=14
                 )
                 logger.info(f"Exported embedding model to {onnx_path}")
-                
+                onnx_exported = True
+
             except Exception as e:
-                logger.warning(f"ONNX export failed: {e}, using TorchScript")
+                logger.warning(f"ONNX export failed or not available: {e}, using TorchScript")
                 ts_path = model_dir / "model.pt"
                 # Fallback to TorchScript
+                # Create dummy tensors
+                input_ids = torch.zeros(1, 256, dtype=torch.long, device=device)
+                attention_mask = torch.ones(1, 256, dtype=torch.long, device=device)
+                # Wrap transformer.model to return a single tensor (last_hidden_state) to avoid dict outputs
+                class EmbeddingWrapper(torch.nn.Module):
+                    def __init__(self, auto_model):
+                        super().__init__()
+                        self.auto_model = auto_model
+
+                    def forward(self, input_ids, attention_mask):
+                        outputs = self.auto_model(input_ids=input_ids, attention_mask=attention_mask)
+                        last_hidden_state = getattr(outputs, 'last_hidden_state', None)
+                        if last_hidden_state is None and isinstance(outputs, dict):
+                            last_hidden_state = outputs.get('last_hidden_state')
+                        return last_hidden_state
+
+                wrapper = EmbeddingWrapper(transformer.auto_model)
                 script = torch.jit.trace(
-                    transformer.auto_model,
-                    (input_ids, attention_mask)
+                    wrapper,
+                    (input_ids, attention_mask),
+                    strict=False
                 )
                 script.save(str(ts_path))
-                logger.info(f"Exported embedding model to {ts_path}")
+                logger.info(f"Exported embedding model (TorchScript) to {ts_path}")
             
-            # Write config
+            # Write config (platform depends on export type - ONNX vs TorchScript)
+            platform = "onnxruntime_onnx" if onnx_exported else "pytorch_libtorch"
             self._write_config(model_name, {
                 "name": model_name,
-                "platform": "onnxruntime_onnx",
+                "platform": platform,
                 "max_batch_size": 128,
                 "input": [
-                    {"name": "input_ids", "data_type": "TYPE_INT64", "dims": [-1, 256]},
-                    {"name": "attention_mask", "data_type": "TYPE_INT64", "dims": [-1, 256]}
+                    {"name": "input_ids", "data_type": "TYPE_INT64", "dims": [256]},
+                    {"name": "attention_mask", "data_type": "TYPE_INT64", "dims": [256]}
                 ],
                 "output": [
-                    {"name": "last_hidden_state", "data_type": "TYPE_FP32", "dims": [-1, 256, 384]}
+                    {"name": "last_hidden_state", "data_type": "TYPE_FP32", "dims": [256, 384]}
                 ],
                 "instance_group": [{"kind": "KIND_GPU", "count": 1}]
             })
@@ -133,14 +157,28 @@ class TritonModelExporter:
             
             # Export to TorchScript
             ts_path = model_dir / "model.pt"
-            
+
             # Create dummy inputs
             input_ids = torch.zeros(1, 512, dtype=torch.long)
             attention_mask = torch.ones(1, 512, dtype=torch.long)
-            
-            # Trace and save
+
+            # Wrap the model to return only logits (avoid dict/ModelOutput tracing issues)
+            class FinBERTWrapper(torch.nn.Module):
+                def __init__(self, model):
+                    super().__init__()
+                    self.model = model
+
+                def forward(self, input_ids, attention_mask):
+                    outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+                    # `outputs` may be a ModelOutput or dict
+                    logits = getattr(outputs, 'logits', outputs.get('logits') if isinstance(outputs, dict) else outputs)
+                    return logits
+
+            wrapper = FinBERTWrapper(model)
+
+            # Trace and save with strict=False to allow non-tensor constants (if needed)
             with torch.no_grad():
-                traced = torch.jit.trace(model, (input_ids, attention_mask))
+                traced = torch.jit.trace(wrapper, (input_ids, attention_mask), strict=False)
                 traced.save(str(ts_path))
             
             logger.info(f"Exported FinBERT to {ts_path}")
@@ -151,8 +189,8 @@ class TritonModelExporter:
                 "platform": "pytorch_libtorch",
                 "max_batch_size": 64,
                 "input": [
-                    {"name": "input_ids", "data_type": "TYPE_INT64", "dims": [-1, 512]},
-                    {"name": "attention_mask", "data_type": "TYPE_INT64", "dims": [-1, 512]}
+                    {"name": "input_ids", "data_type": "TYPE_INT64", "dims": [512]},
+                    {"name": "attention_mask", "data_type": "TYPE_INT64", "dims": [512]}
                 ],
                 "output": [
                     {"name": "logits", "data_type": "TYPE_FP32", "dims": [3]}
@@ -309,6 +347,40 @@ class TritonClient:
             })
         
         return predictions
+
+    def infer_forecast(self, price_history, ticker_id: int = 0) -> Dict[str, Any]:
+        """Get forecast prediction from Triton for a price_history numpy array.
+
+        price_history: np.ndarray with shape (batch, seq_len) or (seq_len,) for batch 1
+        ticker_id: optional integer ticker id
+        """
+        client = self._get_client()
+        if client is None:
+            raise RuntimeError("Triton client not available")
+
+        import tritonclient.http as httpclient
+        # Ensure price_history is a 2D array (batch dim)
+        import numpy as np
+        ph = np.asarray(price_history)
+        if ph.ndim == 1:
+            ph = ph.reshape(1, -1)
+
+        inputs = [
+            httpclient.InferInput("price_history", ph.shape, "FP32"),
+            httpclient.InferInput("ticker_id", (ph.shape[0], 1), "INT32")
+        ]
+        inputs[0].set_data_from_numpy(ph.astype(np.float32))
+        # repeat ticker_id for each batch element
+        ticker_ids = np.full((ph.shape[0], 1), ticker_id, dtype=np.int32)
+        inputs[1].set_data_from_numpy(ticker_ids)
+        outputs = [
+            httpclient.InferRequestedOutput("forecast"),
+            httpclient.InferRequestedOutput("confidence")
+        ]
+        result = client.infer("forecast_ensemble", inputs, outputs=outputs)
+        forecast = result.as_numpy("forecast")
+        confidence = result.as_numpy("confidence")
+        return {"forecast": forecast.tolist(), "confidence": confidence.tolist()}
 
 
 def setup_triton_models():

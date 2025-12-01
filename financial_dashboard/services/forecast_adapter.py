@@ -4,7 +4,7 @@ Forecast Adapter - Bridge between Market Forecast Tab and ML Infrastructure
 
 This adapter provides a unified interface for the Market Forecast tab to:
 1. Use the local ML runner for predictions
-2. Fetch real market data via yfinance/Alpaca
+2. Fetch real market data via PriceClient/Alpaca/yfinance fallback chain
 3. Generate forecast time series with confidence intervals
 4. Provide SHAP explanations for model predictions
 
@@ -12,11 +12,13 @@ Architecture:
 - Synchronous mode: Direct prediction via ml_runner
 - Asynchronous mode: Background job via _shared module
 - Deterministic mode: Fixed seed for testing
+- Data sources: Alpaca → yfinance (via fetch_historical_data)
 """
 
 import os
 import sys
 import logging
+import time
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -33,17 +35,63 @@ if PROJECT_ROOT not in sys.path:
 
 logger = logging.getLogger(__name__)
 
+# Default cache TTL in seconds
+DEFAULT_CACHE_TTL = 300  # 5 minutes for price data
+FORECAST_CACHE_TTL = 600  # 10 minutes for forecast results
+
+
+class TTLCache:
+    """Simple TTL cache for forecast data and price data."""
+    
+    def __init__(self, default_ttl: int = DEFAULT_CACHE_TTL):
+        self._cache = {}
+        self._timestamps = {}
+        self._default_ttl = default_ttl
+    
+    def get(self, key: str, ttl: int = None) -> Optional[Any]:
+        """Get a cached value if not expired."""
+        if key not in self._cache:
+            return None
+        
+        ttl = ttl or self._default_ttl
+        age = time.time() - self._timestamps.get(key, 0)
+        
+        if age > ttl:
+            # Expired
+            del self._cache[key]
+            del self._timestamps[key]
+            return None
+        
+        return self._cache[key]
+    
+    def set(self, key: str, value: Any) -> None:
+        """Store a value in cache."""
+        self._cache[key] = value
+        self._timestamps[key] = time.time()
+    
+    def clear(self) -> None:
+        """Clear all cached data."""
+        self._cache.clear()
+        self._timestamps.clear()
+    
+    def stats(self) -> Dict[str, Any]:
+        """Get cache statistics."""
+        return {
+            'entries': len(self._cache),
+            'keys': list(self._cache.keys())
+        }
+
 
 class ForecastAdapter:
     """
     Adapter for market forecast predictions using local ML infrastructure.
     
     Features:
-    - Real market data fetching
+    - Real market data fetching with caching
     - ML-based price predictions
     - Confidence interval generation
     - SHAP explanations
-    - Caching for performance
+    - TTL caching for performance
     """
     
     def __init__(self, bento_url: Optional[str] = None, deterministic: bool = False):
@@ -56,7 +104,18 @@ class ForecastAdapter:
         """
         self.bento_url = bento_url
         self.deterministic = deterministic
-        self.cache = {}
+        self.cache = {}  # Legacy cache for forecast results by ID
+        self._price_cache = TTLCache(DEFAULT_CACHE_TTL)
+        self._forecast_cache = TTLCache(FORECAST_CACHE_TTL)
+        
+        # Initialize pluggable serving client (Bento, Triton or local)
+        try:
+            from financial_dashboard.serving.serving_client import ServingClient
+            self.serving_client = ServingClient()
+            logger.info(f"Serving client initialized (mode={self.serving_client.mode})")
+        except Exception as e:
+            logger.warning(f"Serving client not available: {e}")
+            self.serving_client = None
         
         # Initialize ML runner
         try:
@@ -89,31 +148,69 @@ class ForecastAdapter:
         Returns:
             Dict with forecast results including time series and metadata
         """
+        forecast_start = time.time()
+        
         try:
             logger.info(f"Running forecast for {ticker}, horizon={horizon} days")
             
-            # Fetch historical data
-            prices = self._fetch_historical_data(ticker, lookback_days=252)
+            # Fetch historical data with metadata tracking
+            prices, data_metadata = self._fetch_historical_data(ticker, lookback_days=252)
             
             if prices is None or len(prices) < 30:
                 logger.error(f"Insufficient data for {ticker}")
                 return self._error_response(ticker, "Insufficient historical data")
             
-            # Generate forecast using ML runner
-            if self.ml_runner:
-                forecast_series = self._ml_forecast(ticker, prices, horizon)
+            # Generate forecast using configured serving backend (Bento/Triton/local)
+            forecast_data = None
+            inference_source = 'statistical'  # Track which inference path was used
+            
+            if self.serving_client:
+                try:
+                    sc_res = self.serving_client.predict_forecast(ticker, horizon, model, confidence)
+                    if sc_res.get('status') == 'success' and 'data' in sc_res:
+                        forecast_data = sc_res['data']
+                        inference_source = f'serving_{self.serving_client.mode}'
+                    elif sc_res.get('status') == 'success' and 'forecast' in sc_res.get('data', {}):
+                        forecast_data = sc_res['data']
+                        inference_source = f'serving_{self.serving_client.mode}'
+                except Exception as e:
+                    logger.warning(f"Serving client prediction failed: {e}")
+
+            if forecast_data is not None:
+                # Try to parse forecast series from returned data
+                try:
+                    if isinstance(forecast_data.get('forecast', None), list):
+                        forecast_series = np.array([f.get('yhat', f.get('value', None)) for f in forecast_data['forecast']])
+                    elif isinstance(forecast_data.get('forecast', None), (list, np.ndarray)):
+                        forecast_series = np.array(forecast_data['forecast'])
+                    else:
+                        # If forecast_data format isn't recognized, fallback to local
+                        logger.warning('Unexpected forecast payload, falling back to local/statistical')
+                        forecast_series = None
+                except Exception:
+                    forecast_series = None
             else:
-                # Fallback to statistical forecast
-                forecast_series = self._statistical_forecast(prices, horizon)
+                forecast_series = None
+
+            if forecast_series is None:
+                # Next: use local ML runner
+                if self.ml_runner:
+                    forecast_series = self._ml_forecast(ticker, prices, horizon)
+                    inference_source = 'ml_runner'
+                else:
+                    # Fallback to statistical forecast
+                    forecast_series = self._statistical_forecast(prices, horizon)
+                    inference_source = 'statistical'
             
             # Calculate confidence intervals
             lower_bound, upper_bound = self._calculate_confidence_intervals(
                 prices, forecast_series, confidence
             )
             
-            # Build response
+            # Build response with enhanced metadata
             current_price = float(prices.iloc[-1])
             forecast_mean = float(np.mean(forecast_series))
+            forecast_duration_ms = round((time.time() - forecast_start) * 1000, 2)
             
             result = {
                 'ticker': ticker,
@@ -130,13 +227,23 @@ class ForecastAdapter:
                 'expected_return': (forecast_mean - current_price) / current_price,
                 'volatility': float(np.std(forecast_series)),
                 'data_points': len(prices),
-                'status': 'success'
+                'status': 'success',
+                # Enhanced metadata
+                'metadata': {
+                    'data_source': data_metadata.get('source', 'unknown'),
+                    'data_fetch_duration_ms': data_metadata.get('fetch_duration_ms', 0),
+                    'data_timestamp': data_metadata.get('data_timestamp'),
+                    'inference_source': inference_source,
+                    'total_duration_ms': forecast_duration_ms,
+                    'generated_at': datetime.utcnow().isoformat()
+                }
             }
             
             # Cache result
             self.cache[forecast_id] = result
             
-            logger.info(f"✅ Forecast complete for {ticker}: ${current_price:.2f} → ${forecast_mean:.2f}")
+            logger.info(f"✅ Forecast complete for {ticker}: ${current_price:.2f} → ${forecast_mean:.2f} "
+                        f"(data={data_metadata.get('source')}, inference={inference_source}, {forecast_duration_ms}ms)")
             
             return result
             
@@ -247,47 +354,154 @@ class ForecastAdapter:
             logger.exception(f"Failed to generate explanation: {e}")
             return None
     
-    def _fetch_historical_data(self, ticker: str, lookback_days: int = 252) -> Optional[pd.Series]:
+    def _fetch_historical_data(self, ticker: str, lookback_days: int = 252) -> tuple[Optional[pd.Series], Dict[str, Any]]:
         """
-        Fetch historical price data for a ticker.
+        Fetch historical price data for a ticker using unified price fetching.
+        
+        Uses Alpaca → yfinance fallback chain via fetch_historical_data utility.
+        Returns (prices, metadata) tuple with source tracking.
+        Includes TTL caching to avoid repeated fetches.
         
         Args:
             ticker: Stock ticker symbol
             lookback_days: Number of days to fetch
         
         Returns:
-            Pandas Series of closing prices
+            Tuple of (Pandas Series of closing prices, metadata dict)
         """
+        # Check cache first
+        cache_key = f"prices_{ticker}_{lookback_days}"
+        cached = self._price_cache.get(cache_key)
+        if cached is not None:
+            prices, metadata = cached
+            metadata = metadata.copy()
+            metadata['cache_hit'] = True
+            logger.debug(f"Cache hit for {ticker} price data")
+            return prices, metadata
+        
+        fetch_start = time.time()
+        metadata = {
+            'source': 'unknown',
+            'fetch_duration_ms': 0,
+            'data_timestamp': None,
+            'ticker': ticker,
+            'requested_lookback': lookback_days,
+            'cache_hit': False
+        }
+        
         try:
-            import yfinance as yf
+            # Use the unified fetch_historical_data helper (Alpaca → yfinance fallback)
+            from financial_dashboard.utils.price_fetch import fetch_historical_data
             
             end_date = datetime.now()
             start_date = end_date - timedelta(days=lookback_days + 30)  # Extra buffer
             
-            logger.info(f"Fetching {lookback_days} days of data for {ticker}")
+            logger.info(f"Fetching {lookback_days} days of data for {ticker} via unified price fetcher")
             
-            # Fetch data
-            stock = yf.Ticker(ticker)
-            hist = stock.history(start=start_date, end=end_date)
+            # Fetch data using Alpaca → yfinance fallback
+            prices_df = fetch_historical_data(
+                tickers=[ticker],
+                start_date=start_date.strftime('%Y-%m-%d'),
+                end_date=end_date.strftime('%Y-%m-%d'),
+                use_alpaca=True
+            )
             
-            if hist.empty:
+            metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+            
+            if prices_df.empty or ticker not in prices_df.columns:
                 logger.error(f"No data returned for {ticker}")
-                return None
+                metadata['source'] = 'none'
+                return None, metadata
             
             # Extract closing prices
-            prices = hist['Close'].dropna()
+            prices = prices_df[ticker].dropna()
+            
+            if prices.empty:
+                logger.error(f"Empty price series for {ticker}")
+                metadata['source'] = 'none'
+                return None, metadata
             
             # Trim to requested lookback
             if len(prices) > lookback_days:
                 prices = prices.iloc[-lookback_days:]
             
-            logger.info(f"✅ Fetched {len(prices)} price points for {ticker}")
+            # Determine source based on data characteristics
+            # (fetch_historical_data logs which source succeeded internally)
+            metadata['source'] = 'alpaca_or_yfinance'
+            metadata['data_timestamp'] = prices.index[-1].isoformat() if hasattr(prices.index[-1], 'isoformat') else str(prices.index[-1])
+            metadata['data_points'] = len(prices)
             
-            return prices
+            # Cache the result
+            self._price_cache.set(cache_key, (prices, metadata))
+            
+            logger.info(f"✅ Fetched {len(prices)} price points for {ticker} in {metadata['fetch_duration_ms']}ms")
+            
+            return prices, metadata
+            
+        except ImportError as e:
+            logger.warning(f"fetch_historical_data not available, falling back to yfinance: {e}")
+            # Fallback to direct yfinance if the utility isn't available
+            return self._fetch_historical_data_yfinance_fallback(ticker, lookback_days, fetch_start, metadata, cache_key)
             
         except Exception as e:
             logger.exception(f"Failed to fetch data for {ticker}: {e}")
-            return None
+            metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+            metadata['error'] = str(e)
+            return None, metadata
+    
+    def _fetch_historical_data_yfinance_fallback(
+        self, ticker: str, lookback_days: int, fetch_start: float, metadata: Dict[str, Any], cache_key: str = None
+    ) -> tuple[Optional[pd.Series], Dict[str, Any]]:
+        """Direct yfinance fallback when unified fetcher is unavailable."""
+        try:
+            import yfinance as yf
+            
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=lookback_days + 30)
+            
+            stock = yf.Ticker(ticker)
+            hist = stock.history(start=start_date, end=end_date, auto_adjust=True)
+            
+            metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+            
+            if hist.empty:
+                metadata['source'] = 'none'
+                return None, metadata
+            
+            prices = hist['Close'].dropna()
+            if len(prices) > lookback_days:
+                prices = prices.iloc[-lookback_days:]
+            
+            metadata['source'] = 'yfinance'
+            metadata['data_timestamp'] = prices.index[-1].isoformat() if hasattr(prices.index[-1], 'isoformat') else str(prices.index[-1])
+            metadata['data_points'] = len(prices)
+            
+            # Cache if cache_key provided
+            if cache_key:
+                self._price_cache.set(cache_key, (prices, metadata))
+            
+            return prices, metadata
+            
+        except Exception as e:
+            logger.exception(f"yfinance fallback failed for {ticker}: {e}")
+            metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+            metadata['error'] = str(e)
+            return None, metadata
+    
+    def clear_cache(self) -> None:
+        """Clear all cached data."""
+        self._price_cache.clear()
+        self._forecast_cache.clear()
+        self.cache.clear()
+        logger.info("Forecast adapter cache cleared")
+    
+    def cache_stats(self) -> Dict[str, Any]:
+        """Get cache statistics."""
+        return {
+            'price_cache': self._price_cache.stats(),
+            'forecast_cache': self._forecast_cache.stats(),
+            'legacy_cache_entries': len(self.cache)
+        }
     
     def _ml_forecast(self, ticker: str, prices: pd.Series, horizon: int) -> np.ndarray:
         """
