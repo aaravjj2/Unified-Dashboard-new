@@ -47,6 +47,7 @@ from financial_dashboard.utils.news_client import fetch_news_for_tickers
 from financial_dashboard.utils.price_fetcher import PriceFetcher
 from financial_dashboard.utils.price_client import PriceClient
 import plotly.express as px
+import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
 
@@ -1136,47 +1137,70 @@ def register_callbacks(app):
         Input('interval-component', 'n_intervals')
     )
     def update_sector_heatmap(n):
-        """Fetch sector data and render heatmap."""
+        """Fetch sector data via PriceClient and render heatmap."""
+        import time as _time
+        _fetch_start = _time.time()
+        data_source = 'unknown'
+        
         try:
-            import yfinance as yf
-            
-            data = []
             tickers = list(SECTOR_ETFS.values())
             
-            # Fetch last 5 days to calculate change
-            # Use progress=False to avoid printing to stdout
-            df = yf.download(tickers, period="5d", progress=False)['Close']
+            # Use PriceClient for consistent provider fallback, caching, and telemetry
+            pc = PriceClient()
+            price_results = pc.get_prices(tickers, lookback_days=7, cache_ttl=60)
             
-            if df.empty:
-                return go.Figure()
-                
-            # Calculate % change from previous close
-            current_prices = df.iloc[-1]
-            prev_prices = df.iloc[-2]
+            # Determine primary data source from results
+            sources_used = set()
+            for ticker_data in price_results.values():
+                src = ticker_data.get('source', 'Local')
+                if src and src != 'Local':
+                    sources_used.add(src)
+            data_source = ', '.join(sorted(sources_used)) if sources_used else 'Local'
             
-            changes = ((current_prices - prev_prices) / prev_prices) * 100
-            
+            data = []
             for sector, ticker in SECTOR_ETFS.items():
-                if ticker in changes:
-                    change = changes[ticker]
-                    data.append({
-                        'Sector': sector,
-                        'Ticker': ticker,
-                        'Change': change,
-                        'AbsChange': abs(change),
-                        'Color': change
-                    })
+                ticker_data = price_results.get(ticker)
+                if not ticker_data:
+                    continue
+                
+                current = ticker_data.get('current_price')
+                # Use week_start_price for more accurate daily change; fall back to start_price
+                prev = ticker_data.get('week_start_price') or ticker_data.get('start_price')
+                
+                if current is None or prev is None or prev == 0:
+                    continue
+                
+                change = ((current - prev) / prev) * 100
+                data.append({
+                    'Sector': sector,
+                    'Ticker': ticker,
+                    'Change': change,
+                    'AbsChange': abs(change),
+                    'Color': change
+                })
             
             if not data:
-                return go.Figure()
+                # Return empty figure with helpful annotation
+                fig = go.Figure()
+                fig.add_annotation(
+                    text="No sector data available",
+                    xref="paper", yref="paper",
+                    x=0.5, y=0.5, showarrow=False,
+                    font=dict(size=14, color="#888")
+                )
+                fig.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
+                return fig
                 
             # Create Treemap
             fig = px.treemap(
                 data,
                 path=['Sector'],
-                values='AbsChange', # Size by magnitude of move
+                values='AbsChange',  # Size by magnitude of move
                 color='Change',
-                color_continuous_scale=['#ef4444', '#f3f4f6', '#10b981'], # Red to Green
+                color_continuous_scale=['#ef4444', '#f3f4f6', '#10b981'],  # Red to Green
                 color_continuous_midpoint=0,
                 custom_data=['Change', 'Ticker']
             )
@@ -1187,18 +1211,42 @@ def register_callbacks(app):
                 hovertemplate='<b>%{label}</b> (%{customdata[1]})<br>Change: %{customdata[0]:.2f}%<extra></extra>'
             )
             
+            # Add data source annotation
+            fetch_duration = _time.time() - _fetch_start
             fig.update_layout(
-                margin=dict(t=0, l=0, r=0, b=0),
+                margin=dict(t=25, l=0, r=0, b=0),
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='white')
+                font=dict(color='white'),
+                annotations=[
+                    dict(
+                        text=f"Source: {data_source} | {fetch_duration:.1f}s",
+                        xref="paper", yref="paper",
+                        x=1, y=1.02, xanchor="right", yanchor="bottom",
+                        showarrow=False,
+                        font=dict(size=9, color="#666")
+                    )
+                ]
             )
             
+            logger.info(f"Sector heatmap updated: {len(data)} sectors, source={data_source}, duration={fetch_duration:.2f}s")
             return fig
             
         except Exception as e:
-            logger.error(f"Error updating sector heatmap: {e}")
-            return go.Figure()
+            logger.error(f"Error updating sector heatmap: {e}", exc_info=True)
+            # Return graceful error figure instead of empty
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"Error loading sector data",
+                xref="paper", yref="paper",
+                x=0.5, y=0.5, showarrow=False,
+                font=dict(size=14, color="#ef4444")
+            )
+            fig.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
+            return fig
 
     # ====================================================================
     # CALLBACK 4: Refresh Display

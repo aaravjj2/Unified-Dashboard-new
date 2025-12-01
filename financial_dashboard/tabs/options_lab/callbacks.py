@@ -1237,7 +1237,7 @@ def register_callbacks(app):
             from .tradingview_handler import get_tradingview_handler
             
             handler = get_tradingview_handler()
-            all_signals = handler.get_signals(limit=20)
+            all_signals = handler.get_signals(limit=20, ticker=ticker)  # Pass ticker to generate if needed
             
             # Filter signals for this ticker
             ticker_signals = [s for s in all_signals if s['ticker'] == ticker.upper()]

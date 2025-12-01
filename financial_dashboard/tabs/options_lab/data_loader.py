@@ -265,9 +265,17 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
         calls = opt_chain.calls
         puts = opt_chain.puts
         
-        # Add calculated fields
-        calls = _enrich_chain_data(calls, spot_price, 'call')
-        puts = _enrich_chain_data(puts, spot_price, 'put')
+        # Handle None DataFrames
+        if calls is None:
+            calls = pd.DataFrame()
+        if puts is None:
+            puts = pd.DataFrame()
+        
+        # Add calculated fields (only if not empty)
+        if not calls.empty:
+            calls = _enrich_chain_data(calls, spot_price, 'call')
+        if not puts.empty:
+            puts = _enrich_chain_data(puts, spot_price, 'put')
         
         logger.info(f"✅ Using yfinance data for {ticker}")
         return {
