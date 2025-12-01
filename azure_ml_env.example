@@ -1,0 +1,29 @@
+# Azure ML Lab - Environment Configuration (Phase 4)
+# Add these variables to your .env or doppler.env file
+
+# Azure ML Workspace Configuration
+AZURE_SUBSCRIPTION_ID=your-subscription-id-here
+AZURE_RESOURCE_GROUP=unified-dashboard-rg
+AZURE_ML_WORKSPACE_NAME=unified-dashboard-ml
+AZURE_TENANT_ID=your-tenant-id-here
+
+# Azure ML Authentication (Service Principal - Production)
+AZURE_CLIENT_ID=your-client-id-here
+AZURE_CLIENT_SECRET=your-client-secret-here
+
+# Azure ML Endpoint Configuration
+AZURE_ML_ENDPOINT_NAME=portfolio-prediction-v1
+AZURE_ML_ENDPOINT_URL=https://your-workspace.azureml.net/score
+AZURE_ML_API_KEY=your-api-key-here
+
+# Feature Flags
+AZURE_ML_USE_MOCK=true  # Set to 'false' for real ML predictions
+AZURE_ML_ENABLE_CACHE=true
+AZURE_ML_CACHE_TTL=3600  # Cache TTL in seconds (1 hour)
+AZURE_ML_DEBUG=false
+
+# Notes:
+# - Set AZURE_ML_USE_MOCK=true to use mock predictions (safe for development/testing)
+# - Set AZURE_ML_USE_MOCK=false to enable real Azure ML API calls (requires credentials)
+# - If credentials are not configured, system automatically falls back to mock mode
+# - All mock data is generated on-the-fly with realistic distributions

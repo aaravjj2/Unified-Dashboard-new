@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy stub service
+COPY services/gpt4all_stub.py .
+
+# Install Flask
+RUN pip install --no-cache-dir flask
+
+# Expose port
+EXPOSE 8080
+
+# Run service
+CMD ["python", "gpt4all_stub.py"]

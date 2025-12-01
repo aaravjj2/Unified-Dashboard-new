@@ -1,0 +1,111 @@
+"""
+Strategy Lab - Execution Subtab
+
+Backtest execution interface:
+- Run button
+- Progress indicator
+- Real-time status updates
+- Cancel/restart controls
+"""
+
+import logging
+from dash_extensions.enrich import html, dcc
+import dash_bootstrap_components as dbc
+
+logger = logging.getLogger(__name__)
+
+def layout():
+    """
+    Execution subtab layout.
+    
+    Returns:
+        dbc.Container: Backtest execution controls
+    """
+    return dbc.Container([
+        # Description
+        dcc.Markdown("""
+**▶️ Execute Backtest:**
+
+Run your strategy simulation on historical data. This process:
+1. Loads price data for selected tickers
+2. Calculates indicators (SMA, RSI, etc.)
+3. Generates entry/exit signals
+4. Simulates trades with realistic costs
+5. Calculates performance metrics
+
+**⏱️ Expected Time:**
+- Small universes (3-5 tickers, 1 year): 5-10 seconds
+- Large universes (50+ tickers, 5 years): 30-60 seconds
+
+**💡 Tip:** Start with a small sample to verify your strategy works, then expand.
+        """, className="small mb-4", style={
+            'backgroundColor': '#f0fff4',
+            'padding': '15px',
+            'borderRadius': '8px',
+            'color': '#000000'
+        }),
+        
+        # Execution Controls
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("🚀 Run Backtest", className="mb-3"),
+                        
+                        # Run Button
+                        dbc.Button(
+                            [html.I(className="bi bi-play-circle me-2"), "Run Backtest"],
+                            id='sl-run-backtest-btn',
+                            color='primary',
+                            size='lg',
+                            className="w-100 mb-3",
+                            n_clicks=0
+                        ),
+                        
+                        # Progress Bar
+                        html.Div([
+                            dbc.Progress(
+                                id='sl-backtest-progress',
+                                value=0,
+                                striped=True,
+                                animated=True,
+                                className="mb-2"
+                            ),
+                            html.Div(id='sl-progress-text', className="text-center small", style={'color': '#000000'})
+                        ], id='sl-progress-container', style={'display': 'none'}),
+                        
+                        # Status Messages
+                        html.Div(id='sl-execution-status', className="mt-3"),
+                        
+                        # Cancel Button
+                        dbc.Button(
+                            [html.I(className="bi bi-x-circle me-2"), "Cancel"],
+                            id='sl-cancel-btn',
+                            color='danger',
+                            outline=True,
+                            className="w-100 mt-2",
+                            style={'display': 'none'}
+                        ),
+                    ])
+                ])
+            ], md=12),
+        ], className="mb-3"),
+        
+        # Real-time Stats (shown during execution)
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader(html.H6("📊 Execution Stats", className="mb-0")),
+                    dbc.CardBody([
+                        html.Div(id='sl-execution-stats', children=[
+                            html.P("No backtest running...", className="text-muted mb-0", style={'color': '#000000'})
+                        ])
+                    ])
+                ], className="mb-3")
+            ], md=12),
+        ]),
+        
+    ], fluid=True, className="p-3")
+
+
+logger.info("✓ Strategy Lab Execution subtab loaded")

@@ -1,0 +1,100 @@
+dash_app  | 2025-10-24 00:16:44,221 - INFO - Fetched SYM from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:44,278 - WARNING - Alpaca fetch failed for TPR: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:44,278 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:44,377 - INFO - Fetched TPR from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:44,435 - WARNING - Alpaca fetch failed for TSLA: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:44,435 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:44,534 - INFO - Fetched TSLA from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:44,632 - WARNING - Alpaca fetch failed for UNH: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:44,632 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:44,745 - INFO - Fetched UNH from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:44,839 - WARNING - Alpaca fetch failed for WBD: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:44,840 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:44,937 - INFO - Fetched WBD from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:44,999 - WARNING - Alpaca fetch failed for WDC: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:45,000 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:45,090 - INFO - Fetched WDC from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:45,160 - WARNING - Alpaca fetch failed for SPY: {"message":"subscription does not permit querying recent SIP data"}
+dash_app  | 
+dash_app  | 2025-10-24 00:16:45,160 - INFO - Falling back to yfinance for 1 tickers
+dash_app  | 2025-10-24 00:16:45,312 - INFO - Fetched SPY from yfinance (fallback)
+dash_app  | 2025-10-24 00:16:45,388 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:45] "POST /_dash-update-component HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:45,880 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:45] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:47,886 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:47] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:49,890 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:49] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:51,894 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:51] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:53,194 - INFO - 127.0.0.1 - - [24/Oct/2025 00:16:53] "GET / HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:53,897 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:53] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:55,902 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:55] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:57,907 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:57] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:58,405 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:58] "POST /_dash-update-component HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:16:58,418 - INFO - 🔥 Positions callback fired! portfolio_data=present, active_tab=market_trends
+dash_app  | 2025-10-24 00:16:58,421 - WARNING - ⚠️  No Market Trends data in sync manifest - skipping signal merge
+dash_app  | 2025-10-24 00:16:59,912 - INFO - 172.18.0.1 - - [24/Oct/2025 00:16:59] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:01,915 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:01] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:03,919 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:03] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:05,923 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:05] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:07,927 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:07] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:09,931 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:09] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:11,934 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:11] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:16,703 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:16] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:18,706 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:18] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:20,711 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:20] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:22,715 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:22] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:24,719 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:24] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:26,056 - INFO - 127.0.0.1 - - [24/Oct/2025 00:17:26] "GET / HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:26,722 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:26] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:28,458 - ERROR - Error fetching news for AVGO: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AVGO&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,463 - ERROR - Error fetching news for AVGO: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AVGO&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,470 - ERROR - Error fetching news for AVGO: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AVGO&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,471 - ERROR - Error fetching news for CAT: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CAT&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,472 - ERROR - Error fetching news for AMD: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AMD&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,473 - ERROR - Error fetching news for CAT: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CAT&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,493 - ERROR - Error fetching news for MU: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=MU&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,533 - ERROR - Error fetching news for MU: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=MU&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,537 - ERROR - Error fetching news for PL: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=PL&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,545 - ERROR - Error fetching news for CGON: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CGON&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,565 - ERROR - Error fetching news for APH: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=APH&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,575 - ERROR - Error fetching news for APH: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=APH&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,579 - ERROR - Error fetching news for AVGO: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AVGO&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,581 - ERROR - Error fetching news for BE: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=BE&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,598 - ERROR - Error fetching news for NEM: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=NEM&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:28,614 - ERROR - Error fetching news for NEM: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=NEM&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,616 - ERROR - Error fetching news for CGON: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CGON&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,621 - ERROR - Error fetching news for PLUG: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=PLUG&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:28,726 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:28] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:30,729 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:30] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:32,733 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:32] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:34,736 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:34] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:36,739 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:36] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:37,884 - ERROR - Error fetching news for SMCI: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=SMCI&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:37,889 - ERROR - Error fetching news for CGON: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CGON&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:37,943 - ERROR - Error fetching news for AVGO: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=AVGO&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:37,947 - ERROR - Error fetching news for ETSY: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=ETSY&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:37,950 - ERROR - Error fetching news for ETSY: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=ETSY&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:37,955 - ERROR - Error fetching news for SNDK: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=SNDK&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,005 - ERROR - Error fetching news for DIS: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=DIS&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,022 - ERROR - Error fetching news for SNDK: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=SNDK&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,030 - ERROR - Error fetching news for DIS: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=DIS&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,048 - ERROR - Error fetching news for CGON: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CGON&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,064 - ERROR - Error fetching news for RGTI: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=RGTI&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,069 - ERROR - Error fetching news for RGTI: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=RGTI&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,075 - ERROR - Error fetching news for GEV: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=GEV&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,097 - ERROR - Error fetching news for EA: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=EA&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,102 - ERROR - Error fetching news for EA: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=EA&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,119 - ERROR - Error fetching news for CIFR: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=CIFR&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,119 - ERROR - Error fetching news for STX: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=STX&from=2025-10-22&to=2025-10-24&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+dash_app  | 2025-10-24 00:17:38,141 - ERROR - Error fetching news for STX: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=STX&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,256 - ERROR - Error fetching news for SMCI: 429 Client Error: Too Many Requests for url: https://finnhub.io/api/v1/company-news?symbol=SMCI&from=2025-10-22&to=2025-10-24&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+dash_app  | 2025-10-24 00:17:38,742 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:38] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:40,747 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:40] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:42,751 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:42] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:44,756 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:44] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:49,629 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:49] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:51,634 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:51] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -
+dash_app  | 2025-10-24 00:17:53,638 - INFO - 172.18.0.1 - - [24/Oct/2025 00:17:53] "GET /_job_status?job_id=job_1761 HTTP/1.1" 200 -

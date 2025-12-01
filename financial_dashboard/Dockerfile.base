@@ -1,0 +1,68 @@
+# ============================================================================
+# Dockerfile.base - Optimized Multi-Stage Base Image for All Services
+# ============================================================================
+# Multi-stage build separates build-time and runtime dependencies
+# Achieves faster rebuilds, smaller images, and better layer caching
+
+# ============================================================================
+# Stage 1: Builder - Install Build Tools & Compile Python Packages
+# ============================================================================
+FROM python:3.10-slim as builder
+
+WORKDIR /build
+
+# Install build-time system dependencies (gcc, git, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    git \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy ONLY the base requirements (large, stable dependencies)
+COPY base_requirements.txt .
+
+# Install all Python dependencies with BuildKit cache mount
+# This layer is cached until base_requirements.txt changes
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r base_requirements.txt
+
+# Install FastAPI and uvicorn (common across all services) with pinned versions
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0
+
+# ============================================================================
+# Stage 2: Final Runtime Image - Minimal, Optimized for Production
+# ============================================================================
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install ONLY runtime system dependencies (no build tools)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy all installed Python packages from builder stage (instant - no reinstall)
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Create common directories for all services
+RUN mkdir -p logs cache services data output
+
+# Set Python environment variables for optimal runtime performance
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+# ============================================================================
+# Optimization Results:
+# - Build-time tools (gcc, git) excluded from final image → smaller size
+# - BuildKit cache mounts → faster pip installs on rebuild
+# - Multi-stage separation → service rebuilds ~15-30 seconds
+# ============================================================================

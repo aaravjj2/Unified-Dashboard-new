@@ -1,0 +1,622 @@
+/*
+ * Dashboard 162 Improvements CSS
+ * ===============================
+ * Comprehensive styling for all UI improvements across 9 tabs.
+ * File named 01_* to load after light theme but before other custom CSS.
+ */
+
+/* ============================================================================
+   LOADING ANIMATIONS
+   ============================================================================ */
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.loading-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Dash loading overlay improvements */
+._dash-loading {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(2px);
+}
+
+._dash-loading-callback {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+/* ============================================================================
+   TOOLBAR STYLES
+   ============================================================================ */
+
+.tab-toolbar {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tab-toolbar .card-body {
+    padding: 0.75rem 1rem;
+}
+
+/* ============================================================================
+   BUTTON IMPROVEMENTS
+   ============================================================================ */
+
+.btn-refresh,
+.btn-export,
+.btn-theme-toggle,
+.btn-help {
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.btn-refresh:hover {
+    transform: rotate(180deg);
+}
+
+.btn-export:hover,
+.btn-theme-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-help {
+    color: #6c757d;
+}
+
+.btn-help:hover {
+    color: #0d6efd;
+}
+
+/* Zoom controls */
+.chart-zoom-controls {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.chart-zoom-controls:hover {
+    opacity: 1;
+}
+
+.chart-controls {
+    gap: 0.5rem;
+}
+
+/* ============================================================================
+   STATUS INDICATORS
+   ============================================================================ */
+
+.status-indicator {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+.status-indicator i {
+    font-size: 0.6rem;
+}
+
+.system-health-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.system-health-card .card-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.connection-status {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+/* ============================================================================
+   METRIC CARDS
+   ============================================================================ */
+
+.metric-card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.metric-card .card-body {
+    padding: 1.25rem;
+}
+
+.metric-card h4 {
+    font-weight: 700;
+    color: #212529;
+}
+
+.summary-stats-row {
+    margin-bottom: 1rem;
+}
+
+/* ============================================================================
+   CHART CONTAINERS
+   ============================================================================ */
+
+.chart-container {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.chart-container .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem 1rem;
+}
+
+.chart-container .card-body {
+    padding: 0.5rem;
+}
+
+.chart-graph {
+    width: 100%;
+    min-height: 300px;
+}
+
+/* Chart legend */
+.chart-legend {
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+.legend-item {
+    padding: 0.25rem 0;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* ============================================================================
+   FILTER COMPONENTS
+   ============================================================================ */
+
+.ticker-filter {
+    min-width: 200px;
+}
+
+.ticker-filter .Select-control {
+    border-radius: 6px;
+    border-color: #ced4da;
+}
+
+.historical-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.form-select-sm {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+/* ============================================================================
+   ERROR BOUNDARIES
+   ============================================================================ */
+
+.error-boundary {
+    position: relative;
+}
+
+.error-fallback {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.empty-state {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    color: #6c757d;
+}
+
+.empty-state i {
+    color: #adb5bd;
+}
+
+/* ============================================================================
+   QUICK ACTIONS PANEL
+   ============================================================================ */
+
+.quick-actions-panel {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+}
+
+.quick-actions-panel .card-header {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.quick-actions-panel .btn {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+}
+
+/* ============================================================================
+   NOTIFICATIONS
+   ============================================================================ */
+
+.notification-badge {
+    font-size: 0.65rem !important;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.data-update-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 350px;
+}
+
+/* Toast notifications */
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================================
+   MODALS
+   ============================================================================ */
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+/* ============================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================================ */
+
+/* Skip link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #0d6efd;
+    color: white;
+    padding: 8px 16px;
+    z-index: 10000;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Focus indicators */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.nav-link:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* Keyboard hints */
+.keyboard-hint {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin: 0.25rem;
+}
+
+.keyboard-hint kbd {
+    background-color: #212529;
+    color: #ffffff;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-family: inherit;
+}
+
+/* ============================================================================
+   RESPONSIVE IMPROVEMENTS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .tab-toolbar .card-body {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .tab-toolbar .d-flex {
+        flex-wrap: wrap;
+        justify-content: center !important;
+    }
+    
+    .metric-card .card-body {
+        padding: 1rem;
+    }
+    
+    .metric-card h4 {
+        font-size: 1.25rem;
+    }
+    
+    .chart-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .summary-stats-row > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    .quick-actions-panel .btn {
+        font-size: 0.75rem;
+    }
+    
+    /* Stack filters on mobile */
+    .ticker-filter {
+        min-width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Full width buttons on mobile */
+    .btn-export,
+    .btn-refresh {
+        padding: 0.5rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .chart-zoom-controls {
+        display: none;
+    }
+    
+    .chart-container .card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start !important;
+    }
+    
+    .data-update-notification {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+/* ============================================================================
+   TABLE IMPROVEMENTS
+   ============================================================================ */
+
+.table-responsive {
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.dash-table-container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dash-table-container .dash-header {
+    background-color: #f8f9fa !important;
+    font-weight: 600;
+}
+
+.dash-table-container .dash-cell {
+    border-color: #e9ecef !important;
+}
+
+/* Sortable column headers */
+.dash-header.column-header-0 {
+    cursor: pointer;
+}
+
+.dash-header.column-header-0:hover {
+    background-color: #e9ecef !important;
+}
+
+/* ============================================================================
+   TOOLTIP IMPROVEMENTS
+   ============================================================================ */
+
+.tooltip-inner {
+    max-width: 300px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: 6px;
+    background-color: #212529;
+}
+
+.popover {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+}
+
+.popover-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+}
+
+.popover-body {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   LAST UPDATED TIMESTAMP
+   ============================================================================ */
+
+.last-updated {
+    font-size: 0.75rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+}
+
+.last-updated i {
+    font-size: 0.7rem;
+}
+
+/* ============================================================================
+   TAB-SPECIFIC IMPROVEMENTS
+   ============================================================================ */
+
+/* Command Center */
+#tab-content-home .metric-card {
+    border-left: 4px solid;
+}
+
+#tab-content-home .metric-card:nth-child(1) { border-left-color: #0d6efd; }
+#tab-content-home .metric-card:nth-child(2) { border-left-color: #198754; }
+#tab-content-home .metric-card:nth-child(3) { border-left-color: #ffc107; }
+#tab-content-home .metric-card:nth-child(4) { border-left-color: #dc3545; }
+
+/* Market Trends */
+#tab-content-market_trends .chart-container {
+    min-height: 400px;
+}
+
+/* Volatility Lab */
+#tab-content-volatility_lab .surface-chart {
+    min-height: 450px;
+}
+
+/* Attribution Lab */
+#tab-content-attribution_lab .factor-card {
+    transition: transform 0.2s ease;
+}
+
+#tab-content-attribution_lab .factor-card:hover {
+    transform: scale(1.02);
+}
+
+/* Strategy Lab */
+#tab-content-strategy_lab .strategy-row:hover {
+    background-color: #f8f9fa;
+}
+
+/* Stock Picks */
+#tab-content-picks .pick-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#tab-content-picks .pick-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Portfolio */
+#tab-content-portfolio .allocation-chart {
+    min-height: 350px;
+}
+
+/* Options Lab */
+#tab-content-options_lab .greeks-display {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+/* Research Lab */
+#tab-content-research_lab .research-item {
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+#tab-content-research_lab .research-item:hover {
+    border-left-color: #0d6efd;
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+    .tab-toolbar,
+    .chart-controls,
+    .quick-actions-panel,
+    .btn-refresh,
+    .btn-export,
+    .btn-help,
+    .notification-badge,
+    .data-update-notification {
+        display: none !important;
+    }
+    
+    .metric-card,
+    .chart-container {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    body {
+        font-size: 12pt;
+    }
+}

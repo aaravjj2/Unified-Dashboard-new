@@ -1,0 +1,1258 @@
+"""
+Options Lab Tab - Comprehensive Options Trading Hub
+
+Provides three main panels:
+1. Automated Strategy Monitoring - Track robot positions, status, logs
+2. Manual Options Trade Ticket - Interactive options chain and trade entry
+3. P&L Visualization - Risk/reward analysis for options strategies
+"""
+
+import os
+import logging
+import requests
+import pandas as pd
+import numpy as np
+from dash import dcc, html, Input, Output, State, dash_table, callback_context
+from dash.exceptions import PreventUpdate
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
+import plotly.express as px
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
+
+# Options Service endpoint
+OPTIONS_SERVICE_URL = os.getenv('OPTIONS_SERVICE_URL', 'http://localhost:8060')
+
+
+def layout():
+    """Build the Options Lab tab layout with three main panels."""
+    return create_layout()
+
+
+def create_layout():
+    """Build the Options Lab tab layout with three main panels."""
+    # For standalone app, return the container directly without Tab wrapper
+    return dbc.Container([
+        # Sub-navigation tabs for the three panels
+        dbc.Tabs(id="options-subtabs", active_tab="strategy-monitor", 
+                 className="mb-4",
+                 style={'fontSize': '16px'},
+                 children=[
+                
+                # Panel 1: Automated Strategy Monitoring
+                dbc.Tab(label="🤖 Strategy Monitor", tab_id="strategy-monitor", 
+                       id="subtab-strategy-monitor", children=[
+                    dbc.Container([
+                        html.Div([
+                            html.H4("🤖 Automated Strategy Monitoring", className="mt-4 mb-2"),
+                            html.P("Monitor your automated trading strategies, robot positions, and execution logs.", 
+                                  className="text-muted mb-4")
+                        ]),
+                        
+                        # Strategy Status Card
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Strategy Status", className="text-muted"),
+                                        html.H4(id='opt-strategy-status', children="Idle", 
+                                               className="text-warning"),
+                                        html.P(id='opt-last-run', children="Last Run: Never", 
+                                              className="text-muted small")
+                                    ])
+                                ])
+                            ], width=4),
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Open Positions", className="text-muted"),
+                                        html.H4(id='opt-position-count', children="0")
+                                    ])
+                                ])
+                            ], width=4),
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Total P&L", className="text-muted"),
+                                        html.H4(id='opt-total-pnl', children="$0.00")
+                                    ])
+                                ])
+                            ], width=4)
+                        ], className="mb-4"),
+                        
+                        # Control Buttons
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.ButtonGroup([
+                                    dbc.Button("Start Strategy", id='opt-start-btn', 
+                                             color='success', n_clicks=0),
+                                    dbc.Button("Pause Strategy", id='opt-pause-btn', 
+                                             color='warning', n_clicks=0),
+                                    dbc.Button("Stop Strategy", id='opt-stop-btn', 
+                                             color='danger', n_clicks=0),
+                                    dbc.Button("Refresh Data", id='opt-refresh-btn', 
+                                             color='primary', n_clicks=0)
+                                ])
+                            ])
+                        ], className="mb-4"),
+                        
+                        # Status Messages
+                        html.Div(id='opt-status-message', className="mb-3"),
+                        
+                        # Open Positions Table
+                        html.H6("Robot Positions", className="mb-2"),
+                        html.Div(id='opt-positions-container', children=[
+                            dash_table.DataTable(
+                                id='opt-positions-table',
+                                columns=[
+                                    {'name': 'Symbol', 'id': 'symbol'},
+                                    {'name': 'Type', 'id': 'option_type'},
+                                    {'name': 'Strike', 'id': 'strike'},
+                                    {'name': 'Expiration', 'id': 'expiration'},
+                                    {'name': 'Quantity', 'id': 'quantity'},
+                                    {'name': 'Entry Price', 'id': 'entry_price'},
+                                    {'name': 'Current Price', 'id': 'current_price'},
+                                    {'name': 'P&L', 'id': 'pnl'},
+                                    {'name': 'P&L %', 'id': 'pnl_pct'}
+                                ],
+                                data=[],
+                                style_table={'overflowX': 'auto'},
+                                style_cell={'textAlign': 'left', 'padding': '8px'},
+                                style_header={'backgroundColor': 'lightgrey', 'fontWeight': 'bold'},
+                                style_data_conditional=[
+                                    {'if': {'filter_query': '{pnl} > 0'}, 
+                                     'color': 'green'},
+                                    {'if': {'filter_query': '{pnl} < 0'}, 
+                                     'color': 'red'}
+                                ]
+                            )
+                        ]),
+                        
+                        # Activity Log
+                        html.H6("Recent Activity", className="mt-4 mb-2"),
+                        html.Div(id='opt-activity-log', children=[
+                            dbc.ListGroup(id='opt-log-list', children=[
+                                dbc.ListGroupItem("No recent activity", color="light")
+                            ])
+                        ], style={'maxHeight': '300px', 'overflowY': 'auto'}),
+                        
+                        # Auto-refresh interval
+                        dcc.Interval(id='opt-monitor-interval', interval=5000, n_intervals=0)
+                    ], fluid=True)
+                ]),
+                
+                # Panel 2: Manual Options Trade Ticket
+                dbc.Tab(label="✋ Manual Trade Ticket", tab_id="manual-trade",
+                       id="subtab-manual-trade", children=[
+                    dbc.Container([
+                        html.Div([
+                            html.H4("✋ Manual Options Trade Ticket", className="mt-4 mb-2"),
+                            html.P("Search for options chains, analyze strikes and expirations, and place manual trades with full control.", 
+                                  className="text-muted mb-4")
+                        ]),
+                        
+                        # Ticker Input and Expiration Selection
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Stock Symbol"),
+                                dbc.Input(id='opt-ticker-input', type='text', 
+                                        placeholder='e.g., AAPL', value='')
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Label("Expiration Date (or use dropdown)"),
+                                dcc.DatePickerSingle(
+                                    id='opt-expiration-calendar',
+                                    min_date_allowed=datetime.now().date(),
+                                    max_date_allowed=(datetime.now() + timedelta(days=730)).date(),
+                                    initial_visible_month=datetime.now().date(),
+                                    date=None,
+                                    display_format='YYYY-MM-DD',
+                                    placeholder='Select date',
+                                    style={'width': '100%'}
+                                ),
+                                html.Small("Or select from available dates below:", className="text-muted mt-1 d-block"),
+                                dcc.Dropdown(id='opt-expiration-dropdown', 
+                                           placeholder='Available expirations', 
+                                           options=[],
+                                           className="mt-1")
+                            ], width=4),
+                            dbc.Col([
+                                dbc.Label("Action"),
+                                html.Div([
+                                    dbc.Button("Get Options Chain", id='opt-get-chain-btn', 
+                                             color='primary', n_clicks=0, className="mt-0")
+                                ])
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Label("Current Stock Price"),
+                                html.H5(id='opt-stock-price', children="--", 
+                                       className="text-primary mt-1")
+                            ], width=3)
+                        ], className="mb-4"),
+                        
+                        # Status message for chain loading
+                        html.Div(id='opt-chain-status', className="mb-3"),
+                        
+                        # Options Chain Table
+                        html.H6("Options Chain", className="mb-2"),
+                        html.Div(id='opt-chain-container', children=[
+                            dash_table.DataTable(
+                                id='opt-chain-table',
+                                columns=[
+                                    {'name': 'Type', 'id': 'type'},
+                                    {'name': 'Strike', 'id': 'strike'},
+                                    {'name': 'Bid', 'id': 'bid'},
+                                    {'name': 'Ask', 'id': 'ask'},
+                                    {'name': 'Last', 'id': 'last'},
+                                    {'name': 'Volume', 'id': 'volume'},
+                                    {'name': 'Open Interest', 'id': 'open_interest'},
+                                    {'name': 'IV', 'id': 'implied_volatility'},
+                                    {'name': 'Delta', 'id': 'delta'},
+                                    {'name': 'Symbol', 'id': 'option_symbol'}
+                                ],
+                                data=[],
+                                row_selectable='single',
+                                selected_rows=[],
+                                style_table={'overflowX': 'auto', 'maxHeight': '400px', 
+                                           'overflowY': 'auto'},
+                                style_cell={'textAlign': 'left', 'padding': '8px', 
+                                          'fontSize': '12px'},
+                                style_header={'backgroundColor': 'lightblue', 
+                                            'fontWeight': 'bold'},
+                                style_data_conditional=[
+                                    {'if': {'filter_query': '{type} = "CALL"'}, 
+                                     'backgroundColor': '#e6f2ff'},
+                                    {'if': {'filter_query': '{type} = "PUT"'}, 
+                                     'backgroundColor': '#ffe6e6'}
+                                ]
+                            )
+                        ]),
+                        
+                        # Trade Entry Form
+                        html.Hr(className="mt-4 mb-4"),
+                        html.H6("Trade Entry", className="mb-3"),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Option Symbol"),
+                                dbc.Input(id='opt-trade-symbol', type='text', 
+                                        placeholder='Auto-filled from table', 
+                                        value='', disabled=False)
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Label("Strike Price"),
+                                dbc.Input(id='opt-trade-strike', type='number', 
+                                        placeholder='Strike', value='', disabled=False)
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Quantity"),
+                                dbc.Input(id='opt-trade-quantity', type='number', 
+                                        placeholder='Contracts', value=1, min=1)
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Side"),
+                                dcc.Dropdown(id='opt-trade-side', 
+                                           options=[
+                                               {'label': 'Buy', 'value': 'buy'},
+                                               {'label': 'Sell', 'value': 'sell'}
+                                           ], 
+                                           value='buy')
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Order Type"),
+                                dcc.Dropdown(id='opt-trade-order-type', 
+                                           options=[
+                                               {'label': 'Market', 'value': 'market'},
+                                               {'label': 'Limit', 'value': 'limit'}
+                                           ], 
+                                           value='market')
+                            ], width=2)
+                        ], className="mb-3"),
+                        
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Limit Price (if Limit order)"),
+                                dbc.Input(id='opt-trade-limit-price', type='number', 
+                                        placeholder='Optional', value='')
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Label("Submit Trade"),
+                                html.Div([
+                                    dbc.Button("Submit Manual Trade", 
+                                             id='opt-submit-trade-btn', 
+                                             color='success', n_clicks=0, 
+                                             size='lg', className="mt-0")
+                                ])
+                            ], width=3)
+                        ]),
+                        
+                        # Trade Status Message
+                        html.Div(id='opt-trade-status', className="mt-3 mb-4"),
+                        
+                        # Manual Positions Table
+                        html.Hr(className="mt-4 mb-4"),
+                        html.H6("My Manual Positions", className="mb-2"),
+                        html.Div(id='opt-manual-positions-container', children=[
+                            dash_table.DataTable(
+                                id='opt-manual-positions-table',
+                                columns=[
+                                    {'name': 'Symbol', 'id': 'symbol'},
+                                    {'name': 'Type', 'id': 'option_type'},
+                                    {'name': 'Strike', 'id': 'strike'},
+                                    {'name': 'Expiration', 'id': 'expiration'},
+                                    {'name': 'Quantity', 'id': 'quantity'},
+                                    {'name': 'Avg Price', 'id': 'avg_price'},
+                                    {'name': 'Current Price', 'id': 'current_price'},
+                                    {'name': 'P&L', 'id': 'pnl'},
+                                    {'name': 'P&L %', 'id': 'pnl_pct'}
+                                ],
+                                data=[],
+                                style_table={'overflowX': 'auto'},
+                                style_cell={'textAlign': 'left', 'padding': '8px'},
+                                style_header={'backgroundColor': 'lightgrey', 
+                                            'fontWeight': 'bold'},
+                                style_data_conditional=[
+                                    {'if': {'filter_query': '{pnl} > 0'}, 
+                                     'color': 'green'},
+                                    {'if': {'filter_query': '{pnl} < 0'}, 
+                                     'color': 'red'}
+                                ]
+                            )
+                        ])
+                    ], fluid=True)
+                ]),
+                
+                # Panel 3: P&L Visualization
+                dbc.Tab(label="📊 P&L Analyzer", tab_id="pnl-analyzer",
+                       id="subtab-pnl-analyzer", children=[
+                    dbc.Container([
+                        html.Div([
+                            html.H4("📊 P&L Visualization & Analysis", className="mt-4 mb-2"),
+                            html.P("Analyze profit/loss profiles for options strategies. Visualize risk/reward curves at expiration.", 
+                                  className="text-muted mb-4")
+                        ]),
+                        
+                        # Strategy Setup
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Underlying Symbol"),
+                                dbc.Input(id='pnl-ticker', type='text', 
+                                        placeholder='e.g., SPY', value='SPY')
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Label("Current Stock Price"),
+                                dbc.Input(id='pnl-stock-price', type='number', 
+                                        placeholder='Current price', value=450)
+                            ], width=3)
+                        ], className="mb-4"),
+                        
+                        # Leg Configuration (Single leg for now)
+                        html.H6("Option Leg Configuration", className="mb-2"),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Type"),
+                                dcc.Dropdown(id='pnl-option-type', 
+                                           options=[
+                                               {'label': 'Call', 'value': 'call'},
+                                               {'label': 'Put', 'value': 'put'}
+                                           ], 
+                                           value='call')
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Side"),
+                                dcc.Dropdown(id='pnl-side', 
+                                           options=[
+                                               {'label': 'Buy', 'value': 'buy'},
+                                               {'label': 'Sell', 'value': 'sell'}
+                                           ], 
+                                           value='buy')
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Strike"),
+                                dbc.Input(id='pnl-strike', type='number', 
+                                        placeholder='Strike', value=455)
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Premium"),
+                                dbc.Input(id='pnl-premium', type='number', 
+                                        placeholder='Premium per share', value=5.0)
+                            ], width=2),
+                            dbc.Col([
+                                dbc.Label("Quantity"),
+                                dbc.Input(id='pnl-quantity', type='number', 
+                                        placeholder='Contracts', value=1)
+                            ], width=2)
+                        ], className="mb-4"),
+                        
+                        dbc.Button("Generate P&L Chart", id='pnl-generate-btn', 
+                                 color='primary', n_clicks=0, className="mb-4"),
+                        
+                        # P&L Chart
+                        html.Div(id='pnl-chart-container', children=[
+                            dcc.Graph(id='pnl-chart')
+                        ]),
+                        
+                        # Key Metrics
+                        html.H6("Key Metrics", className="mt-4 mb-3"),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Max Profit", className="text-muted"),
+                                        html.H4(id='pnl-max-profit', children="$0.00")
+                                    ])
+                                ])
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Max Loss", className="text-muted"),
+                                        html.H4(id='pnl-max-loss', children="$0.00")
+                                    ])
+                                ])
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Breakeven", className="text-muted"),
+                                        html.H4(id='pnl-breakeven', children="$0.00")
+                                    ])
+                                ])
+                            ], width=3),
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardBody([
+                                        html.H6("Risk/Reward", className="text-muted"),
+                                        html.H4(id='pnl-risk-reward', children="0.00")
+                                    ])
+                                ])
+                            ], width=3)
+                        ])
+                    ], fluid=True)
+                ]),
+                
+                # Panel 4: Strategy Creator
+                dbc.Tab(label="⚙️ Strategy Creator", tab_id="strategy-creator", children=[
+                    dbc.Container([
+                        html.Div([
+                            html.H4("⚙️ Strategy Creator", className="mt-4 mb-2"),
+                            html.P("Create, test, and deploy custom trading strategies.", 
+                                  className="text-muted mb-4")
+                        ]),
+                        
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardHeader("Strategy Configuration"),
+                                    dbc.CardBody([
+                                        dbc.Row([
+                                            dbc.Col([
+                                                dbc.Label("Strategy Name"),
+                                                dbc.Input(id='strategy-name', type='text', 
+                                                        placeholder='e.g., my_covered_call_strategy', 
+                                                        value='')
+                                            ], width=6),
+                                            dbc.Col([
+                                                dbc.Label("Strategy Type"),
+                                                dcc.Dropdown(id='strategy-type', 
+                                                           options=[
+                                                               {'label': 'Covered Call', 'value': 'covered_call'},
+                                                               {'label': 'Cash-Secured Put', 'value': 'cash_secured_put'},
+                                                               {'label': 'Credit Spread', 'value': 'credit_spread'},
+                                                               {'label': 'Iron Condor', 'value': 'iron_condor'},
+                                                               {'label': 'Custom', 'value': 'custom'}
+                                                           ], 
+                                                           value='covered_call')
+                                            ], width=6)
+                                        ], className="mb-3"),
+                                        
+                                        dbc.Row([
+                                            dbc.Col([
+                                                dbc.Label("Symbols to Trade (comma-separated)"),
+                                                dbc.Input(id='strategy-symbols', type='text', 
+                                                        placeholder='SPY, QQQ, AAPL', 
+                                                        value='SPY')
+                                            ], width=12)
+                                        ], className="mb-3"),
+                                        
+                                        html.H6("Risk Parameters", className="mt-3 mb-2"),
+                                        dbc.Row([
+                                            dbc.Col([
+                                                dbc.Label("Max Position Size (contracts)"),
+                                                dbc.Input(id='strategy-max-position', type='number', 
+                                                        value=5, min=1)
+                                            ], width=4),
+                                            dbc.Col([
+                                                dbc.Label("Min Volume"),
+                                                dbc.Input(id='strategy-min-volume', type='number', 
+                                                        value=100, min=0)
+                                            ], width=4),
+                                            dbc.Col([
+                                                dbc.Label("Target DTE (Days to Expiration)"),
+                                                dbc.Input(id='strategy-target-dte', type='number', 
+                                                        value=30, min=1, max=365)
+                                            ], width=4)
+                                        ], className="mb-3"),
+                                        
+                                        html.H6("Entry Criteria", className="mt-3 mb-2"),
+                                        dbc.Row([
+                                            dbc.Col([
+                                                dbc.Label("Min Delta"),
+                                                dbc.Input(id='strategy-min-delta', type='number', 
+                                                        value=0.2, min=0, max=1, step=0.05)
+                                            ], width=4),
+                                            dbc.Col([
+                                                dbc.Label("Max Delta"),
+                                                dbc.Input(id='strategy-max-delta', type='number', 
+                                                        value=0.4, min=0, max=1, step=0.05)
+                                            ], width=4),
+                                            dbc.Col([
+                                                dbc.Label("Min Premium ($)"),
+                                                dbc.Input(id='strategy-min-premium', type='number', 
+                                                        value=0.5, min=0, step=0.1)
+                                            ], width=4)
+                                        ], className="mb-3"),
+                                        
+                                        dbc.Row([
+                                            dbc.Col([
+                                                dbc.Button("Generate Strategy Code", id='generate-strategy-btn', 
+                                                         color='primary', size='lg', className="me-2"),
+                                                dbc.Button("Save Strategy", id='save-strategy-btn', 
+                                                         color='success', size='lg', className="me-2"),
+                                                dbc.Button("Test Strategy", id='test-strategy-btn', 
+                                                         color='warning', size='lg')
+                                            ])
+                                        ], className="mt-3")
+                                    ])
+                                ])
+                            ], width=6),
+                            
+                            dbc.Col([
+                                dbc.Card([
+                                    dbc.CardHeader("Generated Strategy Code"),
+                                    dbc.CardBody([
+                                        dcc.Textarea(
+                                            id='strategy-code-output',
+                                            placeholder='Strategy code will appear here...',
+                                            style={'width': '100%', 'height': '400px', 
+                                                  'fontFamily': 'monospace', 'fontSize': '12px'},
+                                            value=''
+                                        ),
+                                        html.Div(id='strategy-status-message', className="mt-3")
+                                    ])
+                                ])
+                            ], width=6)
+                        ])
+                    ], fluid=True)
+                ])
+            ])
+    ], fluid=True)
+
+
+def register_callbacks(app):
+    """Register all callbacks for the Options Lab tab."""
+    
+    # Callback 1: Strategy Monitor - Refresh Data
+    @app.callback(
+        [Output('opt-strategy-status', 'children'),
+         Output('opt-strategy-status', 'className'),
+         Output('opt-last-run', 'children'),
+         Output('opt-position-count', 'children'),
+         Output('opt-total-pnl', 'children'),
+         Output('opt-positions-table', 'data'),
+         Output('opt-log-list', 'children')],
+        [Input('opt-refresh-btn', 'n_clicks'),
+         Input('opt-monitor-interval', 'n_intervals')]
+    )
+    def refresh_strategy_monitor(n_clicks, n_intervals):
+        """Refresh strategy monitoring data from options service."""
+        try:
+            # Fetch strategy status
+            status_response = requests.get(f'{OPTIONS_SERVICE_URL}/strategy/status', timeout=5)
+            status_data = status_response.json() if status_response.status_code == 200 else {}
+            
+            # Fetch positions
+            positions_response = requests.get(f'{OPTIONS_SERVICE_URL}/positions', timeout=5)
+            positions_data = positions_response.json() if positions_response.status_code == 200 else {}
+            
+            # Fetch recent alerts
+            alerts_response = requests.get(f'{OPTIONS_SERVICE_URL}/alerts/recent?limit=10', timeout=5)
+            alerts_data = alerts_response.json() if alerts_response.status_code == 200 else {}
+            
+            # Parse status
+            status = status_data.get('status', 'Unknown')
+            status_class = 'text-success' if status == 'Running' else 'text-warning'
+            last_run = status_data.get('last_run', 'Never')
+            
+            # Parse positions
+            positions = positions_data.get('positions', [])
+            position_count = len(positions)
+            total_pnl = sum([float(p.get('unrealized_pl', 0)) for p in positions])
+            
+            # Format positions table
+            positions_table = []
+            for pos in positions:
+                positions_table.append({
+                    'symbol': pos.get('symbol', ''),
+                    'option_type': pos.get('option_type', ''),
+                    'strike': f"${pos.get('strike', 0)}",
+                    'expiration': pos.get('expiration', ''),
+                    'quantity': pos.get('qty', 0),
+                    'entry_price': f"${pos.get('avg_entry_price', 0):.2f}",
+                    'current_price': f"${pos.get('current_price', 0):.2f}",
+                    'pnl': f"${pos.get('unrealized_pl', 0):.2f}",
+                    'pnl_pct': f"{pos.get('unrealized_plpc', 0)*100:.2f}%"
+                })
+            
+            # Format alerts
+            alerts = alerts_data.get('alerts', [])
+            log_items = []
+            for alert in alerts:
+                color_map = {'INFO': 'info', 'WARNING': 'warning', 'ERROR': 'danger', 'SUCCESS': 'success'}
+                color = color_map.get(alert.get('severity', 'INFO'), 'light')
+                timestamp = alert.get('timestamp', '')
+                message = alert.get('message', '')
+                log_items.append(
+                    dbc.ListGroupItem(f"[{timestamp}] {message}", color=color)
+                )
+            
+            if not log_items:
+                log_items = [dbc.ListGroupItem("No recent activity", color="light")]
+            
+            return (
+                status, status_class, f"Last Run: {last_run}",
+                str(position_count), f"${total_pnl:.2f}",
+                positions_table, log_items
+            )
+            
+        except Exception as e:
+            logger.error(f"Error refreshing strategy monitor: {e}")
+            return (
+                "Error", "text-danger", "Last Run: Error",
+                "0", "$0.00", [],
+                [dbc.ListGroupItem(f"Error: {str(e)}", color="danger")]
+            )
+    
+    # Callback 2: Strategy Control Buttons
+    @app.callback(
+        Output('opt-status-message', 'children'),
+        [Input('opt-start-btn', 'n_clicks'),
+         Input('opt-pause-btn', 'n_clicks'),
+         Input('opt-stop-btn', 'n_clicks')],
+        prevent_initial_call=True
+    )
+    def control_strategy(start_clicks, pause_clicks, stop_clicks):
+        """Handle strategy start/pause/stop actions."""
+        ctx = callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        
+        try:
+            if button_id == 'opt-start-btn':
+                response = requests.post(f'{OPTIONS_SERVICE_URL}/strategy/start', timeout=5)
+                message = response.json().get('message', 'Strategy started')
+                return dbc.Alert(message, color='success', dismissable=True)
+            
+            elif button_id == 'opt-pause-btn':
+                response = requests.post(f'{OPTIONS_SERVICE_URL}/strategy/pause', timeout=5)
+                message = response.json().get('message', 'Strategy paused')
+                return dbc.Alert(message, color='warning', dismissable=True)
+            
+            elif button_id == 'opt-stop-btn':
+                response = requests.post(f'{OPTIONS_SERVICE_URL}/strategy/stop', timeout=5)
+                message = response.json().get('message', 'Strategy stopped')
+                return dbc.Alert(message, color='info', dismissable=True)
+        
+        except Exception as e:
+            logger.error(f"Error controlling strategy: {e}")
+            return dbc.Alert(f"Error: {str(e)}", color='danger', dismissable=True)
+    
+    # Callback 3: Load Expirations for Ticker
+    @app.callback(
+        [Output('opt-expiration-dropdown', 'options'),
+         Output('opt-stock-price', 'children')],
+        [Input('opt-ticker-input', 'value')]
+    )
+    def load_expirations(ticker):
+        """Load available expiration dates for the selected ticker."""
+        if not ticker:
+            return [], "--"
+        
+        try:
+            # Get stock quote
+            quote_response = requests.get(
+                f'{OPTIONS_SERVICE_URL}/quote/{ticker}', timeout=5
+            )
+            quote_data = quote_response.json() if quote_response.status_code == 200 else {}
+            stock_price = quote_data.get('c', 0)  # Current price
+            
+            # Get expirations
+            exp_response = requests.get(
+                f'{OPTIONS_SERVICE_URL}/expirations/{ticker}', timeout=5
+            )
+            exp_data = exp_response.json() if exp_response.status_code == 200 else {}
+            expirations = exp_data.get('expirations', [])
+            
+            exp_options = [{'label': exp, 'value': exp} for exp in expirations]
+            
+            return exp_options, f"${stock_price:.2f}"
+        
+        except Exception as e:
+            logger.error(f"Error loading expirations: {e}")
+            return [], "--"
+    
+    # Callback 4: Load Options Chain
+    @app.callback(
+        [Output('opt-chain-table', 'data'),
+         Output('opt-chain-status', 'children')],
+        [Input('opt-get-chain-btn', 'n_clicks')],
+        [State('opt-ticker-input', 'value'),
+         State('opt-expiration-dropdown', 'value'),
+         State('opt-expiration-calendar', 'date')]
+    )
+    def load_options_chain(n_clicks, ticker, expiration_dropdown, expiration_calendar):
+        """Load and display options chain for selected ticker and expiration."""
+        if not n_clicks or not ticker:
+            raise PreventUpdate
+        
+        # Ensure ticker is uppercase
+        ticker = ticker.strip().upper()
+        
+        # Use calendar date if provided, otherwise use dropdown
+        expiration = expiration_calendar if expiration_calendar else expiration_dropdown
+        
+        if not expiration:
+            return [], dbc.Alert("Please select an expiration date", color='warning')
+        
+        try:
+            response = requests.get(
+                f'{OPTIONS_SERVICE_URL}/options-chain/{ticker}',
+                params={'expiration': expiration},
+                timeout=10
+            )
+            
+            if response.status_code != 200:
+                return [], dbc.Alert("Error loading options chain", color='danger')
+            
+            chain_data = response.json()
+            chain = chain_data.get('options', [])
+            
+            # Format for table
+            table_data = []
+            for option in chain:
+                table_data.append({
+                    'type': option.get('type', ''),
+                    'strike': option.get('strike', 0),
+                    'bid': f"${option.get('bid', 0):.2f}",
+                    'ask': f"${option.get('ask', 0):.2f}",
+                    'last': f"${option.get('last', 0):.2f}",
+                    'volume': option.get('volume', 0),
+                    'open_interest': option.get('openInterest', 0),
+                    'implied_volatility': f"{option.get('iv', 0)*100:.1f}%",
+                    'delta': f"{option.get('delta', 0):.3f}",
+                    'option_symbol': option.get('symbol', '')
+                })
+            
+            return table_data, dbc.Alert(
+                f"Loaded {len(table_data)} options for {ticker} exp {expiration}", 
+                color='success', dismissable=True
+            )
+        
+        except Exception as e:
+            logger.error(f"Error loading options chain: {e}")
+            return [], dbc.Alert(f"Error: {str(e)}", color='danger')
+    
+    # Callback 5: Pre-fill Trade Form from Chain Selection
+    @app.callback(
+        [Output('opt-trade-symbol', 'value'),
+         Output('opt-trade-strike', 'value')],
+        [Input('opt-chain-table', 'selected_rows')],
+        [State('opt-chain-table', 'data')]
+    )
+    def prefill_trade_form(selected_rows, table_data):
+        """Pre-fill trade entry form when user selects a row in options chain."""
+        if not selected_rows or not table_data:
+            raise PreventUpdate
+        
+        selected_row = table_data[selected_rows[0]]
+        option_symbol = selected_row.get('option_symbol', '')
+        strike = float(selected_row.get('strike', 0))
+        
+        return option_symbol, strike
+    
+    # Callback 6: Submit Manual Trade
+    @app.callback(
+        Output('opt-trade-status', 'children'),
+        [Input('opt-submit-trade-btn', 'n_clicks')],
+        [State('opt-trade-symbol', 'value'),
+         State('opt-trade-strike', 'value'),
+         State('opt-trade-quantity', 'value'),
+         State('opt-trade-side', 'value'),
+         State('opt-trade-order-type', 'value'),
+         State('opt-trade-limit-price', 'value')],
+        prevent_initial_call=True
+    )
+    def submit_manual_trade(n_clicks, symbol, strike, quantity, side, order_type, limit_price):
+        """Submit a manual options trade via the options service."""
+        if not n_clicks:
+            raise PreventUpdate
+        
+        if not symbol or not strike or not quantity:
+            return dbc.Alert("Please fill in all required fields", color='warning')
+        
+        try:
+            trade_request = {
+                'symbol': symbol,
+                'strike': float(strike),
+                'quantity': int(quantity),
+                'side': side,
+                'order_type': order_type
+            }
+            
+            if order_type == 'limit' and limit_price:
+                trade_request['limit_price'] = float(limit_price)
+            
+            response = requests.post(
+                f'{OPTIONS_SERVICE_URL}/trade',
+                json=trade_request,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                return dbc.Alert(
+                    f"✅ Trade submitted: {result.get('message', 'Success')}", 
+                    color='success', dismissable=True
+                )
+            else:
+                error_msg = response.json().get('detail', 'Unknown error')
+                return dbc.Alert(f"❌ Trade rejected: {error_msg}", color='danger')
+        
+        except Exception as e:
+            logger.error(f"Error submitting trade: {e}")
+            return dbc.Alert(f"Error: {str(e)}", color='danger')
+    
+    # Callback 7: Load Manual Positions
+    @app.callback(
+        Output('opt-manual-positions-table', 'data'),
+        [Input('opt-submit-trade-btn', 'n_clicks'),
+         Input('opt-monitor-interval', 'n_intervals')]
+    )
+    def load_manual_positions(n_clicks, n_intervals):
+        """Load user's manual options positions."""
+        try:
+            response = requests.get(f'{OPTIONS_SERVICE_URL}/positions', timeout=5)
+            
+            if response.status_code != 200:
+                return []
+            
+            positions_data = response.json()
+            positions = positions_data.get('positions', [])
+            
+            # Format for table (same as automated positions)
+            table_data = []
+            for pos in positions:
+                table_data.append({
+                    'symbol': pos.get('symbol', ''),
+                    'option_type': pos.get('option_type', ''),
+                    'strike': f"${pos.get('strike', 0)}",
+                    'expiration': pos.get('expiration', ''),
+                    'quantity': pos.get('qty', 0),
+                    'avg_price': f"${pos.get('avg_entry_price', 0):.2f}",
+                    'current_price': f"${pos.get('current_price', 0):.2f}",
+                    'pnl': f"${pos.get('unrealized_pl', 0):.2f}",
+                    'pnl_pct': f"{pos.get('unrealized_plpc', 0)*100:.2f}%"
+                })
+            
+            return table_data
+        
+        except Exception as e:
+            logger.error(f"Error loading manual positions: {e}")
+            return []
+    
+    # Callback 8: Generate P&L Chart
+    @app.callback(
+        [Output('pnl-chart', 'figure'),
+         Output('pnl-max-profit', 'children'),
+         Output('pnl-max-loss', 'children'),
+         Output('pnl-breakeven', 'children'),
+         Output('pnl-risk-reward', 'children')],
+        [Input('pnl-generate-btn', 'n_clicks')],
+        [State('pnl-stock-price', 'value'),
+         State('pnl-option-type', 'value'),
+         State('pnl-side', 'value'),
+         State('pnl-strike', 'value'),
+         State('pnl-premium', 'value'),
+         State('pnl-quantity', 'value')]
+    )
+    def generate_pnl_chart(n_clicks, stock_price, option_type, side, strike, premium, quantity):
+        """Generate P&L profile chart for an options position."""
+        if not n_clicks:
+            raise PreventUpdate
+        
+        try:
+            stock_price = float(stock_price)
+            strike = float(strike)
+            premium = float(premium)
+            quantity = int(quantity)
+            
+            # Create price range for chart (±30% from current price)
+            price_range = np.linspace(stock_price * 0.7, stock_price * 1.3, 100)
+            
+            # Calculate P&L at expiration for each price point
+            pnl_values = []
+            for price in price_range:
+                if option_type == 'call':
+                    intrinsic_value = max(0, price - strike)
+                else:  # put
+                    intrinsic_value = max(0, strike - price)
+                
+                if side == 'buy':
+                    pnl = (intrinsic_value - premium) * 100 * quantity
+                else:  # sell
+                    pnl = (premium - intrinsic_value) * 100 * quantity
+                
+                pnl_values.append(pnl)
+            
+            # Calculate key metrics
+            max_profit = max(pnl_values)
+            max_loss = min(pnl_values)
+            
+            # Find breakeven
+            breakeven = None
+            for i, pnl in enumerate(pnl_values):
+                if i > 0 and (pnl_values[i-1] * pnl) <= 0:  # Sign change
+                    breakeven = price_range[i]
+                    break
+            
+            risk_reward = abs(max_profit / max_loss) if max_loss != 0 else 0
+            
+            # Create chart
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=price_range,
+                y=pnl_values,
+                mode='lines',
+                name='P&L at Expiration',
+                line=dict(color='blue', width=3)
+            ))
+            
+            # Add zero line
+            fig.add_hline(y=0, line_dash="dash", line_color="gray")
+            
+            # Add current price line
+            fig.add_vline(x=stock_price, line_dash="dot", line_color="green", 
+                         annotation_text="Current Price")
+            
+            # Add breakeven line
+            if breakeven:
+                fig.add_vline(x=breakeven, line_dash="dot", line_color="orange", 
+                             annotation_text="Breakeven")
+            
+            fig.update_layout(
+                title=f"{option_type.upper()} {side.upper()} - Strike ${strike}",
+                xaxis_title="Stock Price at Expiration",
+                yaxis_title="Profit/Loss ($)",
+                hovermode='x unified',
+                height=500
+            )
+            
+            return (
+                fig,
+                f"${max_profit:.2f}",
+                f"${max_loss:.2f}",
+                f"${breakeven:.2f}" if breakeven else "N/A",
+                f"{risk_reward:.2f}"
+            )
+        
+        except Exception as e:
+            logger.error(f"Error generating P&L chart: {e}")
+            empty_fig = go.Figure()
+            return empty_fig, "$0.00", "$0.00", "$0.00", "0.00"
+    
+    # Callback 9: Generate Strategy Code
+    @app.callback(
+        [Output('strategy-code-output', 'value'),
+         Output('strategy-status-message', 'children')],
+        [Input('generate-strategy-btn', 'n_clicks')],
+        [State('strategy-name', 'value'),
+         State('strategy-type', 'value'),
+         State('strategy-symbols', 'value'),
+         State('strategy-max-position', 'value'),
+         State('strategy-min-volume', 'value'),
+         State('strategy-target-dte', 'value'),
+         State('strategy-min-delta', 'value'),
+         State('strategy-max-delta', 'value'),
+         State('strategy-min-premium', 'value')]
+    )
+    def generate_strategy_code(n_clicks, name, strategy_type, symbols, max_pos, 
+                              min_vol, target_dte, min_delta, max_delta, min_premium):
+        """Generate strategy code based on user inputs."""
+        if not n_clicks or not name:
+            raise PreventUpdate
+        
+        # Generate Python code for the strategy
+        code = f'''"""
+{name.replace('_', ' ').title()} Strategy
+Auto-generated strategy based on {strategy_type} template
+"""
+
+from strategies.base_strategy import BaseStrategy
+from typing import Dict, List
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class {name.replace('_', ' ').title().replace(' ', '')}Strategy(BaseStrategy):
+    """
+    {strategy_type.replace('_', ' ').title()} strategy implementation.
+    """
+    
+    def __init__(self, config: Dict = None):
+        super().__init__(config)
+        self.name = "{name}"
+        
+        # Strategy parameters
+        self.symbols = {symbols.split(',') if symbols else ['SPY']}
+        self.max_position_size = {max_pos or 5}
+        self.min_volume = {min_vol or 100}
+        self.target_dte = {target_dte or 30}
+        self.min_delta = {min_delta or 0.2}
+        self.max_delta = {max_delta or 0.4}
+        self.min_premium = {min_premium or 0.5}
+        
+        logger.info(f"Initialized {{self.name}} strategy")
+    
+    def generate_signals(self, data: Dict) -> List[Dict]:
+        """
+        Generate trading signals based on strategy criteria.
+        """
+        signals = []
+        
+        try:
+            ticker = data.get('ticker')
+            quote = data.get('quote', {{}})
+            options_chain = data.get('options_chain', [])
+            positions = data.get('positions', [])
+            account = data.get('account', {{}})
+            
+            stock_price = quote.get('c', 0)
+            
+            # Strategy logic for {strategy_type}
+            for option in options_chain:
+                # Filter by option type
+                {'if strategy_type == "covered_call":'}
+                if option['type'] != 'CALL':
+                    continue
+                {'elif strategy_type == "cash_secured_put":'}
+                if option['type'] != 'PUT':
+                    continue
+                {'else:'}
+                # Custom filtering logic here
+                pass
+                
+                # Check volume
+                if option.get('volume', 0) < self.min_volume:
+                    continue
+                
+                # Check delta range
+                delta = abs(option.get('delta', 0))
+                if delta < self.min_delta or delta > self.max_delta:
+                    continue
+                
+                # Check days to expiration
+                dte = option.get('dte', 0)
+                if abs(dte - self.target_dte) > 7:  # Within 7 days of target
+                    continue
+                
+                # Check minimum premium
+                premium = option.get('bid', 0)
+                if premium < self.min_premium:
+                    continue
+                
+                # Generate signal
+                action = 'BUY' if '{strategy_type}' == 'credit_spread' else 'SELL'
+                signals.append({{
+                    'action': action,
+                    'symbol': option['symbol'],
+                    'quantity': min(self.max_position_size, 2),
+                    'reason': f"{{strategy_type}} at delta={{delta:.2f}}, premium=${{premium:.2f}}",
+                    'confidence': 0.75,
+                    'option_type': option['type'],
+                    'strike': option['strike'],
+                    'expiration': option.get('expiration', '')
+                }})
+            
+            logger.info(f"{{self.name}} generated {{len(signals)}} signals for {{ticker}}")
+            
+        except Exception as e:
+            logger.error(f"Error generating signals: {{e}}")
+        
+        return signals
+'''
+        
+        status_msg = dbc.Alert([
+            html.H6("✓ Strategy Code Generated!", className="alert-heading"),
+            html.P(f"Strategy: {name}"),
+            html.P(f"Type: {strategy_type.replace('_', ' ').title()}"),
+            html.Hr(),
+            html.P("Next steps:", className="mb-1"),
+            html.Ol([
+                html.Li(f"Save this code to strategies/{name}.py"),
+                html.Li(f"Add configuration to options_config.yaml"),
+                html.Li("Test the strategy using the Test button or API")
+            ])
+        ], color="success")
+        
+        return code, status_msg
+    
+    # Callback 10: Save Strategy
+    @app.callback(
+        Output('strategy-status-message', 'children', allow_duplicate=True),
+        [Input('save-strategy-btn', 'n_clicks')],
+        [State('strategy-name', 'value'),
+         State('strategy-code-output', 'value')],
+        prevent_initial_call=True
+    )
+    def save_strategy(n_clicks, name, code):
+        """Save generated strategy code to services/options_service/strategies/ folder."""
+        if not n_clicks or not name or not code:
+            raise PreventUpdate
+        
+        try:
+            from pathlib import Path
+            
+            # Ensure strategies directory exists in options service
+            strategies_dir = Path(__file__).parent.parent / 'services' / 'options_service' / 'strategies'
+            strategies_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save strategy file
+            strategy_file = strategies_dir / f"{name}.py"
+            with open(strategy_file, 'w') as f:
+                f.write(code)
+            
+            logger.info(f"Saved strategy to {strategy_file}")
+            
+            return dbc.Alert([
+                html.H6("✓ Strategy Saved Successfully!", className="alert-heading"),
+                html.P(f"File: services/options_service/strategies/{name}.py"),
+                html.Hr(),
+                html.P("The strategy has been saved and is ready to use."),
+                html.P("You can now test it using the Test Strategy button.")
+            ], color="success")
+        
+        except Exception as e:
+            logger.error(f"Error saving strategy: {e}")
+            return dbc.Alert(f"Error saving strategy: {str(e)}", color="danger")
+    
+    # Callback 11: Test Strategy
+    @app.callback(
+        Output('strategy-status-message', 'children', allow_duplicate=True),
+        [Input('test-strategy-btn', 'n_clicks')],
+        [State('strategy-name', 'value'),
+         State('strategy-symbols', 'value')],
+        prevent_initial_call=True
+    )
+    def test_strategy(n_clicks, name, symbols):
+        """Test the strategy against current market data."""
+        if not n_clicks or not name:
+            raise PreventUpdate
+        
+        try:
+            from pathlib import Path
+            import sys
+            import importlib.util
+            
+            # Load the strategy module
+            strategies_dir = Path(__file__).parent.parent / 'services' / 'options_service' / 'strategies'
+            strategy_file = strategies_dir / f"{name}.py"
+            
+            if not strategy_file.exists():
+                return dbc.Alert(
+                    "Strategy file not found. Please save the strategy first.",
+                    color="warning"
+                )
+            
+            # Import the strategy
+            spec = importlib.util.spec_from_file_location(name, strategy_file)
+            strategy_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(strategy_module)
+            
+            # Find the strategy class
+            strategy_class = None
+            for attr_name in dir(strategy_module):
+                attr = getattr(strategy_module, attr_name)
+                if isinstance(attr, type) and attr_name.endswith('Strategy') and attr_name != 'BaseStrategy':
+                    strategy_class = attr
+                    break
+            
+            if not strategy_class:
+                return dbc.Alert("No strategy class found in file.", color="danger")
+            
+            # Instantiate strategy
+            strategy = strategy_class()
+            
+            # Get market data for testing
+            test_symbol = (symbols.split(',')[0] if symbols else 'SPY').strip()
+            
+            quote_response = requests.get(f'{OPTIONS_SERVICE_URL}/quote/{test_symbol}', timeout=5)
+            quote = quote_response.json() if quote_response.status_code == 200 else {}
+            
+            exp_response = requests.get(f'{OPTIONS_SERVICE_URL}/expirations/{test_symbol}', timeout=5)
+            expirations = exp_response.json().get('expirations', [])
+            
+            if not expirations:
+                return dbc.Alert("No expirations available for testing.", color="warning")
+            
+            # Get options chain for first expiration
+            chain_response = requests.get(
+                f'{OPTIONS_SERVICE_URL}/options-chain/{test_symbol}?expiration={expirations[0]}',
+                timeout=5
+            )
+            options_chain = chain_response.json().get('options', [])
+            
+            # Prepare data for strategy
+            data = {
+                'ticker': test_symbol,
+                'quote': quote,
+                'options_chain': options_chain,
+                'positions': [],
+                'account': {}
+            }
+            
+            # Run strategy
+            signals = strategy.generate_signals(data)
+            
+            # Format results
+            if signals:
+                signal_items = [
+                    html.Li(f"{s.get('action', 'N/A')} {s.get('symbol', 'N/A')} "
+                           f"Strike ${s.get('strike', 0)} "
+                           f"Exp {s.get('expiration', 'N/A')} "
+                           f"Qty {s.get('quantity', 0)}")
+                    for s in signals[:5]  # Show first 5
+                ]
+                
+                return dbc.Alert([
+                    html.H6(f"✓ Strategy Test Complete!", className="alert-heading"),
+                    html.P(f"Generated {len(signals)} signal(s) for {test_symbol}"),
+                    html.Hr(),
+                    html.P("Signals:"),
+                    html.Ul(signal_items),
+                    html.P(f"Using expiration: {expirations[0]}", className="text-muted small")
+                ], color="success")
+            else:
+                return dbc.Alert([
+                    html.H6("Strategy Test Complete", className="alert-heading"),
+                    html.P(f"No signals generated for {test_symbol}"),
+                    html.P("This could mean market conditions don't meet strategy criteria.", 
+                          className="text-muted")
+                ], color="info")
+        
+        except Exception as e:
+            logger.error(f"Error testing strategy: {e}")
+            return dbc.Alert(f"Error testing strategy: {str(e)}", color="danger")

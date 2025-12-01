@@ -1,0 +1,61 @@
+
+/* React Error Fix - UI Normalization */
+/* Ensures all form elements have proper styling to prevent React errors */
+
+.dash-table-container,
+.dash-table-container * {
+    color: black !important;
+    background-color: white !important;
+}
+
+.form-control,
+.dash-input,
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+}
+
+.form-control:focus,
+.dash-input:focus {
+    background-color: white !important;
+    color: black !important;
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Fix for React component serialization issues */
+.dash-component {
+    display: block !important;
+}
+
+/* Ensure proper text rendering */
+.text-muted,
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-info {
+    color: #17a2b8 !important;
+}

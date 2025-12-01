@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/c/Aarav/fin_env/.venv_local/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/c/Aarav/fin_env/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.10.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 6 items
+
+tests/test_navigation.py::test_navigation_bar_is_rendered_correctly 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:94 ✅ Loaded keys.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded doppler.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded .env
+INFO     utils.load_env:load_env.py:150 ✅ All 5 required keys present
+PASSED                                                                   [ 16%]
+tests/test_market_trends_ui.py::test_table_renders_all_rows[chromium] PASSED [ 33%]
+tests/test_market_trends_ui.py::test_key_tickers_display[chromium] PASSED [ 50%]
+tests/test_market_trends_ui.py::test_recent_news_live[chromium] PASSED   [ 66%]
+tests/test_market_trends_ui.py::test_no_updating_spinner_stuck[chromium] PASSED [ 83%]
+tests/test_market_trends_ui.py::test_table_has_data_attributes[chromium] PASSED [100%]
+
+======================== 6 passed in 253.83s (0:04:13) =========================

@@ -1,0 +1,32 @@
+(function(){
+  // Observe changes to #tab-content and create/update #tab-ready when it has children
+  function makeReadyMarker() {
+    let marker = document.getElementById('tab-ready');
+    if (!marker) {
+      marker = document.createElement('div');
+      marker.id = 'tab-ready';
+      marker.style.display = 'none';
+      document.body.appendChild(marker);
+    }
+    return marker;
+  }
+  function checkAndMark() {
+    const tc = document.getElementById('tab-content');
+    const marker = makeReadyMarker();
+    if (!tc) return;
+    // when tab-content has at least one non-empty child node or contains a table/graph
+    const html = tc.innerHTML || '';
+    if (html.trim().length > 10 || /<table\b|<svg\b|class=\"dataframe\"/.test(html)) {
+      marker.innerText = 'ready:' + new Date().toISOString();
+    }
+  }
+  const tc = document.getElementById('tab-content');
+  if (tc) {
+    const obs = new MutationObserver(function(m){
+      checkAndMark();
+    });
+    obs.observe(tc, {childList: true, subtree: true, characterData: true});
+    // initial check
+    checkAndMark();
+  }
+})();

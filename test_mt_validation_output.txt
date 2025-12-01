@@ -1,0 +1,9 @@
+======================================================================
+MARKET TRENDS P1/P2 COMPLETE VALIDATION TEST
+======================================================================
+
+======================================================================
+STEP 0: Starting Dashboard
+======================================================================
+⏳ Waiting for dashboard to start (10 seconds)...
+❌ Dashboard not responding: HTTPConnectionPool(host='localhost', port=8055): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f260b4d2440>: Failed to establish a new connection: [Errno 111] Connection refused'))

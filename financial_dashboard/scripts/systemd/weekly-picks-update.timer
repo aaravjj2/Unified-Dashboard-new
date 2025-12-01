@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer to run weekly-picks-update.service at Mon 09:30 America/New_York
+
+[Timer]
+# OnCalendar: 'Mon *-*-* 09:30:00' triggers every Monday at 09:30 in the configured TimeZone
+OnCalendar=Mon *-*-* 09:30:00
+TimeZone=America/New_York
+Persistent=true
+
+[Install]
+WantedBy=timers.target

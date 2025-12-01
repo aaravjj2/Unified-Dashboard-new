@@ -1,0 +1,272 @@
+version: '3.8'
+
+networks:
+  shared-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  timescaledb_data:
+  dagster_data:
+  mlflow_data:
+
+services:
+  postgres_db:
+    image: postgres:14
+    container_name: postgres_db
+    networks:
+      - shared-network
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
+    networks:
+      - shared-network
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: timeseries_data
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dagster:
+    build:
+      context: ./platform-stack/dagster_project
+      dockerfile: Dockerfile
+    container_name: dagster
+    networks:
+      - shared-network
+    ports:
+      - "3000:3000"
+    environment:
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DAGSTER_POSTGRES_DB: dagster
+      DAGSTER_POSTGRES_HOST: postgres_db
+      DAGSTER_POSTGRES_PORT: 5432
+    volumes:
+      - dagster_data:/opt/dagster/dagster_home
+      - ./financial_dashboard/models:/app/models:ro
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow
+    networks:
+      - shared-network
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_db:5432/mlflow
+      MLFLOW_ARTIFACTS_DESTINATION: /mlflow/artifacts
+    volumes:
+      - mlflow_data:/mlflow
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    command: >
+      sh -c "
+      mlflow server
+      --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_db:5432/mlflow
+      --default-artifact-root /mlflow/artifacts
+      --host 0.0.0.0
+      --port 5000
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  dash_app:
+    build:
+      context: .
+      dockerfile: ./financial_dashboard/Dockerfile
+    container_name: dash_app
+    ports:
+      - "8050:8050"
+    networks:
+      - shared-network
+    depends_on:
+      - options_service
+      - chatbot_service
+      - postgres_db
+    restart: unless-stopped
+    env_file:
+      - .env
+      - ./financial_dashboard/keys.env
+    environment:
+      - OPTIONS_API_URL=http://options_service:8060
+      - CHATBOT_API_URL=http://chatbot_service:8070
+      - DB_HOST=postgres_db
+    volumes:
+      # Mount the financial_dashboard package into /app/financial_dashboard so
+      # `python -m financial_dashboard.index` resolves correctly at runtime.
+      - ./financial_dashboard:/app/financial_dashboard:rw
+      - ./tests:/app/tests:rw
+      - ./test-artifacts:/app/test-artifacts:rw
+
+  options_service:
+    build:
+      context: ./financial_dashboard
+      dockerfile: Dockerfile.options
+    container_name: options_service
+    ports:
+      - "8060:8060"
+    networks:
+      - shared-network
+    depends_on:
+      - postgres_db
+    restart: unless-stopped
+    env_file:
+      - .env
+      - ./financial_dashboard/keys.env
+    environment:
+      - DB_HOST=postgres_db
+
+  chatbot_service:
+    build:
+      context: ./financial_dashboard
+      dockerfile: Dockerfile.chatbot
+    container_name: chatbot_service
+    ports:
+      - "8070:8070"
+    networks:
+      - shared-network
+    env_file:
+      - .env
+      - ./financial_dashboard/keys.env
+    restart: unless-stopped
+
+  backtester_service:
+    build:
+      context: .
+      dockerfile: services/backtester_service/Dockerfile
+    image: fin-dash-backtester:local
+    container_name: backtester_service
+    ports:
+      - "8081:8081"
+    networks:
+      - shared-network
+    depends_on:
+      mlflow:
+        condition: service_healthy
+      postgres_db:
+        condition: service_healthy
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - DB_HOST=postgres_db
+      - PYTHONPATH=/app:/app/backtester_service
+    volumes:
+      - ./services/backtester_service:/app/backtester_service:rw
+      - ./tests:/app/tests:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  model_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.modelservice
+    container_name: model_service
+    networks:
+      - shared-network
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./artifacts:/app/artifacts:rw
+      - ./services:/app/services:ro
+      - ./ml:/app/ml:ro
+      - ./utils:/app/utils:ro
+      - ./tests:/app/tests:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  gpt4all_stub:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpt4all_stub
+    container_name: gpt4all_stub
+    networks:
+      - shared-network
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - GPT4ALL_MODEL_PATH=/models
+      - GPT4ALL_MODEL=mistral-7b-instruct-v0.2.Q4_K_M.gguf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  newrelic_infra:
+    container_name: newrelic-infra
+    # Prefer building a small wrapper image that adds your config, or you can
+    # switch to using the official image by replacing the `build:` section
+    build:
+      context: .
+      dockerfile: newrelic-infra.dockerfile
+    image: newrelic/infrastructure:latest
+    env_file:
+      - ./keys.env
+    cap_add:
+      - SYS_PTRACE
+    # The agent needs access to the host network and docker socket to report
+    # container metrics and inspect host resources.
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # Mount your agent config into the container. Make sure `newrelic-infra.yml`
+      # is present at the compose root (or adjust the path below).
+      - ./newrelic-infra.yml:/etc/newrelic-infra.yml:ro
+    restart: unless-stopped

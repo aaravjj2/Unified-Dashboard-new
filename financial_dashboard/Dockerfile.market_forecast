@@ -1,0 +1,24 @@
+# Dockerfile for Market Forecast Service
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# Copy necessary files
+COPY services/market_forecast_service.py ./services/
+COPY _shared.py ./
+COPY utils/ ./utils/
+COPY strategies/ ./strategies/
+COPY keys.env ./
+
+# Create necessary directories
+RUN mkdir -p logs cache
+
+# Expose port
+EXPOSE 8051
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8051/health || exit 1
+
+# Run the service
+CMD ["python3", "-m", "uvicorn", "services.market_forecast_service:app", "--host", "0.0.0.0", "--port", "8051"]

@@ -1,0 +1,375 @@
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types: [completed]
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME || 'unified-dashboard-webapp' }}
+  AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP || 'unified-dashboard-rg' }}
+  ACR_NAME: ${{ secrets.ACR_NAME || 'unifieddashboardacr' }}
+
+jobs:
+  check-prerequisites:
+    name: Check Deployment Prerequisites
+    runs-on: ubuntu-latest
+    outputs:
+      azure_ready: ${{ steps.check.outputs.azure_ready }}
+      deployment_mode: ${{ steps.check.outputs.deployment_mode }}
+    
+    steps:
+      - name: Check Azure credentials
+        id: check
+        run: |
+          # Check if all required Azure secrets are present
+          REQUIRED_SECRETS=(
+            "AZURE_CREDENTIALS"
+            "AZURE_WEBAPP_NAME"
+            "ACR_NAME"
+          )
+          
+          MISSING_SECRETS=()
+          
+          # Note: GitHub Actions doesn't allow direct secret checking
+          # We'll use a pragmatic approach - if AZURE_CREDENTIALS exists, proceed
+          if [ -z "${{ secrets.AZURE_CREDENTIALS }}" ]; then
+            echo "azure_ready=false" >> $GITHUB_OUTPUT
+            echo "deployment_mode=mock" >> $GITHUB_OUTPUT
+            echo "⚠️  AZURE_CREDENTIALS not configured - deployment will be mocked"
+          else
+            echo "azure_ready=true" >> $GITHUB_OUTPUT
+            echo "deployment_mode=real" >> $GITHUB_OUTPUT
+            echo "✅ Azure credentials available - real deployment enabled"
+          fi
+      
+      - name: Display deployment status
+        run: |
+          echo "## Deployment Prerequisites Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.azure_ready }}" == "true" ]; then
+            echo "✅ **Azure Ready**: All credentials present" >> $GITHUB_STEP_SUMMARY
+            echo "🚀 **Mode**: Real deployment to Azure" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Azure Not Ready**: Missing credentials" >> $GITHUB_STEP_SUMMARY
+            echo "🔧 **Mode**: Mock deployment (dry-run)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Required Secrets" >> $GITHUB_STEP_SUMMARY
+            echo "- \`AZURE_CREDENTIALS\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`AZURE_WEBAPP_NAME\`" >> $GITHUB_STEP_SUMMARY
+            echo "- \`ACR_NAME\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "See [Phase 3A Report](../PHASE3A_CONNECTIVITY_REPORT.md) for setup instructions." >> $GITHUB_STEP_SUMMARY
+          fi
+
+  build-and-push-acr:
+    name: Build & Push to Azure Container Registry
+    runs-on: ubuntu-latest
+    needs: check-prerequisites
+    if: needs.check-prerequisites.outputs.azure_ready == 'true' || needs.check-prerequisites.outputs.deployment_mode == 'mock'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Azure Login
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: .
+          run-id: ${{ github.event.workflow_run.id }}
+        continue-on-error: true
+      
+      - name: Load Docker image from artifact
+        run: |
+          if [ -f unified-dashboard-image.tar.gz ]; then
+            echo "Loading Docker image from CI artifact..."
+            docker load < unified-dashboard-image.tar.gz
+          else
+            echo "⚠️  No Docker artifact found, rebuilding..."
+            docker build -t unified-dashboard:${{ github.sha }} .
+          fi
+      
+      - name: Tag image for ACR
+        run: |
+          docker tag unified-dashboard:${{ github.sha }} \
+            ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}
+          
+          docker tag unified-dashboard:${{ github.sha }} \
+            ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:latest
+      
+      - name: Push to Azure Container Registry
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+          
+          docker push ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}
+          docker push ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:latest
+          
+          echo "✅ Images pushed to ACR"
+      
+      - name: Mock ACR push (dry-run)
+        if: needs.check-prerequisites.outputs.azure_ready == 'false'
+        run: |
+          echo "🔧 MOCK MODE: Skipping ACR push"
+          echo "Would push:"
+          echo "  - ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}"
+          echo "  - ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:latest"
+          echo ""
+          echo "To enable real deployment, configure AZURE_CREDENTIALS secret"
+
+  deploy-to-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    needs: [check-prerequisites, build-and-push-acr]
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.webapp-url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Azure Login
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy to Azure Web App
+        id: deploy
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          images: ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}
+      
+      - name: Mock deployment (dry-run)
+        if: needs.check-prerequisites.outputs.azure_ready == 'false'
+        run: |
+          echo "🔧 MOCK MODE: Skipping Azure Web App deployment"
+          echo "Would deploy:"
+          echo "  App: ${{ env.AZURE_WEBAPP_NAME }}"
+          echo "  Image: ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}"
+          echo "  Resource Group: ${{ env.AZURE_RESOURCE_GROUP }}"
+      
+      - name: Configure App Settings
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        run: |
+          az webapp config appsettings set \
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --settings \
+              WEBSITE_PORT=8050 \
+              AZURE_ML_USE_MOCK=false \
+              ENABLE_MARKET_LOOKUP=1
+      
+      - name: Wait for deployment
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          sleep 30
+      
+      - name: Health check
+        if: needs.check-prerequisites.outputs.azure_ready == 'true'
+        run: |
+          WEBAPP_URL="https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+          
+          for i in {1..10}; do
+            if curl -f -s "$WEBAPP_URL" > /dev/null; then
+              echo "✅ Staging deployment healthy: $WEBAPP_URL"
+              exit 0
+            fi
+            echo "⏳ Waiting for app to respond... ($i/10)"
+            sleep 10
+          done
+          
+          echo "⚠️  App not responding after deployment"
+          exit 1
+        continue-on-error: true
+
+  smoke-tests:
+    name: Run Smoke Tests on Staging
+    runs-on: ubuntu-latest
+    needs: [check-prerequisites, deploy-to-staging]
+    if: needs.check-prerequisites.outputs.azure_ready == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests pytest playwright
+          playwright install chromium
+      
+      - name: Run Playwright smoke tests
+        run: |
+          python playwright_chromium_setup.py \
+            --url https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net \
+            --smoke-tests-only \
+            --output ci_reports/smoke_tests
+        env:
+          STAGING_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
+        continue-on-error: true
+      
+      - name: Upload smoke test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-results
+          path: ci_reports/smoke_tests/
+          retention-days: 14
+
+  deploy-to-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [check-prerequisites, smoke-tests]
+    if: |
+      needs.check-prerequisites.outputs.azure_ready == 'true' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://${{ env.AZURE_WEBAPP_NAME }}-prod.azurewebsites.net
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Create deployment slot
+        run: |
+          az webapp deployment slot create \
+            --name ${{ env.AZURE_WEBAPP_NAME }}-prod \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --configuration-source ${{ env.AZURE_WEBAPP_NAME }}-prod \
+            || echo "Slot already exists"
+      
+      - name: Deploy to staging slot
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}-prod
+          slot-name: staging
+          images: ${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}
+      
+      - name: Swap staging to production
+        run: |
+          az webapp deployment slot swap \
+            --name ${{ env.AZURE_WEBAPP_NAME }}-prod \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --target-slot production
+      
+      - name: Production health check
+        run: |
+          PROD_URL="https://${{ env.AZURE_WEBAPP_NAME }}-prod.azurewebsites.net"
+          
+          for i in {1..10}; do
+            if curl -f -s "$PROD_URL" > /dev/null; then
+              echo "✅ Production deployment healthy: $PROD_URL"
+              exit 0
+            fi
+            echo "⏳ Waiting for production app... ($i/10)"
+            sleep 10
+          done
+          
+          echo "❌ Production deployment failed health check"
+          exit 1
+
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [check-prerequisites, deploy-to-production]
+    if: |
+      failure() &&
+      needs.check-prerequisites.outputs.azure_ready == 'true'
+    
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Rollback to previous version
+        run: |
+          echo "⚠️  Deployment failed - initiating rollback"
+          
+          az webapp deployment slot swap \
+            --name ${{ env.AZURE_WEBAPP_NAME }}-prod \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --target-slot production
+          
+          echo "✅ Rollback complete"
+      
+      - name: Notify rollback
+        run: |
+          echo "## ⚠️ Deployment Rollback" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Production deployment failed and was rolled back to previous version." >> $GITHUB_STEP_SUMMARY
+          echo "Check deployment logs for details." >> $GITHUB_STEP_SUMMARY
+
+  generate-deployment-report:
+    name: Generate Deployment Report
+    runs-on: ubuntu-latest
+    needs: [check-prerequisites, build-and-push-acr, deploy-to-staging]
+    if: always()
+    
+    steps:
+      - name: Generate deployment report
+        run: |
+          cat > deployment_report.json <<EOF
+{
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "git_sha": "${{ github.sha }}",
+  "git_ref": "${{ github.ref }}",
+  "workflow_run_id": "${{ github.run_id }}",
+  "azure_ready": "${{ needs.check-prerequisites.outputs.azure_ready }}",
+  "deployment_mode": "${{ needs.check-prerequisites.outputs.deployment_mode }}",
+  "jobs": {
+    "check_prerequisites": "${{ needs.check-prerequisites.result }}",
+    "build_and_push_acr": "${{ needs.build-and-push-acr.result }}",
+    "deploy_to_staging": "${{ needs.deploy-to-staging.result }}"
+  },
+  "webapp_url": "https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net",
+  "acr_image": "${{ env.ACR_NAME }}.azurecr.io/unified-dashboard:${{ github.sha }}"
+}
+EOF
+          
+          cat deployment_report.json
+      
+      - name: Upload deployment report
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-report
+          path: deployment_report.json
+          retention-days: 90

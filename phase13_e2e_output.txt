@@ -1,0 +1,308 @@
+2025-10-30 11:49:52,067 [INFO] 🚀 Starting Phase 13 E2E Chromium Clicker Tests
+2025-10-30 11:50:08,179 [INFO] 
+📡 Loading dashboard: http://localhost:8050
+2025-10-30 11:50:11,699 [INFO] 
+################################################################################
+2025-10-30 11:50:11,700 [INFO] TAB: Strategy Lab
+2025-10-30 11:50:11,700 [INFO] ################################################################################
+2025-10-30 11:50:11,700 [INFO] Clicking tab: a.nav-link:has-text('Strategy Lab')
+2025-10-30 11:50:14,138 [INFO] 
+================================================================================
+2025-10-30 11:50:14,138 [INFO] Testing: Strategy Lab - Setup - Validate Strategy Button
+2025-10-30 11:50:14,138 [INFO] ================================================================================
+2025-10-30 11:50:14,138 [INFO]   Step 1/6: wait
+2025-10-30 11:50:16,174 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:16,174 [INFO]   Step 2/6: screenshot
+2025-10-30 11:50:16,347 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:16,347 [INFO]   Step 3/6: click
+2025-10-30 11:50:16,462 [INFO]     ✅ click succeeded
+2025-10-30 11:50:16,462 [INFO]   Step 4/6: wait
+2025-10-30 11:50:19,486 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:19,486 [INFO]   Step 5/6: screenshot
+2025-10-30 11:50:20,527 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:20,527 [INFO]   Step 6/6: check_element
+2025-10-30 11:50:20,559 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:20,559 [INFO]   Result: FAIL
+2025-10-30 11:50:20,559 [INFO] 
+================================================================================
+2025-10-30 11:50:20,559 [INFO] Testing: Strategy Lab - Backtest - Date Pickers
+2025-10-30 11:50:20,559 [INFO] ================================================================================
+2025-10-30 11:50:20,559 [INFO]   Step 1/8: click
+2025-10-30 11:50:20,593 [ERROR]     ❌ FAILED: Element not found: button#backtest-tab
+2025-10-30 11:50:20,593 [INFO]   Step 2/8: wait
+2025-10-30 11:50:21,620 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:21,620 [INFO]   Step 3/8: screenshot
+2025-10-30 11:50:21,763 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:21,763 [INFO]   Step 4/8: check_element
+2025-10-30 11:50:21,788 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:21,788 [INFO]   Step 5/8: check_element
+2025-10-30 11:50:21,819 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:21,819 [INFO]   Step 6/8: check_element
+2025-10-30 11:50:21,846 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:21,846 [INFO]   Step 7/8: check_element
+2025-10-30 11:50:21,873 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:21,874 [INFO]   Step 8/8: check_element
+2025-10-30 11:50:21,905 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:21,905 [INFO]   Result: FAIL
+2025-10-30 11:50:21,905 [INFO] 
+================================================================================
+2025-10-30 11:50:21,905 [INFO] Testing: Strategy Lab - Execute - Run Backtest Button
+2025-10-30 11:50:21,905 [INFO] ================================================================================
+2025-10-30 11:50:21,905 [INFO]   Step 1/4: click
+2025-10-30 11:50:21,934 [ERROR]     ❌ FAILED: Element not found: button#execute-tab
+2025-10-30 11:50:21,934 [INFO]   Step 2/4: wait
+2025-10-30 11:50:22,958 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:22,959 [INFO]   Step 3/4: screenshot
+2025-10-30 11:50:23,163 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:23,163 [INFO]   Step 4/4: check_element
+2025-10-30 11:50:23,195 [INFO]     ✅ check_element succeeded
+2025-10-30 11:50:23,195 [INFO]   Result: FAIL
+2025-10-30 11:50:23,195 [INFO] 
+================================================================================
+2025-10-30 11:50:23,195 [INFO] Testing: Strategy Lab - Results - Metric Components
+2025-10-30 11:50:23,195 [INFO] ================================================================================
+2025-10-30 11:50:23,195 [INFO]   Step 1/7: click
+2025-10-30 11:50:23,223 [ERROR]     ❌ FAILED: Element not found: button#results-tab
+2025-10-30 11:50:23,223 [INFO]   Step 2/7: wait
+2025-10-30 11:50:24,248 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:24,248 [INFO]   Step 3/7: screenshot
+2025-10-30 11:50:24,445 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:24,445 [INFO]   Step 4/7: check_element
+2025-10-30 11:50:24,478 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:24,478 [INFO]   Step 5/7: check_element
+2025-10-30 11:50:24,507 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:24,508 [INFO]   Step 6/7: check_element
+2025-10-30 11:50:24,537 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:24,537 [INFO]   Step 7/7: check_element
+2025-10-30 11:50:24,562 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:24,562 [INFO]   Result: FAIL
+2025-10-30 11:50:24,563 [INFO] 
+================================================================================
+2025-10-30 11:50:24,563 [INFO] Testing: Strategy Lab - Benchmark - Charts
+2025-10-30 11:50:24,563 [INFO] ================================================================================
+2025-10-30 11:50:24,563 [INFO]   Step 1/6: click
+2025-10-30 11:50:24,593 [ERROR]     ❌ FAILED: Element not found: button#benchmark-tab
+2025-10-30 11:50:24,593 [INFO]   Step 2/6: wait
+2025-10-30 11:50:25,621 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:25,621 [INFO]   Step 3/6: screenshot
+2025-10-30 11:50:25,771 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:25,771 [INFO]   Step 4/6: check_element
+2025-10-30 11:50:25,801 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:25,802 [INFO]   Step 5/6: check_element
+2025-10-30 11:50:25,835 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:25,835 [INFO]   Step 6/6: check_element
+2025-10-30 11:50:25,863 [ERROR]     ❌ FAILED: Expected exists=True, got exists=False
+2025-10-30 11:50:25,863 [INFO]   Result: FAIL
+2025-10-30 11:50:25,863 [INFO] 
+################################################################################
+2025-10-30 11:50:25,863 [INFO] TAB: Home / Command Center
+2025-10-30 11:50:25,863 [INFO] ################################################################################
+2025-10-30 11:50:25,863 [INFO] Clicking tab: a.nav-link:has-text('Command Center'), a.nav-link:has-text('Home')
+2025-10-30 11:50:28,114 [INFO] 
+================================================================================
+2025-10-30 11:50:28,114 [INFO] Testing: Home / Command Center - Run Full Diagnostic Button
+2025-10-30 11:50:28,114 [INFO] ================================================================================
+2025-10-30 11:50:28,114 [INFO]   Step 1/7: wait
+2025-10-30 11:50:30,146 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:30,147 [INFO]   Step 2/7: screenshot
+2025-10-30 11:50:30,407 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:30,408 [INFO]   Step 3/7: click
+2025-10-30 11:50:30,496 [INFO]     ✅ click succeeded
+2025-10-30 11:50:30,496 [INFO]   Step 4/7: wait
+2025-10-30 11:50:35,665 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:35,665 [INFO]   Step 5/7: screenshot
+2025-10-30 11:50:35,915 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:35,915 [INFO]   Step 6/7: check_element
+2025-10-30 11:50:35,950 [INFO]     ✅ check_element succeeded
+2025-10-30 11:50:35,950 [INFO]   Step 7/7: check_content
+2025-10-30 11:50:36,017 [ERROR]     ❌ FAILED: Expected has_content=True, got has_content=False
+2025-10-30 11:50:36,017 [INFO]   Result: FAIL
+2025-10-30 11:50:36,017 [INFO] 
+################################################################################
+2025-10-30 11:50:36,017 [INFO] TAB: Azure ML Lab
+2025-10-30 11:50:36,017 [INFO] ################################################################################
+2025-10-30 11:50:36,017 [INFO] Clicking tab: a.nav-link:has-text('Azure ML Lab')
+2025-10-30 11:50:38,262 [INFO] 
+================================================================================
+2025-10-30 11:50:38,262 [INFO] Testing: Azure ML Lab - Verify Scaffold Mode Banner
+2025-10-30 11:50:38,262 [INFO] ================================================================================
+2025-10-30 11:50:38,262 [INFO]   Step 1/4: wait
+2025-10-30 11:50:40,289 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:40,289 [INFO]   Step 2/4: screenshot
+2025-10-30 11:50:40,499 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:40,499 [INFO]   Step 3/4: check_element
+2025-10-30 11:50:40,539 [INFO]     ✅ check_element succeeded
+2025-10-30 11:50:40,539 [INFO]   Step 4/4: check_text
+2025-10-30 11:50:40,598 [INFO]     ✅ check_text succeeded
+2025-10-30 11:50:40,598 [INFO]   Result: PASS
+2025-10-30 11:50:40,598 [INFO] 
+################################################################################
+2025-10-30 11:50:40,598 [INFO] TAB: Options Lab
+2025-10-30 11:50:40,598 [INFO] ################################################################################
+2025-10-30 11:50:40,598 [INFO] Clicking tab: a.nav-link:has-text('Options Lab')
+2025-10-30 11:50:42,743 [INFO] 
+================================================================================
+2025-10-30 11:50:42,743 [INFO] Testing: Options Lab - Inventory All Buttons
+2025-10-30 11:50:42,743 [INFO] ================================================================================
+2025-10-30 11:50:42,743 [INFO]   Step 1/3: wait
+2025-10-30 11:50:44,798 [INFO]     ✅ wait succeeded
+2025-10-30 11:50:44,798 [INFO]   Step 2/3: screenshot
+2025-10-30 11:50:44,897 [INFO]     ✅ screenshot succeeded
+2025-10-30 11:50:44,897 [INFO]   Step 3/3: count_buttons
+2025-10-30 11:50:44,953 [INFO]     ✅ count_buttons succeeded
+2025-10-30 11:50:44,953 [INFO]   Result: PASS
+2025-10-30 11:50:45,040 [INFO] ✅ JSON results saved to: phase13_e2e_results/phase13_e2e_results.json
+2025-10-30 11:50:45,045 [INFO] ✅ Report saved to: phase13_e2e_results/phase13_e2e_report.md
+
+====================================================================================================
+PHASE 13 - END-TO-END CHROMIUM CLICKER TEST REPORT
+====================================================================================================
+Timestamp: 2025-10-30 11:50:45
+Dashboard URL: http://localhost:8050
+
+📊 SUMMARY:
+   Total Tests:     8
+   ✅ Passed:       2 (25.0%)
+   ❌ Failed:       6 (75.0%)
+   💥 Errors:       0 (0.0%)
+
+====================================================================================================
+TEST RESULTS BY TAB:
+====================================================================================================
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+TAB: Azure ML Lab
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+✅ Verify Scaffold Mode Banner
+   Status: PASS
+   Steps: 4 total
+      ✓ Step 1: wait
+      ✓ Step 2: screenshot
+      ✓ Step 3: check_element
+      ✓ Step 4: check_text
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+TAB: Home / Command Center
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+❌ Run Full Diagnostic Button
+   Status: FAIL
+   Errors (1):
+      • Expected has_content=True, got has_content=False
+   Steps: 7 total
+      ✓ Step 1: wait
+      ✓ Step 2: screenshot
+      ✓ Step 3: click
+      ✓ Step 4: wait
+      ✓ Step 5: screenshot
+      ✓ Step 6: check_element
+      ✗ Step 7: check_content
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+TAB: Options Lab
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+✅ Inventory All Buttons
+   Status: PASS
+   Steps: 3 total
+      ✓ Step 1: wait
+      ✓ Step 2: screenshot
+      ✓ Step 3: count_buttons
+
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+TAB: Strategy Lab
+▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+❌ Setup - Validate Strategy Button
+   Status: FAIL
+   Errors (1):
+      • Expected exists=True, got exists=False
+   Steps: 6 total
+      ✓ Step 1: wait
+      ✓ Step 2: screenshot
+      ✓ Step 3: click
+      ✓ Step 4: wait
+      ✓ Step 5: screenshot
+      ✗ Step 6: check_element
+
+❌ Backtest - Date Pickers
+   Status: FAIL
+   Errors (6):
+      • Element not found: button#backtest-tab
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+   Steps: 8 total
+      ✗ Step 1: click
+      ✓ Step 2: wait
+      ✓ Step 3: screenshot
+      ✗ Step 4: check_element
+      ✗ Step 5: check_element
+      ✗ Step 6: check_element
+      ✗ Step 7: check_element
+      ✗ Step 8: check_element
+
+❌ Execute - Run Backtest Button
+   Status: FAIL
+   Errors (1):
+      • Element not found: button#execute-tab
+   Steps: 4 total
+      ✗ Step 1: click
+      ✓ Step 2: wait
+      ✓ Step 3: screenshot
+      ✓ Step 4: check_element
+
+❌ Results - Metric Components
+   Status: FAIL
+   Errors (5):
+      • Element not found: button#results-tab
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+   Steps: 7 total
+      ✗ Step 1: click
+      ✓ Step 2: wait
+      ✓ Step 3: screenshot
+      ✗ Step 4: check_element
+      ✗ Step 5: check_element
+      ✗ Step 6: check_element
+      ✗ Step 7: check_element
+
+❌ Benchmark - Charts
+   Status: FAIL
+   Errors (4):
+      • Element not found: button#benchmark-tab
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+      • Expected exists=True, got exists=False
+   Steps: 6 total
+      ✗ Step 1: click
+      ✓ Step 2: wait
+      ✓ Step 3: screenshot
+      ✗ Step 4: check_element
+      ✗ Step 5: check_element
+      ✗ Step 6: check_element
+
+====================================================================================================
+CONSOLE ERRORS (1):
+====================================================================================================
+   • [error] ReferenceError: A nonexistent object was used in an `Output` of a Dash callback. The id of this object is `sl-validation-result` and the property is `children`. The string ids in the current layout are: [global-search-input, global-search-button, theme-toggle-button, theme-icon, market-trends-sentinel-table, dashboard-tabs, tab-home_lab, home-run-diagnostic-btn, home-diagnostic-result, portfolio-total-value, portfolio-daily-change, portfolio-positions-count, home-refresh-portfolio-btn, metric-Portfolio-CAGR, metric-Forecast-Accuracy, metric-Research-Score, metric-Strategy-Win-Rate, home-portfolio-data, home-metrics-data, tab-research_lab, research-lab-tabs, research-lab-content, tab-attribution_lab, attr-portfolio-dropdown, attr-benchmark-dropdown, attr-date-range, attr-refresh-btn, attr-status-message, attr-subtabs, perf-total-return, perf-excess-return, perf-sharpe, perf-info-ratio, perf-cumulative-chart, perf-monthly-chart, perf-metrics-table, perf-export-btn, factors-selection, factors-exposures-container, factors-contribution-chart, factors-timeseries-chart, factors-export-btn, sectors-weights-pie, sectors-contribution-bar, sectors-table-container, sectors-heatmap, sectors-export-btn, residual-alpha, residual-beta, residual-tracking, residual-vol, residual-timeseries-chart, residual-histogram, residual-explained-pie, residual-scatter-chart, residual-export-btn, attr-portfolio-data, attr-benchmark-data, attr-factor-data, attr-metrics-data, attr-download-csv, attr-download-report, tab-strategy_lab, strategy-lab-tabs, sl-strategy-type, sl-universe-type, sl-tickers-input, sl-entry-condition, sl-exit-condition, sl-position-sizing, sl-validate-btn, sl-validation-feedback, sl-backtest-date-range, sl-initial-capital, sl-commission, sl-slippage, sl-rebalance-freq, sl-run-backtest-btn, sl-progress-container, sl-backtest-progress, sl-progress-text, sl-execution-status, sl-cancel-btn, sl-execution-stats, sl-cagr-value, sl-sharpe-value, sl-drawdown-value, sl-winrate-value, sl-equity-curve, sl-monthly-returns-table, sl-trade-stats, sl-benchmark-selector, sl-strategy-cagr, sl-benchmark-cagr, sl-alpha-value, sl-benchmark-comparison-chart, sl-benchmark-metrics-table, sl-risk-max-dd, sl-risk-volatility, sl-risk-var, sl-risk-sortino, sl-risk-drawdown-chart, sl-risk-factor-chart, sl-risk-decomposition-table, sl-strategy-config, sl-backtest-results, sl-validation-status, tab-azure_ml_lab, azure-ml-status-badge, azure-ml-model-type, azure-ml-confidence-label, azure-ml-confidence-threshold, azure-ml-model-features, azure-ml-advanced-options, azure-ml-model-status, azure-ml-horizon-label, azure-ml-prediction-horizon, azure-ml-daterange-label, azure-ml-date-range, azure-ml-update-frequency, azure-ml-prediction-target, azure-ml-universe, azure-ml-max-position, azure-ml-run-prediction-btn, azure-ml-prediction-results, azure-ml-insights-tabs, azure-ml-predictions-table, azure-ml-performance-metrics, azure-ml-feature-importance, azure-ml-risk-analysis, azure-ml-system-status, azure-ml-execution-logs, azure-ml-refresh-diagnostics-btn, azure-ml-export-logs-btn, azure-ml-clear-cache-btn, azure-ml-preflight-btn, tab-weekly_picks, wp-refresh-btn, wp-content, weekly-table, wp-data-store, tab-monthly_picks, mp-refresh-btn, mp-content, monthly-table, mp-data-store, tab-market_trends, tab-visibility-indicator, tickers-input, run-btn, period-input, analysis-options, status, reload-model, refresh-cached, backtest-btn, debug-logs-btn, model-status, toggle-brief, full-brief, compact-brief-wrapper, news-container, news-poll-interval, news-last-updated, loading, results-area, trends-composite-results, trends-html-table-container, job-history, mt-download-btn, debug-input, debug-log-btn, debug-output, debug-logs-modal, close-debug-modal, debug-logs-content, backtest-modal, close-backtest-modal, backtest-results-content, tab-market_forecast, mf-ticker-selector, mf-ticker-input, mf-horizon-selector, mf-confidence-selector, mf-generate-btn, mf-loading, mf-loading-output, mf-summary-cards, mf-returns-chart, mf-volatility-chart, mf-details-table, mf-forecast-store, mf-params-store, tab-volatility_lab, vl-tabs, vl-content, tab-portfolio, portfolio-alpaca-alert, portfolio-value, portfolio-invested, portfolio-unrealized-pl, portfolio-buying-power, portfolio-refresh-btn, portfolio-tracker-subtabs, regen-shap-btn, portfolio-positions-refresh-btn, shap-regen-status, news-prefetch-status, portfolio-positions-table, positions-datatable, inspect-modal, inspect-modal-title, inspect-modal-body, inspect-modal-close, order-filter, order-date-range, portfolio-orders-table, analytics-period, monte-carlo-btn, portfolio-var, portfolio-cvar, portfolio-sharpe, portfolio-beta, analytics-loading, portfolio-analytics-content, monte-carlo-loading, monte-carlo-results, portfolio-factor-exposure-content, opt-tickers-input, opt-strategy, opt-period-slider, opt-run-btn, opt-results-container, portfolio-interval, portfolio-data-store, portfolio-load-trigger, tab-options_lab, options-ticker-input, options-load-btn, options-mock-btn, options-status-message, options-subtabs, chain-spot-price, chain-total-volume, chain-total-oi, chain-pcr, chain-expiration-dropdown, chain-type-radio, chain-moneyness-radio, chain-table-container, chain-export-btn, chain-download, greeks-delta-chart, greeks-gamma-chart, greeks-theta-chart, greeks-vega-chart, greeks-iv-smile, vol-surface-3d, surface-angle-slider, surface-colorscale-dropdown, sim-strategy-dropdown, sim-quantity-input, sim-calculate-btn, sim-max-profit, sim-max-loss, sim-breakeven, sim-pnl-chart, options-chain-store, options-surface-store, options-refresh-interval, global-search-modal, global-search-results, global-search-close, tab-data-store, pa-debug-store, attr-results-store, trends-last-cached, current-job, reload-trigger, dashboard-queued-job, last-edit, last-cached, theme-store, tab-refresh-interval, poll-interval, interval-component, tabs, chatbot-container, chatbot-window, chatbot-close-btn, chatbot-messages-container, chatbot-messages, chatbot-input, chatbot-send-btn, chatbot-loading, chatbot-loading-output, chatbot-session-id, chatbot-fab, chatbot-toggle-btn, market-scan-tickers, market-scan-market-cap, market-scan-sectors, market-scan-pe-ratio, market-scan-beta, market-scan-run-button, market-scan-results-container, hv-tickers, hv-window, hv-calc-btn, hv-chart, hv-stats]
+    at bc (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:142198)
+    at Ac (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:149437)
+    at http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:170671
+    at Pe (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:54296)
+    at http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:55241
+    at http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:52978
+    at e (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:44876)
+    at http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:170648
+    at Generator.<anonymous> (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:165919)
+    at Generator.next (http://localhost:8050/_dash-component-suites/dash/dash-renderer/build/dash_renderer.v3_2_0m1760853593.min.js:2:166851)
+
+====================================================================================================
+Screenshots saved to: phase13_e2e_results/screenshots
+====================================================================================================
+

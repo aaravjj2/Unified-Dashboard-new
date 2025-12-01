@@ -1,0 +1,44 @@
+2025-10-23 14:05:59,317 - financial_dashboard.utils.load_env - INFO - ✅ Loaded keys.env
+2025-10-23 14:05:59,349 - financial_dashboard.utils.load_env - INFO - ✅ Loaded doppler.env
+2025-10-23 14:05:59,495 - financial_dashboard.utils.load_env - INFO - ✅ Loaded .env
+2025-10-23 14:05:59,495 - financial_dashboard.utils.load_env - INFO - ✅ All 5 required keys present
+2025-10-23 14:05:59,495 - financial_dashboard.utils.price_client - INFO - [PriceClient] Providers available: Alpaca (200/min), Finnhub-1 (60/min), Finnhub-2 (60/min)
+2025-10-23 14:05:59,495 - financial_dashboard.utils.price_client - INFO - PriceClient initialized with sources: Alpaca (200/min), Finnhub-1 (60/min), Finnhub-2 (60/min), yfinance
+2025-10-23 14:06:00,472 - financial_dashboard.utils.price_client - INFO - Price fetch complete: 3/3 tickers | Alpaca: 3 | Finnhub: 0 | yfinance: 0 | Local: 0
+================================================================================
+TESTING UPDATED PRICE CLIENT - FREE TIER API LIMITS
+================================================================================
+
+📍 Testing with tickers: ['AAPL', 'MSFT', 'TSLA']
+   Lookback: 30 days
+   Investment per ticker: $1000
+
+
+================================================================================
+RESULTS
+================================================================================
+
+AAPL:
+  Source: alpaca
+  Current Price: $260.36
+  Daily Change: 0.76%
+  Start Price: $237.87
+  Profit/Loss: $94.55
+
+MSFT:
+  Source: alpaca
+  Current Price: $522.95
+  Daily Change: 0.47%
+  Start Price: $508.47
+  Profit/Loss: $28.47
+
+TSLA:
+  Source: alpaca
+  Current Price: $443.73
+  Daily Change: 1.1%
+  Start Price: $416.69
+  Profit/Loss: $64.91
+
+================================================================================
+TEST COMPLETE
+================================================================================

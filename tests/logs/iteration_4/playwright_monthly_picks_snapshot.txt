@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/c/Aarav/fin_env/unified-dashboard
+configfile: pytest.ini
+plugins: anyio-4.10.0, dash-3.2.0, asyncio-1.2.0, base-url-2.1.0, playwright-0.7.1, timeout-2.4.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/test_monthly_picks.py::test_monthly_picks_snapshot[chromium] 
+-------------------------------- live log setup --------------------------------
+INFO     utils.load_env:load_env.py:94 ✅ Loaded keys.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded doppler.env
+INFO     utils.load_env:load_env.py:94 ✅ Loaded .env
+INFO     utils.load_env:load_env.py:150 ✅ All 5 required keys present
+
+[conftest] Environment loaded: 5 keys present
+PASSED
+
+============================== 1 passed in 17.31s ==============================

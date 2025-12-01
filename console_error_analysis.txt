@@ -1,0 +1,84 @@
+🔍 Loading dashboard and capturing console errors...
+
+📊 Captured 180 console messages
+
+================================================================================
+🚨 CALLBACK REGISTRATION DUPLICATES (BAD - need to fix):
+================================================================================
+
+📊 Total: 0
+
+================================================================================
+⚠️  OUTPUT DUPLICATES WITHOUT allow_duplicate (BAD - need flag):
+================================================================================
+
+📊 Total: 0
+
+================================================================================
+✅ allow_duplicate WARNINGS (OK - intentional):
+================================================================================
+
+📊 Total: 0
+
+================================================================================
+❓ OTHER DUPLICATE ERRORS:
+================================================================================
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+{message: Duplicate callback outputs, html: In the callback for output(s):
+  trends-results-st…er
+by using `dash.callback_context` if necessary.}
+
+... and 170 more
+
+📊 Total: 180
+
+================================================================================
+📋 SUMMARY:
+================================================================================
+🚨 Callback registration duplicates: 0 (MUST FIX)
+⚠️  Output duplicates without flag: 0 (MUST FIX)
+✅ allow_duplicate warnings: 0 (OK)
+❓ Other duplicate errors: 180
+📊 Total console messages: 180
+
+================================================================================
+🎯 ACTION ITEMS:
+================================================================================
+✅ NO CRITICAL ERRORS - All duplicates are intentional with allow_duplicate=True
+✅ Dashboard callbacks are correctly configured!

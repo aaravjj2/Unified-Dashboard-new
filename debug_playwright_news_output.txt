@@ -1,0 +1,24 @@
+Loading dashboard...
+Selector 'a:has-text("Market Trends")' count: 0
+Selector 'button:has-text("Market Trends")' count: 0
+Selector '[data-value="market_trends"]' count: 0
+Selector '.nav-link:has-text("Market Trends")' count: 0
+WARNING: Could not find Market Trends tab to click
+news count: 1
+news.inner_text (first 500 chars):
+Loading news...
+
+news.inner_html (first 1000 chars):
+Loading news...
+Saved screenshot to test-artifacts/debug_news_playwright.png
+
+Console messages (last 20):
+log: [Analysis Hub] Tab activation script loaded
+log: [Analysis Hub] Skipping - not on Analysis Hub/Unified Dashboard
+log: [Portfolio Fix] Skipping - not on Portfolio/Unified Dashboard
+log: [Research Lab Fix] Skipping - not on Research Lab
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] DataTable paste module loaded
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] DataTable not found yet, will retry...
+log: [Paste] Paste listener attached to DataTable

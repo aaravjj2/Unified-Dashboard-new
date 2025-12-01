@@ -1,0 +1,17 @@
+created_at: '2025-10-04T23:55:30.155884'
+description: Let's try a new model that only uses momentum and sentiment features
+  on the top 200 stocks
+end_date: '2025-10-04'
+features:
+- momentum
+- sentiment
+- technical
+- fundamental
+- macro
+- size
+horizon: 1w
+model: lgb
+name: Hi
+start_date: '2018-01-01'
+status: queued
+universe: top200

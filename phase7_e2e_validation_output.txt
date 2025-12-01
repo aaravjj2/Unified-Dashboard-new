@@ -1,0 +1,833 @@
+INFO:__main__:================================================================================
+INFO:__main__:PHASE 7 — COMPLETE E2E VALIDATION FRAMEWORK
+INFO:__main__:================================================================================
+INFO:__main__:
+================================================================================
+INFO:__main__:🚀 PHASE 7 COMPLETE E2E VALIDATION
+INFO:__main__:================================================================================
+INFO:__main__:Report ID: e2e_validation_20251029_050335
+INFO:__main__:Started: 2025-10-29 05:03:35 UTC
+INFO:__main__:================================================================================
+INFO:__main__:
+
+🔬 SECTION 1: REPRODUCIBILITY TESTS
+INFO:__main__:================================================================================
+INFO:__main__:================================================================================
+INFO:__main__:🔬 REPRODUCIBILITY TEST: Batch Orchestrator (3 iterations)
+INFO:__main__:================================================================================
+INFO:__main__:
+📊 Iteration 1/3
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050335
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 3 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=2, Stress=3, Events=0
+INFO:phase7_batch_orchestrator:   Workers: 4
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 3 tickers, $30,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 3 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 3 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050335
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050335
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050335
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050335
+INFO:scenario_engine:🚀 Starting scenario generation: stress_volatility_spike_20251029_050336
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 144
+INFO:scenario_engine:📈 Generating VOLATILITY SPIKE scenario (magnitude: 2.0x)
+INFO:scenario_engine:✅ Generated 3 volatility spike paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_volatility_spike_20251029_050336
+INFO:scenario_engine:🚀 Starting scenario generation: stress_sector_shock_20251029_050336
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 145
+INFO:scenario_engine:📉 Generating SECTOR SHOCK scenario
+INFO:scenario_engine:✅ Generated 3 sector shock paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_sector_shock_20251029_050336
+INFO:scenario_engine:🚀 Starting scenario generation: stress_black_swan_20251029_050336
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 146
+INFO:scenario_engine:🦢 Generating BLACK SWAN event scenario
+INFO:scenario_engine:✅ Generated 3 black swan paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_black_swan_20251029_050336
+INFO:phase7_batch_orchestrator:✅ Generated 5 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 5 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050335' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050335' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_volatility_spike_20251029_050336' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_sector_shock_20251029_050336' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.70%, Sharpe = 10.81
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_black_swan_20251029_050336' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -3.84%, Sharpe = -0.94
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.44%, Sharpe = 9.56
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -1.03%, Sharpe = -0.22
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -11.08%, Sharpe = -3.55
+INFO:phase7_batch_orchestrator:✅ Completed 5 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050335/batch_20251029_050335_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050335
+INFO:phase7_batch_orchestrator:Total Scenarios: 5
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 5
+INFO:phase7_batch_orchestrator:Execution Time: 0.86s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 5.79
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: -2.56%
+INFO:phase7_batch_orchestrator:   Median Return: -1.03%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 3.13
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 1.06%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -13.32%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:   Mean Return: -0.025609
+INFO:__main__:   Hash: e12411aa454606b7...
+INFO:__main__:
+📊 Iteration 2/3
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050336
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 3 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=2, Stress=3, Events=0
+INFO:phase7_batch_orchestrator:   Workers: 4
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 3 tickers, $30,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 3 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 3 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050336
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050336
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050336
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050336
+INFO:scenario_engine:🚀 Starting scenario generation: stress_volatility_spike_20251029_050337
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 144
+INFO:scenario_engine:📈 Generating VOLATILITY SPIKE scenario (magnitude: 2.0x)
+INFO:scenario_engine:✅ Generated 3 volatility spike paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_volatility_spike_20251029_050337
+INFO:scenario_engine:🚀 Starting scenario generation: stress_sector_shock_20251029_050337
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 145
+INFO:scenario_engine:📉 Generating SECTOR SHOCK scenario
+INFO:scenario_engine:✅ Generated 3 sector shock paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_sector_shock_20251029_050337
+INFO:scenario_engine:🚀 Starting scenario generation: stress_black_swan_20251029_050337
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 146
+INFO:scenario_engine:🦢 Generating BLACK SWAN event scenario
+INFO:scenario_engine:✅ Generated 3 black swan paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_black_swan_20251029_050337
+INFO:phase7_batch_orchestrator:✅ Generated 5 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 5 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050336' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.70%, Sharpe = 10.81
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050336' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.44%, Sharpe = 9.56
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_volatility_spike_20251029_050337' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_sector_shock_20251029_050337' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -1.03%, Sharpe = -0.22
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_black_swan_20251029_050337' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -3.84%, Sharpe = -0.94
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -11.08%, Sharpe = -3.55
+INFO:phase7_batch_orchestrator:✅ Completed 5 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050336/batch_20251029_050336_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050336
+INFO:phase7_batch_orchestrator:Total Scenarios: 5
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 5
+INFO:phase7_batch_orchestrator:Execution Time: 0.79s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 6.34
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: -2.56%
+INFO:phase7_batch_orchestrator:   Median Return: -1.03%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 3.13
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 1.06%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -13.32%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:   Mean Return: -0.025609
+INFO:__main__:   Hash: 014115e0393af524...
+INFO:__main__:
+📊 Iteration 3/3
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050337
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 3 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=2, Stress=3, Events=0
+INFO:phase7_batch_orchestrator:   Workers: 4
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 3 tickers, $30,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 3 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 3 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050337
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050337
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050337
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050337
+INFO:scenario_engine:🚀 Starting scenario generation: stress_volatility_spike_20251029_050338
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 144
+INFO:scenario_engine:📈 Generating VOLATILITY SPIKE scenario (magnitude: 2.0x)
+INFO:scenario_engine:✅ Generated 3 volatility spike paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_volatility_spike_20251029_050338
+INFO:scenario_engine:🚀 Starting scenario generation: stress_sector_shock_20251029_050338
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 145
+INFO:scenario_engine:📉 Generating SECTOR SHOCK scenario
+INFO:scenario_engine:✅ Generated 3 sector shock paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_sector_shock_20251029_050338
+INFO:scenario_engine:🚀 Starting scenario generation: stress_black_swan_20251029_050338
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 146
+INFO:scenario_engine:🦢 Generating BLACK SWAN event scenario
+INFO:scenario_engine:✅ Generated 3 black swan paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_black_swan_20251029_050338
+INFO:phase7_batch_orchestrator:✅ Generated 5 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 5 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050337' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050337' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.70%, Sharpe = 10.81
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_volatility_spike_20251029_050338' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -3.84%, Sharpe = -0.94
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_sector_shock_20251029_050338' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_black_swan_20251029_050338' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.44%, Sharpe = 9.56
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -11.08%, Sharpe = -3.55
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -1.03%, Sharpe = -0.22
+INFO:phase7_batch_orchestrator:✅ Completed 5 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050337/batch_20251029_050337_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050337
+INFO:phase7_batch_orchestrator:Total Scenarios: 5
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 5
+INFO:phase7_batch_orchestrator:Execution Time: 0.83s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 6.01
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: -2.56%
+INFO:phase7_batch_orchestrator:   Median Return: -1.03%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 3.13
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 1.06%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -13.32%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:   Mean Return: -0.025609
+INFO:__main__:   Hash: e12411aa454606b7...
+INFO:__main__:
+❌ FAIL
+INFO:__main__:   Max Variation: 0.0000% (threshold: 1.0%)
+INFO:__main__:   Hashes Identical: No
+INFO:__main__:================================================================================
+INFO:__main__:================================================================================
+INFO:__main__:🔬 REPRODUCIBILITY TEST: Options Analysis (3 iterations)
+INFO:__main__:================================================================================
+INFO:__main__:
+📊 Iteration 1/3
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050338
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050338
+INFO:options_risk_simulator:🎯 Simulating call option: SPY strike $450.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,837.07, Return = 33.40%
+INFO:options_risk_simulator:🎯 Simulating put option: SPY strike $440.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-4,250.00, Return = -100.00%
+INFO:options_risk_simulator:🎯 Simulating call option: QQQ strike $385.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,123.37, Return = 0.00%
+INFO:options_risk_simulator:🎯 Simulating call option: IWM strike $220.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-5,600.00, Return = -100.00%
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:📊 BATCH OPTIONS ANALYSIS: options_batch_20251029_050338
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:   Portfolio: options_portfolio
+INFO:batch_options_analysis:   Options: 4 contracts
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:
+📈 Step 1: Aggregating portfolio Greeks
+INFO:batch_options_analysis:
+📉 Step 2: Computing portfolio VaR/CVaR
+INFO:batch_options_analysis:
+🎯 Step 3: Analyzing scenario metrics
+INFO:batch_options_analysis:
+📊 Step 4: Computing position summary
+INFO:batch_options_analysis:
+================================================================================
+INFO:batch_options_analysis:BATCH OPTIONS ANALYSIS COMPLETE
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:Batch ID: options_batch_20251029_050338
+INFO:batch_options_analysis:Contracts: 4 (3 calls, 1 puts)
+INFO:batch_options_analysis:Positions: 3 long, 1 short
+INFO:batch_options_analysis:Total Notional: $1,522,500.00
+INFO:batch_options_analysis:
+📈 Portfolio Greeks (Initial → Final):
+INFO:batch_options_analysis:   Net Delta: 5.14 → 5.00 (Δ: -0.14)
+INFO:batch_options_analysis:   Net Gamma: 0.9901 → 0.0000 (Δ: -0.9901)
+INFO:batch_options_analysis:   Net Vega: 4.98 → 0.00 (Δ: -4.98)
+INFO:batch_options_analysis:   Net Theta: -0.66 → 0.00 (Δ: +0.66)
+INFO:batch_options_analysis:
+📉 Portfolio Risk Metrics:
+INFO:batch_options_analysis:   VaR 95%: $-344.48
+INFO:batch_options_analysis:   VaR 99%: $-68.90
+INFO:batch_options_analysis:   CVaR 95%: $-413.37
+INFO:batch_options_analysis:   CVaR 99%: $-89.56
+INFO:batch_options_analysis:================================================================================
+INFO:__main__:   Net Delta: 5.144097
+INFO:__main__:   Hash: d502ba3aec3fb8e5...
+INFO:__main__:
+📊 Iteration 2/3
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050338
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050338
+INFO:options_risk_simulator:🎯 Simulating call option: SPY strike $450.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,837.07, Return = 33.40%
+INFO:options_risk_simulator:🎯 Simulating put option: SPY strike $440.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-4,250.00, Return = -100.00%
+INFO:options_risk_simulator:🎯 Simulating call option: QQQ strike $385.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,123.37, Return = 0.00%
+INFO:options_risk_simulator:🎯 Simulating call option: IWM strike $220.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-5,600.00, Return = -100.00%
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:📊 BATCH OPTIONS ANALYSIS: options_batch_20251029_050339
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:   Portfolio: options_portfolio
+INFO:batch_options_analysis:   Options: 4 contracts
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:
+📈 Step 1: Aggregating portfolio Greeks
+INFO:batch_options_analysis:
+📉 Step 2: Computing portfolio VaR/CVaR
+INFO:batch_options_analysis:
+🎯 Step 3: Analyzing scenario metrics
+INFO:batch_options_analysis:
+📊 Step 4: Computing position summary
+INFO:batch_options_analysis:
+================================================================================
+INFO:batch_options_analysis:BATCH OPTIONS ANALYSIS COMPLETE
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:Batch ID: options_batch_20251029_050339
+INFO:batch_options_analysis:Contracts: 4 (3 calls, 1 puts)
+INFO:batch_options_analysis:Positions: 3 long, 1 short
+INFO:batch_options_analysis:Total Notional: $1,522,500.00
+INFO:batch_options_analysis:
+📈 Portfolio Greeks (Initial → Final):
+INFO:batch_options_analysis:   Net Delta: 5.14 → 5.00 (Δ: -0.14)
+INFO:batch_options_analysis:   Net Gamma: 0.9901 → 0.0000 (Δ: -0.9901)
+INFO:batch_options_analysis:   Net Vega: 4.98 → 0.00 (Δ: -4.98)
+INFO:batch_options_analysis:   Net Theta: -0.66 → 0.00 (Δ: +0.66)
+INFO:batch_options_analysis:
+📉 Portfolio Risk Metrics:
+INFO:batch_options_analysis:   VaR 95%: $-344.48
+INFO:batch_options_analysis:   VaR 99%: $-68.90
+INFO:batch_options_analysis:   CVaR 95%: $-413.37
+INFO:batch_options_analysis:   CVaR 99%: $-89.56
+INFO:batch_options_analysis:================================================================================
+INFO:__main__:   Net Delta: 5.144097
+INFO:__main__:   Hash: d502ba3aec3fb8e5...
+INFO:__main__:
+📊 Iteration 3/3
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050339
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 3 assets
+INFO:scenario_engine:✅ Generated 3 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050339
+INFO:options_risk_simulator:🎯 Simulating call option: SPY strike $450.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,837.07, Return = 33.40%
+INFO:options_risk_simulator:🎯 Simulating put option: SPY strike $440.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-4,250.00, Return = -100.00%
+INFO:options_risk_simulator:🎯 Simulating call option: QQQ strike $385.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $1,123.37, Return = 0.00%
+INFO:options_risk_simulator:🎯 Simulating call option: IWM strike $220.0
+INFO:options_risk_simulator:✅ Simulation complete: PnL = $-5,600.00, Return = -100.00%
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:📊 BATCH OPTIONS ANALYSIS: options_batch_20251029_050339
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:   Portfolio: options_portfolio
+INFO:batch_options_analysis:   Options: 4 contracts
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:
+📈 Step 1: Aggregating portfolio Greeks
+INFO:batch_options_analysis:
+📉 Step 2: Computing portfolio VaR/CVaR
+INFO:batch_options_analysis:
+🎯 Step 3: Analyzing scenario metrics
+INFO:batch_options_analysis:
+📊 Step 4: Computing position summary
+INFO:batch_options_analysis:
+================================================================================
+INFO:batch_options_analysis:BATCH OPTIONS ANALYSIS COMPLETE
+INFO:batch_options_analysis:================================================================================
+INFO:batch_options_analysis:Batch ID: options_batch_20251029_050339
+INFO:batch_options_analysis:Contracts: 4 (3 calls, 1 puts)
+INFO:batch_options_analysis:Positions: 3 long, 1 short
+INFO:batch_options_analysis:Total Notional: $1,522,500.00
+INFO:batch_options_analysis:
+📈 Portfolio Greeks (Initial → Final):
+INFO:batch_options_analysis:   Net Delta: 5.14 → 5.00 (Δ: -0.14)
+INFO:batch_options_analysis:   Net Gamma: 0.9901 → 0.0000 (Δ: -0.9901)
+INFO:batch_options_analysis:   Net Vega: 4.98 → 0.00 (Δ: -4.98)
+INFO:batch_options_analysis:   Net Theta: -0.66 → 0.00 (Δ: +0.66)
+INFO:batch_options_analysis:
+📉 Portfolio Risk Metrics:
+INFO:batch_options_analysis:   VaR 95%: $-344.48
+INFO:batch_options_analysis:   VaR 99%: $-68.90
+INFO:batch_options_analysis:   CVaR 95%: $-413.37
+INFO:batch_options_analysis:   CVaR 99%: $-89.56
+INFO:batch_options_analysis:================================================================================
+INFO:__main__:   Net Delta: 5.144097
+INFO:__main__:   Hash: d502ba3aec3fb8e5...
+INFO:__main__:
+✅ PASS
+INFO:__main__:   Max Variation: 0.0000% (threshold: 1.0%)
+INFO:__main__:   Hashes Identical: Yes
+INFO:__main__:================================================================================
+INFO:__main__:
+
+⚡ SECTION 2: PERFORMANCE BENCHMARKS
+INFO:__main__:================================================================================
+INFO:__main__:================================================================================
+INFO:__main__:⚡ PERFORMANCE BENCHMARK: 10-Ticker Batch
+INFO:__main__:================================================================================
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050339
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 10 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=3, Stress=3, Events=2
+INFO:phase7_batch_orchestrator:   Workers: 4
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 10 tickers, $100,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 10 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 10 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050339
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 10 assets
+INFO:scenario_engine:✅ Generated 10 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050339
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050343
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 10 assets
+INFO:scenario_engine:✅ Generated 10 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050343
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050348
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 44
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 10 assets
+INFO:scenario_engine:✅ Generated 10 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050348
+INFO:scenario_engine:🚀 Starting scenario generation: stress_volatility_spike_20251029_050352
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 145
+INFO:scenario_engine:📈 Generating VOLATILITY SPIKE scenario (magnitude: 2.0x)
+INFO:scenario_engine:✅ Generated 10 volatility spike paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_volatility_spike_20251029_050352
+INFO:scenario_engine:🚀 Starting scenario generation: stress_sector_shock_20251029_050352
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 146
+INFO:scenario_engine:📉 Generating SECTOR SHOCK scenario
+INFO:scenario_engine:✅ Generated 10 sector shock paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_sector_shock_20251029_050352
+INFO:scenario_engine:🚀 Starting scenario generation: stress_black_swan_20251029_050352
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 147
+INFO:scenario_engine:🦢 Generating BLACK SWAN event scenario
+INFO:scenario_engine:✅ Generated 10 black swan paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_black_swan_20251029_050352
+INFO:scenario_engine:🚀 Starting scenario generation: event_earnings_beat_20251029_050352
+INFO:scenario_engine:   Type: event_driven
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 248
+INFO:scenario_engine:📊 Generating EARNINGS BEAT event
+INFO:scenario_engine:✅ Generated 10 earnings event paths
+INFO:scenario_engine:✅ Scenario generation complete: event_earnings_beat_20251029_050352
+INFO:scenario_engine:🚀 Starting scenario generation: event_fed_rate_hike_20251029_050352
+INFO:scenario_engine:   Type: event_driven
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ', 'IWM', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 249
+INFO:scenario_engine:🏦 Generating FED RATE HIKE event
+INFO:scenario_engine:✅ Generated 10 Fed event paths
+INFO:scenario_engine:✅ Scenario generation complete: event_fed_rate_hike_20251029_050352
+INFO:phase7_batch_orchestrator:✅ Generated 8 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 8 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050339' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050343' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050348' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_volatility_spike_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 8.06%, Sharpe = 12.76
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_sector_shock_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 8.22%, Sharpe = 13.29
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_black_swan_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 12.02%, Sharpe = 1.01
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 9.64%, Sharpe = 1.29
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 7.84%, Sharpe = 12.80
+INFO:portfolio_simulator:🎯 Applying scenario 'event_earnings_beat_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'event_fed_rate_hike_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -12.46%, Sharpe = -0.84
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 38.49%, Sharpe = 3.46
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 4.49%, Sharpe = 0.50
+INFO:phase7_batch_orchestrator:✅ Completed 8 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050339/batch_20251029_050339_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050339
+INFO:phase7_batch_orchestrator:Total Scenarios: 8
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 8
+INFO:phase7_batch_orchestrator:Execution Time: 12.70s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 0.63
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: 9.54%
+INFO:phase7_batch_orchestrator:   Median Return: 8.14%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 5.53
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 0.56%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -24.17%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:
+❌ FAIL
+INFO:__main__:   Execution Time: 12.72s (target: 10.0s)
+INFO:__main__:   Throughput: 0.63 scenarios/s
+INFO:__main__:   Cache Hit Rate: 0.0%
+INFO:__main__:================================================================================
+INFO:__main__:================================================================================
+INFO:__main__:⚡ PERFORMANCE BENCHMARK: 50-Ticker Batch
+INFO:__main__:================================================================================
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050352
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 50 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=2, Stress=0, Events=0
+INFO:phase7_batch_orchestrator:   Workers: 8
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 50 tickers, $500,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 50 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 50 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050352
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['TICKER00', 'TICKER01', 'TICKER02', 'TICKER03', 'TICKER04', 'TICKER05', 'TICKER06', 'TICKER07', 'TICKER08', 'TICKER09', 'TICKER10', 'TICKER11', 'TICKER12', 'TICKER13', 'TICKER14', 'TICKER15', 'TICKER16', 'TICKER17', 'TICKER18', 'TICKER19', 'TICKER20', 'TICKER21', 'TICKER22', 'TICKER23', 'TICKER24', 'TICKER25', 'TICKER26', 'TICKER27', 'TICKER28', 'TICKER29', 'TICKER30', 'TICKER31', 'TICKER32', 'TICKER33', 'TICKER34', 'TICKER35', 'TICKER36', 'TICKER37', 'TICKER38', 'TICKER39', 'TICKER40', 'TICKER41', 'TICKER42', 'TICKER43', 'TICKER44', 'TICKER45', 'TICKER46', 'TICKER47', 'TICKER48', 'TICKER49']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 50 assets
+INFO:scenario_engine:✅ Generated 50 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050352
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050413
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['TICKER00', 'TICKER01', 'TICKER02', 'TICKER03', 'TICKER04', 'TICKER05', 'TICKER06', 'TICKER07', 'TICKER08', 'TICKER09', 'TICKER10', 'TICKER11', 'TICKER12', 'TICKER13', 'TICKER14', 'TICKER15', 'TICKER16', 'TICKER17', 'TICKER18', 'TICKER19', 'TICKER20', 'TICKER21', 'TICKER22', 'TICKER23', 'TICKER24', 'TICKER25', 'TICKER26', 'TICKER27', 'TICKER28', 'TICKER29', 'TICKER30', 'TICKER31', 'TICKER32', 'TICKER33', 'TICKER34', 'TICKER35', 'TICKER36', 'TICKER37', 'TICKER38', 'TICKER39', 'TICKER40', 'TICKER41', 'TICKER42', 'TICKER43', 'TICKER44', 'TICKER45', 'TICKER46', 'TICKER47', 'TICKER48', 'TICKER49']
+INFO:scenario_engine:   Days: 252
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 50 assets
+INFO:scenario_engine:✅ Generated 50 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050413
+INFO:phase7_batch_orchestrator:✅ Generated 2 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 2 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050352' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050413' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 7.57%, Sharpe = 11.38
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 8.18%, Sharpe = 13.37
+INFO:phase7_batch_orchestrator:✅ Completed 2 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050352/batch_20251029_050352_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050352
+INFO:phase7_batch_orchestrator:Total Scenarios: 2
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 2
+INFO:phase7_batch_orchestrator:Execution Time: 44.10s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 0.05
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: 7.87%
+INFO:phase7_batch_orchestrator:   Median Return: 7.87%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 12.38
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 0.04%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -0.11%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:
+❌ FAIL
+INFO:__main__:   Execution Time: 44.12s (target: 40.0s)
+INFO:__main__:   Throughput: 0.05 scenarios/s
+INFO:__main__:   Cache Hit Rate: 0.0%
+INFO:__main__:================================================================================
+INFO:__main__:
+
+📝 SECTION 3: OUTPUT FORMAT VALIDATION
+INFO:__main__:================================================================================
+INFO:__main__:================================================================================
+INFO:__main__:📝 OUTPUT FORMAT VALIDATION
+INFO:__main__:================================================================================
+INFO:__main__:
+🔧 Creating test data...
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:🚀 BATCH SIMULATION: batch_20251029_050436
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:   Portfolio: 2 tickers
+INFO:phase7_batch_orchestrator:   Scenarios: MC=2, Stress=3, Events=0
+INFO:phase7_batch_orchestrator:   Workers: 2
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:
+📊 Step 1: Creating portfolio
+INFO:portfolio_simulator:🔧 Creating synthetic portfolio: 2 tickers, $20,000.00 allocation
+INFO:portfolio_simulator:✅ Created synthetic portfolio: 2 positions
+INFO:phase7_batch_orchestrator:
+🎲 Step 2: Generating scenarios
+INFO:phase7_batch_orchestrator:🎲 Generating scenarios for 2 tickers
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050436
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 42
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 2 assets
+INFO:scenario_engine:✅ Generated 2 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050436
+INFO:scenario_engine:🚀 Starting scenario generation: monte_carlo_20251029_050436
+INFO:scenario_engine:   Type: monte_carlo
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 43
+INFO:scenario_engine:🎲 Generating 1000 Monte Carlo paths for 2 assets
+INFO:scenario_engine:✅ Generated 2 Monte Carlo scenario paths
+INFO:scenario_engine:✅ Scenario generation complete: monte_carlo_20251029_050436
+INFO:scenario_engine:🚀 Starting scenario generation: stress_volatility_spike_20251029_050436
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 144
+INFO:scenario_engine:📈 Generating VOLATILITY SPIKE scenario (magnitude: 2.0x)
+INFO:scenario_engine:✅ Generated 2 volatility spike paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_volatility_spike_20251029_050436
+INFO:scenario_engine:🚀 Starting scenario generation: stress_sector_shock_20251029_050436
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 145
+INFO:scenario_engine:📉 Generating SECTOR SHOCK scenario
+INFO:scenario_engine:✅ Generated 2 sector shock paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_sector_shock_20251029_050436
+INFO:scenario_engine:🚀 Starting scenario generation: stress_black_swan_20251029_050436
+INFO:scenario_engine:   Type: stress_test
+INFO:scenario_engine:   Tickers: ['SPY', 'QQQ']
+INFO:scenario_engine:   Days: 60
+INFO:scenario_engine:   Random seed: 146
+INFO:scenario_engine:🦢 Generating BLACK SWAN event scenario
+INFO:scenario_engine:✅ Generated 2 black swan paths
+INFO:scenario_engine:✅ Scenario generation complete: stress_black_swan_20251029_050436
+INFO:phase7_batch_orchestrator:✅ Generated 5 scenarios
+INFO:phase7_batch_orchestrator:
+💼 Step 3: Running portfolio simulations
+INFO:phase7_batch_orchestrator:💼 Running 5 portfolio simulations
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050436' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.41%, Sharpe = 8.70
+INFO:portfolio_simulator:🎯 Applying scenario 'monte_carlo_20251029_050436' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_volatility_spike_20251029_050436' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = 1.64%, Sharpe = 10.02
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_sector_shock_20251029_050436' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -13.35%, Sharpe = -3.24
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -1.77%, Sharpe = -0.32
+INFO:portfolio_simulator:🎯 Applying scenario 'stress_black_swan_20251029_050436' to portfolio 'batch_portfolio'
+INFO:portfolio_simulator:✅ Simulation complete: Total Return = -11.86%, Sharpe = -3.36
+INFO:phase7_batch_orchestrator:✅ Completed 5 portfolio simulations
+INFO:phase7_batch_orchestrator:
+📈 Step 4: Computing aggregate metrics
+INFO:phase7_batch_orchestrator:
+💾 Saved batch result: outputs/phase7_batch/batch_20251029_050436/batch_20251029_050436_results.json
+INFO:phase7_batch_orchestrator:
+================================================================================
+INFO:phase7_batch_orchestrator:BATCH EXECUTION COMPLETE
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:phase7_batch_orchestrator:Batch ID: batch_20251029_050436
+INFO:phase7_batch_orchestrator:Total Scenarios: 5
+INFO:phase7_batch_orchestrator:Portfolio Simulations: 5
+INFO:phase7_batch_orchestrator:Execution Time: 0.46s
+INFO:phase7_batch_orchestrator:Scenarios/Second: 10.89
+INFO:phase7_batch_orchestrator:Cache Hit Rate: 0.0%
+INFO:phase7_batch_orchestrator:
+📊 Aggregate Metrics:
+INFO:phase7_batch_orchestrator:   Mean Return: -4.79%
+INFO:phase7_batch_orchestrator:   Median Return: -1.77%
+INFO:phase7_batch_orchestrator:   Mean Sharpe: 2.36
+INFO:phase7_batch_orchestrator:   Mean VaR 95%: 1.18%
+INFO:phase7_batch_orchestrator:   Worst Drawdown: -14.84%
+INFO:phase7_batch_orchestrator:================================================================================
+INFO:__main__:
+📄 Testing JSON output...
+INFO:simulation_report_builder:📊 Generating batch summary JSON: e2e_validation_20251029_050335
+INFO:simulation_report_builder:✅ Saved batch summary JSON: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_summary.json
+INFO:__main__:   ✅ JSON validated: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_summary.json
+INFO:__main__:
+📊 Testing CSV output...
+INFO:simulation_report_builder:📊 Generating scenario comparison CSV
+INFO:simulation_report_builder:✅ Saved scenario comparison CSV: outputs/phase7_e2e_validation/output_validation/scenario_comparison.csv
+INFO:__main__:   ✅ CSV validated: outputs/phase7_e2e_validation/output_validation/scenario_comparison.csv
+INFO:__main__:
+📝 Testing Markdown output...
+INFO:simulation_report_builder:📝 Generating batch Markdown report: e2e_validation_20251029_050335
+INFO:simulation_report_builder:✅ Saved batch Markdown report: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_report.md
+INFO:__main__:   ✅ Markdown validated: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_report.md
+INFO:__main__:
+🌐 Testing HTML output...
+INFO:simulation_report_builder:🌐 Generating HTML report: e2e_validation_20251029_050335
+INFO:simulation_report_builder:✅ Saved HTML report: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_report.html
+INFO:__main__:   ✅ HTML validated: outputs/phase7_e2e_validation/output_validation/e2e_validation_20251029_050335_report.html
+INFO:__main__:
+✅ ALL FORMATS VALIDATED
+INFO:__main__:================================================================================
+INFO:__main__:
+💾 Saved full validation report: outputs/phase7_e2e_validation/e2e_validation_20251029_050335_full_report.json
+INFO:__main__:
+
+================================================================================
+INFO:__main__:📊 E2E VALIDATION SUMMARY
+INFO:__main__:================================================================================
+INFO:__main__:Report ID: e2e_validation_20251029_050335
+INFO:__main__:Timestamp: 2025-10-29T05:04:36.916618
+INFO:__main__:Total Execution Time: 61.36s
+INFO:__main__:
+INFO:__main__:Total Tests: 5
+INFO:__main__:Passed: 2 ✅
+INFO:__main__:Failed: 3 ❌
+INFO:__main__:Overall Pass Rate: 40.0%
+INFO:__main__:
+INFO:__main__:📊 Breakdown:
+INFO:__main__:   Reproducibility: 2 tests, 50.0% pass rate
+INFO:__main__:   Performance: 2 benchmarks, 0.0% pass rate
+INFO:__main__:   Output Formats: 4 validated (JSON, CSV, Markdown, HTML)
+INFO:__main__:================================================================================
+INFO:__main__:❌ VALIDATION FAILED - SIGNIFICANT ISSUES DETECTED
+INFO:__main__:================================================================================
+INFO:__main__:
+✅ E2E VALIDATION COMPLETE
+INFO:__main__:📊 Report saved to: outputs/phase7_e2e_validation/

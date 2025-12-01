@@ -1,0 +1,4 @@
+# file: /home/aarav/unified-dashboard/services/forecast_adapter.py
+# hypothesis_version: 6.148.2
+
+[200, '*.json', '/health', '/predict', 'bento_available', 'completed', 'confidence', 'data/forecast', 'degraded', 'deterministic_mode', 'explain', 'forecast_id', 'forecasts', 'healthy', 'horizon', 'json', 'limit', 'model', 'offset', 'persistence_type', 'result', 'status', 'ticker', 'timestamp', 'total', 'w']

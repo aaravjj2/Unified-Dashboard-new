@@ -1,0 +1,113 @@
+
+[1m[96m
+╔════════════════════════════════════════════════════════════════════════════╗
+║              OPTIONS LAB - REAL CHROMIUM VALIDATION                        ║
+║                    NO HALLUCINATIONS ALLOWED                               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+[0m
+
+🌐 Navigating to http://localhost:8050...
+⏳ Waiting for dashboard to initialize...
+   📸 Screenshot: dashboard_home.png
+   📄 DOM: dashboard_home.html
+✅ [1mDashboard Load[0m: [92mPASS[0m
+   Dashboard loaded successfully
+
+[96m[1mOPTIONS LAB VALIDATION[0m
+
+[96m[1/6] Checking if Options Lab tab exists...[0m
+✅ [1mOptions Lab Tab Exists[0m: [92mPASS[0m
+   Found with selector: text=Options Lab
+
+[96m[2/6] Clicking Options Lab tab...[0m
+✅ [1mTab Navigation[0m: [92mPASS[0m
+   Successfully clicked and navigated
+   📸 Screenshot: options_lab_after_click.png
+   📄 DOM: options_lab_after_click.html
+
+[96m[3/6] Checking for UI elements...[0m
+✅ [1mTicker Input[0m: [92mPASS[0m
+   Found ticker input field
+✅ [1mLoad Chain Button[0m: [92mPASS[0m
+   Found Load Chain button
+✅ [1mMock Data Button[0m: [92mPASS[0m
+   Found Mock Data button
+
+[96m[4/6] Clicking Mock Data button...[0m
+✅ [1mMock Data Click[0m: [92mPASS[0m
+   Button clicked: #options-mock-btn
+
+[96m[5/6] Checking if data loaded...[0m
+✅ [1mData Loading[0m: [92mPASS[0m
+   Data loaded successfully
+
+[96m[6/6] Capturing final state...[0m
+   📸 Screenshot: options_lab_final.png
+   📄 DOM: options_lab_final.html
+
+[96m[1mTEST SUMMARY[0m
+
+Tab Accessible:   ✅
+Tab Visible:      ✅
+UI Rendered:      ✅
+Ticker Input:     ✅
+Load Button:      ✅
+Mock Button:      ✅
+Mock Clickable:   ✅
+Data Loads:       ✅
+
+Execution Time: 27098ms
+
+[92m[1m✅ CRITICAL TESTS PASSED[0m
+[92mOptions Lab tab is visible and functional in the browser[0m
+
+[96m[1mMARKET FORECAST - OPTIONS FORECAST VALIDATION[0m
+
+[96m[1/4] Navigating to Market Forecast tab...[0m
+✅ [1mMarket Forecast Tab[0m: [92mPASS[0m
+   Successfully navigated
+   📸 Screenshot: market_forecast_options_initial.png
+   📄 DOM: market_forecast_options_initial.html
+
+[96m[2/4] Checking for Options Forecast section...[0m
+✅ [1mOptions Forecast Section[0m: [92mPASS[0m
+   Section found in Market Forecast
+
+[96m[3/4] Checking for Options Forecast UI elements...[0m
+✅ [1mTicker Dropdown[0m: [92mPASS[0m
+✅ [1mExpiration Dropdown[0m: [92mPASS[0m
+✅ [1mGenerate Button[0m: [92mPASS[0m
+
+[96m[4/4] Capturing final state...[0m
+   📸 Screenshot: market_forecast_options_final.png
+   📄 DOM: market_forecast_options_final.html
+
+[96m[1mOPTIONS FORECAST SUMMARY[0m
+
+Tab Accessible:       ✅
+Section Exists:       ✅
+Ticker Dropdown:      ✅
+Expiration Dropdown:  ✅
+Generate Button:      ✅
+Section Visible:      ✅
+
+Execution Time: 21343ms
+
+[92m[1m✅ OPTIONS FORECAST SECTION VALIDATED[0m
+
+[96m[1m================================================================================[0m
+[96m[1mFINAL VERDICT[0m
+[96m[1m================================================================================[0m
+
+Options Lab Tab:              ✅ PASS
+Market Forecast Options:      ✅ PASS
+
+[92m[1m✅ OPTIONS LAB IS VISIBLE AND FUNCTIONAL[0m
+[92mUser can see and interact with Options Lab in the browser[0m
+
+[96m📁 Results saved to: /mnt/c/Aarav/fin_env/unified-dashboard/options_lab_real_chromium_results.json[0m
+[96m📸 Screenshots saved to: /mnt/c/Aarav/fin_env/unified-dashboard/options_lab_snapshots[0m
+[96m📄 DOM snapshots saved to: /mnt/c/Aarav/fin_env/unified-dashboard/options_lab_dom[0m
+
+[1m[92m✅ Real Chromium Validation Complete[0m
+

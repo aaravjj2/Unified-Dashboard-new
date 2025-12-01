@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# ============================================================================
+# OPTIMIZATION: Install dependencies FIRST for better layer caching
+# Chatbot-specific dependencies are stable, so cached across code changes
+# ============================================================================
+RUN --mount=type=cache,id=pycache,target=/root/.cache/pip \
+    pip install --no-cache-dir python-dotenv httpx ctransformers
+
+# ============================================================================
+# OPTIMIZATION: Copy application code LAST
+# Code changes frequently, so this layer is placed after stable dependencies
+# ============================================================================
+COPY services/chatbot_service.py /app/chatbot_service.py
+COPY src /app/src
+COPY utils /app/utils
+
+# Expose port
+EXPOSE 8062
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8062/health || exit 1
+
+# Run service
+CMD ["python3", "-m", "uvicorn", "chatbot_service:app", "--host", "0.0.0.0", "--port", "8062"]

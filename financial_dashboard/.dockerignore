@@ -1,0 +1,146 @@
+# ============================================================================
+# Docker Build Context Optimization - Exclude Non-Essential Files
+# ============================================================================
+
+# Critical: Exclude massive Financial_Data directory
+Financial_Data/
+financial_data/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+*.git
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+.venv_local/
+venv/
+ENV/
+env/
+virtualenv/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Logs and temporary runtime files
+logs/
+*.log
+run_logs/
+diagnostics/
+
+# Test outputs and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+test_reports/
+test_screenshots/
+.tox/
+*.cover
+
+# Documentation (exclude from build context)
+*.md
+docs/
+*.rst
+*.txt.bak
+
+# Temporary files and backups
+*.tmp
+*.bak
+*.backup
+*_OLD*
+*_BACKUP*
+*_BROKEN*
+*_CORRUPTED*
+*~
+
+# Output and cache directories
+output/
+cache/
+cache_price/
+.cache/
+*.pid
+
+# Large data files (not needed in Docker images)
+*.csv
+*.parquet
+*.pickle
+*.pkl
+*.h5
+*.hdf5
+*.db
+*.sqlite
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker files (already in context, but exclude to avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Screenshots and images (large files)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+
+# Node modules (if any frontend code exists)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+*.ipynb
+
+# Development and test scripts that shouldn't be in production images
+*_test.py
+test_*.py
+*_debug.py
+debug_*.py
+# Exclude underscore-prefixed files EXCEPT _shared.py (needed by services)
+_*.py
+!_shared.py
+_*.html
+_*.json
+*.sh
+*.ps1
+
+# MLflow and Dagster local artifacts
+mlruns/
+dagster_home/
+dagster_project/storage/
+dagster_project/logs/
+
+# Playwright and browser testing
+playwright-report/
+test-results/

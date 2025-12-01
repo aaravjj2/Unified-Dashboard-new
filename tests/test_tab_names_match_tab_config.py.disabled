@@ -1,0 +1,24 @@
+import importlib.util
+import os
+from playwright.sync_api import sync_playwright
+
+# Load TAB_CONFIG from integrated_dashboard.py
+spec = importlib.util.spec_from_file_location('integrated_dashboard', os.path.join('financial_dashboard','integrated_dashboard.py'))
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+TAB_CONFIG = getattr(mod, 'TAB_CONFIG')
+EXPECTED = [t['name'] for t in TAB_CONFIG]
+
+
+def test_nav_labels_match_tab_config():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width":1400, "height":220})
+        page.goto('http://localhost:8050', wait_until='networkidle')
+        page.wait_for_selector('#dashboard-tabs', timeout=20000)
+        tabs = page.query_selector_all('#dashboard-tabs .nav-link')
+        labels = [t.inner_text().strip() for t in tabs]
+        # normalize: remove duplicate whitespace and compare trimmed labels
+        labels_norm = [l.replace('\n',' ').strip() for l in labels]
+        expected_norm = [e.replace('\n',' ').strip() for e in EXPECTED]
+        assert labels_norm == expected_norm, f"Nav labels do not match TAB_CONFIG.\nExpected: {expected_norm}\nGot: {labels_norm}"

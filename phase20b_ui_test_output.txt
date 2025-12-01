@@ -1,0 +1,45 @@
+============================================================
+PHASE 20B UI SNAPSHOT TEST
+Verify predictions table and metrics display data from PostgreSQL
+============================================================
+
+[1/5] Loading Azure ML Lab page...
+✅ Azure ML Lab page loaded
+✅ Screenshot saved: phase20b_initial.png
+
+[2/5] Checking predictions table...
+✅ Predictions table found
+✅ SUCCESS: Database footer found!
+   (UI is reading from PostgreSQL database)
+
+[3/5] Clicking Run Prediction button...
+❌ Error clicking Run Prediction: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("#azure-ml-run-btn, button:has-text(\"Run Prediction\")").first
+    - locator resolved to <button id="azure-ml-run-prediction-btn" class="w-100 btn btn-primary btn-lg">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    55 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+
+
+[4/5] Checking performance metrics...
+✅ SUCCESS: Performance metrics footer found!
+   (Metrics reading from ml_prediction_runs table)
+
+============================================================
+TEST COMPLETE
+Screenshots saved:
+  - /app/phase20b_initial.png
+  - /app/phase20b_after_prediction.png
+============================================================

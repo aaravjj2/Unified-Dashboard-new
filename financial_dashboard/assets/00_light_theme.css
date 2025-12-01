@@ -1,0 +1,589 @@
+/*
+ * Light Theme for Unified Financial Dashboard
+ * ============================================
+ * This file must be named 00_* to load first and override the dark CYBORG theme.
+ * Provides a clean, professional light mode appearance.
+ */
+
+/* ============================================
+   BASE STYLES - Override dark theme
+   ============================================ */
+
+/* Root variables for light theme */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --accent-primary: #0d6efd;
+    --accent-secondary: #6610f2;
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Override body background - must be !important to override cyborg */
+body {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+html {
+    background-color: #f8f9fa !important;
+}
+
+/* Main container */
+.container-fluid,
+#main-container,
+.dash-table-container {
+    background-color: transparent !important;
+}
+
+/* Note: .dash-graph is styled separately to keep dark background for graphs */
+
+/* ============================================
+   NAVIGATION & TABS
+   ============================================ */
+
+/* Main navbar */
+.navbar,
+.navbar-dark,
+.bg-dark,
+.navbar.bg-dark {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+.navbar-brand,
+.nav-link,
+.navbar-dark .navbar-brand,
+.navbar-dark .nav-link {
+    color: #212529 !important;
+}
+
+.nav-link:hover,
+.navbar-dark .nav-link:hover {
+    color: #0d6efd !important;
+}
+
+/* Tab navigation */
+.nav-tabs {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.nav-tabs .nav-link {
+    color: #495057 !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 0.375rem 0.375rem 0 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #0d6efd !important;
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 #dee2e6 #f8f9fa !important;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+    color: #0d6efd !important;
+    background-color: #ffffff !important;
+    border-color: #dee2e6 #dee2e6 #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Cards containing graphs should have dark backgrounds */
+.card.graph-card,
+.card:has(.dash-graph),
+.card:has(.js-plotly-plot) {
+    background-color: #1a1a2e !important;
+    border-color: #2d2d4a !important;
+}
+
+.card.graph-card .card-header,
+.card:has(.dash-graph) .card-header,
+.card:has(.js-plotly-plot) .card-header {
+    background-color: #16213e !important;
+    border-bottom-color: #2d2d4a !important;
+    color: #ffffff !important;
+}
+
+.card.graph-card .card-body,
+.card:has(.dash-graph) .card-body,
+.card:has(.js-plotly-plot) .card-body {
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+}
+
+.card-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    color: #212529 !important;
+    font-weight: 600 !important;
+}
+
+.card-body {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.card-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+.card-title {
+    color: #212529 !important;
+}
+
+.card-text {
+    color: #495057 !important;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-primary {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7 !important;
+    border-color: #0a58ca !important;
+}
+
+.btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary {
+    color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+/* ============================================
+   FORMS & INPUTS
+   ============================================ */
+
+.form-control,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da !important;
+    color: #212529 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #ffffff !important;
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.form-control::placeholder {
+    color: #6c757d !important;
+}
+
+.form-label,
+label {
+    color: #212529 !important;
+}
+
+/* Dropdowns */
+.Select-control,
+.Select-menu-outer,
+.VirtualizedSelectOption,
+.Select-value-label,
+.Select-placeholder {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+}
+
+.Select-option.is-focused,
+.VirtualizedSelectFocusedOption {
+    background-color: #e9ecef !important;
+}
+
+.Select-option.is-selected {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+/* Dash Dropdowns */
+.dash-dropdown .Select-control,
+.dash-dropdown .Select-menu-outer {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.table,
+table {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+}
+
+.table th,
+.table td,
+th, td {
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: #e9ecef !important;
+}
+
+.table thead th {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+/* Dash DataTable */
+.dash-table-container .dash-spreadsheet-container {
+    background-color: #ffffff !important;
+}
+
+.dash-table-container .dash-header {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+.dash-table-container .dash-cell {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+.dash-table-container .dash-cell.focused {
+    background-color: #e9ecef !important;
+}
+
+/* ============================================
+   GRAPHS & CHARTS (Plotly) - KEEP DARK MODE
+   ============================================ */
+
+/* DO NOT override plotly backgrounds - keep graphs dark */
+/* Graphs will use their plotly_dark template from Python */
+
+/* Graph container wrapper - dark background for contrast */
+.dash-graph {
+    background-color: #1a1a2e !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Ensure graph titles and text remain visible on dark background */
+.dash-graph .chart-title,
+.dash-graph h5,
+.dash-graph h6 {
+    color: #ffffff !important;
+}
+
+/* Plotly modebar - style for dark graphs */
+.js-plotly-plot .plotly .modebar {
+    background-color: rgba(26, 26, 46, 0.9) !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn path {
+    fill: #a0a0a0 !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn:hover path {
+    fill: #ffffff !important;
+}
+
+/* ============================================
+   ALERTS & BADGES
+   ============================================ */
+
+.alert-info {
+    background-color: #cff4fc !important;
+    border-color: #b6effb !important;
+    color: #055160 !important;
+}
+
+.alert-success {
+    background-color: #d1e7dd !important;
+    border-color: #badbcc !important;
+    color: #0f5132 !important;
+}
+
+.alert-warning {
+    background-color: #fff3cd !important;
+    border-color: #ffecb5 !important;
+    color: #664d03 !important;
+}
+
+.alert-danger {
+    background-color: #f8d7da !important;
+    border-color: #f5c2c7 !important;
+    color: #842029 !important;
+}
+
+.badge {
+    font-weight: 500 !important;
+}
+
+.badge.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal-content {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.5rem !important;
+}
+
+.modal-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.modal-header .modal-title {
+    color: #212529 !important;
+}
+
+.modal-body {
+    color: #212529 !important;
+}
+
+.modal-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+/* ============================================
+   SCROLLBARS
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* ============================================
+   TEXT COLORS
+   ============================================ */
+
+.text-white,
+.text-light {
+    color: #212529 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #212529 !important;
+}
+
+p {
+    color: #495057 !important;
+}
+
+/* Financial values */
+.text-success,
+.positive-value {
+    color: #198754 !important;
+}
+
+.text-danger,
+.negative-value {
+    color: #dc3545 !important;
+}
+
+/* ============================================
+   SPECIFIC COMPONENT OVERRIDES
+   ============================================ */
+
+/* Chatbot */
+#chatbot-container,
+.chatbot-card {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+#chatbot-messages {
+    background-color: #f8f9fa !important;
+}
+
+.chat-message.user {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.chat-message.assistant {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+}
+
+/* Command Center Status Cards */
+.status-card,
+.metric-card {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* ============================================
+   WATCHLIST FIX - Light Theme Text Colors
+   ============================================ */
+
+/* Watchlist container - ensure dark text on light background */
+#watchlist-items-container,
+#watchlist-items-container * {
+    color: #212529 !important;
+}
+
+#watchlist-items-container .row {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.75rem !important;
+}
+
+#watchlist-items-container .row:hover {
+    background: #e9ecef !important;
+    border-color: #0d6efd !important;
+}
+
+#watchlist-items-container .text-success {
+    color: #198754 !important;
+}
+
+#watchlist-items-container .text-danger {
+    color: #dc3545 !important;
+}
+
+#watchlist-items-container .text-muted {
+    color: #6c757d !important;
+}
+
+/* Watchlist input and button */
+#watch-add-input {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+#watch-add-input::placeholder {
+    color: #6c757d !important;
+}
+
+/* Loading spinners */
+.dash-spinner,
+._dash-loading {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem !important;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: #ffffff !important;
+    }
+    
+    .navbar, .nav-tabs {
+        display: none !important;
+    }
+}

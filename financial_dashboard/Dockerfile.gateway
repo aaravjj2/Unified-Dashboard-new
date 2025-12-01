@@ -1,0 +1,21 @@
+# Dockerfile for API Gateway service
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# Install gateway-specific dependencies
+RUN --mount=type=cache,id=pycache,target=/root/.cache/pip \
+    pip install --no-cache-dir httpx python-dotenv
+
+# Copy application code
+COPY api_gateway.py .
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application
+CMD ["python3", "api_gateway.py"]

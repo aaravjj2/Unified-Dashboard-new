@@ -1,0 +1,20 @@
+# API Access Check Report
+# Generated: 2025-10-23T17:32:40.580805Z
+
+## Finnhub: FINNHUB_API_KEY
+Key present: True
+- quote: 200 https://finnhub.io/api/v1/quote?symbol=AAPL&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+  snippet: {"c":259.87,"d":1.42,"dp":0.5494,"h":260.62,"l":258.0101,"o":259.64,"pc":258.45,"t":1761240717}
+- candle: 403 https://finnhub.io/api/v1/stock/candle?symbol=AAPL&resolution=D&from=1760650360&to=1761240760&token=d28ndhhr01qmp5u9g65gd28ndhhr01qmp5u9g660
+  snippet: {"error":"You don't have access to this resource."}
+
+## Finnhub: FINNHUB2_API_KEY
+Key present: True
+- quote: 200 https://finnhub.io/api/v1/quote?symbol=AAPL&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+  snippet: {"c":259.87,"d":1.42,"dp":0.5494,"h":260.62,"l":258.0101,"o":259.64,"pc":258.45,"t":1761240717}
+- candle: 403 https://finnhub.io/api/v1/stock/candle?symbol=AAPL&resolution=D&from=1760650360&to=1761240760&token=d38b891r01qlbdj4nnlgd38b891r01qlbdj4nnm0
+  snippet: {"error":"You don't have access to this resource."}
+
+## Alpaca
+- account: 200 https://paper-api.alpaca.markets/v2/account
+  snippet: {"id":"f910a567-1549-4971-a214-ae70f06b0cc2","admin_configurations":{},"user_configurations":null,"account_number":"PA30UB1Y6NLQ","status":"ACTIVE","crypto_status":"ACTIVE","options_approved_level":3,"options_trading_level":3,"currency":"USD","buying_power":"120875.28","regt_buying_power":"120875.28","daytrading_buying_power":"0","effective_buying_power":"120875.28","non_marginable_buying_power":"58437.64","options_buying_power":"60437.64","bod_dtbp":"0","cash":"31807.39","accrued_fees":"0","portfolio_value":"89067.89","pattern_day_trader":false,"trading_blocked":false,"transfers_blocked":false,"account_blocked":false,"created_at":"2025-09-19T13:10:18.710808Z","trade_suspended_by_user":false,"multiplier":"2","shorting_enabled":true,"equity":"89067.89","last_equity":"88082.68074978308","long_market_value":"57260.5","short_market_value":"0","position_market_value":"57260.5","initial_margin":"28630.25","maintenance_margin":"17325.49","last_maintenance_margin":"17020.28","sma":"79923.67","

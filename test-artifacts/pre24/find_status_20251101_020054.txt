@@ -1,0 +1,9 @@
+ M financial_dashboard/analysis_app.py
+ M financial_dashboard/index.py
+ M financial_dashboard/tabs/options_lab/callbacks.py
+ M test_options_lab_chromium.py
+ M test_picks_comprehensive_final.py
+?? test-artifacts/picks_final_20251031_234737/
+?? test-artifacts/picks_final_20251031_235733/
+?? test-artifacts/picks_final_20251101_000440/
+?? test-artifacts/pre24/find_status_20251101_020054.txt

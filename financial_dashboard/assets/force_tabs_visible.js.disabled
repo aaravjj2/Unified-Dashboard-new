@@ -1,0 +1,52 @@
+// Force tabs to be visible after Dash loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceTabsVisible);
+} else {
+    forceTabsVisible();
+}
+
+function forceTabsVisible() {
+    console.log('[TabsFix] Forcing tabs to be visible...');
+    
+    // Wait for Dash to finish rendering
+    setTimeout(function() {
+        // Force all tab containers visible
+        document.querySelectorAll('.nav-tabs, [role="tablist"]').forEach(function(el) {
+            el.style.display = 'flex';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            el.style.height = 'auto';
+            console.log('[TabsFix] Made tablist visible:', el);
+        });
+        
+        // Force all tab buttons visible
+        document.querySelectorAll('.nav-link, [role="tab"]').forEach(function(el) {
+            el.style.display = 'inline-block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            console.log('[TabsFix] Made tab visible:', el.textContent);
+        });
+        
+        // Force tab content visible
+        document.querySelectorAll('.tab-content, [role="tabpanel"]').forEach(function(el) {
+            if (el.classList.contains('active') || el.getAttribute('aria-hidden') === 'false') {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
+                console.log('[TabsFix] Made tab content visible');
+            }
+        });
+        
+        // Force all containers visible
+        document.querySelectorAll('.container, .container-fluid').forEach(function(el) {
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+        });
+        
+        console.log('[TabsFix] Tabs visibility forced!');
+    }, 500);
+    
+    // Run again after 2 seconds in case Dash is slow
+    setTimeout(forceTabsVisible, 2000);
+}

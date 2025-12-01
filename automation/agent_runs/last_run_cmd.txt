@@ -1,0 +1,1 @@
+python3 automation/agent_runs/run_market_trends_repair_loop.py --agent=1B --env=local

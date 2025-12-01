@@ -1,0 +1,44 @@
+version: '3.8'
+networks:
+  shared-network:
+    external: true
+services:
+  dash_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dash_app
+    ports:
+      - "8050:8050"
+    networks:
+      - shared-network
+    depends_on:
+      - options_service
+      - chatbot_service
+    restart: unless-stopped
+    environment:
+      - OPTIONS_API_URL=http://options_service:8060
+      - CHATBOT_API_URL=http://chatbot_service:8070
+      - DB_HOST=postgres_db
+  options_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.options
+    container_name: options_service
+    ports:
+      - "8060:8060"
+    networks:
+      - shared-network
+    restart: unless-stopped
+    environment:
+      - DB_HOST=postgres_db
+  chatbot_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.chatbot
+    container_name: chatbot_service
+    ports:
+      - "8070:8070"
+    networks:
+      - shared-network
+    restart: unless-stopped

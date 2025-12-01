@@ -1,0 +1,195 @@
+/* Command Center Modern Styling */
+:root {
+    --cc-primary: #1e3a8a;
+    --cc-success: #10b981;
+    --cc-danger: #ef4444;
+    --cc-warning: #f59e0b;
+    --cc-dark: #0f172a;
+    --cc-light: #f8fafc;
+}
+
+/* Glass Morphism Cards */
+.shadow-sm {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+.shadow-sm:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+}
+
+/* Card Headers */
+.card-header {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.2) 0%, rgba(15, 23, 42, 0.2) 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 1rem 1.25rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Card Body Enhancements */
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/* Loading Skeleton Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-skeleton {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(to right, #f0f0f0 8%, #f8f8f8 18%, #f0f0f0 33%);
+    background-size: 1000px 100%;
+    border-radius: 4px;
+    height: 20px;
+    margin: 10px 0;
+}
+
+/* Value Displays */
+h4[id*="portfolio"], h5[id*="market"] {
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* Success/Danger Colors */
+.text-success {
+    color: var(--cc-success) !important;
+    font-weight: 600 !important;
+}
+
+.text-danger {
+    color: var(--cc-danger) !important;
+    font-weight: 600 !important;
+}
+
+/* Buttons Enhancement */
+.btn-primary {
+    background: linear-gradient(135deg, var(--cc-primary) 0%, #1e40af 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4) !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--cc-success) 0%, #059669 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--cc-danger) 0%, #dc2626 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--cc-warning) 0%, #d97706 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+}
+
+.btn {
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Hover Effects for Interactive Elements */
+.btn, .card {
+    cursor: pointer;
+}
+
+/* Pulse Animation for Live Updates */
+@keyframes pulse-green {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.live-update {
+    animation: pulse-green 2s ease-in-out infinite;
+}
+
+/* Watchlist Enhancements */
+#watchlist-items-container .row {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.2s ease;
+}
+
+#watchlist-items-container .row:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+}
+
+/* HR Styling */
+hr {
+    opacity: 0.1 !important;
+    margin: 1rem 0 !important;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Plotly Chart Enhancements */
+.js-plotly-plot {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+/* Input Fields */
+input.form-control {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+input.form-control:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--cc-primary) !important;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2) !important;
+}
+
+/* Responsive Spacing */
+.mb-4 {
+    margin-bottom: 2rem !important;
+}
+
+/* Small Text */
+.small {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    opacity: 0.7 !important;
+}

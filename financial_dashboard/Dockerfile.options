@@ -1,0 +1,34 @@
+# Dockerfile for Options Trading Service
+FROM fin-dash-base:latest
+
+WORKDIR /app
+
+# ============================================================================
+# OPTIMIZATION: Copy requirements FIRST if they exist
+# (Note: This service may not have separate requirements.txt, uses base image deps)
+# ============================================================================
+
+# ============================================================================
+# OPTIMIZATION: Copy application code LAST for better layer caching
+# Code changes frequently, so this layer is placed after stable dependencies
+# ============================================================================
+COPY options_service.py .
+COPY options_config.yaml .
+COPY utils/ ./utils/
+COPY trading/ ./trading/
+COPY strategies/ ./strategies/
+COPY backtester.py .
+COPY keys.env .
+
+# Create necessary directories
+RUN mkdir -p logs
+
+# Expose port
+EXPOSE 8060
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8060/health || exit 1
+
+# Run the application
+CMD ["python3", "-m", "uvicorn", "options_service:app", "--host", "0.0.0.0", "--port", "8060"]

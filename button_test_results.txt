@@ -1,0 +1,31 @@
+================================================================================
+PORTFOLIO BUTTON FUNCTIONALITY TEST
+================================================================================
+
+1. Loading dashboard...
+
+2. Clicking Portfolio tab...
+
+3. Clicking Positions subtab...
+
+4. Checking initial state...
+   Table exists: False
+   Rows: 0
+   Has data: False
+
+5. Clicking refresh button...
+   Waiting 10 seconds for callback to execute...
+
+6. Checking updated state...
+   Table exists: False
+   Rows: 0
+   Has data: False
+   First symbol: N/A
+
+================================================================================
+❌ FAIL - Button callback did not update table
+   Before: 0 rows
+   After: 0 rows
+================================================================================
+
+Browser will stay open for 10 seconds for manual inspection...

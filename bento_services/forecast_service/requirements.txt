@@ -1,0 +1,8 @@
+numpy>=1.24.0
+pandas>=2.0.0
+bentoml>=1.2.0
+
+# Model dependencies (uncomment when models are trained)
+# torch>=2.0.0
+# prophet>=1.1.0
+# shap>=0.42.0

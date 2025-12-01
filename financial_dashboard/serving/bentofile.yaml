@@ -1,0 +1,76 @@
+# Triton + BentoML Serving Configuration
+# =========================================
+
+# BentoML Configuration
+service_name: financial_dashboard_ml
+version: "1.0.0"
+
+# API Endpoints
+apis:
+  - name: forecast_price
+    route: /forecast_price
+    input_type: json
+    output_type: json
+    
+  - name: analyze_sentiment
+    route: /analyze_sentiment
+    input_type: json
+    output_type: json
+    
+  - name: run_strategy_backtest
+    route: /run_strategy_backtest
+    input_type: json
+    output_type: json
+    
+  - name: embed_text
+    route: /embed_text
+    input_type: json
+    output_type: json
+
+# Resource Configuration
+resources:
+  cpu: "2"
+  memory: "4Gi"
+  gpu: 1
+  gpu_type: "nvidia-rtx-4060"
+
+# Scaling Configuration
+autoscaling:
+  min_replicas: 1
+  max_replicas: 4
+  target_cpu_utilization: 70
+
+# Triton Backend Configuration
+triton:
+  enabled: true
+  server_url: "localhost:8000"
+  models:
+    - name: embeddings
+      platform: onnxruntime_onnx
+      max_batch_size: 128
+      
+    - name: sentiment_finbert
+      platform: pytorch_libtorch
+      max_batch_size: 64
+      
+    - name: forecast_ensemble
+      platform: pytorch_libtorch
+      max_batch_size: 32
+
+# Docker Configuration
+docker:
+  base_image: "python:3.12-slim"
+  cuda_version: "12.8"
+  requirements:
+    - bentoml>=1.2.0
+    - torch>=2.0.0
+    - transformers>=4.35.0
+    - sentence-transformers>=2.2.0
+    - numpy>=1.24.0
+    - pandas>=2.0.0
+
+# Health Check
+health_check:
+  endpoint: /health_check
+  interval: 30s
+  timeout: 10s
