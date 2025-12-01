@@ -108,22 +108,30 @@ def get_alpaca_client():
     
     try:
         from config import get_cfg
-        key = get_cfg('APCA_API_KEY_ID') or get_cfg('APCA_API_KEY') or get_cfg('ALPACA_API_KEY')
-        secret = get_cfg('APCA_API_SECRET_KEY') or get_cfg('APCA_API_SECRET') or get_cfg('ALPACA_API_SECRET')
+        # Support multiple key naming conventions including ALPACA2_KEY
+        key = (get_cfg('ALPACA2_KEY') or get_cfg('APCA_API_KEY_ID') or 
+               get_cfg('APCA_API_KEY') or get_cfg('ALPACA_API_KEY'))
+        secret = (get_cfg('ALPACA2_SECRET') or get_cfg('APCA_API_SECRET_KEY') or 
+                  get_cfg('APCA_API_SECRET') or get_cfg('ALPACA_API_SECRET'))
     except Exception:
         try:
             from config import get_cfg
-            key = get_cfg('APCA_API_KEY_ID') or get_cfg('APCA_API_KEY') or get_cfg('ALPACA_API_KEY')
-            secret = get_cfg('APCA_API_SECRET_KEY') or get_cfg('APCA_API_SECRET') or get_cfg('ALPACA_API_SECRET')
+            key = (get_cfg('ALPACA2_KEY') or get_cfg('APCA_API_KEY_ID') or 
+                   get_cfg('APCA_API_KEY') or get_cfg('ALPACA_API_KEY'))
+            secret = (get_cfg('ALPACA2_SECRET') or get_cfg('APCA_API_SECRET_KEY') or 
+                      get_cfg('APCA_API_SECRET') or get_cfg('ALPACA_API_SECRET'))
         except Exception:
-            key = os.getenv("APCA_API_KEY_ID") or os.getenv('APCA_API_KEY') or os.getenv('ALPACA_API_KEY')
-            secret = os.getenv("APCA_API_SECRET_KEY") or os.getenv('APCA_API_SECRET') or os.getenv('ALPACA_API_SECRET')
+            key = (os.getenv("ALPACA2_KEY") or os.getenv("APCA_API_KEY_ID") or 
+                   os.getenv('APCA_API_KEY') or os.getenv('ALPACA_API_KEY'))
+            secret = (os.getenv("ALPACA2_SECRET") or os.getenv("APCA_API_SECRET_KEY") or 
+                      os.getenv('APCA_API_SECRET') or os.getenv('ALPACA_API_SECRET'))
     if not key or not secret:
         logger.warning("Alpaca credentials not found in environment")
         return None
     
     # Default to paper trading
     paper = True
+    logger.info(f"✅ Alpaca client initialized (paper={paper}, key_prefix={key[:4]}...)")
     return TradingClient(key, secret, paper=paper)
 
 
