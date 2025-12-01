@@ -243,7 +243,7 @@ async def fetch_morning_brief(http_client: httpx.AsyncClient) -> Optional[Dict]:
     try:
         from .ai_morning_brief import AIMorningBriefService
         service = AIMorningBriefService()
-        brief = service.generate_morning_brief()
+        brief = service.generate_full_brief()  # Correct method name
         return brief
     except Exception as e:
         logger.warning(f"Failed to fetch morning brief: {e}")
