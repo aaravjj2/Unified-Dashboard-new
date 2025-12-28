@@ -1,12 +1,12 @@
 """
 Options Lab Data Loader
 
-Handles data fetching from Alpaca, yfinance and local caches.
-Provides graceful fallbacks and error handling.
+Handles data fetching from Alpaca (primary) with mock fallback.
+Alpaca-first architecture - NO yfinance for options chains.
 
 Features:
-- Options chain data fetching (Alpaca → yfinance → mock)
-- Greeks calculation
+- Options chain data fetching (Alpaca REST API → mock)
+- Real-time Greeks calculation via Black-Scholes
 - Implied volatility surface data
 - Mock data fallback for testing
 """
@@ -17,7 +17,13 @@ import numpy as np
 import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
-import yfinance as yf
+
+# Import our Alpaca-only data loader
+try:
+    from .alpaca_data_loader import fetch_options_chain_alpaca_only
+    ALPACA_LOADER_AVAILABLE = True
+except ImportError:
+    ALPACA_LOADER_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -202,7 +208,12 @@ def fetch_options_chain_alpaca(ticker: str, expiry: Optional[str] = None) -> Opt
 
 def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = True) -> Dict:
     """
-    Fetch options chain for a given ticker with fallback chain: Alpaca → yfinance → mock.
+    Fetch options chain for a given ticker.
+    
+    ALPACA-FIRST Architecture:
+    - Primary: Alpaca REST API (alpaca_data_loader.py)
+    - Fallback: Mock data for testing
+    - NO yfinance dependency for options chains
     
     Args:
         ticker: Stock ticker symbol
@@ -218,7 +229,7 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
             'calls': pd.DataFrame,
             'puts': pd.DataFrame,
             'error': Optional[str],
-            'source': str  # 'alpaca', 'yfinance', or 'mock'
+            'source': str  # 'alpaca' or 'mock'
         }
     """
     if use_mock:
@@ -226,75 +237,32 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
         result['source'] = 'mock'
         return result
     
-    # Try Alpaca first (if enabled)
+    # Try Alpaca-only loader first (primary source)
+    if use_alpaca and ALPACA_LOADER_AVAILABLE:
+        try:
+            alpaca_data = fetch_options_chain_alpaca_only(ticker)
+            if alpaca_data and not alpaca_data.get('error'):
+                logger.info(f"✅ Using Alpaca-only data for {ticker}")
+                return alpaca_data
+            else:
+                error_msg = alpaca_data.get('error', 'Unknown error') if alpaca_data else 'No data returned'
+                logger.info(f"⚠️ Alpaca-only returned error: {error_msg}, using mock fallback")
+        except Exception as e:
+            logger.warning(f"⚠️ Alpaca-only loader failed: {e}, using mock fallback")
+    
+    # Fallback: Try legacy Alpaca fetch
     if use_alpaca:
         alpaca_data = fetch_options_chain_alpaca(ticker)
         if alpaca_data:
             alpaca_data['source'] = 'alpaca'
-            logger.info(f"✅ Using Alpaca data for {ticker}")
+            logger.info(f"✅ Using Alpaca legacy data for {ticker}")
             return alpaca_data
-        else:
-            logger.info(f"⚠️ Alpaca returned None for {ticker}, falling back to yfinance")
     
-    # Fallback to yfinance
-    try:
-        logger.info(f"🔄 Falling back to yfinance for {ticker}")
-        stock = yf.Ticker(ticker)
-        
-        # Get current price
-        try:
-            spot_price = stock.info.get('currentPrice') or stock.info.get('regularMarketPrice')
-            if not spot_price:
-                hist = stock.history(period='1d')
-                spot_price = hist['Close'].iloc[-1] if not hist.empty else 100.0
-        except Exception as e:
-            logger.warning(f"Could not fetch spot price for {ticker}: {e}")
-            spot_price = 100.0
-        
-        # Get expiration dates
-        expirations = stock.options
-        
-        if not expirations or len(expirations) == 0:
-            logger.warning(f"No options data available for {ticker}")
-            return _generate_mock_chain(ticker)
-        
-        # Get first expiration chain
-        first_exp = expirations[0]
-        opt_chain = stock.option_chain(first_exp)
-        
-        calls = opt_chain.calls
-        puts = opt_chain.puts
-        
-        # Handle None DataFrames
-        if calls is None:
-            calls = pd.DataFrame()
-        if puts is None:
-            puts = pd.DataFrame()
-        
-        # Add calculated fields (only if not empty)
-        if not calls.empty:
-            calls = _enrich_chain_data(calls, spot_price, 'call', first_exp)
-        if not puts.empty:
-            puts = _enrich_chain_data(puts, spot_price, 'put', first_exp)
-        
-        logger.info(f"✅ Using yfinance data for {ticker}")
-        return {
-            'ticker': ticker,
-            'spot_price': spot_price,
-            'expirations': list(expirations),
-            'calls': calls,
-            'puts': puts,
-            'error': None,
-            'source': 'yfinance'
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ yfinance failed for {ticker}: {e}")
-        logger.info(f"🔄 Falling back to mock data for {ticker}")
-        fallback = _generate_mock_chain(ticker)
-        fallback['source'] = 'mock'
-        fallback['error'] = f"Live data unavailable: {str(e)}"
-        return fallback
+    # Final fallback: Mock data
+    logger.info(f"🔄 Using mock data for {ticker}")
+    fallback = _generate_mock_chain(ticker)
+    fallback['source'] = 'mock'
+    return fallback
 
 
 def _enrich_chain_data(df: pd.DataFrame, spot_price: float, option_type: str, expiration_date: str = None) -> pd.DataFrame:
