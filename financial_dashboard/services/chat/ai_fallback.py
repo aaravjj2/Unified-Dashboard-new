@@ -9,6 +9,8 @@ import os
 import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
+from datetime import timedelta
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +28,16 @@ class AIFallbackChat:
         load_dotenv('keys.env')
         
         self.gemini_key = os.getenv('GEMINI_API_KEY')
+        # Groq (https://groq.com/) API key (optional)
+        self.groq_key = os.getenv('GROQ_API_KEY') or os.getenv('GROQ_API')
         self.openai_key = os.getenv('OpenAI_API_KEY') or os.getenv('OPENAI_API_KEY')
         
         self._gemini_model = None
         self._openai_client = None
+        # Groq runtime state
+        self._groq_initialized = False
+        self._groq_rate_limited = False
+        self._groq_rate_limited_until: Optional[datetime] = None
         
         self.system_prompt = """You are a helpful AI Financial Assistant for a trading dashboard.
 You can help users with:
@@ -84,6 +92,43 @@ Current date: {date}"""
         except Exception as e:
             logger.warning(f"OpenAI init failed: {e}")
             return False
+
+    def _init_groq(self) -> bool:
+        """Placeholder initializer for Groq provider.
+
+        This method doesn't attempt to import a Groq client library at runtime
+        but will return True if a `GROQ_API_KEY` is present. Full Groq support
+        can be implemented later using the official Groq client or the
+        HuggingFace inference provider.
+        """
+        if getattr(self, '_groq_initialized', False):
+            return True
+
+        if not self.groq_key:
+            return False
+
+        # Minimal validation: presence of key
+        if not self.groq_key:
+            return False
+
+        # If previously marked rate-limited and still in window, treat as unavailable
+        if self._groq_rate_limited and self._groq_rate_limited_until:
+            if datetime.utcnow() < self._groq_rate_limited_until:
+                logger.warning("GROQ marked rate-limited until %s", self._groq_rate_limited_until.isoformat())
+                return False
+            # window expired -> clear
+            self._groq_rate_limited = False
+            self._groq_rate_limited_until = None
+
+        logger.info("✅ GROQ key present in environment (GROQ_API_KEY)")
+        self._groq_initialized = True
+        return True
+
+    def _mark_groq_rate_limited(self, retry_seconds: int = 3600):
+        """Mark Groq as rate-limited for a period (default 1 hour)."""
+        self._groq_rate_limited = True
+        self._groq_rate_limited_until = datetime.utcnow() + timedelta(seconds=retry_seconds)
+        logger.warning("GROQ rate-limited; backing off until %s", self._groq_rate_limited_until.isoformat())
     
     def chat(self, 
              message: str, 
@@ -105,7 +150,22 @@ Current date: {date}"""
         if context:
             system += f"\n\nCurrent context: {context}"
         
-        # Try Gemini first (free tier)
+        # Prefer Groq if available (and not currently rate-limited)
+        if self._init_groq():
+            try:
+                response = self._groq_chat(message, system, history)
+                return response
+            except GroqRateLimitError as gre:
+                # Specific rate-limit: fall back to local generator
+                logger.warning("GROQ rate limit encountered: %s — falling back to local generator", gre)
+                try:
+                    return self._local_generator_chat(message, system)
+                except Exception as e:
+                    logger.warning("Local generator also failed after GROQ rate limit: %s", e)
+            except Exception as e:
+                logger.warning(f"GROQ chat failed: {e}")
+
+        # Try Gemini next (free tier)
         if self._init_gemini():
             try:
                 response = self._gemini_chat(message, system, history)
@@ -121,9 +181,96 @@ Current date: {date}"""
             except Exception as e:
                 logger.warning(f"OpenAI chat failed: {e}")
         
+        # Try local generator before rule-based
+        try:
+            return self._local_generator_chat(message, system)
+        except Exception as e:
+            logger.warning("Local generator failed: %s", e)
+
         # Ultimate fallback - rule-based
         return self._rule_based_response(message)
-    
+
+    def _local_generator_chat(self, message: str, system: str) -> Dict[str, Any]:
+        """Use the local generator (gpt4all) as a fallback."""
+        try:
+            from financial_dashboard.services.chat.generator_client import get_generator
+        except Exception:
+            raise
+
+        gen = get_generator()
+        prompt = f"{system}\n\nUser: {message}"
+        resp = gen.complete(prompt, max_tokens=512, temperature=0.6)
+
+        # resp may be a GeneratorResponse dataclass or raise
+        if hasattr(resp, 'to_dict'):
+            rdict = resp.to_dict()
+            text = rdict.get('text')
+            model = rdict.get('model')
+        elif isinstance(resp, dict):
+            text = resp.get('text')
+            model = resp.get('model', 'local-generator')
+        else:
+            text = str(resp)
+            model = getattr(resp, 'model', 'local-generator')
+
+        return {
+            'response': text,
+            'model': model,
+            'sources': ['local-generator'],
+            'timestamp': datetime.now().isoformat()
+        }
+
+
+    def _groq_chat(self, message: str, system: str, history: List[Dict] = None) -> Dict[str, Any]:
+        """Attempt a Groq inference call. On rate-limit, raise GroqRateLimitError."""
+        if not self._init_groq():
+            raise RuntimeError("Groq not initialized or rate-limited")
+
+        # Simple, defensive HTTP call — adapt endpoint if necessary for your Groq integration
+        endpoint = os.getenv('GROQ_API_URL', 'https://api.groq.com/v1/infer')
+        headers = {
+            'Authorization': f'Bearer {self.groq_key}',
+            'Content-Type': 'application/json'
+        }
+
+        payload = {
+            'prompt': f"{system}\n\nUser: {message}",
+            'max_tokens': 512,
+            'temperature': 0.6
+        }
+
+        try:
+            r = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+        except Exception as e:
+            logger.warning("Groq HTTP request failed: %s", e)
+            raise
+
+        if r.status_code == 429:
+            # Rate limited - mark and raise so caller can fallback to local model
+            self._mark_groq_rate_limited(retry_seconds=3600)
+            raise GroqRateLimitError('Groq rate limited (429)')
+
+        if r.status_code >= 400:
+            # Some other error
+            logger.warning("Groq returned HTTP %s: %s", r.status_code, r.text[:200])
+            # treat as generic failure
+            raise RuntimeError(f"Groq error: {r.status_code}")
+
+        try:
+            data = r.json()
+        except Exception:
+            data = {'text': r.text}
+
+        # Attempt to extract text from common fields
+        text = data.get('text') or data.get('output') or data.get('response') or data.get('result') or str(data)
+
+        return {
+            'response': text,
+            'model': data.get('model', 'groq'),
+            'sources': ['Groq'],
+            'timestamp': datetime.now().isoformat()
+        }
+
     def _gemini_chat(self, 
                      message: str, 
                      system: str,
@@ -275,6 +422,9 @@ What would you like to explore?"""
         return {
             'gemini_available': bool(self.gemini_key) and self._init_gemini(),
             'openai_available': bool(self.openai_key) and self._init_openai(),
+            'groq_available': bool(self.groq_key) and self._init_groq(),
+            'groq_rate_limited': bool(self._groq_rate_limited),
+            'groq_rate_limited_until': self._groq_rate_limited_until.isoformat() if self._groq_rate_limited_until else None,
             'rule_based': True  # Always available
         }
 
@@ -289,3 +439,8 @@ def get_fallback_chat() -> AIFallbackChat:
     if _fallback_chat is None:
         _fallback_chat = AIFallbackChat()
     return _fallback_chat
+
+
+class GroqRateLimitError(Exception):
+    """Raised when Groq signals a rate limit/quota error."""
+    pass

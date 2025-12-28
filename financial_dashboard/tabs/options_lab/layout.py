@@ -399,9 +399,72 @@ def _create_chain_viewer_subtab():
 def _create_greeks_subtab():
     """Greeks Calculator - uses existing greeks-* IDs."""
     return dbc.Container([
+        # Manual Greeks Calculator Form
+        dbc.Card([
+            dbc.CardHeader([
+                html.H6("🧮 Manual Greeks Calculator", className="mb-0")
+            ]),
+            dbc.CardBody([
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Label("Strike Price", className="fw-bold"),
+                        dbc.Input(
+                            id='greeks-calc-strike',
+                            type='number',
+                            placeholder='e.g., 285',
+                            value=285,
+                            step=0.01
+                        )
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Label("Days to Expiry", className="fw-bold"),
+                        dbc.Input(
+                            id='greeks-calc-dte',
+                            type='number',
+                            placeholder='e.g., 30',
+                            value=30,
+                            min=1,
+                            max=365
+                        )
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Label("IV (%)", className="fw-bold"),
+                        dbc.Input(
+                            id='greeks-calc-iv',
+                            type='number',
+                            placeholder='e.g., 25',
+                            value=25,
+                            min=0.1,
+                            max=200,
+                            step=0.1
+                        )
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Label("Option Type", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='greeks-calc-type',
+                            options=[
+                                {'label': 'Call', 'value': 'call'},
+                                {'label': 'Put', 'value': 'put'}
+                            ],
+                            value='call'
+                        )
+                    ], width=3),
+                ], className="mb-3 g-2"),
+                dbc.Button(
+                    "📊 Calculate Greeks",
+                    id='greeks-calc-btn',
+                    color="primary",
+                    className="mb-3"
+                ),
+                html.Div(id='greeks-calc-results')
+            ])
+        ], className="mb-4"),
+        
+        # Greeks Visualization from Chain Data
+        html.H5("Greeks Visualization (from loaded chain)", className="mb-3"),
         dbc.Row([
             dbc.Col([
-                html.H5("Greeks Visualization", className="mb-3"),
                 dcc.Graph(id='greeks-delta-chart', config={'displayModeBar': False}),
             ], width=6),
             dbc.Col([

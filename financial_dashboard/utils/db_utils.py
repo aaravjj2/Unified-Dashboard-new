@@ -33,8 +33,18 @@ class DatabaseManager:
         if self._engine is None:
             try:
                 from sqlalchemy import create_engine
-
-                self._engine = create_engine(self.postgres_uri)
+                # Try Postgres first
+                try:
+                    self._engine = create_engine(self.postgres_uri)
+                except Exception:
+                    # Fall back to lightweight SQLite file for local dev/tests
+                    sqlite_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'dev_data.db')
+                    sqlite_path = os.path.abspath(sqlite_path)
+                    sqlite_uri = f"sqlite:///{sqlite_path}"
+                    try:
+                        self._engine = create_engine(sqlite_uri)
+                    except Exception:
+                        self._engine = None
             except Exception:
                 # Keep engine as None; callers will fallback to no-op.
                 self._engine = None
@@ -103,7 +113,8 @@ def execute_pg_query(query: str, params: Optional[Dict[str, Any]] = None, fetch:
         else:
             with engine.begin() as conn:
                 conn.execute(query, params or {})
-            return None
+            # Return True to indicate successful non-fetch execution
+            return True
     except Exception:
         return None
 

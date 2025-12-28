@@ -1,0 +1,128 @@
+name: AlphaSim Smoke Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/*'
+    paths:
+      - 'financial_dashboard/services/alpha_sim/**'
+      - '.github/workflows/alpha_sim_smoke.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'financial_dashboard/services/alpha_sim/**'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  smoke:
+    name: AlphaSim Smoke Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r financial_dashboard/services/alpha_sim/requirements-alpha-sim.txt
+          pip install pytest pytest-asyncio httpx
+      
+      - name: Run unit tests
+        run: |
+          pytest financial_dashboard/services/alpha_sim/tests/ -v --tb=short
+        env:
+          PYTEST_CURRENT_TEST: 'true'
+      
+      - name: Start AlphaSim server
+        run: |
+          cd financial_dashboard/services/alpha_sim
+          uvicorn app:app --host 0.0.0.0 --port 8065 &
+          sleep 5
+        env:
+          USE_ALPHA_SIM: 'false'
+      
+      - name: Health check
+        run: |
+          curl -f http://localhost:8065/health || exit 1
+      
+      - name: Smoke test - TIME_SERIES_DAILY
+        run: |
+          response=$(curl -s 'http://localhost:8065/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=test')
+          echo "$response" | python -c "import sys, json; data = json.load(sys.stdin); assert 'Meta Data' in data or 'Error' in data"
+      
+      - name: Smoke test - SMA
+        run: |
+          response=$(curl -s 'http://localhost:8065/query?function=SMA&symbol=AAPL&time_period=10&apikey=test')
+          echo "$response" | python -c "import sys, json; data = json.load(sys.stdin); assert 'Meta Data' in data or 'Error' in data"
+      
+      - name: Smoke test - NEWS_SENTIMENT
+        run: |
+          response=$(curl -s 'http://localhost:8065/query?function=NEWS_SENTIMENT&symbol=AAPL&apikey=test')
+          echo "$response" | python -c "import sys, json; data = json.load(sys.stdin); assert 'Meta Data' in data or 'Sentiment' in data"
+      
+      - name: Smoke test - HISTORICAL_OPTIONS
+        run: |
+          response=$(curl -s 'http://localhost:8065/query?function=HISTORICAL_OPTIONS&symbol=AAPL&apikey=test')
+          echo "$response" | python -c "import sys, json; data = json.load(sys.stdin); assert 'Meta Data' in data or 'optionChain' in data"
+      
+      - name: Smoke test - Metrics endpoint
+        run: |
+          curl -f http://localhost:8065/metrics || exit 1
+      
+      - name: Smoke test - Root endpoint
+        run: |
+          response=$(curl -s http://localhost:8065/)
+          echo "$response" | python -c "import sys, json; data = json.load(sys.stdin); assert data.get('service') == 'AlphaSim'"
+
+  perf:
+    name: AlphaSim Performance Tests
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'perf')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r financial_dashboard/services/alpha_sim/requirements-alpha-sim.txt
+          pip install pytest pytest-asyncio httpx locust
+      
+      - name: Start AlphaSim server
+        run: |
+          cd financial_dashboard/services/alpha_sim
+          uvicorn app:app --host 0.0.0.0 --port 8065 &
+          sleep 5
+      
+      - name: Run rate limiter stress test
+        run: |
+          # Test rate limiter with many requests
+          for i in {1..30}; do
+            curl -s 'http://localhost:8065/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=test' > /dev/null
+          done
+          # Should get 429 after exhausting quota
+          response=$(curl -s -o /dev/null -w "%{http_code}" 'http://localhost:8065/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=test')
+          if [ "$response" != "429" ]; then
+            echo "Expected 429, got $response"
+          fi

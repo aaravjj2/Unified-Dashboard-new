@@ -1084,40 +1084,59 @@ def register_callbacks(app):
         logger.info(f"Morning Briefing: Button clicked (n_clicks={n_click})")
         
         try:
-            prompt = (
-                "Generate a concise morning briefing for a trader. "
-                "Include current market sentiment (SPY, QQQ), key events to watch today, "
-                "and a brief portfolio management tip. Keep it under 150 words. "
-                "Format with Markdown (bullet points, bold text)."
-            )
-            
-            logger.info("Sending request to chatbot service (timeout=120s)...")
-            response = httpx.post(
-                "http://localhost:8062/api/chat",
-                json={
-                    "message": prompt,
-                    "stream": False,
-                    "temperature": 0.7
-                },
-                timeout=120.0
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                briefing = data.get('response', "Failed to parse briefing.")
-                logger.info("Briefing generated successfully")
-                new_store = {'generated': True, 'last_update': str(datetime.now())}
-                return briefing, new_store
+            # Use deterministic AIMorningBriefService for UI briefing to avoid LLM volatility
+            from financial_dashboard.services.ai_morning_brief import AIMorningBriefService
+            svc = AIMorningBriefService()
+            brief = svc.generate_full_brief()
+
+            # Prefer AI narrative if present
+            summary_section = next((s for s in brief.get('sections', []) if s.get('category') == 'summary'), None)
+            if summary_section and summary_section.get('content', {}).get('ai_narrative'):
+                briefing = summary_section['content']['ai_narrative']
             else:
-                logger.error(f"Chatbot service returned status {response.status_code}")
-                return f"**Error:** Chatbot service returned status {response.status_code}", store_data
-                
-        except httpx.TimeoutException:
-            logger.error("Chatbot service timeout (120s exceeded)")
-            return "**Timeout:** Briefing generation took too long. Try refreshing.", store_data
-        except httpx.ConnectError:
-            logger.error("Cannot connect to chatbot service")
-            return "**Connection Error:** Chatbot service is offline. Check if it's running on port 8062.", store_data
+                # Assemble concise markdown
+                market_section = next((s for s in brief.get('sections', []) if s.get('category') == 'market'), None)
+                market_lines = []
+                if market_section:
+                    mc = market_section.get('content', {})
+                    if mc.get('SPY') and mc['SPY'].get('price'):
+                        market_lines.append(f"SPY: ${mc['SPY']['price']:.2f} ({mc['SPY']['change_1d']:+.2f}%)")
+                    if mc.get('QQQ') and mc['QQQ'].get('price'):
+                        market_lines.append(f"QQQ: ${mc['QQQ']['price']:.2f} ({mc['QQQ']['change_1d']:+.2f}%)")
+                events = summary_section.get('content', {}).get('key_events', []) if summary_section else []
+                first_event = events[0]['event'] if events else 'No high-severity news found in the last 24 hours'
+
+                briefing = f"**Morning Briefing**\n* Current market sentiment: {summary_section.get('content', {}).get('market_sentiment', {}).get('overall', 'Neutral')}\n* Key events to watch today: {first_event}\n* Portfolio Management Tip: Review and adjust stop-loss levels for any new positions."
+
+            new_store = {'generated': True, 'last_update': str(datetime.now())}
+            logger.info("Briefing generated successfully (deterministic)")
+            return briefing, new_store
+
+        except Exception as e:
+            logger.error(f"Failed to generate deterministic briefing: {e}", exc_info=True)
+            # Fallback to chatbot service if deterministic generation fails
+            try:
+                prompt = (
+                    "Generate a concise morning briefing for a trader. "
+                    "Include current market sentiment (SPY, QQQ), key events to watch today, "
+                    "and a brief portfolio management tip. Keep it under 150 words. "
+                    "Format with Markdown (bullet points, bold text)."
+                )
+                logger.info("Falling back to chatbot service for briefing")
+                response = httpx.post(
+                    "http://localhost:8062/api/chat",
+                    json={"message": prompt, "stream": False, "temperature": 0.7},
+                    timeout=120.0
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    briefing = data.get('response', "Failed to parse briefing.")
+                    new_store = {'generated': True, 'last_update': str(datetime.now())}
+                    return briefing, new_store
+            except Exception as e2:
+                logger.error(f"Chatbot fallback failed: {e2}")
+
+            return "**Error:** Could not generate morning briefing at this time.", store_data
         except Exception as e:
             logger.error(f"Error generating briefing: {e}")
             return f"**System Error:** Could not generate briefing. ({str(e)})", store_data

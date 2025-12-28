@@ -172,12 +172,28 @@ def register_callbacks(app):
             
             # Helper function for tolerant ticker matching
             def normalize_ticker(t):
-                """Normalize ticker: uppercase, strip common suffixes and punctuation."""
+                """Normalize ticker: uppercase, strip common suffixes, punctuation, and handle option symbols."""
                 t = str(t).upper().strip()
+                
+                # Handle option symbols (e.g., GOOGL230616C00120000 -> GOOGL)
+                # Simple heuristic: if it contains digits and is long, take the alpha prefix
+                import re
+                if len(t) > 6 and any(c.isdigit() for c in t):
+                    # Try to match standard OCC format: Root + 6 digits (YYMMDD)
+                    match = re.match(r'^([A-Z]+)\d{6}[CP]\d+$', t)
+                    if match:
+                        return match.group(1)
+                    
+                    # Fallback: just take the leading alpha characters
+                    match_alpha = re.match(r'^([A-Z]+)', t)
+                    if match_alpha:
+                        return match_alpha.group(1)
+
                 # Remove common suffixes
                 for suffix in ['.A', '.B', '-A', '-B', ' US', ' EQUITY']:
                     if t.endswith(suffix):
                         t = t[:-len(suffix)]
+                
                 return t.replace('-', '').replace('.', '').replace(' ', '')
             
             # Build normalized lookup for SHAP data
@@ -199,6 +215,8 @@ def register_callbacks(app):
                 elif ticker_normalized in shap_lookup:
                     matched_ticker = shap_lookup[ticker_normalized]
                     logger.info(f"SHAP_MATCH - Matched {ticker} (normalized: {ticker_normalized}) to SHAP ticker {matched_ticker}")
+                else:
+                    logger.warning(f"SHAP_MATCH_FAIL - Could not match {ticker} (normalized: {ticker_normalized}) to any SHAP ticker")
                 
                 if matched_ticker:
                     ticker_shap = shap_data[matched_ticker]
@@ -246,28 +264,52 @@ def register_callbacks(app):
                     shap_tickers[:10]
                 )
 
-                # Also return a visible diagnostic panel so tests and users can see mismatch details
-                available_files = []
+                # Create fallback chart (Sector/Holdings Allocation)
+                fallback_chart = None
                 try:
-                    for f in os.listdir('explain'):
-                        if f.startswith('picks_explain_') and f.endswith('.json'):
-                            available_files.append(f)
-                except Exception:
-                    available_files = []
+                    ticker_data = []
+                    for _, row in df.iterrows():
+                        # Handle both 'ticker' and 'symbol' column names
+                        ticker = row.get('ticker') or row.get('symbol')
+                        if ticker:
+                            ticker_data.append({
+                                'Ticker': ticker,
+                                'Value': row['market_value']
+                            })
+                    
+                    if ticker_data:
+                        holdings_df = pd.DataFrame(ticker_data)
+                        fallback_chart = dcc.Graph(
+                            figure=px.pie(
+                                holdings_df,
+                                values='Value',
+                                names='Ticker',
+                                title='Portfolio Holdings Allocation (Fallback - No SHAP Matches)',
+                                height=400,
+                                color_discrete_sequence=px.colors.qualitative.Set3
+                            )
+                        )
+                except Exception as e:
+                    logger.warning(f"Could not create fallback chart: {e}")
 
+                # Return warning AND fallback chart
                 return html.Div([
                     dbc.Alert([
-                        html.H6("SHAP Data Not Found", className="alert-heading"),
-                        html.P("No SHAP factor data matched your current positions.", className="mb-2"),
+                        html.H6("SHAP Data Mismatch", className="alert-heading"),
+                        html.P("SHAP data was loaded but did not match any current positions.", className="mb-2"),
                         html.Hr(),
                         html.P("Diagnostic information:", className="mb-1 small"),
                         html.Ul([
                             html.Li(f"Portfolio tickers: {', '.join(portfolio_tickers) if portfolio_tickers else 'None'}", className="small"),
                             html.Li(f"SHAP tickers sample: {', '.join(shap_tickers[:10]) if shap_tickers else 'None'}", className="small"),
-                            html.Li(f"Available SHAP files: {', '.join(available_files) if available_files else 'None found'}", className="small")
                         ], className="mb-2 small"),
-                        html.P([html.Strong("Next steps: "), "Ensure SHAP file tickers match portfolio symbols (case-insensitive)."], className="mb-0 small")
-                    ], color="warning", className="mb-3")
+                        html.P("Showing holdings allocation instead.", className="mb-0 small")
+                    ], color="warning", className="mb-3"),
+                    
+                    html.Div([
+                        html.H6("Holdings Allocation (Fallback)", className="mb-3"),
+                        fallback_chart if fallback_chart else html.P("No data for fallback chart.", className="text-muted")
+                    ])
                 ])
             
             # Create factor exposure bar chart

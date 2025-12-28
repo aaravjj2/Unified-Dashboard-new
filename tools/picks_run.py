@@ -291,8 +291,8 @@ def deterministic_score(df: pd.DataFrame, params: Dict[str, Any]) -> pd.DataFram
 
 
 def apply_selection(df: pd.DataFrame, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-    max_per_sector = params.get('max_per_sector', 3)
-    top_n = params.get('top_n', 12)
+    max_per_sector = params.get('max_per_sector', 5)
+    top_n = params.get('top_n', 20)
     selected = []
     sector_count = defaultdict(int)
     for _, row in df.iterrows():
@@ -307,6 +307,43 @@ def apply_selection(df: pd.DataFrame, params: Dict[str, Any]) -> List[Dict[str, 
             continue
         selected.append(row.to_dict())
         sector_count[sector] += 1
+    # If we didn't reach top_n due to sector caps or filters, fill remaining slots
+    if len(selected) < top_n:
+        existing = {r.get('ticker') for r in selected}
+        for _, row in df.iterrows():
+            if len(selected) >= top_n:
+                break
+            t = row.get('ticker')
+            if not t or t in existing:
+                continue
+            # append even if sector cap would have prevented it earlier
+            selected.append(row.to_dict())
+            existing.add(t)
+
+    # If still short of top_n, supplement from a default universe
+    if len(selected) < top_n:
+        try:
+            from financial_dashboard.services.picks import _default_universe
+            from financial_dashboard.utils.price_fetch import get_price_single
+            universe = _default_universe()
+            for t in universe:
+                if len(selected) >= top_n:
+                    break
+                if t in existing:
+                    continue
+                # attempt to fetch price
+                price = None
+                try:
+                    p = get_price_single(t)
+                    price = p.get('last_price') if p else None
+                except Exception:
+                    price = None
+                rec = {'ticker': t, 'current_price': price, 'sector': None}
+                selected.append(rec)
+                existing.add(t)
+        except Exception:
+            pass
+
     return selected
 
 
@@ -458,7 +495,7 @@ def main():
     parser.add_argument('--type', choices=['weekly', 'monthly'], default='weekly')
     parser.add_argument('--mode', choices=['dryrun', 'publish'], default='dryrun')
     parser.add_argument('--seed', default=None)
-    parser.add_argument('--top-n', type=int, default=12)
+    parser.add_argument('--top-n', type=int, default=20)
     parser.add_argument('--min-avg-volume', type=int, default=0)
     parser.add_argument('--max-per-sector', type=int, default=3)
     parser.add_argument('--max-sector-share', type=float, default=0.5)

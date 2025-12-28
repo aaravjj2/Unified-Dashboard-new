@@ -265,9 +265,17 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
         calls = opt_chain.calls
         puts = opt_chain.puts
         
-        # Add calculated fields
-        calls = _enrich_chain_data(calls, spot_price, 'call')
-        puts = _enrich_chain_data(puts, spot_price, 'put')
+        # Handle None DataFrames
+        if calls is None:
+            calls = pd.DataFrame()
+        if puts is None:
+            puts = pd.DataFrame()
+        
+        # Add calculated fields (only if not empty)
+        if not calls.empty:
+            calls = _enrich_chain_data(calls, spot_price, 'call', first_exp)
+        if not puts.empty:
+            puts = _enrich_chain_data(puts, spot_price, 'put', first_exp)
         
         logger.info(f"✅ Using yfinance data for {ticker}")
         return {
@@ -289,14 +297,15 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
         return fallback
 
 
-def _enrich_chain_data(df: pd.DataFrame, spot_price: float, option_type: str) -> pd.DataFrame:
+def _enrich_chain_data(df: pd.DataFrame, spot_price: float, option_type: str, expiration_date: str = None) -> pd.DataFrame:
     """
-    Add calculated fields to options chain data.
+    Add calculated fields to options chain data including real Greeks.
     
     Args:
         df: Options chain DataFrame
         spot_price: Current stock price
         option_type: 'call' or 'put'
+        expiration_date: Expiration date for Greeks calculation
         
     Returns:
         Enriched DataFrame
@@ -325,34 +334,16 @@ def _enrich_chain_data(df: pd.DataFrame, spot_price: float, option_type: str) ->
         df['status'] = np.where(spot_price < df['strike'], 'ITM',
                                 np.where(spot_price > df['strike'], 'OTM', 'ATM'))
     
-    # FIX A - REPAIR ATTEMPT 1: Add Greeks if not present (yfinance doesn't provide them)
-    if 'delta' not in df.columns or 'gamma' not in df.columns:
-        logger.info(f"🔧 Calculating missing Greeks for {option_type}s")
-        
-        # Simplified Greeks calculation based on moneyness
-        # These are approximations - for production use Black-Scholes
-        for idx, row in df.iterrows():
-            moneyness = row['strike'] / spot_price
-            
-            # Delta approximation
-            if option_type == 'call':
-                # Calls: delta ranges from 0 (deep OTM) to 1 (deep ITM)
-                # Use sigmoid-like function centered at ATM
-                df.at[idx, 'delta'] = 1 / (1 + np.exp(-5 * (moneyness - 1)))
-            else:
-                # Puts: delta ranges from -1 (deep ITM) to 0 (deep OTM)
-                df.at[idx, 'delta'] = -1 / (1 + np.exp(5 * (moneyness - 1)))
-            
-            # Gamma approximation (highest at ATM, zero at extremes)
-            # Use Gaussian-like distribution centered at ATM
-            df.at[idx, 'gamma'] = 0.1 * np.exp(-10 * (moneyness - 1)**2)
-            
-            # Vega approximation (similar to gamma, highest at ATM)
-            df.at[idx, 'vega'] = 0.2 * np.exp(-8 * (moneyness - 1)**2)
-            
-            # Theta approximation (time decay, negative for long positions)
-            # Higher for ATM options
-            df.at[idx, 'theta'] = -0.15 * np.exp(-8 * (moneyness - 1)**2)
+    # Calculate real Greeks using Black-Scholes
+    try:
+        from .greeks_calculator import enrich_options_with_greeks
+        if expiration_date:
+            enrich_options_with_greeks(df, spot_price, expiration_date)
+            logger.info(f"✅ Calculated real Greeks for {len(df)} {option_type}s")
+        else:
+            logger.warning("No expiration date provided, cannot calculate Greeks")
+    except Exception as e:
+        logger.warning(f"Could not calculate real Greeks: {e}")
     
     return df
 

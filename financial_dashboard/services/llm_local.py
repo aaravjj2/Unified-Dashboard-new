@@ -248,10 +248,42 @@ class OllamaConnector(LLMConnector):
     Connects to Ollama API for local inference.
     """
     
-    def __init__(self, host: Optional[str] = None, model: str = "llama2"):
+    def __init__(self, host: Optional[str] = None, model: str = None):
         self.host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
-        self.model = model
         self._available = None
+        self._detected_model = None
+        
+        # Auto-detect model if not specified
+        if model:
+            self.model = model
+        else:
+            # Try to detect available models
+            try:
+                import requests
+                response = requests.get(f"{self.host}/api/tags", timeout=2)
+                if response.status_code == 200:
+                    models = response.json().get("models", [])
+                    model_names = [m.get("name", "") for m in models]
+                    
+                    # Prefer Mistral models (same as AI chatbot)
+                    mistral_models = [m for m in model_names if "mistral" in m.lower()]
+                    if mistral_models:
+                        self.model = mistral_models[0]
+                        self._detected_model = self.model
+                        logger.info(f"Auto-detected Ollama model: {self.model}")
+                    elif model_names:
+                        # Use first available model
+                        self.model = model_names[0]
+                        self._detected_model = self.model
+                        logger.info(f"Auto-detected Ollama model: {self.model}")
+                    else:
+                        self.model = "llama2"  # Fallback default
+                        logger.warning("No Ollama models found, using default: llama2")
+                else:
+                    self.model = "llama2"
+            except Exception as e:
+                logger.warning(f"Failed to auto-detect Ollama model: {e}")
+                self.model = "llama2"
     
     @property
     def name(self) -> str:
@@ -267,10 +299,10 @@ class OllamaConnector(LLMConnector):
                 self._available = False
         return self._available
     
-    def generate(self, prompt: str, max_tokens: int = 512, temperature: float = 0.7) -> str:
+    def generate(self, prompt: str, max_tokens: int = 150, temperature: float = 0.7) -> str:
         """Generate text using Ollama API."""
         if not self.is_available():
-            raise RuntimeError("Ollama server not available")
+            raise RuntimeError(f"Ollama server not available at {self.host}")
         
         try:
             import requests
@@ -281,18 +313,24 @@ class OllamaConnector(LLMConnector):
                     "prompt": prompt,
                     "stream": False,
                     "options": {
-                        "num_predict": max_tokens,
+                        "num_predict": max_tokens,  # Reduced from 512 to 150 for 3-4x speedup
                         "temperature": temperature
                     }
                 },
-                timeout=60
+                timeout=30.0  # Reduced from 60s
             )
             
             if response.status_code == 200:
                 return response.json().get("response", "")
+            elif response.status_code == 404:
+                # Model not found - provide helpful error message
+                raise RuntimeError(f"Ollama model '{self.model}' not found. Please pull the model first with: ollama pull {self.model}")
             else:
-                raise RuntimeError(f"Ollama API error: {response.status_code}")
+                raise RuntimeError(f"Ollama API error: {response.status_code} - {response.text[:200]}")
                 
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ollama connection failed: {e}")
+            raise RuntimeError(f"Ollama connection error: {str(e)}")
         except Exception as e:
             logger.error(f"Ollama generation failed: {e}")
             raise
@@ -378,6 +416,180 @@ class RAGQueryEngine:
     RAG Query Engine that combines vector search with LLM generation.
     """
     
+    # Comprehensive English dictionary to exclude from ticker extraction
+    COMMON_ENGLISH_WORDS = {
+        # Articles
+        "A", "AN", "THE",
+        # Pronouns
+        "I", "YOU", "HE", "SHE", "IT", "WE", "THEY", "ME", "HIM", "HER", "US", "THEM",
+        "MY", "YOUR", "HIS", "ITS", "OUR", "THIS", "THAT", "THESE", "THOSE", "MINE", "YOURS",
+        "OURS", "THEIRS", "MYSELF", "YOURSELF", "HIMSELF", "HERSELF", "ITSELF", "OURSELVES",
+        # Verbs (common)
+        "AM", "IS", "ARE", "WAS", "WERE", "BE", "BEEN", "BEING",
+        "HAVE", "HAS", "HAD", "DO", "DOES", "DID", "WILL", "WOULD", "SHALL", "SHOULD",
+        "CAN", "COULD", "MAY", "MIGHT", "MUST",
+        "GET", "GETS", "GOT", "GOTTEN", "MAKE", "MAKES", "MADE", "GO", "GOES", "WENT", "GONE",
+        "TAKE", "TAKES", "TOOK", "TAKEN", "COME", "COMES", "CAME",
+        "SEE", "SAW", "SEEN", "KNOW", "KNEW", "KNOWN", "THINK", "THOUGHT",
+        "TELL", "TOLD", "GIVE", "GAVE", "GIVEN", "FIND", "FOUND",
+        "KEEP", "KEPT", "LET", "LEAVE", "LEFT", "FEEL", "FELT",
+        "TRY", "TRIED", "ASK", "ASKED", "NEED", "NEEDED", "SEEM", "SEEMED",
+        "HELP", "HELPED", "TALK", "TALKED", "TURN", "TURNED", "START", "STARTED",
+        "SHOW", "SHOWED", "SHOWN", "HEAR", "HEARD", "PLAY", "PLAYED",
+        "RUN", "RAN", "MOVE", "MOVED", "LIVE", "LIVED", "BELIEVE", "BELIEVED",
+        "BRING", "BROUGHT", "HAPPEN", "HAPPENED", "WRITE", "WROTE", "WRITTEN",
+        "STAND", "STOOD", "LOSE", "LOST", "PAY", "PAID", "MEET", "MET",
+        "INCLUDE", "INCLUDED", "CONTINUE", "CONTINUED", "SET", "LEARN", "LEARNED",
+        "CHANGE", "CHANGED", "LEAD", "LED", "UNDERSTAND", "UNDERSTOOD",
+        "WATCH", "WATCHED", "FOLLOW", "FOLLOWED", "STOP", "STOPPED",
+        "CREATE", "CREATED", "SPEAK", "SPOKE", "SPOKEN", "READ", "ALLOW", "ALLOWED",
+        "ADD", "ADDED", "SPEND", "SPENT", "GROW", "GREW", "GROWN",
+        "OPEN", "OPENED", "WALK", "WALKED", "WIN", "WON", "OFFER", "OFFERED",
+        "REMEMBER", "REMEMBERED", "LOVE", "LOVED", "CONSIDER", "CONSIDERED",
+        "APPEAR", "APPEARED", "BUY", "BOUGHT", "WAIT", "WAITED", "SERVE", "SERVED",
+        "DIE", "DIED", "SEND", "SENT", "EXPECT", "EXPECTED", "BUILD", "BUILT",
+        "STAY", "STAYED", "FALL", "FELL", "FALLEN", "CUT", "REACH", "REACHED",
+        "KILL", "KILLED", "REMAIN", "REMAINED", "SUGGEST", "SUGGESTED",
+        "RAISE", "RAISED", "PASS", "PASSED", "SELL", "SOLD", "REQUIRE", "REQUIRED",
+        "REPORT", "REPORTED", "DECIDE", "DECIDED", "PULL", "PULLED",
+        # Prepositions
+        "IN", "ON", "AT", "TO", "FOR", "OF", "WITH", "FROM", "BY", "ABOUT",
+        "AS", "INTO", "LIKE", "THROUGH", "AFTER", "OVER", "BETWEEN", "OUT", "AGAINST",
+        "DURING", "WITHOUT", "BEFORE", "UNDER", "AROUND", "AMONG", "UPON",
+        "ACROSS", "OFF", "ABOVE", "TOWARD", "TOWARDS", "BEHIND", "BELOW", "BESIDE",
+        "NEAR", "INSIDE", "OUTSIDE", "WITHIN", "ALONG", "PAST", "SINCE", "UNTIL",
+        # Conjunctions
+        "AND", "OR", "BUT", "SO", "YET", "NOR", "IF", "THAN", "WHEN", "WHERE", "WHY",
+        "WHILE", "ALTHOUGH", "THOUGH", "UNLESS", "BECAUSE", "SINCE", "AS", "UNTIL",
+        "BEFORE", "AFTER", "WHENEVER", "WHEREVER", "WHETHER",
+        # Question words
+        "WHAT", "WHEN", "WHERE", "WHY", "WHO", "WHOM", "WHOSE", "WHICH", "HOW",
+        # Common adjectives
+        "GOOD", "BAD", "BEST", "BETTER", "WORST", "WORSE", "NEW", "OLD", "LAST", "LONG",
+        "GREAT", "LITTLE", "OWN", "OTHER", "OLD", "RIGHT", "BIG", "HIGH", "DIFFERENT",
+        "SMALL", "LARGE", "NEXT", "EARLY", "YOUNG", "IMPORTANT", "FEW", "PUBLIC",
+        "SAME", "ABLE", "FULL", "SURE", "REAL", "LESS", "CERTAIN", "SHORT",
+        "SMALL", "CLEAR", "MAJOR", "RECENT", "LATE", "HARD", "LEFT", "LEAST",
+        "SIMPLE", "SPECIAL", "STRONG", "PARTICULAR", "SEVERAL", "POPULAR",
+        "TRADITIONAL", "FINAL", "PERFECT", "FORWARD", "LOW", "WIDE", "COMMON",
+        "POOR", "NATURAL", "SIGNIFICANT", "SIMILAR", "HOT", "DEAD", "CENTRAL",
+        "HAPPY", "SERIOUS", "READY", "SIMPLE", "VARIOUS", "DIFFICULT", "LIKELY",
+        "RECENT", "MEDICAL", "BLACK", "WHITE", "DARK", "CLOSE", "FINE", "DEEP",
+        "PREVIOUS", "BEGINNING", "SOCIAL", "OUTSIDE", "WRONG", "LEGAL", "GENERAL",
+        "INTERNATIONAL", "LOCAL", "POLITICAL", "ECONOMIC", "FOREIGN", "NATIONAL",
+        # Common adverbs
+        "VERY", "JUST", "NOW", "THEN", "HERE", "THERE", "WELL", "ALSO", "ONLY",
+        "EVEN", "BACK", "STILL", "ALREADY", "NEVER", "ALWAYS", "OFTEN", "SOMETIMES",
+        "USUALLY", "RATHER", "QUITE", "ALMOST", "PROBABLY", "PERHAPS", "MAYBE",
+        "HOWEVER", "THEREFORE", "THUS", "HENCE", "INDEED", "INSTEAD", "OTHERWISE",
+        "FURTHERMORE", "MOREOVER", "NEVERTHELESS", "NONETHELESS", "ANYWAY",
+        "SOMEHOW", "SOMEWHERE", "ELSEWHERE", "TOGETHER", "APART", "ASIDE",
+        # Numbers as words
+        "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN",
+        "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "TWENTY", "THIRTY",
+        "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY", "HUNDRED", "THOUSAND",
+        "MILLION", "BILLION", "TRILLION", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH",
+        # Other common words
+        "SOME", "ANY", "MANY", "MUCH", "MORE", "MOST", "LESS", "FEW", "ALL", "BOTH",
+        "EACH", "EVERY", "OTHER", "ANOTHER", "SUCH", "OWN", "SAME", "NEXT", "LAST", "FIRST",
+        "PLEASE", "THANK", "THANKS", "YES", "NO", "OKAY", "OK", "SURE", "SORRY",
+        "HELLO", "HI", "HEY", "GOODBYE", "BYE", "WELCOME", "EXCUSE",
+        # Action/helper words
+        "GIVE", "FIND", "TELL", "SHOW", "HELP", "USE", "USED", "USING", "KNOW", "THINK",
+        "NEED", "WANT", "TRY", "ASK", "WORK", "SEEM", "FEEL", "LEAVE", "PUT",
+        "MEAN", "KEEP", "LET", "BEGIN", "START", "STOP", "END", "FINISH",
+    }
+    
+    # Comprehensive financial terminology (NOT stock tickers)
+    FINANCIAL_TERMS = {
+        # Market types & concepts
+        "STOCK", "STOCKS", "EQUITY", "EQUITIES", "MARKET", "MARKETS", "EXCHANGE",
+        "TRADING", "TRADE", "TRADES", "TRADED", "TRADER", "TRADERS",
+        "INVEST", "INVESTMENT", "INVESTMENTS", "INVESTING", "INVESTOR", "INVESTORS",
+        "PORTFOLIO", "PORTFOLIOS", "POSITION", "POSITIONS", "HOLDING", "HOLDINGS",
+        "ACCOUNT", "ACCOUNTS", "ASSET", "ASSETS", "SECURITY", "SECURITIES",
+        # Analysis types
+        "ANALYSIS", "FUNDAMENTAL", "TECHNICAL", "QUANTITATIVE", "QUALITATIVE",
+        "INDICATOR", "INDICATORS", "SIGNAL", "SIGNALS", "PATTERN", "PATTERNS",
+        "TREND", "TRENDS", "TRENDING", "MOMENTUM", "VOLATILITY", "VOLUME",
+        "CORRELATION", "COVARIANCE", "REGRESSION", "FACTOR", "FACTORS",
+        # Financial metrics
+        "PRICE", "PRICES", "VALUE", "VALUES", "VALUATION", "WORTH",
+        "RETURN", "RETURNS", "YIELD", "YIELDS", "DIVIDEND", "DIVIDENDS",
+        "EARNINGS", "REVENUE", "PROFIT", "PROFITS", "LOSS", "LOSSES",
+        "MARGIN", "MARGINS", "RATIO", "RATIOS", "MULTIPLE", "MULTIPLES",
+        "GROWTH", "DECLINE", "INCREASE", "DECREASE", "CHANGE", "CHANGES",
+        "GAIN", "GAINS", "APPRECIATION", "DEPRECIATION",
+        # Market participants
+        "BULL", "BULLS", "BULLISH", "BEAR", "BEARS", "BEARISH",
+        "BUYER", "BUYERS", "SELLER", "SELLERS", "BIDDER", "BIDDERS",
+        "INSTITUTION", "INSTITUTIONAL", "RETAIL", "WHALE", "WHALES",
+        "ANALYST", "ANALYSTS", "ADVISOR", "ADVISORS", "BROKER", "BROKERS",
+        # Time periods
+        "DAY", "DAILY", "WEEK", "WEEKLY", "MONTH", "MONTHLY",
+        "QUARTER", "QUARTERLY", "YEAR", "YEARLY", "ANNUAL", "ANNUALLY",
+        "PERIOD", "PERIODS", "TERM", "TERMS", "DURATION", "HORIZON",
+        "TIMEFRAME", "TIMELINE", "CYCLE", "CYCLES",
+        # Orders & execution
+        "ORDER", "ORDERS", "BUY", "BUYING", "SELL", "SELLING",
+        "BID", "BIDS", "ASK", "ASKS", "SPREAD", "SPREADS",
+        "LIMIT", "LIMITS", "STOP", "MARKET", "EXECUTION",
+        "FILL", "FILLED", "PARTIAL", "SLIPPAGE",
+        # Risk & strategy
+        "RISK", "RISKS", "RISKY", "HEDGE", "HEDGING", "DIVERSIFY", "DIVERSIFICATION",
+        "ALLOCATION", "REBALANCE", "REBALANCING", "OPTIMIZE", "OPTIMIZATION",
+        "STRATEGY", "STRATEGIES", "APPROACH", "APPROACHES", "METHOD", "METHODS",
+        "TACTIC", "TACTICS", "TECHNIQUE", "TECHNIQUES", "SYSTEM", "SYSTEMS",
+        # Options & derivatives
+        "OPTION", "OPTIONS", "CALL", "CALLS", "PUT", "PUTS",
+        "STRIKE", "EXPIRATION", "EXPIRY", "PREMIUM", "PREMIUMS",
+        "GREEK", "GREEKS", "DELTA", "GAMMA", "THETA", "VEGA", "RHO",
+        "IMPLIED", "INTRINSIC", "EXTRINSIC", "MONEYNESS",
+        "DERIVATIVE", "DERIVATIVES", "FUTURE", "FUTURES", "FORWARD", "FORWARDS",
+        "SWAP", "SWAPS", "CONTRACT", "CONTRACTS",
+        # Technical indicators
+        "RSI", "MACD", "EMA", "SMA", "BOLLINGER", "STOCHASTIC",
+        "FIBONACCI", "PIVOT", "SUPPORT", "RESISTANCE", "BREAKOUT",
+        "CHANNEL", "CROSSOVER", "DIVERGENCE", "CONVERGENCE",
+        "OVERBOUGHT", "OVERSOLD", "CONSOLIDATION", "ACCUMULATION", "DISTRIBUTION",
+        # Sectors & industries
+        "SECTOR", "SECTORS", "INDUSTRY", "INDUSTRIES", "SEGMENT", "SEGMENTS",
+        "TECHNOLOGY", "TECH", "FINANCE", "FINANCIAL", "HEALTHCARE", "HEALTH",
+        "ENERGY", "CONSUMER", "INDUSTRIAL", "MATERIALS", "UTILITIES",
+        "TELECOM", "REAL", "ESTATE", "DISCRETIONARY", "STAPLES",
+        # Company metrics
+        "COMPANY", "COMPANIES", "CORPORATION", "CORP", "INCORPORATED", "INC",
+        "ENTERPRISE", "BUSINESS", "FIRM", "ORGANIZATION",
+        "CAPITALIZATION", "MARKETCAP", "CAP", "OUTSTANDING", "SHARES",
+        "FLOAT", "INSIDER", "INSTITUTIONAL", "OWNERSHIP",
+        # Valuation
+        "PE", "PB", "PS", "EV", "EBITDA", "FCF", "ROE", "ROA", "ROIC",
+        "DEBT", "EQUITY", "LEVERAGE", "SOLVENCY", "LIQUIDITY",
+        "BOOK", "TANGIBLE", "INTANGIBLE", "GOODWILL",
+        # Market conditions
+        "VOLATILE", "STABLE", "LIQUID", "ILLIQUID", "TRENDING", "RANGING",
+        "CHOPPY", "CALM", "ACTIVE", "QUIET", "STRONG", "WEAK",
+        "OVERBOUGHT", "OVERSOLD", "NEUTRAL", "SIDEWAYS",
+        # Economic terms
+        "MACRO", "MICRO", "GDP", "INFLATION", "DEFLATION", "RECESSION",
+        "EXPANSION", "RECOVERY", "BOOM", "BUST", "CYCLE", "CYCLES",
+        "RATE", "RATES", "INTEREST", "FEDERAL", "RESERVE", "FED",
+        "MONETARY", "FISCAL", "POLICY", "POLICIES", "ECONOMIC", "ECONOMY",
+        # Chart patterns
+        "HEAD", "SHOULDERS", "TRIANGLE", "WEDGE", "FLAG", "PENNANT",
+        "CUP", "HANDLE", "DOUBLE", "TOP", "BOTTOM", "ASCENDING", "DESCENDING",
+        # Common non-ticker words in finance
+        "MONEY", "CASH", "DOLLAR", "DOLLARS", "CENT", "CENTS",
+        "FUND", "FUNDS", "BOND", "BONDS", "NOTE", "NOTES",
+        "INDEX", "INDICES", "BENCHMARK", "COMPOSITE",
+        "LIST", "LISTING", "LISTED", "DELISTED",
+        "CHART", "CHARTS", "GRAPH", "GRAPHS", "DATA", "DATASET",
+        "MOVERS", "GAINERS", "LOSERS", "LEADERS", "LAGGARDS",
+        "PICK", "PICKS", "RECOMMENDATION", "RECOMMENDATIONS",
+        "WATCHLIST", "SCREENER", "SCANNER", "FILTER", "FILTERS",
+    }
+    
+    
     def __init__(self, llm_connector: Optional[LLMConnector] = None):
         self.llm = llm_connector or get_llm_connector()
         self._pipeline = None
@@ -420,7 +632,8 @@ class RAGQueryEngine:
         
         # Generate answer
         try:
-            answer = self.llm.generate(prompt, max_tokens=512)
+            # Reduced max_tokens for faster response (150 instead of 512 = 3-4x faster)
+            answer = self.llm.generate(prompt, max_tokens=150)
         except Exception as e:
             logger.error(f"LLM generation failed: {e}")
             answer = f"Unable to generate answer: {str(e)}"
@@ -490,11 +703,17 @@ class RAGQueryEngine:
         return "\n".join(context_parts)
     
     def _build_prompt(self, question: str, context: str) -> str:
-        """Build the LLM prompt."""
-        return f"""You are a research assistant analyzing financial documents. 
-Answer the question based on the provided context. Be concise and cite specific sources when possible.
+        """Build prompt with financial domain expertise."""
+        return f"""You are an expert financial analyst and investment advisor with deep knowledge of:
+- Technical Analysis: Chart patterns, indicators (RSI, MACD, Bollinger Bands, Moving Averages)
+- Fundamental Analysis: Financial statements, valuation metrics (P/E, P/B, DCF, EV/EBITDA)
+- Options Trading: Greeks (Delta, Gamma, Theta, Vega), strategies, implied volatility
+- Market Microstructure: Order types, bid-ask spreads, market makers, liquidity
+- Risk Management: Portfolio theory, diversification, hedging strategies, position sizing
+- Economic Indicators: GDP, inflation, interest rates, Federal Reserve policy
+- Trading Strategies: Momentum, mean reversion, pairs trading, statistical arbitrage
 
-Context:
+Context from research documents:
 {context}
 
 Question: {question}

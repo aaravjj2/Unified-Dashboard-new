@@ -2,6 +2,7 @@
 AI Trade Recommendations - Smart trade suggestions based on market conditions
 
 Author: Options Lab Enhancement Phase
+Enhanced: Integrated with FinGPT sentiment and advanced options analytics
 """
 
 import logging
@@ -12,6 +13,31 @@ import numpy as np
 import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
+
+# Import advanced analytics and sentiment services
+try:
+    from financial_dashboard.tabs.options_lab.options_analytics import (
+        calculate_iv_rank,
+        calculate_iv_percentile,
+        calculate_max_pain,
+        calculate_expected_move,
+        calculate_put_call_ratio,
+        get_iv_vs_hv_analysis
+    )
+    ANALYTICS_AVAILABLE = True
+except ImportError:
+    ANALYTICS_AVAILABLE = False
+    logger.warning("Options analytics module not available")
+
+try:
+    from financial_dashboard.services.unified_sentiment_service import (
+        analyze_text_sentiment,
+        analyze_headlines_sentiment
+    )
+    SENTIMENT_AVAILABLE = True
+except ImportError:
+    SENTIMENT_AVAILABLE = False
+    logger.warning("Sentiment service not available")
 
 
 # Trade recommendation types
@@ -93,6 +119,38 @@ class AIRecommendationEngine:
         expiry = target + timedelta(days=days_ahead)
         return expiry.strftime('%Y-%m-%d')
 
+    def _days_to_expiry(self, expiry_date: str) -> int:
+        from datetime import datetime
+        try:
+            d = datetime.strptime(expiry_date, '%Y-%m-%d')
+            delta = d - datetime.now()
+            return max(0, delta.days)
+        except Exception:
+            return 30
+
+    def _estimate_option_price(self, S: float, K: float, days: int, iv: float, option_type: str = 'call') -> float:
+        """Estimate option premium using Black-Scholes formula (approx).
+        Falls back to a simple heuristic if scipy is unavailable.
+        """
+        try:
+            from math import log, sqrt, exp
+            from scipy.stats import norm
+            r = 0.01
+            T = max(1e-6, days / 365.0)
+            sigma = max(0.01, float(iv))
+            d1 = (log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * sqrt(T))
+            d2 = d1 - sigma * sqrt(T)
+            if option_type == 'call':
+                price = S * norm.cdf(d1) - K * exp(-r * T) * norm.cdf(d2)
+            else:
+                price = K * exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+            return max(0.01, float(price))
+        except Exception:
+            # Simple heuristic fallback
+            intrinsic = max(0.0, (S - K) if option_type == 'call' else (K - S))
+            time_value = max(0.01, iv * S * (min(days, 90) / 365.0) * 0.7)
+            return max(0.01, intrinsic * 0.6 + time_value)
+
     def analyze_ticker(self, ticker: str, data: Dict) -> List[TradeRecommendation]:
         """Analyze a ticker and generate recommendations."""
         recommendations = []
@@ -105,6 +163,85 @@ class AIRecommendationEngine:
         earnings_soon = data.get('earnings_soon', False)
         support = data.get('support', spot * 0.95)
         resistance = data.get('resistance', spot * 1.05)
+        # Attempt to fetch a live option chain to improve leg selection and pricing
+        chain = None
+        try:
+            from financial_dashboard.tabs.options_lab.data_loader import fetch_options_chain
+            try:
+                chain = fetch_options_chain(ticker, use_mock=False, use_alpaca=False)
+            except Exception:
+                chain = None
+        except Exception:
+            chain = None
+
+        def _chain_option_price_lookup(leg: Dict, prefer_days: int = 30) -> Optional[float]:
+            """If a live chain is available, pick the nearest expiration and strike and return mid price."""
+            try:
+                if not chain or ('calls' not in chain and 'puts' not in chain):
+                    return None
+                exps = chain.get('expirations') or []
+                if not exps:
+                    return None
+
+                # Choose expiration closest to prefer_days
+                best_exp = None
+                best_diff = 10_000
+                for e in exps:
+                    try:
+                        d = self._days_to_expiry(e)
+                        diff = abs(d - prefer_days)
+                        if diff < best_diff:
+                            best_diff = diff
+                            best_exp = e
+                    except Exception:
+                        continue
+
+                if not best_exp:
+                    best_exp = exps[0]
+
+                opt_type = leg.get('type', 'call')
+                df = None
+                if opt_type == 'call':
+                    df = chain.get('calls')
+                elif opt_type == 'put':
+                    df = chain.get('puts')
+
+                if df is None or (hasattr(df, 'empty') and df.empty):
+                    return None
+
+                # Ensure DataFrame
+                import pandas as _pd
+                if isinstance(df, list):
+                    df = _pd.DataFrame(df)
+
+                # Filter by expiration and find closest strike
+                if 'expiration' in df.columns:
+                    df_exp = df[df['expiration'].astype(str) == str(best_exp)]
+                else:
+                    df_exp = df
+
+                if df_exp.empty:
+                    df_exp = df
+
+                target_strike = float(leg.get('strike', spot))
+                if 'strike' in df_exp.columns:
+                    df_exp['diff'] = (df_exp['strike'] - target_strike).abs()
+                    row = df_exp.loc[df_exp['diff'].idxmin()]
+                else:
+                    # no strike column available
+                    row = None
+
+                if row is not None:
+                    bid = float(row.get('bid') or 0)
+                    ask = float(row.get('ask') or 0)
+                    last = float(row.get('lastPrice') or 0)
+                    if bid and ask:
+                        return round((bid + ask) / 2.0, 2)
+                    if last:
+                        return round(last, 2)
+            except Exception:
+                return None
+            return None
         
         # High IV Strategies - Sell premium
         if iv_percentile > 70:
@@ -137,6 +274,19 @@ class AIRecommendationEngine:
                     {'type': 'call', 'action': 'buy', 'strike': round(resistance * 1.10, 2), 'expiration': expiry, 'estimated_price': round(spot * 0.01, 2)}
                 ]
             )
+            # compute option price estimates for legs (prefer live chain prices when available)
+            for leg in rec.legs:
+                strike = float(leg.get('strike', spot))
+                # days until expiry
+                days = self._days_to_expiry(leg.get('expiration') or expiry)
+                lookup = _chain_option_price_lookup(leg, prefer_days=days)
+                if lookup is not None:
+                    leg['estimated_price'] = lookup
+                    leg['price_source'] = chain.get('source') if chain else 'live'
+                else:
+                    est = self._estimate_option_price(spot, strike, days, iv, option_type=leg.get('type', 'call'))
+                    leg['estimated_price'] = round(est, 2)
+
             recommendations.append(rec)
             
             # Credit spread based on trend
@@ -167,6 +317,16 @@ class AIRecommendationEngine:
                         {'type': 'put', 'action': 'buy', 'strike': round(support * 0.95, 2), 'expiration': expiry, 'estimated_price': round(spot * 0.015, 2)}
                     ]
                 )
+                for leg in rec.legs:
+                    strike = float(leg.get('strike', support))
+                    days = self._days_to_expiry(leg.get('expiration') or expiry)
+                    lookup = _chain_option_price_lookup(leg, prefer_days=days)
+                    if lookup is not None:
+                        leg['estimated_price'] = lookup
+                        leg['price_source'] = chain.get('source') if chain else 'live'
+                    else:
+                        est = self._estimate_option_price(spot, strike, days, iv, option_type=leg.get('type', 'put'))
+                        leg['estimated_price'] = round(est, 2)
                 recommendations.append(rec)
                 
         # Low IV Strategies - Buy premium
@@ -225,10 +385,24 @@ class AIRecommendationEngine:
                     {'type': 'call', 'action': 'buy', 'strike': spot, 'expiry': 'far'}
                 ]
             )
+            for leg in rec.legs:
+                strike = float(leg.get('strike', resistance))
+                days = self._days_to_expiry(leg.get('expiration') or expiry)
+                lookup = _chain_option_price_lookup(leg, prefer_days=days)
+                if lookup is not None:
+                    leg['estimated_price'] = lookup
+                    leg['price_source'] = chain.get('source') if chain else 'live'
+                else:
+                    est = self._estimate_option_price(spot, strike, days, iv, option_type=leg.get('type', 'call'))
+                    leg['estimated_price'] = round(est, 2)
             recommendations.append(rec)
         
         # Earnings play
         if earnings_soon:
+            # Define short and long expirations for earnings plays
+            expiry_short = self._get_expiry_date(7)
+            expiry_long = self._get_expiry_date(60)
+
             # Straddle for unknown direction
             rec = TradeRecommendation(
                 ticker=ticker,
@@ -255,6 +429,16 @@ class AIRecommendationEngine:
                     {'type': 'call', 'action': 'buy', 'strike': round(spot, 2), 'expiration': expiry_long, 'estimated_price': round(spot * 0.04, 2)}
                 ]
             )
+            for leg in rec.legs:
+                strike = float(leg.get('strike', spot))
+                days = self._days_to_expiry(leg.get('expiration') or expiry_short)
+                lookup = _chain_option_price_lookup(leg, prefer_days=days)
+                if lookup is not None:
+                    leg['estimated_price'] = lookup
+                    leg['price_source'] = chain.get('source') if chain else 'live'
+                else:
+                    est = self._estimate_option_price(spot, strike, days, iv, option_type=leg.get('type', 'call'))
+                    leg['estimated_price'] = round(est, 2)
             recommendations.append(rec)
         
         # Income strategy - covered call
@@ -282,9 +466,22 @@ class AIRecommendationEngine:
             time_horizon='30-45 days',
             legs=[
                 {'type': 'stock', 'action': 'hold', 'quantity': 100, 'expiration': 'N/A', 'estimated_price': round(spot, 2)},
-                {'type': 'call', 'action': 'sell', 'strike': round(resistance * 1.05, 2), 'expiration': expiry, 'estimated_price': round(spot * 0.015, 2)}
+                {'type': 'call', 'action': 'sell', 'strike': round(resistance * 1.05, 2), 'expiration': expiry}
             ]
         )
+        # Estimate prices for income legs
+        for leg in rec.legs:
+            if leg.get('type') in ['call', 'put']:
+                strike = float(leg.get('strike', resistance))
+                days = self._days_to_expiry(leg.get('expiration') or expiry)
+                lookup = _chain_option_price_lookup(leg, prefer_days=days)
+                if lookup is not None:
+                    leg['estimated_price'] = lookup
+                    leg['price_source'] = chain.get('source') if chain else 'live'
+                else:
+                    est = self._estimate_option_price(spot, strike, days, iv, option_type=leg.get('type', 'call'))
+                    leg['estimated_price'] = round(est, 2)
+
         recommendations.append(rec)
         recommendations.append(rec)
         
@@ -324,6 +521,65 @@ class AIRecommendationEngine:
         # Sort by confidence
         self.recommendations.sort(key=lambda x: x.confidence, reverse=True)
         
+        return self.recommendations
+    
+    def generate_sentiment_enhanced_recommendations(
+        self, 
+        tickers: List[str], 
+        market_data: Dict,
+        news_headlines: Dict[str, List[str]] = None
+    ) -> List[TradeRecommendation]:
+        """
+        Generate recommendations enhanced with sentiment analysis.
+        
+        Args:
+            tickers: List of tickers to analyze
+            market_data: Dict of market data per ticker
+            news_headlines: Dict of news headlines per ticker
+            
+        Returns:
+            List of sentiment-enhanced recommendations
+        """
+        if not SENTIMENT_AVAILABLE:
+            logger.warning("Sentiment service not available, using standard recommendations")
+            return self.generate_recommendations(tickers, market_data)
+        
+        self.recommendations = []
+        
+        for ticker in tickers:
+            if ticker not in market_data:
+                continue
+                
+            data = market_data[ticker].copy()
+            
+            # Analyze sentiment for this ticker
+            headlines = news_headlines.get(ticker, []) if news_headlines else []
+            if headlines:
+                sentiment_result = analyze_headlines_sentiment(headlines)
+                data['sentiment'] = sentiment_result.get('overall_sentiment', 'neutral')
+                data['sentiment_score'] = sentiment_result.get('overall_score', 0)
+                data['sentiment_confidence'] = sentiment_result.get('confidence', 0)
+                
+                # Adjust trend based on sentiment
+                if sentiment_result.get('overall_score', 0) > 0.3 and data.get('trend') != 'bearish':
+                    data['trend'] = 'bullish'
+                elif sentiment_result.get('overall_score', 0) < -0.3 and data.get('trend') != 'bullish':
+                    data['trend'] = 'bearish'
+            
+            recs = self.analyze_ticker(ticker, data)
+            
+            # Enhance recommendations with sentiment info
+            for rec in recs:
+                if 'sentiment' in data:
+                    rec.rationale += f" [Sentiment: {data['sentiment'].upper()} ({data['sentiment_score']:.2f})]"
+                    # Boost confidence if sentiment aligns with recommendation
+                    if (rec.recommendation_type == 'bullish' and data['sentiment'] == 'positive') or \
+                       (rec.recommendation_type == 'bearish' and data['sentiment'] == 'negative'):
+                        rec.confidence = min(rec.confidence + 10, 95)
+            
+            self.recommendations.extend(recs)
+        
+        self.recommendations.sort(key=lambda x: x.confidence, reverse=True)
         return self.recommendations
     
     def get_top_recommendations(self, n: int = 5, 
@@ -394,7 +650,28 @@ def create_recommendations_summary(recommendations: List[TradeRecommendation]) -
 def create_recommendation_card(rec: TradeRecommendation) -> Dict:
     """Create UI card data for a recommendation."""
     risk_colors = {'low': '#4CAF50', 'medium': '#FF9800', 'high': '#f44336'}
-    
+    # Build human-readable legs summary
+    legs_lines = []
+    for leg in (rec.legs or []):
+        strike = leg.get('strike')
+        exp = leg.get('expiration') or leg.get('exp') or leg.get('expiry') or 'N/A'
+        price = leg.get('estimated_price') or leg.get('option_price') or leg.get('price')
+        price_src = leg.get('price_source')
+        try:
+            strike_txt = f"{float(strike):.2f}" if strike is not None else 'N/A'
+        except Exception:
+            strike_txt = str(strike)
+        if price is not None:
+            try:
+                price_txt = f"${float(price):.2f}"
+            except Exception:
+                price_txt = str(price)
+            src_txt = f" ({price_src})" if price_src else ''
+            leg_txt = f"{leg.get('action','').capitalize()} {leg.get('type','').upper()} {strike_txt} exp {exp} @ {price_txt}{src_txt}"
+        else:
+            leg_txt = f"{leg.get('action','').capitalize()} {leg.get('type','').upper()} {strike_txt} exp {exp}"
+        legs_lines.append(leg_txt)
+
     return {
         'ticker': rec.ticker,
         'strategy': rec.strategy,
@@ -406,6 +683,7 @@ def create_recommendation_card(rec: TradeRecommendation) -> Dict:
         'confidence': f"{rec.confidence:.0f}%",
         'time_horizon': rec.time_horizon,
         'legs': rec.legs,
+        'legs_summary': '\n'.join(legs_lines) if legs_lines else '',
         'entry_criteria': rec.entry_criteria,
         'exit_criteria': rec.exit_criteria
     }

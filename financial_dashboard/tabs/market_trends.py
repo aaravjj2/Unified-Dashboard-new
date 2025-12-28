@@ -2,28 +2,22 @@
 Market Trends Tab - Complete Rebuild
 =====================================
 
-Clean implementation with:
-- Working callbacks (no hangs)
-- CacheManager integration
-- NewsManager integration
-- Background jobs for price/news refresh
-- Admin endpoints
-- Comprehensive error handling
-- Full test coverage support
-"""
+Market Trends Tab - Analyze market sentiment and trends across sectors."""
 
 import os
-import sys
-import time
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 
+import numpy as np
 import pandas as pd
-from dash import dcc, html, Input, Output, State, callback_context, no_update
+
+from dash import html, callback, Input, Output, State, no_update, ALL, ctx
 from dash.exceptions import PreventUpdate
+from dash import dcc
 import dash_bootstrap_components as dbc
+import numpy as np
 # Shared UI components for improvements
 try:
     from financial_dashboard.components.shared_ui import (
@@ -43,12 +37,33 @@ from financial_dashboard import _shared as SH
 from financial_dashboard.utils import market_trend as MT
 from financial_dashboard.utils.cache_manager import CacheManager
 from financial_dashboard.utils.news_manager import NewsManager
+try:
+    from financial_dashboard.serving.serving_client import ServingClient
+    _SC = ServingClient()
+except Exception:
+    _SC = None
 from financial_dashboard.utils.news_client import fetch_news_for_tickers
 from financial_dashboard.utils.price_fetcher import PriceFetcher
 from financial_dashboard.utils.price_client import PriceClient
 import plotly.express as px
+import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
+
+# Finnhub client for sector and market cap data
+try:
+    import finnhub
+    FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
+    if FINNHUB_API_KEY:
+        finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
+        logger.info("✅ Finnhub client initialized for company data")
+    else:
+        finnhub_client = None
+        logger.warning("⚠️ No FINNHUB_API_KEY found, using placeholder data")
+except Exception as e:
+    finnhub_client = None
+    logger.warning(f"⚠️ Finnhub not available: {e}")
+
 
 # Sector ETFs for Heatmap
 SECTOR_ETFS = {
@@ -133,6 +148,7 @@ def _headline_sentiment(text: str, ticker: str = '') -> Dict[str, Any]:
 
     # Try FinBERT first for more accurate sentiment
     analyzer = _get_finbert_analyzer()
+    sc = _SC
     if analyzer:
         try:
             result = analyzer.analyze_text(text)
@@ -157,6 +173,24 @@ def _headline_sentiment(text: str, ticker: str = '') -> Dict[str, Any]:
             }
         except Exception as e:
             logger.debug(f"FinBERT analysis failed, using keyword fallback: {e}")
+    # If we have a remote serving client, prefer that for inference
+    if sc and sc.mode != 'local':
+        try:
+            sc_res = sc.analyze_sentiment([text])
+            if sc_res.get('status') == 'success' and 'data' in sc_res:
+                data = sc_res['data']
+                # Support BentoML response format with "sentiments"
+                preds = data.get('sentiments') if isinstance(data, dict) and 'sentiments' in data else data
+                if isinstance(preds, list) and preds:
+                    first = preds[0]
+                    label = first.get('sentiment') if 'sentiment' in first else first.get('label', 'neutral')
+                    score = first.get('score', 0.0)
+                    if label == 'positive' or label == 'bullish':
+                        return {'sentiment': 'Bullish', 'score': round(score, 3), 'confidence': 'medium', 'method': 'bento/triton'}
+                    if label == 'negative' or label == 'bearish':
+                        return {'sentiment': 'Bearish', 'score': round(-score, 3), 'confidence': 'medium', 'method': 'bento/triton'}
+        except Exception:
+            pass
 
     # Enhanced keyword-based fallback
     txt = text.lower()
@@ -386,36 +420,418 @@ def _compute_market_trend(data: List[Dict]) -> Optional[Dict]:
         Dict with trend info or None
     """
     try:
-        # Simple trend calculation based on average performance
+        # Calculate trend based on IMMEDIATE DAY performance, not moving average
         if not data:
             return None
         
         df = pd.DataFrame(data)
-        if 'return_pct' not in df.columns:
+        
+        # Try to get today's change from 'change_pct' or 'day_change_pct' field
+        # If not available, fall back to 'return_pct' but with adjusted thresholds
+        if 'change_pct' in df.columns:
+            avg_change = df['change_pct'].mean()
+        elif 'day_change_pct' in df.columns:
+            avg_change = df['day_change_pct'].mean()
+        elif 'return_pct' in df.columns:
+            # Fallback: use return_pct but this is period-based, not ideal
+            avg_change = df['return_pct'].mean()
+            logger.warning("Using period return_pct for market trend - consider adding day_change_pct field")
+        else:
+            logger.warning("No price change data available for market trend calculation")
             return None
         
-        avg_return = df['return_pct'].mean()
-        
-        # Simple thresholds
-        if avg_return > 5:
+        # Thresholds for DAILY changes (much smaller than period-based)
+        # Typical daily market moves: -2% to +2% is normal range
+        if avg_change > 1.5:
             label = 'Strong Bull'
-        elif avg_return > 2:
+        elif avg_change > 0.5:
             label = 'Bull'
-        elif avg_return > -2:
+        elif avg_change > -0.5:
             label = 'Neutral'
-        elif avg_return > -5:
+        elif avg_change > -1.5:
             label = 'Bear'
         else:
             label = 'Strong Bear'
         
         return {
             'label': label,
-            'composite': avg_return,
+            'composite': avg_change,
             'generated_at': datetime.now().isoformat()
         }
     except Exception as e:
         logger.error(f"Error computing market trend: {e}")
         return None
+
+
+def _render_screener_results(results: List[Dict]) -> html.Div:
+    """Render stock screener results as a table."""
+    if not results:
+        return html.Div([
+            html.P("No stocks match your criteria. Try adjusting the filters.", 
+                   style={'textAlign': 'center', 'color': '#64748b', 'padding': '40px'})
+        ])
+    
+    rows = []
+    for r in results[:50]:  # Top 50
+        trend_color = '#10b981' if r['trend'] == 'bullish' else '#ef4444' if r['trend'] == 'bearish' else '#94a3b8'
+        trend_icon = '📈' if r['trend'] == 'bullish' else '📉' if r['trend'] == 'bearish' else '➡️'
+        rsi_color = '#ef4444' if r['rsi'] > 70 else '#10b981' if r['rsi'] < 30 else '#94a3b8'
+        
+        rows.append(html.Tr([
+            html.Td(r['ticker'], style={'fontWeight': 'bold', 'color': 'white'}),
+            html.Td(f"${r['price']:.2f}", style={'color': 'white'}),
+            html.Td(f"{r['volume']:,.0f}", style={'color': '#94a3b8', 'fontSize': '13px'}),
+            html.Td(html.Span(f"{trend_icon} {r['trend'].title()}", style={'color': trend_color})),
+            html.Td(f"{r['rsi']:.1f}", style={'color': rsi_color}),
+            html.Td(
+                html.Span(f"{r['score']:.0f}", style={
+                    'backgroundColor': '#10b981' if r['score'] >= 70 else '#f59e0b' if r['score'] >= 50 else '#94a3b8',
+                    'color': 'white',
+                    'padding': '4px 12px',
+                    'borderRadius': '12px',
+                    'fontSize': '12px',
+                    'fontWeight': 'bold'
+                })
+            )
+        ]))
+    
+    return html.Div([
+        html.H5([
+            html.I(className="bi bi-check-circle-fill me-2", style={'color': '#10b981'}),
+            f"Found {len(results)} Matching Stocks"
+        ], className="mb-3", style={'color': 'white'}),
+        dbc.Table([
+            html.Thead(html.Tr([
+                html.Th("Ticker", style={'color': '#94a3b8'}),
+                html.Th("Price", style={'color': '#94a3b8'}),
+                html.Th("Volume", style={'color': '#94a3b8'}),
+                html.Th("Trend", style={'color': '#94a3b8'}),
+                html.Th("RSI", style={'color': '#94a3b8'}),
+                html.Th("Score", style={'color': '#94a3b8'})
+            ])),
+            html.Tbody(rows)
+        ], dark=True, striped=True, hover=True, responsive=True, style={'fontSize': '14px'})
+    ])
+
+
+def _compute_multi_timeframe_trends(price_results: Dict) -> Dict[str, Any]:
+    """
+    Compute market trends across multiple timeframes (1D, 1W, 1M).
+    
+    Args:
+        price_results: Dict of ticker -> price data from PriceClient
+        
+    Returns:
+        Dict with multi-timeframe trend data
+    """
+    try:
+        timeframes = {}
+        
+        for period_name, lookback_days in [('1D', 1), ('1W', 7), ('1M', 30)]:
+            period_changes = []
+            
+            for ticker, data in price_results.items():
+                if 'prices' not in data or len(data['prices']) < lookback_days + 1:
+                    continue
+                
+                prices = data['prices']
+                current_price = prices[-1]
+                past_price = prices[-(lookback_days + 1)]
+                
+                if past_price and current_price and past_price > 0:
+                    change_pct = ((current_price - past_price) / past_price) * 100
+                    period_changes.append(change_pct)
+            
+            if not period_changes:
+                timeframes[period_name] = {
+                    'trend': 'Unknown',
+                    'avg_change': 0.0,
+                    'signal': 'HOLD'
+                }
+                continue
+            
+            avg_change = sum(period_changes) / len(period_changes)
+            
+            # Determine trend based on average change
+            # Adjust thresholds based on timeframe
+            if period_name == '1D':
+                thresholds = (1.5, 0.5, -0.5, -1.5)
+            elif period_name == '1W':
+                thresholds = (3.0, 1.0, -1.0, -3.0)
+            else:  # 1M
+                thresholds = (5.0, 2.0, -2.0, -5.0)
+            
+            if avg_change > thresholds[0]:
+                trend = 'Strong Bull'
+                signal = 'BUY'
+            elif avg_change > thresholds[1]:
+                trend = 'Bull'
+                signal = 'BUY'
+            elif avg_change > thresholds[2]:
+                trend = 'Neutral'
+                signal = 'HOLD'
+            elif avg_change > thresholds[3]:
+                trend = 'Bear'
+                signal = 'SELL'
+            else:
+                trend = 'Strong Bear'
+                signal = 'SELL'
+            
+            timeframes[period_name] = {
+                'trend': trend,
+                'avg_change': round(avg_change, 2),
+                'signal': signal,
+                'sample_size': len(period_changes)
+            }
+        
+        # Determine overall trend alignment
+        signals = [tf['signal'] for tf in timeframes.values()]
+        if all(s == 'BUY' for s in signals):
+            alignment = 'STRONG BUY - All timeframes bullish'
+            alignment_strength = 'PERFECT'
+        elif all(s == 'SELL' for s in signals):
+            alignment = 'STRONG SELL - All timeframes bearish'
+            alignment_strength = 'PERFECT'
+        elif signals.count('BUY') >= 2:
+            alignment = 'BUY - Majority bullish'
+            alignment_strength = 'GOOD'
+        elif signals.count('SELL') >= 2:
+            alignment = 'SELL - Majority bearish'
+            alignment_strength = 'GOOD'
+        else:
+            alignment = 'MIXED - Conflicting signals'
+            alignment_strength = 'WEAK'
+        
+        return {
+            'timeframes': timeframes,
+            'alignment': alignment,
+            'alignment_strength': alignment_strength,
+            'generated_at': datetime.now().isoformat()
+        }
+    
+    except Exception as e:
+        logger.error(f"Error computing multi-timeframe trends: {e}")
+        return {
+            'timeframes': {},
+            'alignment': 'Error',
+            'alignment_strength': 'UNKNOWN',
+            'error': str(e)
+        }
+
+
+def _compute_risk_metrics(price_results: Dict, risk_free_rate: float = 0.04) -> Dict[str, Any]:
+    """
+    Compute risk metrics for market analysis.
+    
+    Args:
+        price_results: Dict of ticker -> price data from PriceClient
+        risk_free_rate: Annual risk-free rate for Sharpe/Sortino calculations
+        
+    Returns:
+        Dict with risk metrics
+    """
+    try:
+        logger.info(f"🔍 Computing risk metrics for {len(price_results)} tickers")
+        all_returns = []
+        for ticker, data in price_results.items():
+            if 'prices' not in data or len(data['prices']) < 2:
+                continue
+            prices = data['prices']
+            # Calculate daily returns
+            for i in range(1, len(prices)):
+                if prices[i] and prices[i-1] and prices[i-1] > 0:
+                    daily_return = (prices[i] - prices[i-1]) / prices[i-1]
+                    all_returns.append(daily_return)
+        
+        if not all_returns or len(all_returns) < 2:
+            return {'error': 'Insufficient data for risk metrics'}
+        
+        import numpy as np
+        returns_array = np.array(all_returns)
+        
+        # Calculate metrics
+        mean_return = np.mean(returns_array)
+        std_return = np.std(returns_array)
+        
+        # Sharpe Ratio (annualized)
+        daily_rf = risk_free_rate / 252
+        sharpe = ((mean_return - daily_rf) / std_return) * np.sqrt(252) if std_return > 0 else 0.0
+        
+        # Sortino Ratio (downside deviation)
+        downside_returns = returns_array[returns_array < 0]
+        downside_std = np.std(downside_returns) if len(downside_returns) > 0 else std_return
+        sortino = ((mean_return - daily_rf) / downside_std) * np.sqrt(252) if downside_std > 0 else 0.0
+        
+        # Maximum Drawdown
+        cumulative_returns = np.cumprod(1 + returns_array)
+        running_max = np.maximum.accumulate(cumulative_returns)
+        drawdown = (cumulative_returns - running_max) / running_max
+        max_drawdown = np.min(drawdown) * 100  # Convert to percentage
+        
+        # Calmar Ratio (return / max drawdown)
+        annual_return = (np.prod(1 + returns_array) ** (252 / len(returns_array)) - 1) * 100
+        calmar = annual_return / abs(max_drawdown) if max_drawdown != 0 else 0.0
+        
+        # Volatility (annualized)
+        annual_vol = std_return * np.sqrt(252) * 100
+        
+        # Value at Risk (95% confidence)
+        var_95 = np.percentile(returns_array, 5) * 100
+        
+        return {
+            'sharpe_ratio': round(sharpe, 3),
+            'sortino_ratio': round(sortino, 3),
+            'max_drawdown_pct': round(max_drawdown, 2),
+            'calmar_ratio': round(calmar, 3),
+            'annual_volatility_pct': round(annual_vol, 2),
+            'annual_return_pct': round(annual_return, 2),
+            'value_at_risk_95_pct': round(var_95, 2),
+            'sample_size': len(all_returns),
+            'generated_at': datetime.now().isoformat()
+        }
+    
+    except Exception as e:
+        logger.error(f"Error computing risk metrics: {e}")
+        return {'error': str(e)}
+
+
+def _compute_momentum_indicators(price_results: Dict) -> Dict[str, Any]:
+    """
+    Compute advanced momentum indicators for market analysis.
+    
+    Args:
+        price_results: Dict of ticker -> price data from PriceClient
+        
+    Returns:
+        Dict with momentum indicators
+    """
+    try:
+        import numpy as np
+        
+        all_rsi = []
+        all_macd_signal = []
+        all_stoch = []
+        all_williams = []
+        
+        for ticker, data in price_results.items():
+            if 'prices' not in data or len(data['prices']) < 30:
+                continue
+            
+            prices = np.array(data['prices'])
+            
+            # RSI (Relative Strength Index) - 14 period
+            if len(prices) >= 14:
+                deltas = np.diff(prices)
+                gains = np.where(deltas > 0, deltas, 0)
+                losses = np.where(deltas < 0, -deltas, 0)
+                
+                avg_gain = np.mean(gains[-14:])
+                avg_loss = np.mean(losses[-14:])
+                
+                if avg_loss > 0:
+                    rs = avg_gain / avg_loss
+                    rsi = 100 - (100 / (1 + rs))
+                    all_rsi.append(rsi)
+            
+            # MACD (Moving Average Convergence Divergence)
+            if len(prices) >= 26:
+                # 12-period EMA
+                ema12 = prices[-12:].mean()
+                # 26-period EMA
+                ema26 = prices[-26:].mean()
+                # MACD line
+                macd = ema12 - ema26
+                # Signal line (9-period EMA of MACD)
+                macd_signal = macd  # Simplified
+                all_macd_signal.append(1 if macd > 0 else -1)
+            
+            # Stochastic Oscillator - 14 period
+            if len(prices) >= 14:
+                period_high = np.max(prices[-14:])
+                period_low = np.min(prices[-14:])
+                current = prices[-1]
+                
+                if period_high > period_low:
+                    stoch_k = ((current - period_low) / (period_high - period_low)) * 100
+                    all_stoch.append(stoch_k)
+            
+            # Williams %R - 14 period
+            if len(prices) >= 14:
+                period_high = np.max(prices[-14:])
+                period_low = np.min(prices[-14:])
+                current = prices[-1]
+                
+                if period_high > period_low:
+                    williams = ((period_high - current) / (period_high - period_low)) * -100
+                    all_williams.append(williams)
+        
+        # Aggregate indicators
+        result = {
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        if all_rsi:
+            avg_rsi = np.mean(all_rsi)
+            result['rsi'] = {
+                'value': round(avg_rsi, 2),
+                'signal': 'Overbought' if avg_rsi > 70 else 'Oversold' if avg_rsi < 30 else 'Neutral',
+                'interpretation': 'Strong sell signal' if avg_rsi > 80 else 'Sell signal' if avg_rsi > 70 else 'Buy signal' if avg_rsi < 30 else 'Strong buy signal' if avg_rsi < 20 else 'Neutral'
+            }
+        
+        if all_macd_signal:
+            macd_bullish = sum(1 for x in all_macd_signal if x > 0) / len(all_macd_signal)
+            result['macd'] = {
+                'bullish_pct': round(macd_bullish * 100, 2),
+                'signal': 'Bullish' if macd_bullish > 0.6 else 'Bearish' if macd_bullish < 0.4 else 'Neutral'
+            }
+        
+        if all_stoch:
+            avg_stoch = np.mean(all_stoch)
+            result['stochastic'] = {
+                'value': round(avg_stoch, 2),
+                'signal': 'Overbought' if avg_stoch > 80 else 'Oversold' if avg_stoch < 20 else 'Neutral'
+            }
+        
+        if all_williams:
+            avg_williams = np.mean(all_williams)
+            result['williams_r'] = {
+                'value': round(avg_williams, 2),
+                'signal': 'Overbought' if avg_williams > -20 else 'Oversold' if avg_williams < -80 else 'Neutral'
+            }
+        
+        # Overall momentum signal
+        signals = []
+        if 'rsi' in result:
+            if result['rsi']['signal'] == 'Oversold':
+                signals.append('BUY')
+            elif result['rsi']['signal'] == 'Overbought':
+                signals.append('SELL')
+        
+        if 'macd' in result:
+            if result['macd']['signal'] == 'Bullish':
+                signals.append('BUY')
+            elif result['macd']['signal'] == 'Bearish':
+                signals.append('SELL')
+        
+        if signals:
+            buy_count = signals.count('BUY')
+            sell_count = signals.count('SELL')
+            if buy_count > sell_count:
+                result['overall_signal'] = 'BUY'
+            elif sell_count > buy_count:
+                result['overall_signal'] = 'SELL'
+            else:
+                result['overall_signal'] = 'NEUTRAL'
+        else:
+            result['overall_signal'] = 'NEUTRAL'
+        
+        result['sample_size'] = len(price_results)
+        
+        return result
+    
+    except Exception as e:
+        logger.error(f"Error computing momentum indicators: {e}")
+        return {'error': str(e)}
 
 
 # ========================================================================
@@ -501,6 +917,7 @@ def run_full_analysis(tickers_str: str, period: str = '1y',
                     'ticker': ticker,
                     'current_price': current,
                     'daily_change': price_data['daily_change'],
+                    'day_change_pct': raw_daily,  # Add immediate day change percentage for trend calculation
                     'week_start_price': price_data['week_start_price'],
                     'month_start_price': month_start,
                     'return_pct': round(return_pct, 2),
@@ -558,6 +975,20 @@ def run_full_analysis(tickers_str: str, period: str = '1y',
             
             logger.info(f"📊 Market Trend: {label} (avg return: {avg_return:+.2f}%)")
         
+        # Compute multi-timeframe trends
+        multi_timeframe = _compute_multi_timeframe_trends(price_results)
+        logger.info(f"🔄 Multi-Timeframe: {multi_timeframe.get('alignment', 'N/A')}")
+        
+        # Compute risk-adjusted metrics
+        risk_metrics = _compute_risk_metrics(price_results)
+        if 'error' not in risk_metrics:
+            logger.info(f"📊 Risk Metrics: Sharpe={risk_metrics.get('sharpe_ratio')}, MaxDD={risk_metrics.get('max_drawdown_pct')}%")
+        
+        # Compute momentum indicators
+        momentum_indicators = _compute_momentum_indicators(price_results)
+        if 'error' not in momentum_indicators:
+            logger.info(f"📈 Momentum: RSI={momentum_indicators.get('rsi', {}).get('value')}, Signal={momentum_indicators.get('overall_signal')}")
+        
         # Fetch news if requested
         news_data = {}
         if include_news and valid_count > 0:
@@ -596,6 +1027,9 @@ def run_full_analysis(tickers_str: str, period: str = '1y',
         response = {
             'detailed': results,
             'market_trend': market_trend,
+            'multi_timeframe': multi_timeframe,
+            'risk_metrics': risk_metrics,
+            'momentum_indicators': momentum_indicators,
             'news': news_data,
             'generated_at': datetime.now().isoformat(),
             'price_provider_summary': price_provider_summary if 'price_provider_summary' in locals() else 'unknown',
@@ -609,11 +1043,445 @@ def run_full_analysis(tickers_str: str, period: str = '1y',
         cache_manager.save_to_disk(response)
         
         logger.info(f"✅ Analysis complete: {valid_count}/{len(tickers)} tickers analyzed successfully")
+        logger.info(f"📊 Response keys: {list(response.keys())}")
+        logger.info(f"📊 Multi-timeframe keys: {list(response.get('multi_timeframe', {}).keys())}")
+        logger.info(f"📊 Risk metrics keys: {list(response.get('risk_metrics', {}).keys())}")
+        logger.info(f"📊 Momentum keys: {list(response.get('momentum_indicators', {}).keys())}")
         return response
         
     except Exception as e:
-        logger.exception("Fatal error in run_full_analysis")
+        logger.error(f"❌ Analysis failed: {e}", exc_info=True)
         return {'error': str(e)}
+
+
+# ============================================================================
+# Stock Screener
+# ============================================================================
+
+# Module-level cache for screener results
+_SCREENER_CACHE = {}
+_SCREENER_CACHE_TIMESTAMP = {}
+SCREENER_CACHE_TTL = 300  # 5 minutes
+
+# Company data cache (sector, market cap) - 24 hour TTL
+_COMPANY_DATA_CACHE = {}
+_COMPANY_DATA_TIMESTAMP = {}
+COMPANY_DATA_TTL = 86400  # 24 hours
+
+def _get_company_data(ticker: str) -> Dict[str, Any]:
+    """
+    Get company profile data (sector, market cap) from Finnhub with caching.
+    Falls back to placeholders if API unavailable.
+    """
+    from datetime import datetime
+    
+    # Check cache first
+    if ticker in _COMPANY_DATA_CACHE:
+        cache_time = _COMPANY_DATA_TIMESTAMP.get(ticker, 0)
+        if datetime.now().timestamp() - cache_time < COMPANY_DATA_TTL:
+            return _COMPANY_DATA_CACHE[ticker]
+    
+    # Try Finnhub API
+    if finnhub_client:
+        try:
+            profile = finnhub_client.company_profile2(symbol=ticker)
+            if profile:
+                data = {
+                    'sector': profile.get('finnhubIndustry', 'Unknown'),
+                    'market_cap': profile.get('marketCapitalization', 0) * 1_000_000  # Convert from millions
+                }
+                # Cache the result
+                _COMPANY_DATA_CACHE[ticker] = data
+                _COMPANY_DATA_TIMESTAMP[ticker] = datetime.now().timestamp()
+                return data
+        except Exception as e:
+            logger.debug(f"Finnhub API error for {ticker}: {str(e)[:50]}")
+    
+    # Fallback to placeholder
+    return {
+        'sector': 'Unknown',
+        'market_cap': 0
+    }
+
+def _screen_stocks(
+    universe: List[str],
+    min_price: float = 0,
+    max_price: float = float('inf'),
+    min_volume: int = 0,
+    min_market_cap: float = 0,
+    sectors: List[str] = None,
+    min_rsi: float = 0,
+    max_rsi: float = 100,
+    trend: str = None
+) -> List[Dict]:
+    """
+    Screen stocks based on multiple criteria using free APIs.
+    Now with caching and parallel processing for better performance.
+    
+    Args:
+        universe: List of ticker symbols to screen
+        min_price: Minimum stock price
+        max_price: Maximum stock price
+        min_volume: Minimum daily volume
+        min_market_cap: Minimum market capitalization
+        sectors: List of sectors to include (None = all)
+        min_rsi: Minimum RSI value (0-100)
+        max_rsi: Maximum RSI value (0-100)
+        trend: 'bullish', 'bearish', 'neutral', or None for any
+    
+    Returns:
+        List of dicts with stock data and scores
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from datetime import datetime
+    
+    # Create cache key from filter parameters
+    cache_key = f"{min_price}_{max_price}_{min_volume}_{min_rsi}_{max_rsi}_{trend}"
+    
+    # Check cache
+    if cache_key in _SCREENER_CACHE:
+        cache_time = _SCREENER_CACHE_TIMESTAMP.get(cache_key, 0)
+        if datetime.now().timestamp() - cache_time < SCREENER_CACHE_TTL:
+            logger.info(f"📦 Returning cached screener results ({len(_SCREENER_CACHE[cache_key])} stocks)")
+            return _SCREENER_CACHE[cache_key]
+    
+    logger.info(f"🔍 Screening {len(universe)} stocks with filters: price=${min_price}-${max_price}, vol={min_volume}, RSI={min_rsi}-{max_rsi}, trend={trend}")
+    
+    price_client = PriceClient()
+    
+    def screen_single_stock(ticker: str) -> Optional[Dict]:
+        """Screen a single stock - used for parallel processing"""
+        try:
+            # Get price history
+            logger.debug(f"📊 Fetching price data for {ticker}...")
+            price_data = price_client.get_price_history(
+                ticker,
+                period='2mo',  # 60 days for RSI
+                interval='1d'
+            )
+            
+            if not price_data or price_data.empty or len(price_data) < 14:
+                logger.warning(f"❌ {ticker}: Insufficient data (got {len(price_data) if price_data is not None and not price_data.empty else 0} bars, need 14+)")
+                return None
+            
+            logger.debug(f"✅ {ticker}: Got {len(price_data)} bars of data")
+            
+            # Get current price and volume
+            current_price = float(price_data['Close'].iloc[-1])
+            current_volume = int(price_data['Volume'].iloc[-1])
+            
+            # Apply price filter
+            if current_price < min_price or current_price > max_price:
+                return None
+            
+            # Apply volume filter
+            if current_volume < min_volume:
+                return None
+            
+            # Calculate RSI
+            closes = price_data['Close'].values
+            if len(closes) >= 14:
+                deltas = np.diff(closes)
+                gains = np.where(deltas > 0, deltas, 0)
+                losses = np.where(deltas < 0, -deltas, 0)
+                avg_gain = np.mean(gains[-14:])
+                avg_loss = np.mean(losses[-14:])
+                if avg_loss > 0:
+                    rs = avg_gain / avg_loss
+                    rsi = 100 - (100 / (1 + rs))
+                else:
+                    rsi = 100
+            else:
+                rsi = 50
+            
+            # Apply RSI filter
+            if rsi < min_rsi or rsi > max_rsi:
+                return None
+            
+            # Calculate trend using SMA
+            if len(closes) >= 20:
+                sma_20 = np.mean(closes[-20:])
+            else:
+                sma_20 = current_price
+                
+            if current_price > sma_20 * 1.02:
+                stock_trend = 'bullish'
+            elif current_price < sma_20 * 0.98:
+                stock_trend = 'bearish'
+            else:
+                stock_trend = 'neutral'
+            
+            # Apply trend filter
+            if trend and trend != 'any' and stock_trend != trend:
+                return None
+            
+            # Calculate score (0-100)
+            score = 50
+            
+            # Price momentum
+            if len(closes) >= 5:
+                week_change = ((closes[-1] - closes[-5]) / closes[-5]) * 100
+                if week_change > 5:
+                    score += 15
+                elif week_change > 2:
+                    score += 10
+                elif week_change < -5:
+                    score -= 15
+            
+            # Trend bonus
+            if stock_trend == 'bullish':
+                score += 15
+            elif stock_trend == 'bearish':
+                score -= 10
+            
+            # RSI bonuses
+            if rsi < 30:  # Oversold - potential buy
+                score += 20
+            elif rsi > 70:  # Overbought - caution
+                score -= 15
+            elif 40 <= rsi <= 60:  # Healthy range
+                score += 5
+            
+            # Volume bonus
+            if current_volume > 5_000_000:
+                score += 10
+            elif current_volume > 1_000_000:
+                score += 5
+            
+            # Get real company data (sector, market cap)
+            company_data = _get_company_data(ticker)
+            
+            return {
+                'ticker': ticker,
+                'price': current_price,
+                'volume': current_volume,
+                'market_cap': company_data['market_cap'],
+                'sector': company_data['sector'],
+                'rsi': rsi,
+                'trend': stock_trend,
+                'score': max(0, min(100, score))
+            }
+            
+        except Exception as e:
+            logger.warning(f"Failed to screen {ticker}: {str(e)[:100]}")
+            return None
+    
+    # Process stocks in parallel using ThreadPoolExecutor
+    results = []
+    try:
+        # Use up to 10 workers for parallel processing
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            # Submit all tasks
+            future_to_ticker = {executor.submit(screen_single_stock, ticker): ticker 
+                              for ticker in universe}
+            
+            # Collect results as they complete
+            for future in as_completed(future_to_ticker):
+                result = future.result()
+                if result:
+                    results.append(result)
+                    logger.debug(f"✅ {result['ticker']}: ${result['price']:.2f}, Vol={result['volume']:,}, RSI={result['rsi']:.1f}, Score={result['score']}")
+        
+        logger.info(f"✅ Screening complete: {len(results)}/{len(universe)} stocks passed filters")
+        
+        # Cache the results
+        _SCREENER_CACHE[cache_key] = results
+        _SCREENER_CACHE_TIMESTAMP[cache_key] = datetime.now().timestamp()
+        
+        return results
+        
+    except Exception as e:
+        logger.error(f"❌ Screening failed: {e}", exc_info=True)
+        return []
+
+
+
+
+
+# ========================================================================
+# UI HELPER FOR NEW IMPROVEMENTS
+# ========================================================================
+
+def _create_improvement_cards(result: Dict) -> html.Div:
+    """Create UI cards for multi-timeframe, risk metrics, and momentum indicators."""
+    logger.info(f"🎨 Creating improvement cards from result with keys: {list(result.keys())[:15]}")
+    cards = []
+    
+    # Multi-Timeframe Analysis Card - HORIZONTAL LAYOUT
+    mtf = result.get('multi_timeframe', {})
+    if mtf and 'timeframes' in mtf:
+        timeframes = mtf['timeframes']
+        alignment = mtf.get('alignment', 'Unknown')
+        strength = mtf.get('alignment_strength', 'UNKNOWN')
+        
+        # Color based on alignment strength
+        strength_color = '#10b981' if strength == 'PERFECT' else '#f59e0b' if strength == 'GOOD' else '#94a3b8'
+        
+        # Create horizontal period badges
+        period_badges = []
+        for period, data in timeframes.items():
+            signal_color = '#10b981' if data['signal'] == 'BUY' else '#ef4444' if data['signal'] == 'SELL' else '#94a3b8'
+            
+            period_badges.append(
+                html.Div([
+                    html.Div(period, style={
+                        'fontSize': '11px',
+                        'fontWeight': 'bold',
+                        'color': '#94a3b8',
+                        'marginBottom': '4px'
+                    }),
+                    html.Div(data['trend'], style={
+                        'fontSize': '13px',
+                        'fontWeight': '600',
+                        'color': 'white',
+                        'marginBottom': '2px'
+                    }),
+                    html.Div(f"{data['avg_change']:+.2f}%", style={
+                        'fontSize': '16px',
+                        'fontWeight': 'bold',
+                        'color': signal_color,
+                        'marginBottom': '4px'
+                    }),
+                    html.Span(data['signal'], style={
+                        'backgroundColor': signal_color,
+                        'color': 'white',
+                        'padding': '3px 10px',
+                        'borderRadius': '12px',
+                        'fontSize': '10px',
+                        'fontWeight': 'bold'
+                    })
+                ], style={
+                    'textAlign': 'center',
+                    'flex': '1',
+                    'padding': '12px 8px',
+                    'backgroundColor': 'rgba(255,255,255,0.03)',
+                    'borderRadius': '8px',
+                    'border': f'1px solid {signal_color}33'
+                })
+            )
+        
+        cards.append(dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    html.I(className="bi bi-clock-history me-2"),
+                    "Multi-Timeframe Analysis"
+                ]),
+                dbc.CardBody([
+                    html.Div([
+                        html.Span("Market Alignment: ", style={'fontSize': '12px', 'color': '#94a3b8'}),
+                        html.Span(alignment, style={
+                            'fontSize': '14px',
+                            'fontWeight': 'bold',
+                            'color': strength_color,
+                            'marginLeft': '6px'
+                        })
+                    ], className="mb-3"),
+                    html.Div(period_badges, style={
+                        'display': 'flex',
+                        'gap': '12px',
+                        'justifyContent': 'space-between'
+                    })
+                ])
+            ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+        ], width=4))
+    
+    # Risk Metrics Card
+    risk = result.get('risk_metrics', {})
+    if risk and 'sharpe_ratio' in risk:
+        risk_items = [
+            ("Sharpe Ratio", risk.get('sharpe_ratio'), ">1 is good"),
+            ("Sortino Ratio", risk.get('sortino_ratio'), ">1 is good"),
+            ("Max Drawdown", f"{risk.get('max_drawdown_pct', 0):.2f}%", "Lower is better"),
+            ("Calmar Ratio", risk.get('calmar_ratio'), ">1 is good"),
+            ("Annual Vol", f"{risk.get('annual_volatility_pct', 0):.1f}%", ""),
+            ("VaR 95%", f"{risk.get('value_at_risk_95_pct', 0):.2f}%", "5% worst case")
+        ]
+        
+        risk_rows = []
+        for label, value, note in risk_items:
+            risk_rows.append(html.Tr([
+                html.Td(label, style={'fontWeight': 'bold'}),
+                html.Td(str(value)),
+                html.Td(html.Small(note, className="text-muted"))
+            ]))
+        
+        cards.append(dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    html.I(className="bi bi-shield-check me-2"),
+                    "Risk-Adjusted Metrics"
+                ]),
+                dbc.CardBody([
+                    dbc.Table([
+                        html.Tbody(risk_rows)
+                    ], size="sm", dark=True, striped=True)
+                ])
+            ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+        ], width=4))
+    
+    # Momentum Indicators Card
+    momentum = result.get('momentum_indicators', {})
+    if momentum and 'overall_signal' in momentum:
+        overall_signal = momentum.get('overall_signal', 'NEUTRAL')
+        signal_color = '#10b981' if overall_signal == 'BUY' else '#ef4444' if overall_signal == 'SELL' else '#94a3b8'
+        
+        momentum_items = []
+        if 'rsi' in momentum:
+            rsi = momentum['rsi']
+            momentum_items.append(("RSI", f"{rsi['value']:.1f}", rsi['signal']))
+        if 'macd' in momentum:
+            macd = momentum['macd']
+            momentum_items.append(("MACD", f"{macd['bullish_pct']:.0f}% Bullish", macd['signal']))
+        if 'stochastic' in momentum:
+            stoch = momentum['stochastic']
+            momentum_items.append(("Stochastic", f"{stoch['value']:.1f}", stoch['signal']))
+        if 'williams_r' in momentum:
+            will = momentum['williams_r']
+            momentum_items.append(("Williams %R", f"{will['value']:.1f}", will['signal']))
+        
+        momentum_rows = []
+        for indicator, value, signal in momentum_items:
+            sig_color = '#10b981' if 'Oversold' in signal or 'Bullish' in signal else '#ef4444' if 'Overbought' in signal or 'Bearish' in signal else '#94a3b8'
+            momentum_rows.append(html.Tr([
+                html.Td(indicator, style={'fontWeight': 'bold'}),
+                html.Td(value),
+                html.Td(html.Span(signal, style={'color': sig_color}))
+            ]))
+        
+        cards.append(dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    html.I(className="bi bi-graph-up me-2"),
+                    "Momentum Indicators"
+                ]),
+                dbc.CardBody([
+                    html.Div([
+                        html.Span("Overall Signal: ", style={'fontWeight': 'bold'}),
+                        html.Span(overall_signal, style={
+                            'backgroundColor': signal_color,
+                            'color': 'white',
+                            'padding': '4px 12px',
+                            'borderRadius': '4px',
+                            'fontWeight': 'bold'
+                        })
+                    ], className="mb-3 text-center"),
+                    dbc.Table([
+                        html.Tbody(momentum_rows)
+                    ], size="sm", dark=True, striped=True)
+                ])
+            ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+        ], width=4))
+    
+    if cards:
+        logger.info(f"✅ Created {len(cards)} improvement cards")
+        return html.Div([
+            html.Hr(style={'borderColor': 'rgba(255,255,255,0.1)', 'margin': '20px 0'}),
+            html.H5("Advanced Analytics", className="mb-3", style={'color': 'white'}),
+            dbc.Row(cards, className="g-3 mb-4")
+        ])
+    else:
+        logger.warning("⚠️ No improvement cards created - data may be missing")
+    return html.Div()
 
 
 # ========================================================================
@@ -637,6 +1505,13 @@ def layout():
     logger.info("Rendering initial table...")
     # Pre-render table if cache exists
     initial_table = _render_table(cached.get('detailed', []))
+    logger.info("Rendering improvement cards from cache...")
+    initial_improvement_cards = _create_improvement_cards(cached)
+    logger.info("Combining table and improvement cards...")
+    initial_results = html.Div([
+        initial_table,
+        initial_improvement_cards
+    ])
     logger.info("Rendering initial news...")
     initial_news = _render_news(cached.get('news', {}))
     
@@ -713,7 +1588,7 @@ def layout():
             ])
         ], className="h-100", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
         
-        # Market Indices Row
+        # Market Indices Row - HORIZONTAL (all 4 in one row with smaller width)
         indices = live_service.get_market_indices()
         index_cards = []
         for symbol, idx in list(indices.items())[:4]:
@@ -722,15 +1597,16 @@ def layout():
                 dbc.Col([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H6(idx.name, className="text-muted mb-1"),
-                            html.H4(f"${idx.price:,.2f}", className="mb-0"),
+                            html.H6(idx.name, className="text-muted mb-1", style={'fontSize': '11px'}),
+                            html.H5(f"${idx.price:,.2f}", className="mb-0", style={'fontSize': '16px'}),
                             html.Span(
                                 f"{idx.change:+.2f} ({idx.change_pct:+.2f}%)",
-                                className=f"text-{color}"
+                                className=f"text-{color}",
+                                style={'fontSize': '12px'}
                             )
-                        ], style={'padding': '12px'})
+                        ], style={'padding': '10px'})
                     ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
-                ], width=3)
+                ], width=3)  # Changed from width=3 in loop to single row of 4
             )
         indices_row = dbc.Row(index_cards, className="mb-4")
         
@@ -768,112 +1644,251 @@ def layout():
             provider_summary
         ], style={'display': 'flex', 'alignItems': 'center', 'marginBottom': '16px'}),
         
-        # Main content grid
-        dbc.Row([
-            # Left Column - Fear & Greed + News
-            dbc.Col([
-                # Fear & Greed Widget
-                fear_greed_widget,
-                
-                # News Section
-                dbc.Card([
-                    dbc.CardHeader([
-                        html.I(className="bi bi-newspaper me-2"),
-                        "Latest Headlines"
-                    ]),
-                    dbc.CardBody([
-                        html.Div(initial_news, id='news-container')
-                    ])
-                ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
-            ], width=4),
-            
-            # Right Column - Analysis & Charts
-            dbc.Col([
-                # Controls Card
+        # === MAIN CONTENT WITH TABS ===
+        dcc.Tabs(id='market-trends-subtabs', value='overview-tab', children=[
+            # Tab 1: Overview (existing content)
+            dcc.Tab(label='📊 Overview', value='overview-tab', children=[
+                # Compact 3-column grid layout
+                dbc.Row([
+                    # Column 1 - Controls
+                    dbc.Col([
                 dbc.Card([
                     dbc.CardHeader([
                         html.I(className="bi bi-sliders me-2"),
-                        "Analysis Controls"
+                        "Controls"
                     ]),
                     dbc.CardBody([
-                        html.Div([
-                            html.Label('Tickers (comma separated)', className="mb-1"),
-                            dcc.Textarea(
-                                id='tickers-input',
-                                value='NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA',
-                                style={'width': '100%', 'resize': 'vertical', 'backgroundColor': 'rgba(0,0,0,0.2)', 
-                                       'color': 'white', 'border': '1px solid rgba(255,255,255,0.2)'},
-                                rows=2
-                            ),
-                        ], style={'marginBottom': '12px'}),
-                        
+                        html.Label('Tickers', className="mb-1 small"),
+                        dcc.Textarea(
+                            id='tickers-input',
+                            value='NVDA,AAPL,MSFT,GOOGL,META,AMZN,TSLA',
+                            style={'width': '100%', 'fontSize': '12px', 'backgroundColor': 'rgba(0,0,0,0.2)', 
+                                   'color': 'white', 'border': '1px solid rgba(255,255,255,0.2)'},
+                            rows=2
+                        ),
                         dbc.ButtonGroup([
                             dbc.Button(
-                                [html.I(className="bi bi-play-fill me-1"), 'Run Analysis'],
+                                [html.I(className="bi bi-play-fill me-1"), 'Run'],
                                 id='mt-run-analysis-btn',
                                 n_clicks=0,
-                                color="primary"
+                                color="primary",
+                                size="sm",
+                                className="mt-2"
                             ),
                             dbc.Button(
-                                [html.I(className="bi bi-arrow-clockwise me-1"), 'Refresh'],
+                                [html.I(className="bi bi-arrow-clockwise me-1")],
                                 id='mt-refresh-display-btn',
                                 n_clicks=0,
                                 color="success",
-                                outline=True
+                                size="sm",
+                                outline=True,
+                                className="mt-2"
                             ),
-                        ]),
-                        
-                        # Status
+                        ], className="w-100"),
                         html.Div(
                             id='status',
                             children='Ready',
+                            className="small mt-2",
                             style={
-                                'padding': '8px 12px',
+                                'padding': '6px 8px',
                                 'backgroundColor': 'rgba(59, 130, 246, 0.1)',
-                                'borderRadius': '4px',
-                                'marginTop': '12px',
-                                'display': 'block'
+                                'borderRadius': '4px'
                             }
                         ),
-                    ])
-                ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
+                    ], style={'padding': '12px'})
+                ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)', 'height': '100%'}),
+            ], width=3),
+            
+            # Column 2 - Fear & Greed + News (Compact)
+            dbc.Col([
+                # Fear & Greed Widget (Compact)
+                fear_greed_widget if fear_greed_widget else html.Div(),
                 
-                # Sector Heatmap
+                # News Section (Compact)
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="bi bi-newspaper me-2"),
+                        "Headlines"
+                    ], style={'padding': '8px 12px'}),
+                    dbc.CardBody([
+                        html.Div(initial_news, id='news-container', style={'maxHeight': '300px', 'overflowY': 'auto'})
+                    ], style={'padding': '8px'})
+                ], className="mt-3" if fear_greed_widget else "", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
+            ], width=4),
+            
+            # Column 3 - Sector Heatmap
+            dbc.Col([
                 dbc.Card([
                     dbc.CardHeader([
                         html.I(className="bi bi-grid-3x3-gap me-2"),
                         "Sector Performance"
-                    ]),
+                    ], style={'padding': '8px 12px'}),
                     dbc.CardBody([
                         dcc.Loading(
-                            dcc.Graph(id='sector-heatmap', config={'displayModeBar': False}, style={'height': '350px'}),
+                            dcc.Graph(id='sector-heatmap', config={'displayModeBar': False}, style={'height': '280px'}),
                             type='circle'
                         )
-                    ])
-                ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
-            ], width=8),
-        ]),
+                    ], style={'padding': '8px'})
+                ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)', 'height': '100%'}),
+            ], width=5),
+        ], className="mb-3"),
         
-        # Results Table (Full Width)
+        # Collapsible Results Table
         dbc.Card([
             dbc.CardHeader([
-                html.I(className="bi bi-table me-2"),
-                "Ticker Analysis Results"
-            ]),
-            dbc.CardBody([
-                dcc.Loading(
-                    id='loading',
-                    children=[
-                        html.Div(
-                            initial_table,
-                            id='results-area',
-                            style={'marginTop': '0'}
-                        )
+                dbc.Button(
+                    [
+                        html.I(className="bi bi-table me-2"),
+                        "Ticker Analysis Results",
+                        html.I(id="mt-results-toggle-icon", className="bi bi-chevron-down ms-2")
                     ],
-                    type='circle'
+                    id="mt-results-toggle",
+                    color="link",
+                    className="text-white text-decoration-none w-100 text-start p-0",
+                    style={'fontSize': '16px'}
                 )
-            ])
-        ], className="mt-4", style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
+            ], style={'padding': '12px'}),
+            dbc.Collapse(
+                dbc.CardBody([
+                    dcc.Loading(
+                        id='loading',
+                        children=[
+                            html.Div(
+                                initial_results,  # Changed from initial_table to include improvement cards
+                                id='results-area',
+                                style={'marginTop': '0', 'maxHeight': '400px', 'overflowY': 'auto'}
+                            )
+                        ],
+                        type='circle'
+                    )
+                ], style={'padding': '12px'}),
+                id="mt-results-collapse",
+                is_open=False  # Start collapsed to save space
+            )
+        ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'}),
+            ]),  # Close Overview Tab children list
+            
+            # Tab 2: Stock Screener (ENHANCED)
+            dcc.Tab(label='🔍 Screener', value='screener-tab', children=[
+                dbc.Row([
+                    # Left Column - Filters
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.I(className="bi bi-funnel-fill me-2"),
+                                "Screening Filters"
+                            ]),
+                            dbc.CardBody([
+                                # Price Range
+                                html.Label("Price Range ($)", className="fw-bold", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.RangeSlider(
+                                    id='screener-price-range',
+                                    min=0, max=1000, step=5, value=[0, 1000],
+                                    marks={
+                                        0: {'label': '$0', 'style': {'color': '#94a3b8'}},
+                                        250: {'label': '$250', 'style': {'color': '#94a3b8'}},
+                                        500: {'label': '$500', 'style': {'color': '#94a3b8'}},
+                                        750: {'label': '$750', 'style': {'color': '#94a3b8'}},
+                                        1000: {'label': '$1K+', 'style': {'color': '#94a3b8'}}
+                                    },
+                                    tooltip={"placement": "bottom", "always_visible": False}
+                                ),
+                                
+                                # Volume Filter
+                                html.Label("Minimum Volume", className="fw-bold mt-3", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.Dropdown(
+                                    id='screener-volume',
+                                    options=[
+                                        {'label': '🔹 Any Volume', 'value': 0},
+                                        {'label': '🔸 100K+ (Active)', 'value': 100000},
+                                        {'label': '🟡 1M+ (Very Active)', 'value': 1000000},
+                                        {'label': '🟢 5M+ (High Liquidity)', 'value': 5000000},
+                                        {'label': '🔵 10M+ (Ultra Liquid)', 'value': 10000000}
+                                    ],
+                                    value=0,
+                                    className="mt-2",
+                                    style={'backgroundColor': '#1e293b', 'color': 'white', 'border': '1px solid #334155'}
+                                ),
+                                
+                                # RSI Range
+                                html.Label("RSI Range (14-period)", className="fw-bold mt-3", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                html.Small("30 = Oversold, 70 = Overbought", className="text-muted"),
+                                dcc.RangeSlider(
+                                    id='screener-rsi',
+                                    min=0, max=100, step=5, value=[0, 100],
+                                    marks={
+                                        0: {'label': '0', 'style': {'color': '#94a3b8'}},
+                                        30: {'label': '30 (OS)', 'style': {'color': '#10b981'}},
+                                        50: {'label': '50', 'style': {'color': '#94a3b8'}},
+                                        70: {'label': '70 (OB)', 'style': {'color': '#ef4444'}},
+                                        100: {'label': '100', 'style': {'color': '#94a3b8'}}
+                                    },
+                                    tooltip={"placement": "bottom", "always_visible": False}
+                                ),
+                                
+                                # Trend Filter
+                                html.Label("Trend Direction", className="fw-bold mt-3", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.Dropdown(
+                                    id='screener-trend',
+                                    options=[
+                                        {'label': '🔹 Any Trend', 'value': 'any'},
+                                        {'label': '📈 Bullish Only (Price > SMA20)', 'value': 'bullish'},
+                                        {'label': '📉 Bearish Only (Price < SMA20)', 'value': 'bearish'},
+                                        {'label': '➡️ Neutral Only', 'value': 'neutral'}
+                                    ],
+                                    value='any',
+                                    className="mt-2",
+                                    style={'backgroundColor': '#1e293b', 'color': 'white', 'border': '1px solid #334155'}
+                                ),
+                                
+                                # Screen Button
+                                dbc.Button(
+                                    [html.I(className="bi bi-search me-2"), "🔍 Screen 120 Stocks"],
+                                    id='run-screener-btn',
+                                    color='success',
+                                    size='lg',
+                                    className='mt-4 w-100',
+                                    style={'fontWeight': 'bold'}
+                                ),
+                                
+                                # Results Count
+                                html.Div(
+                                    id='screener-count',
+                                    className='mt-3 text-center',
+                                    style={'color': '#94a3b8', 'fontSize': '13px', 'fontStyle': 'italic'}
+                                )
+                            ])
+                        ], style={'backgroundColor': 'rgba(0,0,0,0.4)', 'border': '1px solid rgba(255,255,255,0.15)'}),
+                        
+                        # Fear & Greed Widget
+                        fear_greed_widget if fear_greed_widget else html.Div(),
+                        
+                    ], width=3),
+                    
+                    # Right Column - Results
+                    dbc.Col([
+                        html.Div(id='screener-results-area', children=[
+                            html.Div([
+                                html.I(className="bi bi-funnel text-muted", style={'fontSize': '64px'}),
+                                html.H4("Ready to Screen Stocks", className="mt-4 text-muted"),
+                                html.P("Set your filters on the left and click the green button to find stocks matching your criteria.", 
+                                       className="text-muted", style={'fontSize': '14px'}),
+                                html.Hr(style={'borderColor': 'rgba(255,255,255,0.1)', 'width': '50%', 'margin': '30px auto'}),
+                                html.Div([
+                                    html.H6("What you can filter by:", style={'color': '#94a3b8'}),
+                                    html.Ul([
+                                        html.Li("💵 Price range ($0 to $1000+)"),
+                                        html.Li("📊 Trading volume (liquidity)"),
+                                        html.Li("📈 RSI momentum (oversold/overbought)"),
+                                        html.Li("🎯 Trend direction (bullish/bearish/neutral)")
+                                    ], style={'color': '#64748b', 'textAlign': 'left', 'display': 'inline-block'})
+                                ])
+                            ], style={'textAlign': 'center', 'padding': '80px 40px', 'color': '#64748b'})
+                        ])
+                    ], width=9)
+                ], className="mt-3")
+            ])  # Close Screener Tab children list
+        ]),  # Close dcc.Tabs children list
         
         # Hidden stores: trends-results-store is centralized in `layout_placeholders.py`.
         
@@ -1059,6 +2074,15 @@ def register_callbacks(app):
             # Render table
             table = _render_table(result.get('detailed', []))
             
+            # Render improvement cards (multi-timeframe, risk metrics, momentum)
+            improvement_cards = _create_improvement_cards(result)
+            
+            # Combine table and improvement cards
+            full_results = html.Div([
+                table,
+                improvement_cards
+            ])
+            
             # Render news
             news = _render_news(result.get('news', {}))
             
@@ -1088,7 +2112,7 @@ def register_callbacks(app):
             logger.info(f"Job {job_id} completed successfully")
             
             return (
-                table,
+                full_results,  # Changed from 'table' to include improvement cards
                 news,
                 f"✅ Analysis complete! ({len(result.get('detailed', []))} tickers analyzed)",
                 {
@@ -1136,47 +2160,70 @@ def register_callbacks(app):
         Input('interval-component', 'n_intervals')
     )
     def update_sector_heatmap(n):
-        """Fetch sector data and render heatmap."""
+        """Fetch sector data via PriceClient and render heatmap."""
+        import time as _time
+        _fetch_start = _time.time()
+        data_source = 'unknown'
+        
         try:
-            import yfinance as yf
-            
-            data = []
             tickers = list(SECTOR_ETFS.values())
             
-            # Fetch last 5 days to calculate change
-            # Use progress=False to avoid printing to stdout
-            df = yf.download(tickers, period="5d", progress=False)['Close']
+            # Use PriceClient for consistent provider fallback, caching, and telemetry
+            pc = PriceClient()
+            price_results = pc.get_prices(tickers, lookback_days=7, cache_ttl=60)
             
-            if df.empty:
-                return go.Figure()
-                
-            # Calculate % change from previous close
-            current_prices = df.iloc[-1]
-            prev_prices = df.iloc[-2]
+            # Determine primary data source from results
+            sources_used = set()
+            for ticker_data in price_results.values():
+                src = ticker_data.get('source', 'Local')
+                if src and src != 'Local':
+                    sources_used.add(src)
+            data_source = ', '.join(sorted(sources_used)) if sources_used else 'Local'
             
-            changes = ((current_prices - prev_prices) / prev_prices) * 100
-            
+            data = []
             for sector, ticker in SECTOR_ETFS.items():
-                if ticker in changes:
-                    change = changes[ticker]
-                    data.append({
-                        'Sector': sector,
-                        'Ticker': ticker,
-                        'Change': change,
-                        'AbsChange': abs(change),
-                        'Color': change
-                    })
+                ticker_data = price_results.get(ticker)
+                if not ticker_data:
+                    continue
+                
+                current = ticker_data.get('current_price')
+                # Use week_start_price for more accurate daily change; fall back to start_price
+                prev = ticker_data.get('week_start_price') or ticker_data.get('start_price')
+                
+                if current is None or prev is None or prev == 0:
+                    continue
+                
+                change = ((current - prev) / prev) * 100
+                data.append({
+                    'Sector': sector,
+                    'Ticker': ticker,
+                    'Change': change,
+                    'AbsChange': abs(change),
+                    'Color': change
+                })
             
             if not data:
-                return go.Figure()
+                # Return empty figure with helpful annotation
+                fig = go.Figure()
+                fig.add_annotation(
+                    text="No sector data available",
+                    xref="paper", yref="paper",
+                    x=0.5, y=0.5, showarrow=False,
+                    font=dict(size=14, color="#888")
+                )
+                fig.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
+                return fig
                 
             # Create Treemap
             fig = px.treemap(
                 data,
                 path=['Sector'],
-                values='AbsChange', # Size by magnitude of move
+                values='AbsChange',  # Size by magnitude of move
                 color='Change',
-                color_continuous_scale=['#ef4444', '#f3f4f6', '#10b981'], # Red to Green
+                color_continuous_scale=['#ef4444', '#f3f4f6', '#10b981'],  # Red to Green
                 color_continuous_midpoint=0,
                 custom_data=['Change', 'Ticker']
             )
@@ -1187,18 +2234,42 @@ def register_callbacks(app):
                 hovertemplate='<b>%{label}</b> (%{customdata[1]})<br>Change: %{customdata[0]:.2f}%<extra></extra>'
             )
             
+            # Add data source annotation
+            fetch_duration = _time.time() - _fetch_start
             fig.update_layout(
-                margin=dict(t=0, l=0, r=0, b=0),
+                margin=dict(t=25, l=0, r=0, b=0),
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='white')
+                font=dict(color='white'),
+                annotations=[
+                    dict(
+                        text=f"Source: {data_source} | {fetch_duration:.1f}s",
+                        xref="paper", yref="paper",
+                        x=1, y=1.02, xanchor="right", yanchor="bottom",
+                        showarrow=False,
+                        font=dict(size=9, color="#666")
+                    )
+                ]
             )
             
+            logger.info(f"Sector heatmap updated: {len(data)} sectors, source={data_source}, duration={fetch_duration:.2f}s")
             return fig
             
         except Exception as e:
-            logger.error(f"Error updating sector heatmap: {e}")
-            return go.Figure()
+            logger.error(f"Error updating sector heatmap: {e}", exc_info=True)
+            # Return graceful error figure instead of empty
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"Error loading sector data",
+                xref="paper", yref="paper",
+                x=0.5, y=0.5, showarrow=False,
+                font=dict(size=14, color="#ef4444")
+            )
+            fig.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
+            return fig
 
     # ====================================================================
     # CALLBACK 4: Refresh Display
@@ -1311,6 +2382,23 @@ def register_callbacks(app):
         )
 
     # ====================================================================
+    # CALLBACK: Toggle results table collapse
+    # ====================================================================
+    @app.callback(
+        [Output('mt-results-collapse', 'is_open'),
+         Output('mt-results-toggle-icon', 'className')],
+        [Input('mt-results-toggle', 'n_clicks')],
+        [State('mt-results-collapse', 'is_open')]
+    )
+    def toggle_results_collapse(n_clicks, is_open):
+        """Toggle the results table collapse and update icon."""
+        if n_clicks:
+            new_state = not is_open
+            icon_class = "bi bi-chevron-up ms-2" if new_state else "bi bi-chevron-down ms-2"
+            return new_state, icon_class
+        return is_open, "bi bi-chevron-down ms-2"
+
+    # ====================================================================
     # CALLBACK: Update provider summary display from store
     # ====================================================================
     @app.callback(
@@ -1327,5 +2415,67 @@ def register_callbacks(app):
             return f"Providers used: {ps}"
         except Exception:
             return 'Providers used: unknown'
+
+    
+    # ====================================================================
+    # CALLBACK: Stock Screener
+    # ====================================================================
+    @app.callback(
+        Output('screener-results-area', 'children'),
+        Output('screener-count', 'children'),
+        Input('run-screener-btn', 'n_clicks'),
+        State('screener-price-range', 'value'),
+        State('screener-volume', 'value'),
+        State('screener-rsi', 'value'),
+        State('screener-trend', 'value'),
+        prevent_initial_call=True
+    )
+    def run_screener(n_clicks, price_range, volume, rsi_range, trend):
+        """Run stock screener with user-defined filters"""
+        logger.info(f"🎯 SCREENER CALLBACK TRIGGERED: n_clicks={n_clicks}")
+        
+        if not n_clicks:
+            logger.warning(f"⚠️ Screener prevented: n_clicks={n_clicks}")
+            raise PreventUpdate
+        
+        try:
+            from picker.screening_universe import SCREENING_UNIVERSE
+            
+            logger.info(f"🔍 Running screener: price={price_range}, vol={volume}, rsi={rsi_range}, trend={trend}")
+            
+            # Run screening
+            results = _screen_stocks(
+                universe=SCREENING_UNIVERSE,
+                min_price=price_range[0] if price_range else 0,
+                max_price=price_range[1] if price_range else float('inf'),
+                min_volume=volume if volume else 0,
+                min_rsi=rsi_range[0] if rsi_range else 0,
+                max_rsi=rsi_range[1] if rsi_range else 100,
+                trend=None if not trend or trend == 'any' else trend
+            )
+            
+            # Sort by score (highest first)
+            results_sorted = sorted(results, key=lambda x: x['score'], reverse=True)
+            
+            # Render results
+            results_ui = _render_screener_results(results_sorted)
+            
+            # Check if results came from cache
+            cache_key = f"{price_range[0] if price_range else 0}_{price_range[1] if price_range else float('inf')}_{volume if volume else 0}_{rsi_range[0] if rsi_range else 0}_{rsi_range[1] if rsi_range else 100}_{None if not trend or trend == 'any' else trend}"
+            from_cache = cache_key in _SCREENER_CACHE
+            cache_indicator = " (📦 cached)" if from_cache else ""
+            
+            # Count message
+            count_msg = f"✅ Screened {len(SCREENING_UNIVERSE)} stocks, found {len(results)} matches{cache_indicator}"
+            
+            return results_ui, count_msg
+            
+        except Exception as e:
+            logger.error(f"Screener error: {e}", exc_info=True)
+            return html.Div(
+                f"❌ Error: {str(e)[:200]}",
+                style={'color': '#ef4444', 'padding': '20px'}
+            ), "❌ Screening failed"
     
     logger.info("✅ Market Trends callbacks registered successfully!")
+

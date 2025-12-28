@@ -83,7 +83,6 @@ def get_alpaca_client():
     candidates = [
         ("APCA_API_KEY_ID", "APCA_API_SECRET_KEY"),
         ("APCA_API_KEY", "APCA_API_SECRET"),
-        ("ALPACA2_KEY", "ALPACA2_SECRET"),
         ("ALPACA_KEY_WEEKLY", "ALPACA_SECRET_WEEKLY"),
         ("ALPACA_KEY_MONTHLY", "ALPACA_SECRET_MONTHLY"),
         ("APCA_EMERGENCY_KEY", "APCA_API_SECRET_KEY")
@@ -111,6 +110,7 @@ def get_alpaca_client():
     if used_pair:
         try:
             logger.info(f"Using Alpaca keys from env vars: {used_pair[0]} / {used_pair[1]}")
+            logger.info(f"DEBUG: Key value starts with: {key[:5]}...")
         except Exception:
             pass
 

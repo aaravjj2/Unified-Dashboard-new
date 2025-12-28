@@ -42,12 +42,12 @@ def main():
     logger.info(f"Python path: {sys.path[:3]}")
     
     try:
-        # Import and run the dashboard
-        logger.info("\n📦 Importing financial_dashboard.index...")
-        from financial_dashboard.index import create_app
+        # Import and run the dashboard via index.initialize_app()
+        logger.info("\n📦 Importing financial_dashboard.index.initialize_app...")
+        from financial_dashboard.index import initialize_app
         
-        logger.info("\n🔨 Creating app instance...")
-        app = create_app()
+        logger.info("\n🔨 Creating app instance via initialize_app()...")
+        app = initialize_app()
         
         logger.info("\n✅ App created successfully!")
         logger.info(f"App type: {type(app)}")

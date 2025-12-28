@@ -1,239 +1,200 @@
-# Options Lab Module
+# Alpaca Options Lab
 
-**Status**: ✅ Production-Ready  
-**Phase**: 0.8 Expansion - Agent 1B  
-**Integration**: Modular, Docker-Safe, Isolated
+A professional-grade options chain viewer with real-time data from Alpaca Markets.
 
----
+## Features
 
-## 📋 Overview
+- **Real-time Options Data**: Fetches live options chains via Alpaca API
+- **Alpaca-style UI**: Clean, professional interface matching Alpaca web design
+- **Side-by-side Display**: Calls and puts displayed together per strike
+- **Full Greeks**: Delta, Gamma, Theta, Vega for all contracts
+- **IV Display**: Implied volatility with visual indicators
+- **Export**: CSV and JSON export for analysis
+- **Caching**: TTL-based cache to reduce API calls
+- **Circuit Breaker**: Resilient API handling with automatic recovery
 
-The Options Lab is a comprehensive options trading analytics platform integrated into the Unified Financial Dashboard. It provides real-time options chain analysis, Greeks visualization, 3D volatility surfaces, and P&L simulation capabilities.
+## Quick Start
 
-### Key Features
+### 1. Set up API Keys
 
-1. **📊 Chain Viewer**
-   - Live options chain data from yfinance
-   - Filter by expiration, option type, and moneyness
-   - Real-time volume and open interest tracking
-   - CSV export functionality
-
-2. **🔢 Greeks Dashboard**
-   - Delta, Gamma, Theta, Vega visualization
-   - Implied volatility smile analysis
-   - Interactive charts with Plotly
-   - Real-time risk metrics
-
-3. **🌐 Vol Surface**
-   - 3D volatility surface visualization
-   - Adjustable view angles and color scales
-   - Moneyness vs. expiration heatmap
-   - Interactive rotation controls
-
-4. **🎯 Trade Simulator**
-   - P&L calculation for popular strategies
-   - Support for: Long Call/Put, Spreads, Straddles, Iron Condor
-   - Max profit/loss/breakeven analysis
-   - Visual P&L profiles
-
----
-
-## 🏗️ Architecture
-
-```
-tabs/options_lab/
-├── __init__.py          # Module exports
-├── layout.py            # UI components (4 subtabs)
-├── callbacks.py         # Interactive logic (7 callbacks)
-├── data_loader.py       # yfinance integration + mock data
-└── README.md            # This file
-```
-
-### Design Principles
-
-- **Modularity**: Self-contained with clear separation of concerns
-- **Graceful Degradation**: Falls back to mock data if API fails
-- **Error Handling**: Try-except blocks with user-friendly messages
-- **Performance**: Caching with dcc.Store, debounced updates
-- **Testability**: Mock data support for E2E tests
-
----
-
-## 🔌 Integration
-
-### Register in `index.py`
-
-```python
-from tabs.options_lab import layout as options_lab_layout, register_callbacks as register_options_lab
-
-# In create_layout():
-dbc.Tab(
-    label="💹 Options Lab",
-    tab_id="options_lab",
-    children=[options_lab_layout()]
-)
-
-# In main():
-register_options_lab(app)
-```
-
-### Dependencies
-
-All dependencies are already in `requirements.txt`:
-- `yfinance` - Options data fetching
-- `plotly` - Interactive charts
-- `dash-bootstrap-components` - UI components
-- `pandas`, `numpy` - Data manipulation
-
----
-
-## 🧪 Testing
-
-### Manual Testing
-
-1. Navigate to Options Lab tab
-2. Enter ticker (e.g., "AAPL")
-3. Click "Load Chain" (or "Use Mock Data" for testing)
-4. Verify each subtab loads correctly:
-   - Chain Viewer: Table renders
-   - Greeks Dashboard: Charts update
-   - Vol Surface: 3D plot displays
-   - Trade Simulator: P&L calculates
-
-### Automated E2E Testing
-
-Use `tests/test_options_lab_e2e.py`:
+Create a `keys.env` file in the project root:
 
 ```bash
-docker exec dash_app pytest tests/test_options_lab_e2e.py -v
+APCA_API_KEY_ID=your_api_key_here
+APCA_API_SECRET_KEY=your_secret_key_here
 ```
 
-Expected: 3/3 iterations pass for each subtab.
+### 2. Run the Standalone UI
 
----
-
-## 📊 Data Flow
-
-```
-User Input (Ticker) 
-  → Load Chain Button Click
-  → data_loader.fetch_options_chain()
-  → yfinance API (or mock fallback)
-  → Store data in dcc.Store
-  → Trigger dependent callbacks
-  → Render visualizations
+```bash
+python test_alpaca_options_ui.py
 ```
 
-### Callback Chain
+Open http://localhost:8053 in your browser.
 
-1. **Load Chain** → Stores data, updates dropdown
-2. **Update Summary** → Reads store, updates cards
-3. **Render Table** → Reads store + filters, displays DataTable
-4. **Update Greeks** → Reads store, generates 5 charts
-5. **Vol Surface** → Generates 3D surface from ticker
-6. **Export CSV** → Converts store data to CSV download
-7. **Calculate P&L** → Simulates strategy, plots profile
+### 3. Use in Main Dashboard
 
----
+The Alpaca Options Lab is integrated into the main Financial Dashboard under the "💹 Options Lab" tab.
 
-## 🚀 Features Roadmap
+```bash
+python financial_dashboard/index.py
+```
 
-### Phase 1 (Current - Complete)
-- ✅ Options chain viewer with filtering
-- ✅ Greeks dashboard (Delta, Gamma, Theta, Vega)
-- ✅ 3D volatility surface
-- ✅ Trade simulator with P&L profiles
-- ✅ CSV export functionality
+## API Reference
 
-### Phase 2 (Future Enhancements)
-- [ ] Real-time streaming updates
-- [ ] Historical IV rank/percentile
-- [ ] Multi-leg strategy builder
-- [ ] Backtesting for options strategies
-- [ ] Integration with Portfolio tab for live positions
+### AlpacaOptionsClient
 
----
-
-## ⚙️ Configuration
-
-### Mock Data Mode
-
-For testing without API calls:
 ```python
-chain_data = fetch_options_chain('AAPL', use_mock=True)
+from financial_dashboard.tabs.options_lab.alpaca_options import get_alpaca_client
+
+client = get_alpaca_client()
+
+# Fetch options chain
+chain_data = client.get_option_chain('SPY')
+
+# Access data
+print(chain_data['ticker'])      # 'SPY'
+print(chain_data['spot_price'])  # Current stock price
+print(chain_data['expirations']) # Available expirations
+print(chain_data['chains'])      # Dict of {expiration: {calls, puts}}
 ```
 
-### Auto-Refresh Interval
+### Caching
 
-Disabled by default. Enable in layout.py:
 ```python
-dcc.Interval(
-    id='options-refresh-interval',
-    interval=30*1000,  # 30 seconds
-    disabled=False  # Set to False to enable
+from financial_dashboard.tabs.options_lab.options_cache import get_options_cache
+
+cache = get_options_cache(default_ttl=300, max_size=100)
+
+# Get cached data
+data = cache.get('SPY_2025-12-29')
+
+# Get with auto-fetch
+data, was_cached = cache.get_or_fetch(
+    'SPY_2025-12-29',
+    lambda: client.get_option_chain('SPY')
 )
+
+# Check stats
+print(cache.stats.hit_rate)  # Cache hit rate
 ```
 
----
+### Circuit Breaker
 
-## 🐛 Troubleshooting
+```python
+from financial_dashboard.tabs.options_lab.circuit_breaker import with_circuit_breaker
 
-### "No options data available"
-- **Cause**: Ticker has no listed options
-- **Solution**: Try a different ticker (AAPL, MSFT, SPY, QQQ)
+@with_circuit_breaker("alpaca_api", failure_threshold=5, recovery_timeout=60)
+def fetch_data():
+    return client.get_option_chain('SPY')
+```
 
-### "Error loading chain"
-- **Cause**: yfinance API timeout or rate limit
-- **Solution**: Click "Use Mock Data" button
+### Export
 
-### Charts not updating
-- **Cause**: Empty chain data store
-- **Solution**: Click "Load Chain" again
+```python
+from financial_dashboard.tabs.options_lab.export_utils import (
+    export_chain_to_csv,
+    export_chain_to_json
+)
 
-### Export CSV fails
-- **Cause**: Browser blocks download
-- **Solution**: Check browser pop-up blocker settings
+# Export to CSV
+csv_content = export_chain_to_csv(chain_data, '2025-12-29')
 
----
+# Export to JSON
+json_content = export_chain_to_json(chain_data, pretty=True)
+```
 
-## 📝 Code Quality
+## Testing
 
-- **Logging**: All errors logged to `logger`
-- **Type Hints**: Used throughout for clarity
-- **Docstrings**: Google-style for all functions
-- **Error Handling**: Try-except with graceful fallbacks
-- **PEP 8**: Compliant formatting
+### Run Unit Tests
 
----
+```bash
+pytest tests/test_alpaca_callbacks.py -v
+```
 
-## 🔒 Security Considerations
+### Run E2E Tests
 
-- **No API Keys Required**: yfinance is public/free
-- **No User Data Storage**: All data is session-based
-- **No External Dependencies**: Self-contained module
-- **Docker Isolation**: Runs in containerized environment
+```bash
+# Start test server
+python test_alpaca_options_ui.py &
 
----
+# Run Playwright tests
+python test_alpaca_deep_8053.py
+```
 
-## 📈 Performance Metrics
+### Run All Tests
 
-- **Load Time**: < 2s for options chain (mock data)
-- **Chart Render**: < 500ms for all 5 Greeks charts
-- **Vol Surface**: < 1s for 3D plot generation
-- **Memory Footprint**: ~50MB for typical chain data
+```bash
+pytest tests/ -v --tb=short
+```
 
----
+## Health Endpoints
 
-## 👥 Authors
+When integrated with the main dashboard, health endpoints are available:
 
-**Phase 0.8 Expansion - Agent 1B**  
-Mission ID: PHASE_0.8_EXPANSION_AGENT1B  
-Status: Integration-Ready  
-Date: October 26, 2025
+- `GET /api/options/health` - Basic health check
+- `GET /api/options/ready` - Readiness probe
+- `GET /api/options/metrics` - Service metrics
+- `GET /api/options/cache/info` - Cache details
+- `POST /api/options/cache/clear` - Clear cache
 
----
+## Configuration
 
-## 📄 License
+### Environment Variables
 
-Part of the Unified Financial Dashboard project.  
-All rights reserved.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `APCA_API_KEY_ID` | Alpaca API Key | Required |
+| `APCA_API_SECRET_KEY` | Alpaca API Secret | Required |
+| `APCA_API_BASE_URL` | Alpaca API URL | `https://paper-api.alpaca.markets` |
+| `APCA_DATA_URL` | Alpaca Data URL | `https://data.alpaca.markets` |
+
+### Cache Settings
+
+Default cache configuration:
+- **TTL**: 5 minutes (300 seconds)
+- **Max Size**: 100 entries
+- **Eviction**: LRU (Least Recently Used)
+
+## Architecture
+
+```
+financial_dashboard/tabs/options_lab/
+├── __init__.py           # Module exports
+├── alpaca_options.py     # Alpaca API client
+├── alpaca_ui.py          # Dash UI components
+├── alpaca_callbacks.py   # Dash callbacks
+├── options_cache.py      # TTL cache implementation
+├── circuit_breaker.py    # Resilience pattern
+├── export_utils.py       # CSV/JSON export
+├── health_endpoints.py   # Health check API
+└── types.py              # Type definitions
+```
+
+## Troubleshooting
+
+### "Alpaca API credentials not configured"
+
+Ensure `keys.env` contains valid Alpaca credentials and is loaded before starting the app.
+
+### Cache not working
+
+Check cache stats via `/api/options/cache/info` or programmatically:
+
+```python
+from financial_dashboard.tabs.options_lab.options_cache import get_options_cache
+print(get_options_cache().get_info())
+```
+
+### API rate limiting
+
+The circuit breaker will automatically back off when hitting rate limits. Check circuit state:
+
+```python
+from financial_dashboard.tabs.options_lab.circuit_breaker import get_all_breaker_stats
+print(get_all_breaker_stats())
+```
+
+## License
+
+Part of the Unified Dashboard project.

@@ -105,53 +105,73 @@ def fetch_market_data(
             logger.error(f"❌ {error_msg}")
             errors.append(error_msg)
     
-    # All premium sources failed - try yfinance as last resort
-    logger.warning("All premium data sources failed, attempting yfinance fallback")
+    # All premium sources failed - try unified fetcher as last resort
+    logger.warning("All premium data sources failed, attempting unified price_fetch fallback")
     try:
-        import yfinance as yf
-        
+        from financial_dashboard.utils.price_fetch import fetch_historical_data, get_price_single
+
+        # Map period to days for history fetching
         period_map = {
-            '1d': '1d',
-            '1w': '5d',
-            '1mo': '1mo',
-            '3mo': '3mo',
-            '1y': '1y'
+            '1d': 1,
+            '1w': 7,
+            '1mo': 30,
+            '3mo': 90,
+            '1y': 365
         }
-        yf_period = period_map.get(period, '1mo')
-        
+        days = period_map.get(period, 30)
+
+        from datetime import datetime, timedelta
+        end_date = datetime.utcnow().date()
+        start_date = end_date - timedelta(days=days + 5)
+
         data = []
+        # Try to fetch historical data in batch first
+        try:
+            hist_df = fetch_historical_data(tickers, start_date=start_date.strftime('%Y-%m-%d'), end_date=end_date.strftime('%Y-%m-%d'), use_alpaca=True)
+        except Exception:
+            hist_df = None
+
         for ticker in tickers:
             try:
-                stock = yf.Ticker(ticker)
-                hist = stock.history(period=yf_period)
-                info = stock.info
-                
-                if not hist.empty:
-                    current_price = hist['Close'].iloc[-1]
-                    previous_close = hist['Close'].iloc[-2] if len(hist) >= 2 else current_price
-                    change_pct = ((current_price - previous_close) / previous_close) * 100 if previous_close else None
-                    
-                    data.append({
-                        'ticker': ticker,
-                        'source': 'yfinance',
-                        'current_price': float(current_price),
-                        'previous_close': float(previous_close),
-                        'change_pct': float(change_pct) if change_pct is not None else None,
-                        'high': float(hist['High'].iloc[-1]),
-                        'low': float(hist['Low'].iloc[-1]),
-                        'volume': int(hist['Volume'].iloc[-1]),
-                        'company_name': info.get('longName', ticker),
-                        'fetched_at': datetime.utcnow().isoformat()
-                    })
-                    logger.info(f"✅ yfinance fallback: {ticker} @ ${current_price:.2f}")
+                current_price_entry = get_price_single(ticker, use_cache=False)
+                current_price = current_price_entry.get('last_price')
+
+                previous_close = None
+                high = None
+                low = None
+                volume = None
+
+                if hist_df is not None and ticker in hist_df.columns and not hist_df[ticker].dropna().empty:
+                    series = hist_df[ticker].dropna()
+                    if len(series) >= 1:
+                        current_price = float(series.iloc[-1])
+                    if len(series) >= 2:
+                        previous_close = float(series.iloc[-2])
+                    # High/Low/Volume are not available from fetch_historical_data (Adj Close only)
+
+                change_pct = ((current_price - previous_close) / previous_close) * 100 if (previous_close and current_price) else None
+
+                data.append({
+                    'ticker': ticker,
+                    'source': current_price_entry.get('source', 'price_fetch'),
+                    'current_price': float(current_price) if current_price is not None else None,
+                    'previous_close': float(previous_close) if previous_close is not None else None,
+                    'change_pct': float(change_pct) if change_pct is not None else None,
+                    'high': high,
+                    'low': low,
+                    'volume': volume,
+                    'company_name': ticker,
+                    'fetched_at': datetime.utcnow().isoformat()
+                })
+
             except Exception as ticker_error:
-                logger.warning(f"yfinance failed for {ticker}: {ticker_error}")
-        
+                logger.warning(f"price_fetch failed for {ticker}: {ticker_error}")
+
         if data:
-            logger.info(f"✅ Successfully fetched data from yfinance fallback ({len(data)} tickers)")
+            logger.info(f"✅ Successfully fetched data from price_fetch fallback ({len(data)} tickers)")
             return {
                 'success': True,
-                'source': 'yfinance',
+                'source': 'price_fetch',
                 'data': data,
                 'tickers': tickers,
                 'period': period,
@@ -159,14 +179,14 @@ def fetch_market_data(
                 'errors': errors
             }
         else:
-            errors.append("yfinance: No valid data for any ticker")
-            
+            errors.append("price_fetch: No valid data for any ticker")
+
     except ImportError:
-        error_msg = "yfinance: Package not installed (pip install yfinance)"
+        error_msg = "price_fetch: Module not installed"
         logger.error(error_msg)
         errors.append(error_msg)
     except Exception as e:
-        error_msg = f"yfinance: {str(e)}"
+        error_msg = f"price_fetch: {str(e)}"
         logger.error(f"❌ {error_msg}")
         errors.append(error_msg)
     
@@ -202,10 +222,16 @@ def get_available_sources() -> List[str]:
         sources.append('alpaca')
     
     # yfinance always available as fallback (no API key needed)
+    # Only advertise yfinance as an available fallback if explicitly allowed
+    # This prevents UI/service code from depending on direct yfinance usage
+    # unless the environment opt-in is set (ALLOW_YFINANCE_FALLBACK=1).
     try:
-        import yfinance
-        sources.append('yfinance')
-    except ImportError:
+        allow_yf = os.getenv('ALLOW_YFINANCE_FALLBACK', '0') == '1'
+        if allow_yf:
+            import yfinance
+            sources.append('yfinance')
+    except Exception:
+        # If yfinance import fails or is not allowed, silently continue
         pass
     
     return sources
@@ -230,7 +256,7 @@ def health_check() -> Dict[str, Any]:
             'status': 'unknown'
         },
         'yfinance': {
-            'configured': True,  # No API key needed
+            'configured': os.getenv('ALLOW_YFINANCE_FALLBACK', '0') == '1',
             'status': 'unknown'
         }
     }

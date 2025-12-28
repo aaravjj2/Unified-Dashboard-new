@@ -175,6 +175,9 @@ class EnvironmentLoader:
             'Tiingo': bool(os.getenv('TIINGO_API_KEY')),
             'Quandl': bool(os.getenv('QUANDL_API_KEY')),
             'FRED': bool(os.getenv('FRED_API_KEY'))
+            ,
+            # Groq provider (API key may be present as GROQ_API_KEY)
+            'Groq': bool(os.getenv('GROQ_API_KEY') or os.getenv('GROQ_API'))
         }
 
 

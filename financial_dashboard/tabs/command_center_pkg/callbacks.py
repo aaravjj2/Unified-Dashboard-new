@@ -311,6 +311,7 @@ def register_callbacks(app):
         Input("cc-refresh-btn", "n_clicks"),
         Input("cc-auto-refresh", "n_intervals"),
         Input("cc-picks-run-btn", "n_clicks"),
+        Input("cc-picks-run-live-btn", "n_clicks"),
         prevent_initial_call=False
     )
     def load_picks_status(refresh_clicks, n_intervals, run_clicks):
@@ -321,12 +322,12 @@ def register_callbacks(app):
         try:
             from dash import html
             
-            # If run button clicked, trigger dry run
+            # If run button clicked, trigger dry run (legacy pipeline)
             if trigger_id == "cc-picks-run-btn" and run_clicks:
                 try:
                     response = httpx.post(
                         f"{CC_BASE_URL}/api/picks/run",
-                        json={"dry_run": True},
+                        json={"mode": "dryrun"},
                         timeout=30.0
                     )
                     response.raise_for_status()
@@ -334,6 +335,9 @@ def register_callbacks(app):
                     run_id = result.get("run_id", "N/A")
                 except Exception as e:
                     run_id = f"Error: {str(e)[:30]}"
+            # If live run button clicked, we open a confirmation modal (handled elsewhere)
+            elif trigger_id == "cc-picks-run-live-btn" and run_clicks:
+                run_id = "Pending confirmation"
             else:
                 run_id = "N/A"
             
@@ -357,6 +361,47 @@ def register_callbacks(app):
             logger.warning(f"Picks status error: {e}")
             from dash import html
             return html.P("Picks service unavailable", className="text-muted"), "Last run: N/A"
+
+
+    # Callback: open/confirm live execution modal and perform live run on confirm
+    @app.callback(
+        Output("cc-picks-live-confirm-modal", "is_open"),
+        Output("cc-picks-last-run-id", "children"),
+        Input("cc-picks-run-live-btn", "n_clicks"),
+        Input("cc-picks-live-confirm-btn", "n_clicks"),
+        Input("cc-picks-live-cancel-btn", "n_clicks"),
+        State("cc-picks-live-confirm-modal", "is_open"),
+        State("cc-picks-last-run-id", "children"),
+        prevent_initial_call=True
+    )
+    def handle_live_modal(open_clicks, confirm_clicks, cancel_clicks, is_open, last_run_text):
+        # If cancel clicked, simply close modal
+        if cancel_clicks:
+            return False, last_run_text
+
+        # If confirm clicked -> execute live run
+        if confirm_clicks:
+            try:
+                response = httpx.post(
+                    f"{CC_BASE_URL}/api/chat/execute_picks",
+                    json={"n": 5, "allocation_per_pick": 500, "execute": True},
+                    timeout=60.0
+                )
+                response.raise_for_status()
+                data = response.json()
+                if data.get('success'):
+                    run_text = "Live run executed"
+                else:
+                    run_text = f"Live run: {data.get('error', 'unknown')}"
+            except Exception as e:
+                run_text = f"Error: {str(e)[:80]}"
+            return False, f"Last run: {run_text}"
+
+        # Otherwise (open button clicked), open modal
+        if open_clicks:
+            return True, last_run_text
+
+        return is_open, last_run_text
     
     # Callback 6: Admin callback map
     @app.callback(

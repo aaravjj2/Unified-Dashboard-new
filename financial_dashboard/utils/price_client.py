@@ -433,7 +433,15 @@ class PriceClient:
         
         try:
             # Fetch 7 days of data (ensures we get Monday even if today is Tuesday)
-            data = yf.download(ticker, period="7d", interval="1d", progress=False)
+            # Explicit args: auto_adjust=True for adjusted prices, threads=False for stability
+            data = yf.download(
+                ticker,
+                period="7d",
+                interval="1d",
+                progress=False,
+                auto_adjust=True,
+                threads=False
+            )
             
             if not data.empty and 'Open' in data.columns:
                 # Get the first trading day's open price (use safe float)
@@ -781,7 +789,8 @@ class PriceClient:
         """Fetch single ticker from yfinance with fallback to Ticker.history()."""
         try:
             t = yf.Ticker(ticker)
-            hist = t.history(period='10d', interval='1d', actions=False)
+            # Use explicit auto_adjust=True for adjusted prices
+            hist = t.history(period='10d', interval='1d', actions=False, auto_adjust=True)
             
             if hist.empty or 'Close' not in hist.columns:
                 logger.warning(f"yfinance: No data for {ticker}")

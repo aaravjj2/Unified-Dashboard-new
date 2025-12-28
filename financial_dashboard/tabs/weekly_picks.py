@@ -374,9 +374,20 @@ def _load_and_enrich_picks():
                     logger.info(f"Loading weekly picks from JSON: {json_path}")
                     with open(json_path, 'r') as f:
                         data = _json.load(f)
-                    picks = data.get('picks', [])
+                    # Support both 'picks' and 'data' keys
+                    picks = data.get('picks') or data.get('data') or []
                     if picks:
                         json_df = pd.DataFrame(picks)
+                        
+                        # Extract top-level date if available
+                        top_level_date = data.get('week_start_date') or data.get('date')
+                        if top_level_date:
+                            try:
+                                # Assign to all rows
+                                json_df['date'] = pd.to_datetime(top_level_date)
+                            except Exception:
+                                pass
+                                
                         logger.info(f"Loaded {len(json_df)} picks from JSON")
                         csv_path = json_path
         except Exception as e:
@@ -385,12 +396,35 @@ def _load_and_enrich_picks():
         if json_df is not None and not json_df.empty:
             df = json_df
         else:
-            csv_path = _find_latest_weekly_picks()
-            if not csv_path:
-                return None, "No weekly picks found (CSV/JSON)", None
-            
-            logger.info(f"Loading weekly picks from CSV: {csv_path}")
-            df = pd.read_csv(csv_path)
+            # Prefer latest pipeline run selected.json if available so UI reflects recent runs
+            try:
+                runs_dir = os.path.join(os.path.dirname(__file__), '..', 'reports', 'picks', 'runs')
+                if os.path.exists(runs_dir):
+                    import glob
+                    sel_files = glob.glob(os.path.join(runs_dir, '*', 'selected.json'))
+                    sel_files = sorted(sel_files, key=os.path.getmtime, reverse=True)
+                    if sel_files:
+                        sel_path = sel_files[0]
+                        logger.info(f"Loading weekly picks from latest run selected.json: {sel_path}")
+                        df = pd.read_json(sel_path)
+                    else:
+                        csv_path = _find_latest_weekly_picks()
+                        if not csv_path:
+                            return None, "No weekly picks found (CSV/JSON)", None
+                        logger.info(f"Loading weekly picks from CSV: {csv_path}")
+                        df = pd.read_csv(csv_path)
+                else:
+                    csv_path = _find_latest_weekly_picks()
+                    if not csv_path:
+                        return None, "No weekly picks found (CSV/JSON)", None
+                    logger.info(f"Loading weekly picks from CSV: {csv_path}")
+                    df = pd.read_csv(csv_path)
+            except Exception:
+                csv_path = _find_latest_weekly_picks()
+                if not csv_path:
+                    return None, "No weekly picks found (CSV/JSON)", None
+                logger.info(f"Loading weekly picks from CSV: {csv_path}")
+                df = pd.read_csv(csv_path)
         
         # Data quality fix - replace N/A values with defaults
         if isinstance(df, pd.DataFrame):
@@ -530,6 +564,12 @@ def _load_and_enrich_picks():
         
         roi = (total_pl / total_spent * 100) if total_spent > 0 else 0
         
+        # Get latest week for summary
+        latest_week = df['date'].max() if 'date' in df.columns and not df.empty else None
+        latest_week_str = latest_week.strftime('%Y-%m-%d') if pd.notna(latest_week) else 'N/A'
+        
+
+        
         summary = {
             'total': total,
             'total_spent': f"{total_spent:,.0f}",
@@ -537,14 +577,41 @@ def _load_and_enrich_picks():
             'roi': f"{roi:+.2f}",
             'csv_path': csv_path,
             'update_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'source': 'csv'
+            'source': 'csv',
+            'latest_week': latest_week_str
         }
         
         # PHASE 4C: Cache the result before returning
         result = (df, None, summary)
-        _PICKS_CACHE['data'] = result
-        _PICKS_CACHE['timestamp'] = time.time()
-        logger.info(f"✅ CACHED: Weekly picks data (CSV source) saved for {_PICKS_CACHE['ttl']}s")
+        
+        # CRITICAL FIX: Only cache if we have valid price data.
+        # If we have "N/A" or missing prices, we should NOT cache (or cache briefly)
+        # so that the next refresh picks up the data from the background fetch.
+        has_valid_prices = False
+        try:
+            # Check if we have at least some valid price data
+            valid_prices = df['current_price'].dropna()
+            if not valid_prices.empty and len(valid_prices) > 0:
+                # Check if we have mostly valid prices (e.g. > 50%)
+                if len(valid_prices) >= len(df) * 0.5:
+                    has_valid_prices = True
+        except Exception:
+            pass
+
+        if has_valid_prices:
+            _PICKS_CACHE['data'] = result
+            _PICKS_CACHE['timestamp'] = time.time()
+            # Use standard TTL for valid data
+            _PICKS_CACHE['ttl'] = 300
+            logger.info(f"✅ CACHED: Weekly picks data (CSV source) saved for {_PICKS_CACHE['ttl']}s")
+        else:
+            # Don't cache (or cache very briefly) if waiting for prices
+            # This allows the auto-refresh to pick up new prices when they arrive
+            _PICKS_CACHE['data'] = result
+            _PICKS_CACHE['timestamp'] = time.time()
+            _PICKS_CACHE['ttl'] = 2  # Short TTL to allow immediate refresh
+            logger.info(f"⚠️ CACHED (SHORT TTL): Weekly picks data has incomplete prices, setting 2s TTL")
+            
         return result
         
     except Exception as e:
@@ -560,6 +627,8 @@ def _build_datatable(df):
     Returns:
         html.Div containing info, summary boxes, and DataTable
     """
+
+    
     # Force limit to 20 rows
     df = df.head(20)
     
@@ -1117,9 +1186,9 @@ def register_callbacks(app, SH=None):
             import os
             from pathlib import Path
             
-            # Get stock universe (S&P 500 top 100)
-            universe = StockUniverse.get_sp500(limit=50)  # Limit to 50 for speed
-            logger.info(f"Using universe of {len(universe)} stocks")
+            # Get stock universe (Broad: S&P 500 + NASDAQ + Mid-Cap)
+            universe = StockUniverse.get_broad_universe()
+            logger.info(f"Using broad universe of {len(universe)} stocks")
             
             # Create picker with default weights
             picker = EnsemblePicker()

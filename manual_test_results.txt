@@ -1,0 +1,45 @@
+INFO:__main__:============================================================
+INFO:__main__:MANUAL E2E TEST - All Enhancements
+INFO:__main__:Started: 2025-12-28 01:22:49
+INFO:__main__:============================================================
+INFO:__main__:
+=== TEST 1: Server Health ===
+INFO:__main__:✅ Server responding on port 8053
+INFO:__main__:
+=== TEST 2: Keys Loading ===
+INFO:__main__:✅ 42 API keys loaded from keys.env
+INFO:__main__:
+=== TEST 3: Async Components ===
+INFO:__main__:✅ async-dropdown.js loading successfully (eager_loading=True worked)
+INFO:__main__:
+=== TEST 4: Greeks Calculator ===
+WARNING:observability.sentry_config:⚠️ SENTRY_DSN not configured - exception tracking disabled
+WARNING:observability.datadog_config:⚠️ DATADOG_ENABLED=false - metrics disabled
+ERROR:__main__:❌ Greeks calculator error: calculate_all_greeks() got an unexpected keyword argument 'spot_price'
+INFO:__main__:
+=== TEST 5: GROQ API Integration ===
+ERROR:__main__:❌ GROQ API error: No module named 'load_keys_env'
+INFO:__main__:
+=== TEST 6: Flow Analysis ===
+INFO:__main__:✅ Flow analysis working:
+INFO:__main__:   P/C Volume: 1.17, P/C OI: 1.17
+INFO:__main__:   Max Pain: $145, Sentiment: Neutral
+INFO:__main__:
+=== TEST 7: Callback Errors ===
+WARNING:__main__:⚠️ Found 1 callback errors:
+WARNING:__main__:   Flow analysis error: unsupported operand type(s) for +: 'int' and 'NoneType'
+INFO:__main__:
+============================================================
+INFO:__main__:TEST SUMMARY
+INFO:__main__:============================================================
+INFO:__main__:✅ PASS - Server Health
+INFO:__main__:✅ PASS - Keys Loading
+INFO:__main__:✅ PASS - Async Components
+INFO:__main__:❌ FAIL - Greeks Calculator
+INFO:__main__:❌ FAIL - GROQ API
+INFO:__main__:✅ PASS - Flow Analysis
+INFO:__main__:❌ FAIL - Callback Errors
+INFO:__main__:------------------------------------------------------------
+INFO:__main__:TOTAL: 4/7 tests passed (57.1%)
+INFO:__main__:Finished: 2025-12-28 01:22:50
+INFO:__main__:============================================================

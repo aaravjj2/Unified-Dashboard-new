@@ -35,10 +35,10 @@ class TradingViewHandler:
     
     def _generate_initial_signals(self):
         """Generate initial mock signals for demonstration"""
-        tickers = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA', 'SPY', 'QQQ']
+        tickers = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA', 'SPY', 'QQQ', 'AMD', 'META', 'AMZN']
         signal_types = ['BUY_CALL', 'BUY_PUT', 'SELL_CALL', 'SELL_PUT', 'NEUTRAL']
         
-        for ticker in tickers[:4]:  # Generate 4 signals
+        for ticker in tickers:  # Generate signals for all tickers
             self.signals_cache.append({
                 'ticker': ticker,
                 'signal': random.choice(signal_types),
@@ -48,12 +48,13 @@ class TradingViewHandler:
                 'strategy': random.choice(['Momentum', 'Mean Reversion', 'Breakout', 'Volatility'])
             })
     
-    def get_signals(self, limit: int = 10) -> List[Dict]:
+    def get_signals(self, limit: int = 10, ticker: str = None) -> List[Dict]:
         """
         Get recent TradingView signals.
         
         Args:
             limit: Maximum number of signals to return
+            ticker: Optional ticker to generate signals for if not found
             
         Returns:
             List of signal dictionaries with ticker, signal type, confidence, etc.
@@ -62,6 +63,22 @@ class TradingViewHandler:
             # Occasionally add new signal
             if random.random() > 0.7:
                 self._generate_initial_signals()
+            
+            # If ticker specified and not in cache, generate signals for it
+            if ticker:
+                ticker = ticker.upper()
+                existing = [s for s in self.signals_cache if s['ticker'] == ticker]
+                if not existing:
+                    signal_types = ['BUY_CALL', 'BUY_PUT', 'SELL_CALL', 'SELL_PUT', 'NEUTRAL']
+                    for _ in range(3):  # Generate 3 signals for requested ticker
+                        self.signals_cache.append({
+                            'ticker': ticker,
+                            'signal': random.choice(signal_types),
+                            'confidence': round(random.uniform(0.65, 0.95), 2),
+                            'timestamp': (datetime.now() - timedelta(minutes=random.randint(1, 60))).isoformat(),
+                            'price': round(random.uniform(100, 400), 2),
+                            'strategy': random.choice(['Momentum', 'Mean Reversion', 'Breakout', 'Volatility'])
+                        })
             
             # Return most recent signals
             return sorted(self.signals_cache, key=lambda x: x['timestamp'], reverse=True)[:limit]

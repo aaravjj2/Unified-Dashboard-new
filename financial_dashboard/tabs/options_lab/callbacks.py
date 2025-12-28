@@ -227,7 +227,7 @@ def register_callbacks(app):
         from dash import dash_table
         
         if not chain_data:
-            return "No data loaded. Click 'Load Chain' to fetch options data."
+            return "Click 'Load Chain' to fetch options data."
         
         try:
             calls = pd.DataFrame(chain_data.get('calls', []))
@@ -368,7 +368,7 @@ def register_callbacks(app):
         if not chain_data:
             empty_fig = go.Figure()
             empty_fig.update_layout(
-                title="No data loaded",
+                title="Load chain to view",
                 template="plotly_white"
             )
             return empty_fig, empty_fig, empty_fig, empty_fig, empty_fig
@@ -502,6 +502,132 @@ def register_callbacks(app):
                 template="plotly_white"
             )
             return empty_fig, empty_fig, empty_fig, empty_fig, empty_fig
+    
+    
+    # Callback 5b: Manual Greeks Calculator
+    @app.callback(
+        Output('greeks-calc-results', 'children'),
+        [Input('greeks-calc-btn', 'n_clicks')],
+        [State('greeks-calc-strike', 'value'),
+         State('greeks-calc-dte', 'value'),
+         State('greeks-calc-iv', 'value'),
+         State('greeks-calc-type', 'value'),
+         State('options-chain-store', 'data')],
+        prevent_initial_call=True
+    )
+    def calculate_manual_greeks(n_clicks, strike, dte, iv, option_type, chain_data):
+        """Calculate Greeks manually using Black-Scholes model."""
+        if not n_clicks:
+            raise PreventUpdate
+        
+        # Validate inputs
+        if not all([strike, dte, iv]):
+            return dbc.Alert("⚠️ Please fill in all fields", color="warning")
+        
+        try:
+            from scipy.stats import norm
+            
+            # Get spot price from chain data or use default
+            spot = chain_data.get('spot_price', strike) if chain_data else strike
+            
+            # Convert inputs
+            S = float(spot)  # Spot price
+            K = float(strike)  # Strike price
+            T = float(dte) / 365.0  # Time to expiry in years
+            sigma = float(iv) / 100.0  # IV as decimal
+            r = 0.05  # Risk-free rate (5%)
+            
+            # Black-Scholes calculations
+            d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+            d2 = d1 - sigma * np.sqrt(T)
+            
+            if option_type == 'call':
+                # Call Greeks
+                delta = norm.cdf(d1)
+                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) 
+                        - r * K * np.exp(-r * T) * norm.cdf(d2)) / 365  # Per day
+                option_price = S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+                rho = K * T * np.exp(-r * T) * norm.cdf(d2) / 100  # Per 1% change
+            else:  # put
+                # Put Greeks
+                delta = -norm.cdf(-d1)
+                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) 
+                        + r * K * np.exp(-r * T) * norm.cdf(-d2)) / 365  # Per day
+                option_price = K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+                rho = -K * T * np.exp(-r * T) * norm.cdf(-d2) / 100  # Per 1% change
+            
+            # Greeks that are same for calls and puts
+            gamma = norm.pdf(d1) / (S * sigma * np.sqrt(T))
+            vega = S * norm.pdf(d1) * np.sqrt(T) / 100  # Per 1% change in IV
+            
+            # Create results display
+            results = dbc.Card([
+                dbc.CardHeader([
+                    html.H6(f"📊 {option_type.upper()} Option Greeks", className="mb-0")
+                ]),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            html.P([
+                                html.Strong("Spot Price: "),
+                                f"${S:.2f}"
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Strike: "),
+                                f"${K:.2f}"
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("DTE: "),
+                                f"{dte} days"
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("IV: "),
+                                f"{iv}%"
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Theoretical Price: "),
+                                f"${option_price:.2f}"
+                            ], className="mb-0 text-primary fw-bold"),
+                        ], width=6),
+                        dbc.Col([
+                            html.H6("Greeks:", className="mb-3"),
+                            html.P([
+                                html.Strong("Delta: "),
+                                f"{delta:.4f}",
+                                html.Small(" (price change per $1 stock move)", className="text-muted ms-2")
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Gamma: "),
+                                f"{gamma:.4f}",
+                                html.Small(" (delta change per $1 stock move)", className="text-muted ms-2")
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Theta: "),
+                                f"${theta:.2f}",
+                                html.Small(" (daily time decay)", className="text-muted ms-2")
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Vega: "),
+                                f"${vega:.2f}",
+                                html.Small(" (price change per 1% IV change)", className="text-muted ms-2")
+                            ], className="mb-2"),
+                            html.P([
+                                html.Strong("Rho: "),
+                                f"${rho:.2f}",
+                                html.Small(" (price change per 1% rate change)", className="text-muted ms-2")
+                            ], className="mb-0"),
+                        ], width=6),
+                    ])
+                ])
+            ], color="light", className="mt-3")
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error calculating manual Greeks: {e}")
+            import traceback
+            traceback.print_exc()
+            return dbc.Alert(f"❌ Error calculating Greeks: {str(e)}", color="danger")
     
     
     # Callback 6: Update Vol Surface 3D
@@ -1237,7 +1363,7 @@ def register_callbacks(app):
             from .tradingview_handler import get_tradingview_handler
             
             handler = get_tradingview_handler()
-            all_signals = handler.get_signals(limit=20)
+            all_signals = handler.get_signals(limit=20, ticker=ticker)  # Pass ticker to generate if needed
             
             # Filter signals for this ticker
             ticker_signals = [s for s in all_signals if s['ticker'] == ticker.upper()]
@@ -2312,30 +2438,38 @@ def register_callbacks(app):
             cards = []
             for rec in recs[:5]:
                 card_data = create_recommendation_card(rec)
+                # Render legs as a small table for clarity
+                legs_rows = []
+                for leg in (card_data.get('legs') or []):
+                    strike = leg.get('strike')
+                    exp = leg.get('expiration') or leg.get('exp') or leg.get('expiry')
+                    price = leg.get('estimated_price') or leg.get('option_price') or leg.get('price')
+                    legs_rows.append(html.Tr([
+                        html.Td(str(leg.get('action', '')).capitalize()),
+                        html.Td(str(leg.get('type', '')).upper()),
+                        html.Td(f"{strike}"),
+                        html.Td(f"{exp}"),
+                        html.Td(f"${price:.2f}" if price is not None else "--")
+                    ]))
+
+                legs_table = dbc.Table([
+                    html.Thead(html.Tr([html.Th("Action"), html.Th("Type"), html.Th("Strike"), html.Th("Expiry"), html.Th("Price")])),
+                    html.Tbody(legs_rows)
+                ], bordered=True, size='sm') if legs_rows else html.P("No legs available", className="small text-muted")
+
                 card = dbc.Card([
                     dbc.CardHeader([
                         html.Strong(f"{card_data['ticker']} - {card_data['strategy']}"),
-                        dbc.Badge(card_data['type'].upper(), 
-                                 color="primary", className="ms-2"),
-                        dbc.Badge(f"Confidence: {card_data['confidence']}", 
-                                 color="success", className="ms-2"),
+                        dbc.Badge(card_data['type'].upper(), color="primary", className="ms-2"),
+                        dbc.Badge(f"Confidence: {card_data['confidence']}", color="success", className="ms-2"),
                     ]),
                     dbc.CardBody([
                         html.P(card_data['rationale'], className="small"),
+                        legs_table,
                         dbc.Row([
-                            dbc.Col([
-                                html.Strong("Expected ROI: "),
-                                html.Span(card_data['expected_roi'], className="text-success")
-                            ], width=4),
-                            dbc.Col([
-                                html.Strong("Risk: "),
-                                html.Span(card_data['risk_level'].upper(),
-                                         style={'color': card_data['risk_color']})
-                            ], width=4),
-                            dbc.Col([
-                                html.Strong("Horizon: "),
-                                html.Span(card_data['time_horizon'])
-                            ], width=4),
+                            dbc.Col([html.Strong("Expected ROI: "), html.Span(card_data['expected_roi'], className="text-success")], width=4),
+                            dbc.Col([html.Strong("Risk: "), html.Span(card_data['risk_level'].upper(), style={'color': card_data['risk_color']})], width=4),
+                            dbc.Col([html.Strong("Horizon: "), html.Span(card_data['time_horizon'])], width=4),
                         ], className="mb-2"),
                     ])
                 ], className="mb-2")

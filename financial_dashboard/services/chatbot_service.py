@@ -20,8 +20,10 @@ from pydantic import BaseModel
 import httpx
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'keys.env'))
+# Load environment variables from project root keys.env
+# Path: services/chatbot_service.py -> financial_dashboard -> Unified-Dashboard (project root)
+_project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+load_dotenv(os.path.join(_project_root, 'keys.env'))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -52,32 +54,42 @@ async def lifespan(app: FastAPI):
     # Initialize HTTP client for internal service calls
     app.state.http_client = httpx.AsyncClient(timeout=60.0)
     
-    # Load LLM - prefer Ollama for GPU acceleration
+    # Load LLM - priority: Groq (cloud) > Ollama (GPU) > GPT4All (CPU)
     app.state.llm_available = False
     app.state.llm = None
     app.state.llm_backend = None
     
-    # Try Ollama first (GPU-accelerated)
-    ollama_url = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    try:
-        test_response = await app.state.http_client.get(f"{ollama_url}/api/tags", timeout=5.0)
-        if test_response.status_code == 200:
-            models = test_response.json().get("models", [])
-            model_names = [m.get("name", "") for m in models]
-            
-            # Check for Mistral model
-            if any("mistral" in m.lower() for m in model_names):
-                app.state.llm_backend = "ollama"
-                app.state.llm_available = True
-                app.state.ollama_model = next(m for m in model_names if "mistral" in m.lower())
-                app.state.ollama_url = ollama_url
-                logger.info(f"✅ Ollama backend ready with GPU acceleration - Model: {app.state.ollama_model}")
-            else:
-                logger.warning("Ollama available but no Mistral model found. Falling back...")
-    except Exception as e:
-        logger.warning(f"Ollama not available: {e}. Trying GPT4All fallback...")
+    # 1. Try Groq first (cloud, fast inference)
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    if groq_api_key:
+        app.state.groq_api_key = groq_api_key
+        app.state.groq_model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        app.state.llm_backend = "groq"
+        app.state.llm_available = True
+        logger.info(f"✅ Groq backend ready - Model: {app.state.groq_model}")
     
-    # Fallback to GPT4All if Ollama not available
+    # 2. Fallback to Ollama (GPU-accelerated local)
+    if not app.state.llm_available:
+        ollama_url = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        try:
+            test_response = await app.state.http_client.get(f"{ollama_url}/api/tags", timeout=5.0)
+            if test_response.status_code == 200:
+                models = test_response.json().get("models", [])
+                model_names = [m.get("name", "") for m in models]
+                
+                # Check for Mistral model
+                if any("mistral" in m.lower() for m in model_names):
+                    app.state.llm_backend = "ollama"
+                    app.state.llm_available = True
+                    app.state.ollama_model = next(m for m in model_names if "mistral" in m.lower())
+                    app.state.ollama_url = ollama_url
+                    logger.info(f"✅ Ollama backend ready with GPU acceleration - Model: {app.state.ollama_model}")
+                else:
+                    logger.warning("Ollama available but no Mistral model found. Falling back...")
+        except Exception as e:
+            logger.warning(f"Ollama not available: {e}. Trying GPT4All fallback...")
+    
+    # 3. Fallback to GPT4All (CPU local)
     if not app.state.llm_available:
         try:
             from gpt4all import GPT4All
@@ -580,6 +592,134 @@ Guidelines:
         return await process_query_rule_based(query, http_client)
 
 
+async def process_query_groq(query: str, api_key: str, model: str, http_client: httpx.AsyncClient) -> ChatResponse:
+    """Process query using Groq API (cloud, fast inference)"""
+    sources = []
+    context_parts = []
+    
+    # 1. Extract symbols and fetch market data
+    words = query.upper().replace('?', '').replace('.', '').replace(',', '').split()
+    exclude_words = {"WHAT", "WHEN", "WHERE", "PRICE", "COST", "ABOUT", "TELL", "SHOW", 
+                     "GIVE", "FIND", "HELP", "PLEASE", "THANK", "THANKS", "THE", "AND", 
+                     "FOR", "WITH", "FROM", "THAT", "THIS", "HAVE", "DOES", "MEAN", "LIKE",
+                     "KNOW", "MUCH", "MORE", "SOME", "MAKE", "GOOD", "BEST", "NEED", "WILL",
+                     "WOULD", "COULD", "SHOULD", "THERE", "THEIR", "THEY", "THEM", "THEN",
+                     "PORTFOLIO", "POSITION", "HOLDING", "ACCOUNT", "MONEY", "CASH",
+                     "VOLATILITY", "STRATEGY", "PICKS", "WATCHLIST", "BACKTEST"}
+    symbols = [w for w in words if len(w) <= 5 and w.isalpha() and w not in exclude_words]
+    
+    for symbol in symbols[:3]:
+        price_data = await fetch_stock_price(symbol, http_client)
+        if price_data:
+            change_str = f"{price_data.get('change', 0):+.2f} ({price_data.get('change_percent', 0):+.2f}%)"
+            context_parts.append(f"Market Data for {symbol}:\n- Price: ${price_data.get('price', 'N/A')}\n- Change: {change_str}\n- Source: {price_data.get('source', 'Unknown')}")
+            sources.append(f"Quote ({symbol})")
+        
+        # Fetch volatility data if volatility-related query
+        if any(k in query.upper() for k in ["VOLATILITY", "VOL", "IV", "VOLATILE"]):
+            vol_data = await fetch_volatility_data(symbol, http_client)
+            if vol_data:
+                context_parts.append(f"Volatility Data for {symbol}:\n- Annualized Volatility: {vol_data['volatility']}%\n- Avg Volume: {vol_data['avg_volume']:,}\n- 30-Day Range: ${vol_data['price_range']['low']} - ${vol_data['price_range']['high']}")
+                sources.append(f"Volatility ({symbol})")
+            
+    # 2. Check for portfolio/position keywords
+    if any(k in query.upper() for k in ["PORTFOLIO", "POSITION", "HOLDING", "ACCOUNT"]):
+        positions = await fetch_alpaca_positions(http_client)
+        if positions:
+            pos_str = "Current Portfolio Positions:\n"
+            for p in positions:
+                symbol = p.get('symbol')
+                qty = p.get('qty')
+                mv = float(p.get('market_value', 0))
+                pl_pct = float(p.get('unrealized_plpc', 0)) * 100
+                pos_str += f"- {symbol}: {qty} shares, Value: ${mv:.2f}, P&L: {pl_pct:+.2f}%\n"
+            context_parts.append(pos_str)
+            sources.append("Alpaca Portfolio")
+        else:
+            context_parts.append("Portfolio: No open positions found or API unavailable.")
+    
+    # 3. Check for picks/recommendations keywords
+    if any(k in query.upper() for k in ["PICKS", "RECOMMEND", "SUGGESTION", "WHAT TO BUY", "TOP STOCKS"]):
+        picks = await fetch_weekly_picks(http_client)
+        if picks:
+            picks_str = "Weekly Stock Picks:\n"
+            for p in picks[:5]:
+                picks_str += f"- {p.get('symbol', 'N/A')}: {p.get('reason', 'AI recommended')}\n"
+            context_parts.append(picks_str)
+            sources.append("Weekly Picks")
+    
+    # 4. Build prompt
+    current_date = datetime.now().strftime("%B %d, %Y")
+    context_str = "\n\n".join(context_parts)
+    
+    system_prompt = f"""You are a professional financial assistant for a trading dashboard.
+Current Date: {current_date}
+
+Your Role:
+- Analyze market data and provide trading insights.
+- Explain financial concepts (Options, Greeks, Technical Analysis).
+- Assist with portfolio management.
+
+Guidelines:
+- Be concise, accurate, and professional.
+- Use the provided Context data to answer questions.
+- If context is missing, provide general knowledge but mention you don't have real-time data.
+- Format numbers clearly (e.g., $150.25, +1.5%).
+- Keep responses under 150 words for speed."""
+
+    messages = [
+        {"role": "system", "content": system_prompt}
+    ]
+    
+    if context_str:
+        messages.append({"role": "user", "content": f"CONTEXT DATA:\n{context_str}\n\nUSER QUESTION: {query}"})
+    else:
+        messages.append({"role": "user", "content": query})
+    
+    # 5. Call Groq API (OpenAI-compatible)
+    try:
+        payload = {
+            "model": model,
+            "messages": messages,
+            "temperature": 0.7,
+            "max_tokens": 300,
+            "top_p": 0.9
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        response = await http_client.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            json=payload,
+            headers=headers,
+            timeout=30.0
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            response_text = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+            
+            # Log performance metrics
+            usage = data.get("usage", {})
+            logger.info(f"Groq response: {usage.get('completion_tokens', 0)} tokens generated")
+            
+            return ChatResponse(
+                response=response_text,
+                timestamp=datetime.now().isoformat(),
+                sources=sources
+            )
+        else:
+            logger.error(f"Groq API error: {response.status_code} - {response.text}")
+            return await process_query_rule_based(query, http_client)
+            
+    except Exception as e:
+        logger.error(f"Groq generation failed: {e}")
+        return await process_query_rule_based(query, http_client)
+
+
 async def process_query_rule_based(query: str, http_client: httpx.AsyncClient) -> ChatResponse:
     """Smart rule-based processing with market data and intelligent responses"""
     sources = []
@@ -756,7 +896,10 @@ async def health_check():
     llm_available = getattr(app.state, 'llm_available', False)
     llm_backend = getattr(app.state, 'llm_backend', None)
     
-    if llm_backend == "ollama":
+    if llm_backend == "groq":
+        model_name = getattr(app.state, 'groq_model', 'llama-3.3-70b-versatile')
+        mode = "Groq (Cloud)"
+    elif llm_backend == "ollama":
         model_name = getattr(app.state, 'ollama_model', 'mistral:7b')
         mode = "Ollama (GPU)"
     elif llm_backend == "gpt4all":
@@ -784,9 +927,110 @@ async def chat(request: ChatRequest, req: Request):
     try:
         logger.info(f"Received chat request: {request.message[:50]}...")
         
+        # Short-circuit deterministic Morning Brief generation when requested
+        msg_upper = request.message.upper()
+        if "MORNING BRIEF" in msg_upper or "MARKET OVERVIEW" in msg_upper or "MARKET TODAY" in msg_upper:
+            # Use synchronous AIMorningBriefService to generate deterministic brief
+            try:
+                from .ai_morning_brief import AIMorningBriefService
+                service = AIMorningBriefService()
+                brief = service.generate_full_brief()
+            except Exception as e:
+                logger.warning(f"Failed to generate morning brief synchronously: {e}")
+                brief = None
+
+            if brief:
+                # Prefer AI narrative from brief summary if available
+                summary_section = next((s for s in brief.get('sections', []) if s.get('category') == 'summary'), None)
+                if summary_section:
+                    content = summary_section.get('content', {})
+                    narrative = content.get('ai_narrative') or None
+                    if narrative:
+                        return ChatResponse(response=narrative, timestamp=datetime.now().isoformat(), sources=["MorningBrief"])
+
+                    # Otherwise assemble a concise deterministic brief using live market service
+                    lines = []
+
+                    # Market sentiment from summary if present
+                    market_sent = content.get('market_sentiment', {})
+                    ms_overall = market_sent.get('overall') if market_sent else None
+                    ms_conf = market_sent.get('confidence') if market_sent else None
+
+                    # Fallback: derive sentiment from live indices if summary missing
+                    if not ms_overall:
+                        try:
+                            from .live_market_data import get_live_market_service
+                            ms = get_live_market_service().get_market_summary()
+                            spy_idx = ms.get('indices', {}).get('SPY', {})
+                            change_pct = spy_idx.get('change_pct') or 0
+                            if change_pct > 0.5:
+                                ms_overall = 'Bull'
+                            elif change_pct < -0.5:
+                                ms_overall = 'Bear'
+                            else:
+                                ms_overall = 'Neutral'
+                            ms_conf = ms.get('fear_greed', {}).get('value', 50)
+                        except Exception:
+                            ms_overall = 'Neutral'
+                            ms_conf = 0
+
+                    # Guarantee a readable sentiment string
+                    if not ms_overall:
+                        ms_overall = 'Neutral'
+                    if ms_conf is None:
+                        ms_conf = 0
+
+                    lines.append(f"**Current market sentiment:** {ms_overall} (Confidence: {ms_conf}%)")
+
+                    # Key events
+                    key_events = content.get('key_events', [])
+                    if key_events:
+                        ev = key_events[0]
+                        lines.append(f"**Key event:** {ev.get('event')} ({ev.get('impact', 'MEDIUM')})")
+                    else:
+                        lines.append("**Key events:** No high-severity news found in the last 24 hours")
+
+                    # Portfolio tip
+                    portfolio = content.get('portfolio_context', {})
+                    if portfolio and portfolio.get('position_count', 0) > 0:
+                        lines.append(f"**Portfolio Management Tip:** You have {portfolio.get('position_count')} open positions; review stop-loss levels.")
+                    else:
+                        lines.append("**Portfolio Management Tip:** No open positions found in your portfolio.")
+
+                    # Fetch SPY/QQQ from live market summary (prefer last known if live not available)
+                    try:
+                        from .live_market_data import get_live_market_service
+                        ms = get_live_market_service().get_market_summary()
+                        spy_idx = ms.get('indices', {}).get('SPY')
+                        qqq_idx = ms.get('indices', {}).get('QQQ')
+
+                        if spy_idx and spy_idx.get('price'):
+                            lines.append(f"SPY: ${spy_idx.get('price'):.2f} ({spy_idx.get('change_pct'):+.2f}%)")
+                        else:
+                            lines.append("SPY: No real-time data available")
+
+                        if qqq_idx and qqq_idx.get('price'):
+                            lines.append(f"QQQ: ${qqq_idx.get('price'):.2f} ({qqq_idx.get('change_pct'):+.2f}%)")
+                        else:
+                            lines.append("QQQ: No real-time data available")
+
+                    except Exception:
+                        lines.append("SPY: No real-time data available")
+                        lines.append("QQQ: No real-time data available")
+
+                    return ChatResponse(response="\n\n".join(lines), timestamp=datetime.now().isoformat(), sources=["MorningBrief"])
+
         llm_backend = getattr(req.app.state, 'llm_backend', None)
         
-        if llm_backend == "ollama":
+        if llm_backend == "groq":
+            # Use Groq (cloud, fast)
+            response = await process_query_groq(
+                request.message,
+                req.app.state.groq_api_key,
+                req.app.state.groq_model,
+                req.app.state.http_client
+            )
+        elif llm_backend == "ollama":
             # Use Ollama (GPU-accelerated)
             response = await process_query_ollama(
                 request.message,
@@ -801,10 +1045,109 @@ async def chat(request: ChatRequest, req: Request):
             # Fallback to rule-based
             response = await process_query_rule_based(request.message, req.app.state.http_client)
             
-        return response
-        
+        return response        
     except Exception as e:
         logger.error(f"Error processing chat request: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# FinGPT Sentiment Analysis Endpoint
+# ============================================================================
+
+class SentimentRequest(BaseModel):
+    """Sentiment analysis request"""
+    text: str
+    
+
+class SentimentResponse(BaseModel):
+    """Sentiment analysis response"""
+    sentiment: str
+    score: float
+    confidence: float
+    model: str
+    timestamp: str
+
+
+@app.post("/api/sentiment", response_model=SentimentResponse)
+async def analyze_sentiment(request: SentimentRequest):
+    """
+    Analyze financial sentiment using FinGPT or fallback rule-based.
+    """
+    try:
+        from .fingpt_sentiment_service import analyze_sentiment_fingpt, is_fingpt_available
+        
+        result = analyze_sentiment_fingpt(request.text)
+        
+        return SentimentResponse(
+            sentiment=result["sentiment"],
+            score=result["score"],
+            confidence=result["confidence"],
+            model=result["model"],
+            timestamp=result["timestamp"]
+        )
+    except ImportError:
+        # Fallback if service not available
+        logger.warning("FinGPT service not available, using inline fallback")
+        text_lower = request.text.lower()
+        
+        positive = ["surge", "gain", "rise", "profit", "growth", "beat", "strong"]
+        negative = ["drop", "fall", "loss", "decline", "miss", "weak", "crash"]
+        
+        pos = sum(1 for w in positive if w in text_lower)
+        neg = sum(1 for w in negative if w in text_lower)
+        
+        if pos > neg:
+            sentiment, score = "positive", 0.5
+        elif neg > pos:
+            sentiment, score = "negative", -0.5
+        else:
+            sentiment, score = "neutral", 0.0
+        
+        return SentimentResponse(
+            sentiment=sentiment,
+            score=score,
+            confidence=0.4,
+            model="inline-fallback",
+            timestamp=datetime.now().isoformat()
+        )
+    except Exception as e:
+        logger.error(f"Sentiment analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/sentiment/batch")
+async def analyze_sentiment_batch(texts: List[str]):
+    """Analyze sentiment for multiple texts."""
+    try:
+        from .fingpt_sentiment_service import analyze_batch_sentiment
+        results = analyze_batch_sentiment(texts)
+        return {"results": results, "count": len(results)}
+    except Exception as e:
+        logger.error(f"Batch sentiment error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# FinGPT Forecast Endpoint
+# ============================================================================
+
+class ForecastRequest(BaseModel):
+    """Stock forecast request"""
+    symbol: str
+
+
+@app.post("/api/forecast")
+async def get_stock_forecast(request: ForecastRequest):
+    """
+    Generate AI-powered stock forecast using FinGPT-style analysis.
+    """
+    try:
+        from .fingpt_forecast_service import generate_stock_forecast
+        result = await generate_stock_forecast(request.symbol)
+        return result
+    except Exception as e:
+        logger.error(f"Forecast error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

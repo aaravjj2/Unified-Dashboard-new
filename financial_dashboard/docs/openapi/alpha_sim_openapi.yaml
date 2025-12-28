@@ -1,0 +1,542 @@
+openapi: 3.0.3
+info:
+  title: AlphaSim API
+  description: |
+    Internal Alpha Vantage-compatible API service for Research Lab.
+    
+    AlphaSim provides time-series data, technical indicators, news sentiment analysis,
+    and options chain data in a format compatible with Alpha Vantage's API.
+  version: 0.1.0
+  contact:
+    name: Research Lab Team
+    email: research-lab@example.com
+
+servers:
+  - url: http://localhost:8065
+    description: Local development server
+  - url: https://alpha-sim.internal.example.com
+    description: Production server
+
+paths:
+  /query:
+    get:
+      summary: Query AlphaSim (AlphaV-like)
+      description: |
+        Main query endpoint that mimics Alpha Vantage API surface.
+        Supports time series, technical indicators, news sentiment, and options data.
+      operationId: queryAlphaSim
+      parameters:
+        - $ref: '#/components/parameters/apikey'
+        - $ref: '#/components/parameters/function'
+        - name: symbol
+          in: query
+          description: Ticker symbol (e.g., AAPL, SPY)
+          required: false
+          schema:
+            type: string
+            example: AAPL
+        - name: outputsize
+          in: query
+          description: Output size for time series data
+          schema:
+            type: string
+            enum: [compact, full]
+            default: compact
+        - name: interval
+          in: query
+          description: Time interval for intraday data
+          schema:
+            type: string
+            enum: [1min, 5min, 15min, 30min, 60min]
+            default: 5min
+        - name: time_period
+          in: query
+          description: Number of periods for technical indicators
+          schema:
+            type: integer
+            default: 10
+        - name: series_type
+          in: query
+          description: Price type for indicators (open, high, low, close)
+          schema:
+            type: string
+            enum: [open, high, low, close]
+            default: close
+        - name: datatype
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, csv]
+            default: json
+      responses:
+        '200':
+          description: AlphaV-like response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TimeSeriesDailyResponse'
+                  - $ref: '#/components/schemas/SMAResponse'
+                  - $ref: '#/components/schemas/NewsSentimentResponse'
+                  - $ref: '#/components/schemas/OptionsChainResponse'
+              examples:
+                timeSeries:
+                  $ref: '#/components/examples/TimeSeriesDailyExample'
+                sma:
+                  $ref: '#/components/examples/SMAExample'
+                newsSentiment:
+                  $ref: '#/components/examples/NewsSentimentExample'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponse'
+          headers:
+            Retry-After:
+              description: Number of seconds until rate limit resets
+              schema:
+                type: integer
+
+  /health:
+    get:
+      summary: Readiness/Liveness check
+      description: Health check endpoint for readiness and liveness probes
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: alpha_sim
+        '503':
+          description: Service Unavailable
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: Returns service metrics including cache stats and rate limiter info
+      operationId: getMetrics
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cache:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      size:
+                        type: integer
+                  rate_limiter:
+                    type: object
+                    properties:
+                      active_keys:
+                        type: integer
+
+  /admin/quota/{key}:
+    get:
+      summary: Admin - Read token bucket info
+      description: Get quota information for an API key (admin access required)
+      operationId: adminGetQuota
+      security:
+        - AdminKeyAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: The API key to check quota for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Quota info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuotaInfo'
+        '403':
+          description: Admin access required
+
+  /admin/reset/{key}:
+    post:
+      summary: Admin - Reset token bucket
+      description: Reset quota for an API key (admin access required)
+      operationId: adminResetQuota
+      security:
+        - AdminKeyAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: The API key to reset
+          schema:
+            type: string
+        - name: tokens
+          in: query
+          required: false
+          description: Number of tokens to set (defaults to max)
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  tokens:
+                    type: number
+        '403':
+          description: Admin access required
+
+  /:
+    get:
+      summary: API Info
+      description: Root endpoint with API information
+      operationId: getApiInfo
+      responses:
+        '200':
+          description: API information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    type: string
+                  version:
+                    type: string
+                  description:
+                    type: string
+                  endpoints:
+                    type: object
+                  supported_functions:
+                    type: array
+                    items:
+                      type: string
+
+components:
+  parameters:
+    apikey:
+      name: apikey
+      in: query
+      required: true
+      description: API key for rate limiting
+      schema:
+        type: string
+        example: demo
+    function:
+      name: function
+      in: query
+      required: true
+      description: AlphaV function name
+      schema:
+        type: string
+        enum:
+          - TIME_SERIES_DAILY
+          - TIME_SERIES_INTRADAY
+          - SMA
+          - EMA
+          - RSI
+          - NEWS_SENTIMENT
+          - HISTORICAL_OPTIONS
+
+  schemas:
+    MetaData:
+      type: object
+      properties:
+        1. Information:
+          type: string
+        2. Symbol:
+          type: string
+        3. Last Refreshed:
+          type: string
+          format: date-time
+        4. Output Size:
+          type: string
+        5. Time Zone:
+          type: string
+
+    TimeSeriesEntry:
+      type: object
+      properties:
+        1. open:
+          type: string
+        2. high:
+          type: string
+        3. low:
+          type: string
+        4. close:
+          type: string
+        5. volume:
+          type: string
+
+    TimeSeriesDailyResponse:
+      type: object
+      properties:
+        Meta Data:
+          $ref: '#/components/schemas/MetaData'
+        Time Series (Daily):
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/TimeSeriesEntry'
+
+    SMAResponse:
+      type: object
+      properties:
+        Meta Data:
+          allOf:
+            - $ref: '#/components/schemas/MetaData'
+            - type: object
+              properties:
+                5. Indicator:
+                  type: string
+                6. Time Period:
+                  type: integer
+                7. Series Type:
+                  type: string
+        Technical Analysis: SMA:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              SMA:
+                type: string
+
+    NewsSentimentResponse:
+      type: object
+      properties:
+        Meta Data:
+          $ref: '#/components/schemas/MetaData'
+        Sentiment:
+          type: object
+          properties:
+            aggregate_score:
+              type: number
+              description: Average sentiment score (-1 to 1)
+            positive:
+              type: integer
+              description: Count of positive articles
+            neutral:
+              type: integer
+              description: Count of neutral articles
+            negative:
+              type: integer
+              description: Count of negative articles
+            articles:
+              type: integer
+              description: Total number of articles analyzed
+        feed:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              source:
+                type: string
+              time_published:
+                type: string
+              url:
+                type: string
+              overall_sentiment_score:
+                type: number
+              overall_sentiment_label:
+                type: string
+              ticker_sentiment:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    ticker:
+                      type: string
+                    relevance_score:
+                      type: string
+                    ticker_sentiment_score:
+                      type: string
+                    ticker_sentiment_label:
+                      type: string
+
+    OptionsChainResponse:
+      type: object
+      properties:
+        Meta Data:
+          $ref: '#/components/schemas/MetaData'
+        optionChain:
+          type: object
+          properties:
+            symbol:
+              type: string
+            underlyingPrice:
+              type: number
+            expirationDates:
+              type: array
+              items:
+                type: string
+                format: date
+            options:
+              type: array
+              items:
+                type: object
+                properties:
+                  expirationDate:
+                    type: string
+                  calls:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OptionContract'
+                  puts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OptionContract'
+
+    OptionContract:
+      type: object
+      properties:
+        contractSymbol:
+          type: string
+        strike:
+          type: number
+        type:
+          type: string
+          enum: [call, put]
+        expiration:
+          type: string
+          format: date
+        bid:
+          type: number
+        ask:
+          type: number
+        lastPrice:
+          type: number
+        volume:
+          type: integer
+        openInterest:
+          type: integer
+        impliedVolatility:
+          type: number
+        inTheMoney:
+          type: boolean
+
+    QuotaInfo:
+      type: object
+      properties:
+        tokens:
+          type: number
+          description: Current token balance
+        max_tokens:
+          type: number
+          description: Maximum tokens for this plan
+        plan:
+          type: string
+          description: Rate limit plan (free/premium/org)
+        last_ts:
+          type: number
+          description: Last token refresh timestamp
+
+    ErrorResponse:
+      type: object
+      properties:
+        Error:
+          type: string
+          description: Error message
+        Note:
+          type: string
+          description: Additional information
+
+    RateLimitResponse:
+      type: object
+      properties:
+        Note:
+          type: string
+          description: Rate limit message with retry information
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: apikey
+      description: API key for rate limiting
+    AdminKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Admin-Key
+      description: Admin API key for administrative operations
+
+  examples:
+    TimeSeriesDailyExample:
+      summary: Daily time series response
+      value:
+        Meta Data:
+          1. Information: Daily Prices (AlphaSim)
+          2. Symbol: AAPL
+          3. Last Refreshed: "2025-12-01 16:00:00"
+          4. Output Size: compact
+          5. Time Zone: UTC
+        Time Series (Daily):
+          "2025-12-01":
+            1. open: "189.5200"
+            2. high: "191.2300"
+            3. low: "188.9400"
+            4. close: "190.7500"
+            5. volume: "45678123"
+    
+    SMAExample:
+      summary: SMA indicator response
+      value:
+        Meta Data:
+          1. Information: SMA (AlphaSim)
+          2. Symbol: AAPL
+          3. Last Refreshed: "2025-12-01 16:00:00"
+          5. Indicator: SMA
+          6. Time Period: 10
+          7. Series Type: close
+        Technical Analysis: SMA:
+          "2025-12-01":
+            SMA: "189.4523"
+    
+    NewsSentimentExample:
+      summary: News sentiment response
+      value:
+        Meta Data:
+          1. Information: News Sentiment (AlphaSim)
+          2. Symbol: AAPL
+          3. Last Refreshed: "2025-12-01 14:20:00"
+          6. Source: FinBERT
+        Sentiment:
+          aggregate_score: 0.23
+          positive: 10
+          neutral: 4
+          negative: 3
+          articles: 17
+
+tags:
+  - name: Query
+    description: Main query endpoint for all AlphaSim functions
+  - name: Health
+    description: Health and metrics endpoints
+  - name: Admin
+    description: Administrative endpoints (admin access required)
