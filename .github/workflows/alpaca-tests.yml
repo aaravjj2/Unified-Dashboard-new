@@ -1,0 +1,122 @@
+name: Alpaca Options Lab Tests
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'financial_dashboard/tabs/options_lab/**'
+      - 'tests/test_alpaca*.py'
+      - '.github/workflows/alpaca-tests.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'financial_dashboard/tabs/options_lab/**'
+      - 'tests/test_alpaca*.py'
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov dash dash-bootstrap-components pandas numpy requests python-dotenv
+          pip install -r requirements.txt || true
+      
+      - name: Run unit tests
+        run: |
+          pytest tests/test_alpaca_callbacks.py -v --tb=short --junitxml=test-results.xml
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: test-results.xml
+
+  playwright-tests:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright pytest-playwright dash dash-bootstrap-components pandas numpy requests python-dotenv
+          pip install -r requirements.txt || true
+          playwright install chromium
+      
+      - name: Create mock keys.env
+        run: |
+          # Create mock keys for testing (callbacks will handle missing credentials gracefully)
+          echo "APCA_API_KEY_ID=test_key_placeholder" > keys.env
+          echo "APCA_API_SECRET_KEY=test_secret_placeholder" >> keys.env
+      
+      - name: Start test server
+        run: |
+          python test_alpaca_options_ui.py &
+          sleep 10
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+      
+      - name: Run Playwright tests
+        run: |
+          python test_alpaca_deep_8053.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+      
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-screenshots
+          path: screenshots/
+
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install linters
+        run: |
+          pip install flake8 black isort mypy
+      
+      - name: Check formatting with black
+        run: |
+          black --check --diff financial_dashboard/tabs/options_lab/ || true
+      
+      - name: Check imports with isort
+        run: |
+          isort --check-only financial_dashboard/tabs/options_lab/ || true
+      
+      - name: Lint with flake8
+        run: |
+          flake8 financial_dashboard/tabs/options_lab/ --max-line-length=120 --ignore=E501,W503 || true

@@ -20,18 +20,17 @@ def main():
     host = os.getenv('HOST', '127.0.0.1')
     debug = os.getenv('DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
-    logger.info('Creating application via factory...')
+    logger.info('Initializing application via financial_dashboard.index.initialize_app...')
     try:
-        # Use the same factory used by run_dashboard.py
-        from financial_dashboard.app import create_app
+        from financial_dashboard.index import initialize_app
     except Exception as e:
-        logger.error('Failed to import create_app from financial_dashboard.app: %s', e)
+        logger.error('Failed to import initialize_app from financial_dashboard.index: %s', e)
         sys.exit(1)
 
     try:
-        app = create_app()
+        app = initialize_app()
     except Exception as e:
-        logger.error('create_app() failed: %s', e)
+        logger.error('initialize_app() failed: %s', e)
         sys.exit(1)
 
     # Determine the Flask server object to register blueprints on.

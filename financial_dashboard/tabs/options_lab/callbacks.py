@@ -227,7 +227,7 @@ def register_callbacks(app):
         from dash import dash_table
         
         if not chain_data:
-            return "No data loaded. Click 'Load Chain' to fetch options data."
+            return "Click 'Load Chain' to fetch options data."
         
         try:
             calls = pd.DataFrame(chain_data.get('calls', []))
@@ -368,7 +368,7 @@ def register_callbacks(app):
         if not chain_data:
             empty_fig = go.Figure()
             empty_fig.update_layout(
-                title="No data loaded",
+                title="Load chain to view",
                 template="plotly_white"
             )
             return empty_fig, empty_fig, empty_fig, empty_fig, empty_fig

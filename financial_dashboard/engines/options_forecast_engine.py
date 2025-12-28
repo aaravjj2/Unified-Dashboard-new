@@ -255,9 +255,9 @@ class OptionsForecastEngine:
                 else:
                     df[col] = 0
         
-        # Calculate mid price
+        # Calculate mid price and avoid chained-assignment warnings
         df['mid_price'] = (df['bid'] + df['ask']) / 2
-        df['mid_price'].fillna(df['lastPrice'], inplace=True)
+        df['mid_price'] = df['mid_price'].fillna(df['lastPrice'])
         
         # Calculate time to expiration
         df['time_to_expiry'] = self.expiration_days / 365.0
@@ -566,22 +566,36 @@ class OptionsForecastEngine:
                     'rationale': f'Low IV ({avg_iv:.1%}) provides affordable directional plays'
                 })
             
-            # Bearish sentiment (high PC ratio)
+            # Bearish sentiment (high PC ratio) -> consider bearish / protective strategies
             if pc_ratio > 1.2:
                 strategies.append({
-                    'name': 'Bull Put Spread',
-                    'description': 'Sell put spread to profit from bearish sentiment reversal',
-                    'confidence': min((pc_ratio - 1.0) * 0.5, 0.8),
-                    'rationale': f'High P/C ratio ({pc_ratio:.2f}) suggests oversold conditions'
+                    'name': 'Long Put',
+                    'description': 'Buy put options to profit from further downside',
+                    'confidence': min((pc_ratio - 1.2) * 0.8 + 0.2, 0.9),
+                    'rationale': f'High P/C ratio ({pc_ratio:.2f}) indicates heavier put interest and bearish bias'
+                })
+
+                strategies.append({
+                    'name': 'Bear Put Spread',
+                    'description': 'Buy a put and sell a lower-strike put to limit cost while keeping bearish exposure',
+                    'confidence': min((pc_ratio - 1.2) * 0.6 + 0.15, 0.85),
+                    'rationale': f'Put-heavy OI ({pc_ratio:.2f}) suggests directional put strategies may be appropriate'
                 })
             
-            # Bullish sentiment (low PC ratio)
+            # Bullish sentiment (low PC ratio) -> consider bullish strategies
             if pc_ratio < 0.8:
                 strategies.append({
-                    'name': 'Bear Call Spread',
-                    'description': 'Sell call spread to profit from bullish sentiment reversal',
-                    'confidence': min((1.0 - pc_ratio) * 0.5, 0.8),
-                    'rationale': f'Low P/C ratio ({pc_ratio:.2f}) suggests overbought conditions'
+                    'name': 'Long Call',
+                    'description': 'Buy call options to gain leveraged exposure to upside',
+                    'confidence': min((0.8 - pc_ratio) * 0.8 + 0.2, 0.9),
+                    'rationale': f'Low P/C ratio ({pc_ratio:.2f}) indicates heavier call interest and bullish bias'
+                })
+
+                strategies.append({
+                    'name': 'Bull Call Spread',
+                    'description': 'Buy a call and sell a higher-strike call to reduce cost while keeping upside exposure',
+                    'confidence': min((0.8 - pc_ratio) * 0.6 + 0.15, 0.85),
+                    'rationale': f'Call-heavy OI ({pc_ratio:.2f}) suggests directional call strategies may be appropriate'
                 })
             
             # Neutral IV - delta neutral
@@ -663,14 +677,27 @@ class OptionsForecastEngine:
                     metrics = EXCLUDED.metrics
             """
             
-            result = execute_pg_query(query, params=forecast_data, fetch=False)
-            
+            try:
+                result = execute_pg_query(query, params=forecast_data, fetch=False)
+            except Exception:
+                result = None
+
             if result is not None:
                 logger.info(f"✅ Forecast saved to database for {self.ticker}")
                 return True
             else:
-                logger.warning(f"⚠️ Database save failed (DB may not be available)")
-                return False
+                # Fallback: save forecast to JSON file for local/dev environments
+                try:
+                    reports_dir = Path('reports/options_forecasts')
+                    reports_dir.mkdir(parents=True, exist_ok=True)
+                    out_file = reports_dir / f"forecast_{self.ticker}_{int(time.time())}.json"
+                    with open(out_file, 'w') as f:
+                        json.dump(forecast_data, f, indent=2)
+                    logger.warning(f"⚠️ Database save failed; saved forecast JSON fallback: {out_file}")
+                    return True
+                except Exception:
+                    logger.warning(f"⚠️ Database save failed (DB may not be available)")
+                    return False
             
         except Exception as e:
             logger.error(f"❌ Error saving to database: {e}", exc_info=True)

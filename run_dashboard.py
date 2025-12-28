@@ -83,13 +83,13 @@ def main():
     
     # Import and create app
     try:
-        logger.info("Importing dashboard application...")
-        from financial_dashboard.app import create_app
+        logger.info("Initializing dashboard via financial_dashboard.index.initialize_app()...")
+        from financial_dashboard.index import initialize_app
+
+        logger.info("Calling initialize_app() to build app, register callbacks and prewarm services")
+        app = initialize_app()
         
-        logger.info("Creating application instance...")
-        app = create_app()
-        
-        logger.info("Application created successfully!")
+        logger.info("Application initialized successfully via index.initialize_app()")
         logger.info("")
         logger.info("=" * 60)
         logger.info(f"Dashboard is starting on http://{host}:{port}")

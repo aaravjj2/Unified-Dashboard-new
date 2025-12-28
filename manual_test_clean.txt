@@ -1,0 +1,47 @@
+INFO:__main__:============================================================
+INFO:__main__:MANUAL E2E TEST - All Enhancements
+INFO:__main__:Started: 2025-12-28 01:24:13
+INFO:__main__:============================================================
+INFO:__main__:
+=== TEST 1: Server Health ===
+INFO:__main__:✅ Server responding on port 8053
+INFO:__main__:
+=== TEST 2: Keys Loading ===
+INFO:__main__:✅ 42 API keys loaded from keys.env
+INFO:__main__:
+=== TEST 3: Async Components ===
+WARNING:__main__:⚠️ Could not confirm async-dropdown.js status
+INFO:__main__:
+=== TEST 4: Greeks Calculator ===
+WARNING:observability.sentry_config:⚠️ SENTRY_DSN not configured - exception tracking disabled
+WARNING:observability.datadog_config:⚠️ DATADOG_ENABLED=false - metrics disabled
+INFO:__main__:✅ Greeks calculator working:
+INFO:__main__:   Delta: 0.3578, Gamma: 0.0347
+INFO:__main__:   Theta: -0.0739, Vega: 0.1605
+INFO:__main__:
+=== TEST 5: GROQ API Integration ===
+INFO:financial_dashboard.utils.load_keys_env:Loaded 42 keys from /home/aarav/Unified-Dashboard/keys.env
+WARNING:__main__:⚠️ GROQ returned short/empty response (may be fallback)
+INFO:__main__:
+=== TEST 6: Flow Analysis ===
+INFO:__main__:✅ Flow analysis working:
+INFO:__main__:   P/C Volume: 1.17, P/C OI: 1.17
+INFO:__main__:   Max Pain: $145, Sentiment: Neutral
+INFO:__main__:
+=== TEST 7: Callback Errors ===
+INFO:__main__:✅ No callback errors found in logs
+INFO:__main__:
+============================================================
+INFO:__main__:TEST SUMMARY
+INFO:__main__:============================================================
+INFO:__main__:✅ PASS - Server Health
+INFO:__main__:✅ PASS - Keys Loading
+INFO:__main__:❌ FAIL - Async Components
+INFO:__main__:✅ PASS - Greeks Calculator
+INFO:__main__:❌ FAIL - GROQ API
+INFO:__main__:✅ PASS - Flow Analysis
+INFO:__main__:✅ PASS - Callback Errors
+INFO:__main__:------------------------------------------------------------
+INFO:__main__:TOTAL: 5/7 tests passed (71.4%)
+INFO:__main__:Finished: 2025-12-28 01:24:15
+INFO:__main__:============================================================

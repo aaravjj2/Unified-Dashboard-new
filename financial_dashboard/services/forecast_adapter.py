@@ -193,8 +193,11 @@ class ForecastAdapter:
                 forecast_series = None
 
             if forecast_series is None:
-                # Next: use local ML runner
-                if self.ml_runner:
+                # Next: use ensemble if requested, otherwise local ML runner
+                if model in ('ensemble', 'weighted_ensemble'):
+                    forecast_series = self._ensemble_forecast(ticker, prices, horizon)
+                    inference_source = 'ensemble'
+                elif self.ml_runner:
                     forecast_series = self._ml_forecast(ticker, prices, horizon)
                     inference_source = 'ml_runner'
                 else:
@@ -494,6 +497,90 @@ class ForecastAdapter:
         self._forecast_cache.clear()
         self.cache.clear()
         logger.info("Forecast adapter cache cleared")
+
+    def prewarm(self, tickers: List[str], lookback_days: int = 252) -> None:
+        """
+        Pre-warm the adapter by fetching recent price data for a list of tickers.
+
+        This helps reduce first-load latency for the Market Forecast tab by
+        populating the internal TTL cache with fresh historical prices.
+
+        Args:
+            tickers: List of ticker symbols to prefetch
+            lookback_days: Number of lookback days to fetch
+        """
+        cache_dir = os.path.join(os.path.expanduser('~'), '.cache', 'financial_dashboard')
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_file = os.path.join(cache_dir, 'prewarm_cache.json')
+
+        try:
+            logger.info(f"Prewarming forecast adapter for {len(tickers)} tickers")
+
+            # Try to load previous prewarm cache to avoid re-fetching unchanged tickers
+            existing = {}
+            try:
+                import json as _json
+                if os.path.exists(cache_file):
+                    with open(cache_file, 'r', encoding='utf-8') as cf:
+                        existing = _json.load(cf)
+            except Exception:
+                existing = {}
+
+            results = {}
+            for t in tickers:
+                tkey = t.upper()
+                if tkey in existing:
+                    # Use cached metadata but still attempt a lightweight refresh
+                    results[tkey] = existing[tkey]
+                    try:
+                        prices, meta = self._fetch_historical_data(t, lookback_days=lookback_days)
+                        if prices is not None:
+                            results[tkey] = {**meta, 'data_points': len(prices)}
+                    except Exception:
+                        logger.debug(f"Prewarm quick-refresh failed for {t}; keeping cached metadata")
+                    continue
+
+                try:
+                    prices, meta = self._fetch_historical_data(t, lookback_days=lookback_days)
+                    if prices is not None:
+                        results[tkey] = {**meta, 'data_points': len(prices)}
+                        logger.debug(f"Prewarm fetched {results[tkey].get('data_points')} points for {t} (source={results[tkey].get('source')})")
+                except Exception as e:
+                    logger.warning(f"Prewarm failed for {t}: {e}")
+
+            # Persist minimal metadata for next startup
+            try:
+                import json as _json
+                with open(cache_file, 'w', encoding='utf-8') as cf:
+                    _json.dump(results, cf)
+            except Exception:
+                logger.debug('Could not write prewarm cache file')
+
+            # Optionally export a Triton model repository for the ensemble
+            try:
+                use_triton = os.environ.get('USE_TRITON', '0')
+                if use_triton == '1':
+                    try:
+                        from financial_dashboard.serving.triton.forecast_ensemble import export_model_repo
+                        logger.info('Attempting Triton model export (forecast_ensemble)')
+                        ok = export_model_repo.build()
+                        if ok:
+                            logger.info('Triton model repository prepared')
+                        else:
+                            logger.warning('Triton export failed')
+                    except Exception as e:
+                        logger.exception(f'Triton export not available: {e}')
+            except Exception:
+                logger.exception('Triton export step failed')
+
+            # Warm ML runner models (if available) to reduce cold start
+            try:
+                self.warm_ml_runner()
+            except Exception:
+                logger.exception('ML runner warmup failed')
+
+        except Exception:
+            logger.exception("Prewarm procedure failed")
     
     def cache_stats(self) -> Dict[str, Any]:
         """Get cache statistics."""
@@ -502,6 +589,134 @@ class ForecastAdapter:
             'forecast_cache': self._forecast_cache.stats(),
             'legacy_cache_entries': len(self.cache)
         }
+
+    def warm_ml_runner(self) -> None:
+        """
+        Warm the ML runner by loading models or running a light dummy prediction.
+
+        This helps reduce first-request latency by ensuring heavyweight model
+        artifacts are loaded into memory (ML frameworks, CUDA contexts, etc.).
+        The method is defensive and will no-op if no ml_runner is present.
+        """
+        try:
+            if not self.ml_runner:
+                logger.info('No ml_runner available to warm')
+                return
+
+            # Preferred: call a dedicated warmup method if the runner exposes it
+            if hasattr(self.ml_runner, 'warm_up'):
+                try:
+                    logger.info('Warming ml_runner via warm_up()')
+                    self.ml_runner.warm_up()
+                    logger.info('ml_runner warm_up completed')
+                    return
+                except Exception:
+                    logger.exception('ml_runner.warm_up() failed, falling back to dummy predict')
+
+            # Fallback: run a lightweight dummy predict call
+            try:
+                dummy_input = {'ticker': 'SPY', 'prices': [100.0] * 60}
+                logger.info('Running dummy ml_runner.predict to warm models')
+                _ = self.ml_runner.predict('forecast', dummy_input)
+                logger.info('ml_runner dummy predict completed')
+            except Exception:
+                logger.exception('ml_runner dummy predict failed during warmup')
+        except Exception:
+            logger.exception('Unexpected error during ml_runner warmup')
+
+    def _compute_model_weights(self, prices: pd.Series) -> Dict[str, float]:
+        """
+        Compute model weights for the ensemble based on a quick holdout validation.
+
+        Returns a dict with keys 'ml' and 'stat' representing the relative weights.
+        This is a lightweight heuristic used as a fallback; if any step fails we
+        return a reasonable default.
+        """
+        default_ml_weight = float(os.environ.get('ENSEMBLE_ML_WEIGHT', 0.7))
+        try:
+            holdout = 14
+            if len(prices) < holdout + 30 or self.ml_runner is None:
+                return {'ml': default_ml_weight, 'stat': 1.0 - default_ml_weight}
+
+            train = prices.iloc[:-holdout]
+            actual = prices.iloc[-holdout:]
+
+            # ML prediction over holdout
+            try:
+                ml_pred = self._ml_forecast('TMP', train, holdout)
+            except Exception:
+                ml_pred = None
+
+            stat_pred = self._statistical_forecast(train, holdout)
+
+            if ml_pred is None:
+                return {'ml': 0.5, 'stat': 0.5}
+
+            # Compute MSEs
+            mse_ml = float(np.mean((np.array(ml_pred) - np.array(actual)) ** 2))
+            mse_stat = float(np.mean((np.array(stat_pred) - np.array(actual)) ** 2))
+
+            # Avoid division by zero
+            mse_ml = max(mse_ml, 1e-8)
+            mse_stat = max(mse_stat, 1e-8)
+
+            inv_ml = 1.0 / mse_ml
+            inv_stat = 1.0 / mse_stat
+            total = inv_ml + inv_stat
+            w_ml = float(inv_ml / total)
+            w_stat = float(inv_stat / total)
+
+            # Blend with default to avoid extreme weights
+            w_ml = 0.7 * w_ml + 0.3 * default_ml_weight
+            w_stat = 1.0 - w_ml
+
+            return {'ml': w_ml, 'stat': w_stat}
+        except Exception:
+            logger.exception('Failed to compute model weights, using defaults')
+            return {'ml': default_ml_weight, 'stat': 1.0 - default_ml_weight}
+
+    def _ensemble_forecast(self, ticker: str, prices: pd.Series, horizon: int) -> np.ndarray:
+        """
+        Create a weighted ensemble forecast combining the ML runner and the
+        statistical fallback. We compute lightweight weights and then return
+        the weighted average time series.
+        """
+        try:
+            # Generate base forecasts
+            ml_series = None
+            if self.ml_runner:
+                try:
+                    ml_series = self._ml_forecast(ticker, prices, horizon)
+                except Exception:
+                    ml_series = None
+
+            stat_series = self._statistical_forecast(prices, horizon)
+
+            # Determine weights
+            weights = self._compute_model_weights(prices)
+            ml_w = weights.get('ml', 0.5)
+            stat_w = weights.get('stat', 1.0 - ml_w)
+
+            if ml_series is None:
+                # ML not available; return statistical forecast
+                return stat_series
+
+            # Ensure numpy arrays
+            ml_arr = np.array(ml_series)
+            stat_arr = np.array(stat_series)
+
+            # Broadcast shapes if necessary
+            if ml_arr.shape != stat_arr.shape:
+                # Resample by linear interpolation to match shape
+                idx = np.linspace(0, 1, len(ml_arr))
+                idx2 = np.linspace(0, 1, len(stat_arr))
+                stat_arr = np.interp(idx, idx2, stat_arr)
+
+            ensemble = ml_w * ml_arr + stat_w * stat_arr
+            return ensemble
+        except Exception:
+            logger.exception('Ensemble forecast failed, falling back to statistical')
+            return self._statistical_forecast(prices, horizon)
     
     def _ml_forecast(self, ticker: str, prices: pd.Series, horizon: int) -> np.ndarray:
         """
@@ -634,3 +849,69 @@ class ForecastAdapter:
 
 # Export
 __all__ = ['ForecastAdapter']
+
+
+def run_predict(payload: dict) -> dict:
+    """Compatibility wrapper used by API layer to run a forecast.
+
+    Expected payload keys: ticker, horizon, confidence, model_version, deterministic
+    """
+    try:
+        fa = ForecastAdapter(deterministic=bool(payload.get('deterministic', False)))
+        ticker = payload.get('ticker')
+        horizon = int(payload.get('horizon', 30))
+        confidence = float(payload.get('confidence', 0.95))
+        model = payload.get('model', payload.get('model_version', 'ensemble'))
+        forecast_id = payload.get('forecast_id', f"{ticker}_{int(time.time())}")
+
+        res = fa.run_forecast(ticker, horizon, confidence, model, forecast_id)
+        return res
+    except Exception as e:
+        logger.exception(f"run_predict wrapper failed: {e}")
+        return {'status': 'error', 'error': str(e)}
+
+
+def run_explain(payload: dict) -> dict:
+    """Compatibility wrapper to generate an explanation for a forecast (SHAP-like).
+
+    Payload may contain 'ticker' and 'forecast_id'.
+    """
+    try:
+        forecast_id = payload.get('forecast_id')
+        ticker = payload.get('ticker')
+        # If forecast_id provided, try to load cached forecast to get ticker
+        fa = ForecastAdapter(deterministic=bool(payload.get('deterministic', False)))
+        if forecast_id and forecast_id in fa.cache:
+            return fa.get_explanation(forecast_id)
+        if ticker:
+            # Generate a mock explanation by running a forecast and then explaining it
+            fid = f"{ticker}_{int(time.time())}"
+            res = fa.run_forecast(ticker, 7, 0.95, 'ensemble', fid)
+            # Store and return explanation
+            fa.cache[fid] = res
+            return fa.get_explanation(fid) or {}
+        return {}
+    except Exception as e:
+        logger.exception(f"run_explain wrapper failed: {e}")
+        return {'status': 'error', 'error': str(e)}
+
+
+def validate_forecast_response(resp: dict) -> bool:
+    """Simple schema validator for forecast responses used by the API.
+
+    Ensures required keys exist and forecast array length matches horizon if present.
+    """
+    try:
+        if not isinstance(resp, dict):
+            return False
+        required = ['ticker', 'horizon', 'forecast', 'status']
+        for k in required:
+            if k not in resp:
+                return False
+        if resp.get('status') != 'success':
+            return False
+        if not isinstance(resp.get('forecast'), (list, tuple)):
+            return False
+        return True
+    except Exception:
+        return False

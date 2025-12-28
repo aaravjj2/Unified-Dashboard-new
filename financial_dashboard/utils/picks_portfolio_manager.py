@@ -38,9 +38,16 @@ class PicksPortfolioManager:
             alpaca_key: Alpaca API key (uses ALPACA_KEY_PICKS env var if None)
             alpaca_secret: Alpaca secret key (uses ALPACA_SECRET_PICKS env var if None)
         """
+        # Try to import Alpaca 2 keys from ai_picks_portfolio
+        try:
+            from financial_dashboard.tabs.ai_picks_portfolio import ALPACA2_KEY, ALPACA2_SECRET
+        except ImportError:
+            ALPACA2_KEY = None
+            ALPACA2_SECRET = None
+
         self.capital = capital
-        self.alpaca_key = alpaca_key or os.getenv('ALPACA_KEY_PICKS') or os.getenv('APCA_API_KEY_ID')
-        self.alpaca_secret = alpaca_secret or os.getenv('ALPACA_SECRET_PICKS') or os.getenv('APCA_API_SECRET_KEY')
+        self.alpaca_key = alpaca_key or ALPACA2_KEY or os.getenv('ALPACA2_KEY') or os.getenv('ALPACA_KEY_PICKS') or os.getenv('APCA_API_KEY_ID')
+        self.alpaca_secret = alpaca_secret or ALPACA2_SECRET or os.getenv('ALPACA2_SECRET') or os.getenv('ALPACA_SECRET_PICKS') or os.getenv('APCA_API_SECRET_KEY')
         
         # Initialize Alpaca client
         self.alpaca_client = None

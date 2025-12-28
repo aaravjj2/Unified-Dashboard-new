@@ -1,0 +1,36 @@
+name: "forecast_ensemble"
+platform: "pytorch_libtorch"
+max_batch_size: 8
+input [
+  {
+    name: "PRICE_HISTORY"
+    data_type: TYPE_FP32
+    dims: [60]
+  }
+]
+output [
+  {
+    name: "FORECAST"
+    data_type: TYPE_FP32
+    dims: [7]
+  }
+]
+instance_group [ { kind: KIND_CPU } ]
+name: "forecast_ensemble"
+platform: "pytorch_libtorch"
+max_batch_size: 8
+input [
+  {
+    name: "PRICE_HISTORY"
+    data_type: TYPE_FP32
+    dims: [60]
+  }
+]
+output [
+  {
+    name: "FORECAST"
+    data_type: TYPE_FP32
+    dims: [7]
+  }
+]
+instance_group [ { kind: KIND_CPU } ]

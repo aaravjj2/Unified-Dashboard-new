@@ -465,7 +465,33 @@ class LiveMarketDataService:
         indices = self.get_market_indices()
         sectors = self.get_sector_performance()
         calendar = self.get_economic_calendar()
-        
+
+        # If any major index missing real-time price (0 or None), try price_fetch fallback
+        try:
+            from financial_dashboard.utils.price_fetch import get_price_single
+        except Exception:
+            get_price_single = None
+
+        if get_price_single:
+            for sym, idx in indices.items():
+                try:
+                    if not idx.price or float(idx.price) == 0.0:
+                        pf = get_price_single(sym)
+                        if pf and pf.get('last_price') is not None:
+                            # Update index values with fallback
+                            prev = pf.get('prev_close') or pf.get('last_price')
+                            change = (pf['last_price'] - prev) if prev else 0
+                            change_pct = (change / prev * 100) if prev and prev != 0 else 0
+                            indices[sym] = MarketIndex(
+                                symbol=sym,
+                                name=idx.name,
+                                price=round(pf['last_price'], 2),
+                                change=round(change, 2),
+                                change_pct=round(change_pct, 2),
+                                last_updated=datetime.now().isoformat()
+                            )
+                except Exception:
+                    continue        
         # Calculate market breadth
         if sectors:
             advancing = sum(1 for s in sectors.values() if s.get('day_change', 0) > 0)

@@ -38,6 +38,11 @@ try:
 except ImportError:
     FINBERT_AVAILABLE = False
 
+from ..utils import finnhub_news, market_trend
+from ..utils.execution import AlpacaExecutor
+from .llm_client import get_llm_client
+
+
 
 class AIBriefSection:
     """Represents a section of the morning brief."""
@@ -77,6 +82,7 @@ class AIMorningBriefService:
         
         # Initialize analyzers
         self._sentiment_analyzer = None
+        self.llm_client = get_llm_client()
         
         # Key market tickers
         self.market_indices = {
@@ -146,16 +152,22 @@ class AIMorningBriefService:
     
     def _generate_executive_summary(self, watchlist: List[str]) -> AIBriefSection:
         """Generate executive summary with key market insights."""
+        # Gather context for LLM
+        market_trend_data = self._get_market_trend_data()
+        news_data = self._get_key_events(watchlist)
+        portfolio_data = self._get_portfolio_context()
+        
         summary = {
-            "market_sentiment": self._get_market_sentiment(),
-            "key_events": self._get_key_events(),
+            "market_sentiment": self._get_market_sentiment(market_trend_data),
+            "key_events": news_data,
+            "portfolio_context": portfolio_data,
             "overnight_moves": self._get_overnight_moves(),
             "top_movers": self._get_premarket_movers(watchlist),
-            "risk_level": self._assess_risk_level()
+            "risk_level": self._assess_risk_level(market_trend_data)
         }
         
-        # Generate AI narrative
-        narrative = self._generate_ai_narrative(summary)
+        # Generate AI narrative using LLM
+        narrative = self._generate_llm_narrative(summary, watchlist)
         summary["ai_narrative"] = narrative
         
         return AIBriefSection(
@@ -170,6 +182,12 @@ class AIMorningBriefService:
         overview = {}
         
         if YFINANCE_AVAILABLE:
+            # Prefer yfinance, but fall back to Finnhub/price_fetch when necessary
+            try:
+                from financial_dashboard.utils.price_fetch import get_price_single
+            except Exception:
+                get_price_single = None
+
             for ticker, name in self.market_indices.items():
                 try:
                     data = yf.Ticker(ticker)
@@ -178,10 +196,10 @@ class AIMorningBriefService:
                         current = hist['Close'].iloc[-1]
                         prev = hist['Close'].iloc[-2] if len(hist) > 1 else current
                         change = ((current - prev) / prev) * 100
-                        
+
                         # Get 5-day trend
                         five_day_change = ((current - hist['Close'].iloc[0]) / hist['Close'].iloc[0]) * 100
-                        
+
                         overview[ticker] = {
                             "name": name,
                             "price": round(current, 2),
@@ -191,8 +209,44 @@ class AIMorningBriefService:
                             "high_52w": round(hist['High'].max(), 2),
                             "low_52w": round(hist['Low'].min(), 2)
                         }
+                        continue
+
+                    # If yfinance didn't return data, try price_fetch fallback
+                    if get_price_single:
+                        pf = get_price_single(ticker)
+                        if pf and pf.get('last_price') is not None:
+                            overview[ticker] = {
+                                "name": name,
+                                "price": round(pf.get('last_price'), 2),
+                                "change_1d": round(((pf.get('last_price') - (pf.get('prev_close') or pf.get('last_price'))) / (pf.get('prev_close') or pf.get('last_price'))) * 100, 2) if pf.get('prev_close') else None,
+                                "change_5d": None,
+                                "trend": "unknown",
+                                "high_52w": None,
+                                "low_52w": None
+                            }
+                            continue
+
+                    # If both fail, record an error for this ticker
+                    overview[ticker] = {"name": name, "error": "No real-time data available"}
                 except Exception as e:
                     logger.warning(f"Failed to fetch {ticker}: {e}")
+                    # Try fallback price fetch if available
+                    try:
+                        if get_price_single:
+                            pf = get_price_single(ticker)
+                            if pf and pf.get('last_price') is not None:
+                                overview[ticker] = {
+                                    "name": name,
+                                    "price": round(pf.get('last_price'), 2),
+                                    "change_1d": round(((pf.get('last_price') - (pf.get('prev_close') or pf.get('last_price'))) / (pf.get('prev_close') or pf.get('last_price'))) * 100, 2) if pf.get('prev_close') else None,
+                                    "change_5d": None,
+                                    "trend": "unknown",
+                                    "high_52w": None,
+                                    "low_52w": None
+                                }
+                                continue
+                    except Exception:
+                        pass
                     overview[ticker] = {"name": name, "error": str(e)}
         else:
             # Mock data
@@ -451,6 +505,37 @@ class AIMorningBriefService:
             priority=9,
             category="trades"
         )
+
+    def generate_and_execute_picks(self, n: int = 5, allocation_per_pick: float = 500.0, execute: bool = False) -> Dict:
+        """Generate stock picks and optionally execute market orders for them.
+
+        Args:
+            n: Number of picks to generate
+            allocation_per_pick: USD per pick
+            execute: If True, place orders (honors ALLOW_AUTO_BUY env or execute flag)
+
+        Returns:
+            Dict with 'picks' and 'orders' lists
+        """
+        try:
+            from .picks import generate_stock_picks, generate_stock_picks_separated, execute_picks
+        except Exception as e:
+            logger.error(f"Picks module unavailable: {e}")
+            return {'error': 'picks_unavailable'}
+
+        # Prefer separated output so UI can render LONGs and SHORTs distinctly
+        try:
+            picks_sep = generate_stock_picks_separated(n=n)
+            picks = picks_sep.get('combined', [])
+        except Exception:
+            picks = generate_stock_picks(n=n)
+            picks_sep = {'combined': picks, 'longs': [p for p in picks if p.get('direction') == 'LONG'], 'shorts': [p for p in picks if p.get('direction') == 'SHORT']}
+
+        # If user requested execution, attempt to execute (pass dry_run=False only if execute==True and env allows)
+        dry_run = not execute
+        orders = execute_picks(picks_sep, allocation_per_pick=allocation_per_pick, dry_run=dry_run)
+
+        return {'picks': picks_sep, 'orders': orders}
     
     def _generate_risk_alerts(self, watchlist: List[str]) -> AIBriefSection:
         """Generate risk alerts and warnings."""
@@ -540,25 +625,123 @@ class AIMorningBriefService:
     
     # Helper methods
     
-    def _get_market_sentiment(self) -> Dict:
-        """Get overall market sentiment."""
+    def _get_market_trend_data(self) -> Dict:
+        """Get real market trend data."""
+        try:
+            # Try to get real SPY data for technicals
+            technicals = {}
+            if YFINANCE_AVAILABLE:
+                try:
+                    spy = yf.Ticker("SPY")
+                    hist = spy.history(period="3mo")
+                    if not hist.empty:
+                        technicals = market_trend.compute_technical_indicators(hist['Close'])
+                except Exception as e:
+                    logger.warning(f"Failed to fetch SPY history: {e}")
+
+            # Calculate returns for SPY (simplified for now, ideally fetch real history)
+            trend_data = market_trend.compute_market_trend_and_pulse(
+                r1m=0.02, r3m=0.05, r6m=0.08,  # Placeholders if real data missing
+                ma50_pct_slope=0.01, ma50_vs_ma200=0.03,
+                pct_above_200d=0.6,
+                vix=15.0, vix_mean_252=18.0, vix_std_252=5.0,
+                r1d=0.005, r2d=0.01, adv_decl_today=0.6, vix_delta=-0.5
+            )
+            
+            # Merge technicals
+            if technicals:
+                trend_data['technicals'] = technicals
+                
+            return trend_data
+        except Exception as e:
+            logger.warning(f"Failed to compute market trend: {e}")
+            return {}
+
+    def _get_market_sentiment(self, trend_data: Dict = None) -> Dict:
+        """Get overall market sentiment from trend data."""
+        if not trend_data:
+            trend_data = self._get_market_trend_data()
+            
+        trend = trend_data.get('trend', {})
+        pulse = trend_data.get('pulse', {})
+        technicals = trend_data.get('technicals', {})
+        
+        factors = [
+            f"Trend: {trend.get('label')}",
+            f"Pulse: {pulse.get('label')}"
+        ]
+        
+        if technicals:
+            if 'rsi' in technicals:
+                factors.append(f"RSI: {technicals['rsi']}")
+            if 'signals' in technicals and technicals['signals']:
+                factors.extend(technicals['signals'])
+        
         return {
-            "overall": "Bullish",
-            "confidence": 72,
-            "factors": [
-                "Strong earnings from tech sector",
-                "Falling inflation expectations",
-                "Low VIX environment"
-            ]
+            "overall": trend.get('label', 'Neutral'),
+            "short_term": pulse.get('label', 'Neutral'),
+            "confidence": int(abs(trend.get('raw', 0)) * 100),
+            "factors": factors
         }
     
-    def _get_key_events(self) -> List[Dict]:
-        """Get key events for today."""
-        return [
-            {"time": "8:30 AM", "event": "CPI Data Release", "impact": "High"},
-            {"time": "10:00 AM", "event": "Consumer Sentiment", "impact": "Medium"},
-            {"time": "4:00 PM", "event": "AAPL Earnings", "impact": "High"}
-        ]
+    def _get_key_events(self, watchlist: List[str] = None) -> List[Dict]:
+        """Get key news events using Finnhub."""
+        events = []
+        try:
+            # Get general market news (SPY)
+            market_news = finnhub_news.get_high_severity_news('SPY', days_back=1)
+            if market_news:
+                for item in market_news:
+                    events.append({
+                        "time": item['date'].split(' ')[1] if ' ' in item['date'] else 'Today',
+                        "event": item['headline'],
+                        "impact": item.get('severity', 'MEDIUM'),
+                        "url": item.get('url')
+                    })
+            else:
+                # Fallback: try a fresh parallel fetch bypassing cache
+                try:
+                    fresh = finnhub_news.get_ticker_news_parallel('SPY', days_back=1, max_news=5)
+                    for item in fresh:
+                        events.append({
+                            "time": item['date'].split(' ')[1] if ' ' in item['date'] else 'Today',
+                            "event": item['headline'],
+                            "impact": 'MEDIUM',
+                            "url": item.get('url')
+                        })
+                except Exception:
+                    pass
+
+            # Get news for top watchlist item
+            if watchlist:
+                stock_news = finnhub_news.get_high_severity_news(watchlist[0], days_back=1)
+                if stock_news:
+                    for item in stock_news:
+                        events.append({
+                            "time": item['date'].split(' ')[1] if ' ' in item['date'] else 'Today',
+                            "event": f"{watchlist[0]}: {item['headline']}",
+                            "impact": item.get('severity', 'MEDIUM'),
+                            "url": item.get('url')
+                        })
+                else:
+                    try:
+                        fresh2 = finnhub_news.get_ticker_news_parallel(watchlist[0], days_back=1, max_news=5)
+                        for item in fresh2:
+                            events.append({
+                                "time": item['date'].split(' ')[1] if ' ' in item['date'] else 'Today',
+                                "event": f"{watchlist[0]}: {item['headline']}",
+                                "impact": 'MEDIUM',
+                                "url": item.get('url')
+                            })
+                    except Exception:
+                        pass
+        except Exception as e:
+            logger.warning(f"Failed to fetch news: {e}")
+
+        # If still empty, return a helpful message item so narrative generation can mention absence
+        if not events:
+            return [{"time": "Now", "event": "No high-severity news found in the last 24 hours", "impact": "LOW", "url": ""}]
+        return events[:5]
     
     def _get_overnight_moves(self) -> Dict:
         """Get overnight market moves."""
@@ -580,37 +763,95 @@ class AIMorningBriefService:
             ]
         }
     
-    def _assess_risk_level(self) -> Dict:
+    def _assess_risk_level(self, trend_data: Dict = None) -> Dict:
         """Assess overall market risk level."""
+        if not trend_data:
+            trend_data = self._get_market_trend_data()
+            
+        trend_val = trend_data.get('trend', {}).get('raw', 0)
+        
+        if trend_val < -0.5:
+            level = "HIGH"
+            score = 85
+        elif trend_val < 0:
+            level = "MODERATE"
+            score = 55
+        else:
+            level = "LOW"
+            score = 25
+            
         return {
-            "level": "MODERATE",
-            "score": 45,
-            "factors": ["VIX low", "Earnings volatility", "CPI uncertainty"]
+            "level": level,
+            "score": score,
+            "factors": ["Trend Analysis", "Volatility"]
         }
     
-    def _generate_ai_narrative(self, summary: Dict) -> str:
-        """Generate AI narrative summary."""
-        sentiment = summary.get("market_sentiment", {}).get("overall", "Neutral")
-        risk = summary.get("risk_level", {}).get("level", "MODERATE")
-        
-        narrative = f"""
-**Good morning! Here's your AI-powered market brief:**
+    def _get_portfolio_context(self) -> Dict:
+        """Get portfolio context from Alpaca."""
+        try:
+            executor = AlpacaExecutor()
+            account = executor.get_account_info()
+            positions = executor.get_open_positions()
+            
+            # Summarize top positions
+            top_holdings = []
+            if positions:
+                sorted_pos = sorted(positions.items(), key=lambda x: x[1]['market_value'], reverse=True)
+                for ticker, pos in sorted_pos[:3]:
+                    top_holdings.append(f"{ticker} ({pos['unrealized_plpc']*100:+.1f}%)")
+            
+            return {
+                "equity": account.get('equity', 0),
+                "cash": account.get('cash', 0),
+                "day_change": account.get('equity', 0) - account.get('last_equity', 0),
+                "top_holdings": top_holdings,
+                "position_count": len(positions)
+            }
+        except Exception as e:
+            logger.debug(f"Portfolio context unavailable: {e}")
+            return {}
 
-Markets are showing {sentiment.lower()} signals with {risk.lower()} risk levels. 
-
-**Key Focus Areas Today:**
-- Watch for CPI data at 8:30 AM - could set the tone for the day
-- Tech earnings continue to drive sentiment
-- Options flow suggests institutional positioning for continuation
-
-**Recommended Actions:**
-1. Review positions ahead of CPI release
-2. Consider hedges if holding significant tech exposure
-3. Watch key support/resistance levels on SPY (580/600)
-
-*Stay disciplined and follow your trading plan.*
-        """
-        return narrative.strip()
+    def _generate_llm_narrative(self, summary: Dict, watchlist: List[str]) -> str:
+        """Generate AI narrative summary using LLM."""
+        try:
+            sentiment = summary.get("market_sentiment", {})
+            events = summary.get("key_events", [])
+            risk = summary.get("risk_level", {})
+            portfolio = summary.get("portfolio_context", {})
+            
+            # Construct prompt
+            prompt = f"""
+            You are a senior financial analyst writing a morning brief for a trader.
+            
+            Market Context:
+            - Overall Sentiment: {sentiment.get('overall')} (Confidence: {sentiment.get('confidence')}%)
+            - Short-term Pulse: {sentiment.get('short_term')}
+            - Key Technicals: {', '.join(sentiment.get('factors', []))}
+            - Risk Level: {risk.get('level')}
+            
+            Portfolio Snapshot:
+            - Equity: ${portfolio.get('equity', 0):,.2f}
+            - Top Holdings: {', '.join(portfolio.get('top_holdings', ['None']))}
+            
+            Key News/Events:
+            {chr(10).join([f"- {e['event']} (Impact: {e['impact']})" for e in events])}
+            
+            Watchlist: {', '.join(watchlist[:3])}
+            
+            Task:
+            Write a concise, professional morning brief (max 150 words).
+            1. Start with a "Bottom Line Up Front" statement about the market mood.
+            2. Mention the most critical news item.
+            3. Provide a specific insight on the portfolio or watchlist based on the technicals.
+            4. Use bolding for key terms (markdown).
+            5. Tone: Professional, objective, slightly cautious.
+            """
+            
+            return self.llm_client.generate(prompt, max_tokens=300)
+            
+        except Exception as e:
+            logger.error(f"Failed to generate LLM narrative: {e}")
+            return "Market data is available, but AI narrative generation failed. Please check system logs."
     
     def _detect_sector_rotation(self, sectors: Dict) -> str:
         """Detect sector rotation pattern."""

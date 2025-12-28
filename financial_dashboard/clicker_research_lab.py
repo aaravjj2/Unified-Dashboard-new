@@ -15,6 +15,7 @@ Usage:
 
 import sys
 import time
+import os
 from playwright.sync_api import sync_playwright, expect
 
 # Test configuration
@@ -37,7 +38,13 @@ def test_1_scenario_tester_removed():
     print("=" * 60)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        # Determine headless mode: prefer explicit env var, else require DISPLAY for headful
+        env_headless = os.environ.get('CLICKER_HEADLESS')
+        if env_headless is not None:
+            HEADLESS = env_headless.lower() not in ('0', 'false', 'no')
+        else:
+            HEADLESS = False if os.environ.get('DISPLAY') else True
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         
         try:
@@ -107,7 +114,12 @@ def test_2_research_lab_real_data():
     print("=" * 60)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        env_headless = os.environ.get('CLICKER_HEADLESS')
+        if env_headless is not None:
+            HEADLESS = env_headless.lower() not in ('0', 'false', 'no')
+        else:
+            HEADLESS = False if os.environ.get('DISPLAY') else True
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         
         try:
@@ -170,7 +182,12 @@ def test_3_factor_scenarios():
     print("=" * 60)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        env_headless = os.environ.get('CLICKER_HEADLESS')
+        if env_headless is not None:
+            HEADLESS = env_headless.lower() not in ('0', 'false', 'no')
+        else:
+            HEADLESS = False if os.environ.get('DISPLAY') else True
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         
         try:
@@ -297,7 +314,12 @@ def test_4_historical_presets():
     print("=" * 60)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        env_headless = os.environ.get('CLICKER_HEADLESS')
+        if env_headless is not None:
+            HEADLESS = env_headless.lower() not in ('0', 'false', 'no')
+        else:
+            HEADLESS = False if os.environ.get('DISPLAY') else True
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         
         try:
@@ -406,7 +428,12 @@ def test_5_portfolio_integration():
     print("=" * 60)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        env_headless = os.environ.get('CLICKER_HEADLESS')
+        if env_headless is not None:
+            HEADLESS = env_headless.lower() not in ('0', 'false', 'no')
+        else:
+            HEADLESS = False if os.environ.get('DISPLAY') else True
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         
         try:

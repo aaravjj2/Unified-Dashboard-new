@@ -43,17 +43,15 @@ TABS_TO_VISIT = [
     {
         'name': 'Volatility Lab',
         'tab_id': '#tab-volatility_lab',
-        'wait_selector': '#vl-tabs',
+        # Use an actual element present in the Volatility Lab layout
+        'wait_selector': '#vl-heatmap',
         'screenshot_name': 'UX_cycle_02_volatility_lab_main',
+        # Actual Volatility Lab subtabs present at runtime (emoji prefixes included).
         'subtabs': [
-            {'name': 'Historical HV', 'subtab_selector': 'button[data-value="hv"]', 'screenshot': 'UX_cycle_03_vol_hv'},
-            {'name': 'IV Surface', 'subtab_selector': 'button[data-value="iv"]', 'screenshot': 'UX_cycle_04_vol_iv'},
-            {'name': 'Correlation', 'subtab_selector': 'button[data-value="corr"]', 'screenshot': 'UX_cycle_05_vol_corr'},
-            {'name': 'Factor Analytics', 'subtab_selector': 'button[data-value="factors"]', 'screenshot': 'UX_cycle_06_vol_factors'},
-            {'name': 'Advanced Charts', 'subtab_selector': 'button[data-value="charts"]', 'screenshot': 'UX_cycle_07_vol_charts'},
-            {'name': 'Metrics Table', 'subtab_selector': 'button[data-value="metrics"]', 'screenshot': 'UX_cycle_08_vol_metrics'},
-            {'name': 'Custom Scenarios', 'subtab_selector': 'button[data-value="scenarios"]', 'screenshot': 'UX_cycle_09_vol_scenarios'},
-            {'name': 'Alerts', 'subtab_selector': 'button[data-value="alerts"]', 'screenshot': 'UX_cycle_10_vol_alerts'},
+            {'name': 'IV Surface', 'subtab_selector': 'a:has-text("IV Surface")', 'screenshot': 'UX_cycle_03_vol_iv'},
+            {'name': 'Explorer & History', 'subtab_selector': 'a:has-text("Explorer & History")', 'screenshot': 'UX_cycle_04_vol_explorer'},
+            {'name': 'Signals & Ideas', 'subtab_selector': 'a:has-text("Signals & Ideas")', 'screenshot': 'UX_cycle_05_vol_signals'},
+            {'name': 'Backtest & Replay', 'subtab_selector': 'a:has-text("Backtest & Replay")', 'screenshot': 'UX_cycle_06_vol_backtest'},
         ]
     }
 ]
@@ -82,14 +80,26 @@ def run_clicker_automation():
     
     with sync_playwright() as p:
         print("🌐 Launching browser...")
-        browser = p.chromium.launch(headless=False)  # Set to True for headless
+        # Allow headless mode via environment flag CLICKER_HEADLESS=1 (default True)
+        headless_env = os.environ.get('CLICKER_HEADLESS', '1')
+        headless = False if headless_env.lower() in ('0', 'false', 'f') else True
+        browser = p.chromium.launch(headless=headless)
         context = browser.new_context(viewport={'width': 1920, 'height': 1080})
         page = context.new_page()
         
         # Navigate to dashboard
         print(f"📂 Loading {BASE_URL}...")
         start_nav = time.time()
-        page.goto(BASE_URL, wait_until='networkidle', timeout=30000)
+        # Some background services keep connections open (models, pollers).
+        # Use 'domcontentloaded' and a longer timeout to avoid indefinite networkidle waits.
+        page.goto(BASE_URL, wait_until='domcontentloaded', timeout=120000)
+        # After DOM content is loaded, wait for the main tabs container to appear.
+        try:
+            page.wait_for_selector('#dashboard-tabs', timeout=120000)
+        except Exception:
+            # Fallback: allow the script to continue even if the exact selector
+            # isn't present in extremely slow startups.
+            pass
         nav_time = time.time() - start_nav
         
         print(f"✅ Dashboard loaded in {nav_time:.2f}s\n")
@@ -103,6 +113,29 @@ def run_clicker_automation():
         
         step_counter = 1
         
+        # Helper: robust clicker that tries multiple selectors for resilience
+        def robust_click(selectors, desc, timeout=10000):
+            last_err = None
+            # Try quick existence checks first to avoid long per-selector timeouts
+            for i, s in enumerate(selectors):
+                try:
+                    if not s:
+                        continue
+                    # Prefer a quick presence check
+                    elem = page.query_selector(s)
+                    if elem is None:
+                        # skip quickly if not present
+                        continue
+                    # If present, attempt click with provided timeout
+                    page.click(s, timeout=timeout)
+                    return True
+                except Exception as e:
+                    last_err = e
+                    # continue trying remaining selectors
+                    continue
+            # If we've tried all selectors and none worked, raise last error
+            raise last_err if last_err is not None else Exception('No selectors supplied')
+
         # Iterate through tabs
         for tab in TABS_TO_VISIT:
             print(f"\n{'='*60}")
@@ -113,8 +146,28 @@ def run_clicker_automation():
             print(f"🖱️  Clicking tab: {tab['tab_id']}")
             start_click = time.time()
             
+            # Try multiple selectors: explicit id -> nav link text -> button with tab text
+            # Fallback to positional selector (nth-child) because some Dash renderings
+            # build tab markup client-side and the id may not be present on the clickable
+            # anchor. Market Forecast is the 7th enabled tab in the default layout,
+            # so include a few positional fallbacks to improve resilience.
+            nth_fallbacks = [
+                '.nav-tabs .nav-item:nth-child(7) .nav-link',
+                '.nav-tabs .nav-item:nth-child(7) a',
+                'ul.nav-tabs > div:nth-child(7) .nav-link',
+                'ul#dashboard-tabs > div:nth-child(7) .nav-link'
+            ]
+            # Prefer the E2E helper button if present (stable selector)
+            e2e_button = f'button#e2e-open-tab-{tab["tab_id"].replace("#tab-", "")}'
+            selector_candidates = [
+                e2e_button,
+                tab.get('tab_id'),
+                f'text="{tab["name"]}"',
+                f'button:has-text("{tab["name"]}")',
+                f'a:has-text("{tab["name"]}")'
+            ] + nth_fallbacks
             try:
-                page.click(tab['tab_id'], timeout=10000)
+                robust_click([s for s in selector_candidates if s], f"tab {tab['name']}")
                 
                 # Wait for content to load
                 if 'wait_selector' in tab:
@@ -166,7 +219,9 @@ def run_clicker_automation():
                     
                     try:
                         # Click subtab
-                        page.click(subtab['subtab_selector'], timeout=10000)
+                        # Attempt a few strategies for subtab selection
+                        sub_selectors = [subtab.get('subtab_selector'), f'text="{subtab["name"]}"', f'button:has-text("{subtab["name"]}")', f'a:has-text("{subtab["name"]}")']
+                        robust_click([s for s in sub_selectors if s], f"subtab {subtab['name']}")
                         time.sleep(1)  # Wait for render
                         
                         subtab_time = time.time() - start_subtab
@@ -210,12 +265,14 @@ def run_clicker_automation():
     
     # Finalize log
     execution_log['end_time'] = datetime.now().isoformat()
+    # Compute expected screenshots from configured tabs/subtabs
+    expected_screenshots = sum(1 + len(t.get('subtabs', [])) for t in TABS_TO_VISIT)
     execution_log['summary'] = {
         'total_steps': step_counter - 1,
         'total_screenshots': total_screenshots,
         'total_warnings': total_warnings,
-        'expected_screenshots': 1 + 1 + 8,  # Initial + Market Forecast + 8 Vol subtabs
-        'screenshot_completeness': f"{total_screenshots}/{1 + 1 + 8}"
+        'expected_screenshots': expected_screenshots,
+        'screenshot_completeness': f"{total_screenshots}/{expected_screenshots}"
     }
     
     # Save log
@@ -230,7 +287,7 @@ def run_clicker_automation():
     print("=" * 80)
     print(f"Total steps: {step_counter - 1}")
     print(f"Screenshots captured: {total_screenshots}")
-    print(f"Expected screenshots: {1 + 1 + 8}")
+    print(f"Expected screenshots: {expected_screenshots}")
     print(f"Warnings: {total_warnings}")
     
     if total_warnings > 0:
@@ -246,7 +303,7 @@ if __name__ == "__main__":
         log = run_clicker_automation()
         
         # Exit code based on success
-        expected_screenshots = 1 + 1 + 8  # Initial + Market Forecast + 8 Vol subtabs
+        expected_screenshots = sum(1 + len(t.get('subtabs', [])) for t in TABS_TO_VISIT)
         if log['summary']['total_screenshots'] == expected_screenshots:
             print("\n✅ All screenshots captured successfully")
             exit(0)

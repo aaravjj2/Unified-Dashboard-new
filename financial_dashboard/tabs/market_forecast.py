@@ -52,6 +52,27 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Import FinGPT panel (safely)
+try:
+    from .market_forecast_fingpt import create_fingpt_panel, register_fingpt_callbacks
+    FINGPT_AVAILABLE = True
+except ImportError:
+    FINGPT_AVAILABLE = False
+    logger.info("FinGPT panel not available")
+
+
+def _create_fingpt_panel_safe():
+    """Safely create FinGPT panel with fallback."""
+    if FINGPT_AVAILABLE:
+        return create_fingpt_panel()
+    else:
+        import dash_bootstrap_components as dbc
+        return dbc.Card([
+            dbc.CardHeader("FinGPT Forecast (Not Available)"),
+            dbc.CardBody("FinGPT module not loaded.")
+        ], className="bg-dark border-secondary")
+
+
 # Color scheme for dark theme
 COLORS = {
     'background': '#1a1a2e',
@@ -155,29 +176,31 @@ def fetch_historical_price_data(ticker: str, lookback_days: int = 365) -> tuple:
     except Exception as e:
         logger.warning(f"Unified price fetch failed for {ticker}: {e}")
     
-    # Fallback to direct yfinance
-    try:
-        import yfinance as yf
-        
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=lookback_days + 10)
-        
-        stock = yf.Ticker(ticker)
-        hist = stock.history(start=start_date, end=end_date, auto_adjust=True)
-        
-        metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
-        
-        if not hist.empty:
-            metadata['source'] = 'yfinance'
-            metadata['data_timestamp'] = hist.index[-1].isoformat() if hasattr(hist.index[-1], 'isoformat') else str(hist.index[-1])
-            metadata['data_points'] = len(hist)
-            
-            logger.info(f"✅ Fetched {len(hist)} price points for {ticker} via yfinance ({metadata['fetch_duration_ms']}ms)")
-            return hist, metadata
-            
-    except Exception as e:
-        logger.error(f"yfinance fallback failed for {ticker}: {e}")
-        metadata['error'] = str(e)
+    # Fallback to direct yfinance only when explicitly allowed by env flag
+    allow_yf = os.getenv('ALLOW_YFINANCE_FALLBACK', '0') == '1'
+    if allow_yf:
+        try:
+            import yfinance as yf
+
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=lookback_days + 10)
+
+            stock = yf.Ticker(ticker)
+            hist = stock.history(start=start_date, end=end_date, auto_adjust=True)
+
+            metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
+
+            if not hist.empty:
+                metadata['source'] = 'yfinance'
+                metadata['data_timestamp'] = hist.index[-1].isoformat() if hasattr(hist.index[-1], 'isoformat') else str(hist.index[-1])
+                metadata['data_points'] = len(hist)
+
+                logger.info(f"✅ Fetched {len(hist)} price points for {ticker} via yfinance ({metadata['fetch_duration_ms']}ms)")
+                return hist, metadata
+
+        except Exception as e:
+            logger.error(f"yfinance fallback failed for {ticker}: {e}")
+            metadata['error'] = str(e)
     
     metadata['fetch_duration_ms'] = round((time.time() - fetch_start) * 1000, 2)
     return None, metadata
@@ -593,6 +616,8 @@ def layout():
             dbc.Col([
                 create_sentiment_panel(),
                 html.Div(className="mb-3"),
+                _create_fingpt_panel_safe(),  # FinGPT LLM Forecaster Panel
+                html.Div(className="mb-3"),
                 create_metrics_panel(),
                 html.Div(className="mb-3"),
                 create_model_comparison_panel(),
@@ -604,28 +629,8 @@ def layout():
         # Hidden stores
         dcc.Store(id=COMPONENT_IDS['forecast_store'], data=None),
         
-        # Custom CSS
-        html.Style('''
-            .dash-dropdown-dark .Select-control {
-                background-color: #16213e !important;
-                border-color: #374151 !important;
-            }
-            .dash-dropdown-dark .Select-value-label,
-            .dash-dropdown-dark .Select-placeholder {
-                color: #e5e5e5 !important;
-            }
-            .dash-dropdown-dark .Select-menu-outer {
-                background-color: #16213e !important;
-                border-color: #374151 !important;
-            }
-            .dash-dropdown-dark .VirtualizedSelectOption {
-                background-color: #16213e;
-                color: #e5e5e5;
-            }
-            .dash-dropdown-dark .VirtualizedSelectFocusedOption {
-                background-color: #0f3460 !important;
-            }
-        ''')
+        # Custom CSS (moved to assets for Dash compatibility)
+        html.Link(rel='stylesheet', href='/assets/market_forecast_custom.css')
         
     ], fluid=True, className="p-3", style={'backgroundColor': COLORS['background'], 'minHeight': '100vh'})
 
@@ -633,6 +638,14 @@ def layout():
 def register_callbacks(app, SH=None):
     """Register all callbacks for Market Forecast tab."""
     logger.info("Registering Market Forecast callbacks")
+    
+    # Register FinGPT callbacks if available
+    if FINGPT_AVAILABLE:
+        try:
+            register_fingpt_callbacks(app)
+            logger.info("FinGPT callbacks registered successfully")
+        except Exception as e:
+            logger.warning(f"Failed to register FinGPT callbacks: {e}")
     
     from dash.exceptions import PreventUpdate
     

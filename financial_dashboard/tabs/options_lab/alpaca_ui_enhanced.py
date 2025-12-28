@@ -339,7 +339,87 @@ def create_ml_recommendations_panel() -> html.Div:
             html.Div(id='ml-strike-recommendations', children=[
                 html.Div("Loading...", style={'color': '#6b7280', 'fontSize': '12px'})
             ])
-        ])
+        ]),
+        
+        # Sentiment Analysis
+        html.Div([
+            html.H6("📰 Market Sentiment", style={'color': '#9ca3af', 'marginBottom': '10px', 'marginTop': '15px'}),
+            html.Div(id='sentiment-analysis-display', children=[
+                html.Div("Loading...", style={'color': '#6b7280', 'fontSize': '12px'})
+            ])
+        ]),
+        
+        # Multi-Model Consensus
+        html.Div([
+            html.H6("🧠 Multi-Model Consensus", style={'color': '#9ca3af', 'marginBottom': '10px', 'marginTop': '20px'}),
+            html.Button("Generate Consensus", id='generate-consensus-btn', n_clicks=0,
+                       style={
+                           'backgroundColor': '#9c27b0',
+                           'color': 'white',
+                           'padding': '8px 15px',
+                           'border': 'none',
+                           'borderRadius': '4px',
+                           'cursor': 'pointer',
+                           'width': '100%',
+                           'marginBottom': '10px'
+                       }),
+            dcc.Loading(
+                id="loading-consensus",
+                type="circle",
+                children=html.Div(id='consensus-results')
+            )
+        ], style={'backgroundColor': '#2a2d3a', 'padding': '10px', 'borderRadius': '4px', 'marginTop': '15px'}),
+        
+        # Monte Carlo AI Forecast
+        html.Div([
+            html.H6("📈 AI Price Forecast", style={'color': '#9ca3af', 'marginBottom': '10px', 'marginTop': '20px'}),
+            
+            # Contract selector
+            html.Div([
+                html.Label("Select Contract:", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Div([
+                    dcc.Dropdown(
+                        id='forecast-expiration-dropdown',
+                        placeholder='Expiration',
+                        style={'width': '120px', 'marginRight': '5px'},
+                        className='dark-dropdown'
+                    ),
+                    dcc.Dropdown(
+                        id='forecast-strike-dropdown',
+                        placeholder='Strike',
+                        style={'width': '100px', 'marginRight': '5px'},
+                        className='dark-dropdown'
+                    ),
+                    dcc.RadioItems(
+                        id='forecast-type-radio',
+                        options=[
+                            {'label': 'Call', 'value': 'call'},
+                            {'label': 'Put', 'value': 'put'}
+                        ],
+                        value='call',
+                        inline=True,
+                        style={'color': '#e0e0e0', 'fontSize': '11px'}
+                    )
+                ], style={'display': 'flex', 'gap': '5px', 'alignItems': 'center', 'flexWrap': 'wrap'})
+            ], style={'marginBottom': '10px'}),
+            
+            html.Button("🔮 Generate Forecast", id='generate-forecast-btn', n_clicks=0,
+                       style={
+                           'backgroundColor': '#2196F3',
+                           'color': 'white',
+                           'padding': '8px 15px',
+                           'border': 'none',
+                           'borderRadius': '4px',
+                           'cursor': 'pointer',
+                           'width': '100%',
+                           'marginBottom': '10px'
+                       }),
+            dcc.Loading(
+                id="loading-forecast",
+                type="circle",
+                children=html.Div(id='forecast-results')
+            )
+        ], style={'backgroundColor': '#2a2d3a', 'padding': '10px', 'borderRadius': '4px', 'marginTop': '15px'})
         
     ], style={
         'backgroundColor': '#1e2130',

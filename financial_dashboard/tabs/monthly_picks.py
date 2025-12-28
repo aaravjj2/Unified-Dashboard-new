@@ -348,28 +348,71 @@ def _load_and_enrich_picks():
         except Exception:
             logger.debug('Monthly Picks: DB read failed or DB unavailable; falling back to CSV')
 
-        # Fallback: load from CSV or JSON
-        data_path = _find_latest_monthly_picks()
-        if not data_path:
-            return None, "No monthly picks data found", None
-
-        logger.info(f"Loading monthly picks from: {data_path}")
-        
-        # PHASE 26: Support JSON loading from data/picks directory
-        if data_path.endswith('.json'):
-            with open(data_path, 'r') as f:
-                json_data = json.load(f)
-            # Handle both list format and dict with 'picks' key
-            if isinstance(json_data, list):
-                picks_list = json_data
-            elif isinstance(json_data, dict) and 'picks' in json_data:
-                picks_list = json_data['picks']
+        # Fallback: prefer latest pipeline run selected.json (reports/picks/runs/*/selected.json)
+        try:
+            runs_dir = os.path.join(os.path.dirname(__file__), '..', 'reports', 'picks', 'runs')
+            if os.path.exists(runs_dir):
+                import glob
+                sel_files = glob.glob(os.path.join(runs_dir, '*', 'selected.json'))
+                sel_files = sorted(sel_files, key=os.path.getmtime, reverse=True)
+                if sel_files:
+                    sel_path = sel_files[0]
+                    logger.info(f"Loading monthly picks from latest run selected.json: {sel_path}")
+                    df = pd.read_json(sel_path)
+                else:
+                    data_path = _find_latest_monthly_picks()
+                    if not data_path:
+                        return None, "No monthly picks data found", None
+                    logger.info(f"Loading monthly picks from: {data_path}")
+                    if data_path.endswith('.json'):
+                        with open(data_path, 'r') as f:
+                            json_data = json.load(f)
+                        if isinstance(json_data, list):
+                            picks_list = json_data
+                        elif isinstance(json_data, dict) and 'picks' in json_data:
+                            picks_list = json_data['picks']
+                        else:
+                            picks_list = [json_data]
+                        df = pd.DataFrame(picks_list)
+                        logger.info(f"✅ Loaded {len(df)} monthly picks from JSON")
+                    else:
+                        df = pd.read_csv(data_path)
             else:
-                picks_list = [json_data]
-            df = pd.DataFrame(picks_list)
-            logger.info(f"✅ Loaded {len(df)} monthly picks from JSON")
-        else:
-            df = pd.read_csv(data_path)
+                data_path = _find_latest_monthly_picks()
+                if not data_path:
+                    return None, "No monthly picks data found", None
+                logger.info(f"Loading monthly picks from: {data_path}")
+                if data_path.endswith('.json'):
+                    with open(data_path, 'r') as f:
+                        json_data = json.load(f)
+                    if isinstance(json_data, list):
+                        picks_list = json_data
+                    elif isinstance(json_data, dict) and 'picks' in json_data:
+                        picks_list = json_data['picks']
+                    else:
+                        picks_list = [json_data]
+                    df = pd.DataFrame(picks_list)
+                    logger.info(f"✅ Loaded {len(df)} monthly picks from JSON")
+                else:
+                    df = pd.read_csv(data_path)
+        except Exception:
+            data_path = _find_latest_monthly_picks()
+            if not data_path:
+                return None, "No monthly picks data found", None
+            logger.info(f"Loading monthly picks from: {data_path}")
+            if data_path.endswith('.json'):
+                with open(data_path, 'r') as f:
+                    json_data = json.load(f)
+                if isinstance(json_data, list):
+                    picks_list = json_data
+                elif isinstance(json_data, dict) and 'picks' in json_data:
+                    picks_list = json_data['picks']
+                else:
+                    picks_list = [json_data]
+                df = pd.DataFrame(picks_list)
+                logger.info(f"✅ Loaded {len(df)} monthly picks from JSON")
+            else:
+                df = pd.read_csv(data_path)
         
         # PHASE 18B: ML Integration - Map CSV columns to match Weekly Picks schema
         # This ensures Monthly Picks displays ML scores like Weekly Picks
@@ -1040,9 +1083,9 @@ def register_callbacks(app, SH=None):
             from picker.ensemble_picker import EnsemblePicker, save_monthly_picks
             from datetime import date
             
-            # Get stock universe (S&P 500 + NASDAQ top stocks)
-            universe = StockUniverse.get_combined_universe()
-            logger.info(f"Using universe of {len(universe)} stocks")
+            # Get stock universe (Broad: S&P 500 + NASDAQ + Mid-Cap)
+            universe = StockUniverse.get_broad_universe()
+            logger.info(f"Using broad universe of {len(universe)} stocks")
             
             # Create picker with default weights
             picker = EnsemblePicker()

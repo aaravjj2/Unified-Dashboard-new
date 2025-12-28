@@ -97,9 +97,9 @@ def layout():
             ]
         ),
         
-        # Hidden stores for data
-        dcc.Store(id='options-chain-store'),
-        dcc.Store(id='options-surface-store'),
+        # Hidden stores for data - COMMENTED OUT: duplicate IDs with layout_v2
+        # dcc.Store(id='options-chain-store'),
+        # dcc.Store(id='options-surface-store'),
         
         # Auto-refresh interval (30 seconds)
         dcc.Interval(

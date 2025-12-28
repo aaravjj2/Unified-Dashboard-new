@@ -225,6 +225,35 @@ def reindex():
             "indexed": stats['indexed'],
             "duration_ms": duration_ms
         }), 200
+
+
+@chat_api.route('/execute_picks', methods=['POST'])
+def execute_picks_endpoint():
+    """
+    Generate stock picks and optionally execute market orders.
+    POST body:
+      { "n": 5, "allocation_per_pick": 500, "execute": false }
+
+    Safety: To perform live orders (execute=true & dry_run=False), environment variable
+    ALLOW_AUTO_BUY must be set to '1'. Otherwise orders will remain dry-run.
+    """
+    try:
+        payload = request.get_json() or {}
+        n = int(payload.get('n', 5))
+        allocation = float(payload.get('allocation_per_pick', 500.0))
+        execute_flag = bool(payload.get('execute', False))
+
+        # If execute_flag is True, require explicit ALLOW_AUTO_BUY env var
+        if execute_flag and os.getenv('ALLOW_AUTO_BUY', '0') != '1':
+            return jsonify({"error": "Auto-buy disabled. Set ALLOW_AUTO_BUY=1 to enable live execution"}), 403
+
+        svc = AIMorningBriefService()
+        res = svc.generate_and_execute_picks(n=n, allocation_per_pick=allocation, execute=execute_flag)
+        return jsonify({"success": True, "result": res}), 200
+
+    except Exception as e:
+        logger.error(f"Execute picks endpoint error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
         
     except Exception as e:
         logger.error(f"Reindex error: {e}", exc_info=True)

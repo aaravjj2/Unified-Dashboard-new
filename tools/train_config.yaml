@@ -1,0 +1,145 @@
+# ML Training Configuration
+# ==========================
+# Phase 3 of ML Project Guide implementation
+
+# Data configuration
+data:
+  snapshot_dir: "data/snapshots/latest"
+  tickers:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - AMZN
+    - NVDA
+    - META
+    - TSLA
+    - AMD
+  start_date: "2020-01-01"
+  end_date: null  # null = current date
+  frequency: "D"  # D = daily, H = hourly
+
+# Feature configuration
+features:
+  technical:
+    sma_windows: [5, 10, 20, 50, 200]
+    ema_spans: [5, 10, 20, 50]
+    rsi_windows: [14]
+    atr_periods: [14]
+    return_periods: [1, 5, 10, 20]
+  
+  fundamental:
+    include: true
+    metrics:
+      - pe_ratio
+      - pb_ratio
+      - roe
+      - revenue_growth
+      - debt_to_equity
+  
+  sentiment:
+    include: true
+    source: "rag"  # rag, finbert, or both
+
+# Label configuration
+labels:
+  type: "ternary"  # regression, binary, ternary
+  horizon: 5  # days forward
+  threshold: 0.02  # 2% threshold for classification
+
+# Model configuration
+model:
+  type: "xgboost"  # xgboost, lightgbm, lstm, transformer
+  
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 1
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+  
+  lightgbm:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    num_leaves: 31
+    feature_fraction: 0.8
+    bagging_fraction: 0.8
+    bagging_freq: 5
+  
+  lstm:
+    hidden_size: 64
+    num_layers: 2
+    dropout: 0.2
+    sequence_length: 20
+    batch_size: 32
+    epochs: 50
+  
+  transformer:
+    d_model: 64
+    nhead: 4
+    num_layers: 2
+    dropout: 0.1
+    sequence_length: 20
+    batch_size: 32
+    epochs: 50
+
+# Training configuration
+training:
+  test_size: 0.2
+  validation_size: 0.1
+  cv_folds: 5
+  cv_method: "time_series"  # time_series, walk_forward
+  
+  walk_forward:
+    train_window: 252  # 1 year
+    test_window: 63    # ~3 months
+  
+  early_stopping:
+    enabled: true
+    patience: 10
+    monitor: "val_loss"
+  
+  random_seed: 42
+
+# Evaluation configuration
+eval:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - roc_auc
+    - sharpe_ratio
+    - max_drawdown
+  
+  backtest:
+    enabled: true
+    commission: 0.001
+    slippage: 0.001
+    initial_capital: 100000
+
+# Artifact configuration
+artifacts:
+  output_dir: "experiments"
+  save_model: true
+  save_features: true
+  save_predictions: true
+  save_backtest: true
+  
+  mlflow:
+    enabled: false
+    tracking_uri: "mlruns"
+    experiment_name: "quant_ml"
+  
+  versioning:
+    enabled: true
+    format: "{model_name}/{date}/{hash}"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/training.log"

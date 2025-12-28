@@ -47,3 +47,7 @@ tests/logs/
 tests/test_screenshots/
 tmp/
 *.png
+
+# Large model files
+triton_models/*/1/model.pt
+*.pt

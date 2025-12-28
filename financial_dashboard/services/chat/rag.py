@@ -147,17 +147,26 @@ class RAGOrchestrator:
         Returns:
             List of retrieved chunks with score
         """
-        # Embed query
+        # First, prefer Chromadb-backed retriever (it is updated by ingestion)
+        try:
+            from financial_dashboard.services.rag.retriever import RAGRetriever
+            chroma_retriever = RAGRetriever()
+            results = chroma_retriever.query(query, top_k=top_k, filter_meta=metadata_filter)
+            if results:
+                logger.info(f"Retrieved {len(results)} chunks from Chromadb for query: {query[:50]}...")
+                return results
+        except Exception as e:
+            logger.debug(f"Chromadb retriever unavailable or failed: {e}")
+
+        # Fallback to FAISS-based index (embed then search)
         query_embedding = self.embedder.embed(query)
-        
-        # Search index
         results = self.index.search(
             query_embedding,
             top_k=top_k,
             filter_meta=metadata_filter
         )
         
-        logger.info(f"Retrieved {len(results)} chunks for query: {query[:50]}...")
+        logger.info(f"Retrieved {len(results)} chunks from FAISS for query: {query[:50]}...")
         return results
     
     def assemble_prompt(
@@ -324,10 +333,10 @@ When suggesting actions, use this JSON format:
             "answer": answer_text if answer_text else json.dumps(action_suggestion),
             "sources": [
                 {
-                    "chunk_id": chunk['chunk_id'],
-                    "text": chunk['text'][:200] + "...",
-                    "score": chunk['score'],
-                    "metadata": chunk['metadata']
+                    "chunk_id": chunk.get('chunk_id') or (chunk.get('metadata') or {}).get('url') or (chunk.get('metadata') or {}).get('id') or 'unknown',
+                    "text": (chunk.get('text') or '')[:200] + "...",
+                    "score": chunk.get('score'),
+                    "metadata": chunk.get('metadata') or {}
                 }
                 for chunk in chunks
             ],

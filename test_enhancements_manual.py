@@ -133,16 +133,16 @@ def test_flow_analysis():
     try:
         from financial_dashboard.tabs.options_lab.analytics import calculate_put_call_ratio, calculate_max_pain
         
-        # Sample chain data
+        # Sample chain data with some None values to test robustness
         chain_data = {
             'chains': {
                 '2025-01-17': {
                     'calls': [
                         {'strike': 150, 'volume': 1000, 'openInterest': 5000},
-                        {'strike': 155, 'volume': 800, 'openInterest': 4000}
+                        {'strike': 155, 'volume': None, 'openInterest': 4000}  # Test None volume
                     ],
                     'puts': [
-                        {'strike': 145, 'volume': 1200, 'openInterest': 6000},
+                        {'strike': 145, 'volume': 1200, 'openInterest': None}, # Test None OI
                         {'strike': 140, 'volume': 900, 'openInterest': 4500}
                     ]
                 }
@@ -155,8 +155,12 @@ def test_flow_analysis():
         # Test max pain
         max_pain_strike, _ = calculate_max_pain(chain_data, '2025-01-17')
         
-        if pcr['volume_ratio'] > 0 and max_pain_strike > 0:
-            logger.info(f"✅ Flow analysis working:")
+        # Test heatmap (which was the source of the error)
+        from financial_dashboard.tabs.options_lab.analytics import create_volume_oi_heatmap
+        heatmap = create_volume_oi_heatmap(chain_data)
+        
+        if pcr['volume_ratio'] > 0 and max_pain_strike > 0 and heatmap:
+            logger.info(f"✅ Flow analysis working (robustness check passed):")
             logger.info(f"   P/C Volume: {pcr['volume_ratio']}, P/C OI: {pcr['oi_ratio']}")
             logger.info(f"   Max Pain: ${max_pain_strike}, Sentiment: {pcr['volume_sentiment']}")
             return True
@@ -202,6 +206,57 @@ def test_callback_errors():
         logger.error(f"❌ Error checking logs: {e}")
         return False
 
+def test_multi_model_consensus():
+    """Test 8: Test multi-model consensus logic."""
+    logger.info("\n=== TEST 8: Multi-Model Consensus ===")
+    try:
+        from financial_dashboard.tabs.options_lab.multi_model_recommendations import get_multi_model_recommendations
+        import asyncio
+        import inspect
+        
+        if inspect.iscoroutinefunction(get_multi_model_recommendations):
+            logger.info("✅ Multi-model consensus function is async")
+            return True
+        else:
+            logger.error("❌ get_multi_model_recommendations is not async")
+            return False
+            
+    except Exception as e:
+        logger.error(f"❌ Multi-model consensus error: {e}")
+        return False
+
+def test_ml_performance():
+    """Test 9: Test ML performance storage."""
+    logger.info("\n=== TEST 9: ML Performance Storage ===")
+    try:
+        from financial_dashboard.tabs.options_lab.ml_performance import store_recommendation, get_performance_history, init_db
+        import os
+        
+        # Initialize DB
+        init_db()
+        
+        # Store dummy recommendation
+        dummy_consensus = {
+            'consensus_strategy': 'Iron Condor',
+            'confidence_score': 0.85,
+            'rationale': 'Test rationale',
+            'model_votes': {'claude': 'Iron Condor', 'gpt4': 'Iron Condor'}
+        }
+        store_recommendation('TEST', 100.0, dummy_consensus)
+        
+        # Check if stored
+        df = get_performance_history()
+        if not df.empty and 'TEST' in df['ticker'].values:
+            logger.info("✅ ML performance storage working")
+            return True
+        else:
+            logger.error("❌ Failed to retrieve stored recommendation")
+            return False
+            
+    except Exception as e:
+        logger.error(f"❌ ML performance error: {e}")
+        return False
+
 def run_all_tests():
     """Run all manual E2E tests."""
     logger.info("=" * 60)
@@ -218,6 +273,8 @@ def run_all_tests():
     results['GROQ API'] = test_groq_recommendations()
     results['Flow Analysis'] = test_flow_analysis()
     results['Callback Errors'] = test_callback_errors()
+    results['Multi-Model AI'] = test_multi_model_consensus()
+    results['ML Performance'] = test_ml_performance()
     
     # Summary
     logger.info("\n" + "=" * 60)

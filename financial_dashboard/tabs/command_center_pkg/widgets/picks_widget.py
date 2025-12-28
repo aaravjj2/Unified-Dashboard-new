@@ -30,6 +30,14 @@ def create_picks_widget():
                 n_clicks=0,
                 className="mt-2"
             ),
+            dbc.Button(
+                "Run Picks (Live)",
+                id="cc-picks-run-live-btn",
+                color="danger",
+                size="sm",
+                n_clicks=0,
+                className="mt-2 ms-2"
+            ),
             html.Small(
                 id="cc-picks-last-run-id",
                 children="Last run: N/A",
@@ -37,3 +45,21 @@ def create_picks_widget():
             ),
         ]),
     ], className="mb-3")
+
+
+def create_picks_live_confirm_modal():
+    from dash import html
+    return dbc.Modal([
+        dbc.ModalHeader("Confirm Live Picks Execution"),
+        dbc.ModalBody(html.Div([
+            html.P("You are about to execute live market orders. This will place real trades (paper/live depending on Alpaca config)."),
+            html.P("Ensure ALLOW_AUTO_BUY=1 and Alpaca keys are configured."),
+            html.Small("This action is auditable and will be logged.", className="text-muted")
+        ])),
+        dbc.ModalFooter([
+            dbc.Button("Confirm Execute", id="cc-picks-live-confirm-btn", color="danger", n_clicks=0),
+            dbc.Button("Cancel", id="cc-picks-live-cancel-btn", color="secondary", n_clicks=0, className="ms-2")
+        ])
+    ], id="cc-picks-live-confirm-modal", is_open=False)
+
+

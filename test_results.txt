@@ -1,98 +1,148 @@
-=== Testing Mistral-7B-Instruct Chatbot ===
-Target URL: http://localhost:8062/api/chat
---------------------------------------------------
+INFO:__main__:============================================================
+INFO:__main__:COMPREHENSIVE E2E TEST - All Enhancements
+INFO:__main__:Started: 2025-12-28 01:21:35
+INFO:__main__:============================================================
+INFO:__main__:
+=== TEST 1: Keys Loading ===
+INFO:__main__:✅ 42 API keys loaded from keys.env
+INFO:__main__:✅ Chrome driver initialized
+INFO:__main__:
+=== TEST 2: Async Components ===
+INFO:__main__:✅ No async-dropdown.js errors (eager_loading=True worked)
+INFO:__main__:
+=== TEST 3: Options Chain Loading ===
+INFO:__main__:Entered ticker: AAPL
+ERROR:__main__:❌ Error loading options chain: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="alpaca-load-chain"]"}
+  (Session info: chrome=143.0.7499.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x5c116833861a <unknown>
+#1 0x5c1167db520b <unknown>
+#2 0x5c1167e0690f <unknown>
+#3 0x5c1167e06b51 <unknown>
+#4 0x5c1167e54d84 <unknown>
+#5 0x5c1167e5220e <unknown>
+#6 0x5c1167df9232 <unknown>
+#7 0x5c1167df9ee1 <unknown>
+#8 0x5c11683013f9 <unknown>
+#9 0x5c116830434d <unknown>
+#10 0x5c11682ea122 <unknown>
+#11 0x5c1168304f2b <unknown>
+#12 0x5c11682d0c30 <unknown>
+#13 0x5c1168325d78 <unknown>
+#14 0x5c1168325f4c <unknown>
+#15 0x5c1168337973 <unknown>
+#16 0x7b513f69caa4 <unknown>
+#17 0x7b513f729c6c <unknown>
 
-[Question 1]: What is the current price of SPY?
-[Response (9.81s)]:
-The current price of SPY, according to market data from Finnhub, is $675.02.
-[Sources]: ['Quote (SPY)']
---------------------------------------------------
+INFO:__main__:
+=== TEST 4: Greeks Calculation ===
+ERROR:__main__:❌ Error checking Greeks: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="greeks-delta"]"}
+  (Session info: chrome=143.0.7499.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x5c116833861a <unknown>
+#1 0x5c1167db520b <unknown>
+#2 0x5c1167e0690f <unknown>
+#3 0x5c1167e06b51 <unknown>
+#4 0x5c1167e54d84 <unknown>
+#5 0x5c1167e5220e <unknown>
+#6 0x5c1167df9232 <unknown>
+#7 0x5c1167df9ee1 <unknown>
+#8 0x5c11683013f9 <unknown>
+#9 0x5c116830434d <unknown>
+#10 0x5c11682ea122 <unknown>
+#11 0x5c1168304f2b <unknown>
+#12 0x5c11682d0c30 <unknown>
+#13 0x5c1168325d78 <unknown>
+#14 0x5c1168325f4c <unknown>
+#15 0x5c1168337973 <unknown>
+#16 0x7b513f69caa4 <unknown>
+#17 0x7b513f729c6c <unknown>
 
-[Question 2]: What are my current portfolio positions?
-[Response (10.76s)]:
-Based on the context data provided, your current portfolio positions are as follows:
+INFO:__main__:
+=== TEST 5: AI Recommendations ===
+ERROR:__main__:❌ Error checking AI recommendations: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="alpaca-ml-tab"]"}
+  (Session info: chrome=143.0.7499.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x5c116833861a <unknown>
+#1 0x5c1167db520b <unknown>
+#2 0x5c1167e0690f <unknown>
+#3 0x5c1167e06b51 <unknown>
+#4 0x5c1167e54d84 <unknown>
+#5 0x5c1167e5220e <unknown>
+#6 0x5c1167df9232 <unknown>
+#7 0x5c1167df9ee1 <unknown>
+#8 0x5c11683013f9 <unknown>
+#9 0x5c116830434d <unknown>
+#10 0x5c11682ea122 <unknown>
+#11 0x5c1168304f2b <unknown>
+#12 0x5c11682d0c30 <unknown>
+#13 0x5c1168325d78 <unknown>
+#14 0x5c1168325f4c <unknown>
+#15 0x5c1168337973 <unknown>
+#16 0x7b513f69caa4 <unknown>
+#17 0x7b513f729c6c <unknown>
 
-1. GOOGL260116C00225000: 1 share with a value of $9955.00 and a profit & loss (P&L) of +115.24%.
-2. INTC: 1,013.294070725 shares with a value of $36,306.33 and a P&L of -6.06%.
-3. NVDA: 99.265386142 shares with a value of $17,651.37 and a P&L of -11.74%.
-4. TSLA: 100 shares with a value of $41,940.00 and a P&L of -6.97%.
+INFO:__main__:
+=== TEST 6: Flow Analysis ===
+ERROR:__main__:❌ Error checking flow analysis: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="alpaca-flow-tab"]"}
+  (Session info: chrome=143.0.7499.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x5c116833861a <unknown>
+#1 0x5c1167db520b <unknown>
+#2 0x5c1167e0690f <unknown>
+#3 0x5c1167e06b51 <unknown>
+#4 0x5c1167e54d84 <unknown>
+#5 0x5c1167e5220e <unknown>
+#6 0x5c1167df9232 <unknown>
+#7 0x5c1167df9ee1 <unknown>
+#8 0x5c11683013f9 <unknown>
+#9 0x5c116830434d <unknown>
+#10 0x5c11682ea122 <unknown>
+#11 0x5c1168304f2b <unknown>
+#12 0x5c11682d0c30 <unknown>
+#13 0x5c1168325d78 <unknown>
+#14 0x5c1168325f4c <unknown>
+#15 0x5c1168337973 <unknown>
+#16 0x7b513f69caa4 <unknown>
+#17 0x7b513f729c6c <unknown>
 
-These positions represent your holdings in Google LLC (GOOGL), Intel Corporation (INTC), NVIDIA Corporation (NVDA), and Tesla Inc. (TSLA) as of November 26, 2025.
-[Sources]: ['Quote (ARE)', 'Alpaca Portfolio']
---------------------------------------------------
+INFO:__main__:
+=== TEST 7: Strategy Builder ===
+ERROR:__main__:❌ Error checking strategy builder: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="alpaca-strategy-tab"]"}
+  (Session info: chrome=143.0.7499.169); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+#0 0x5c116833861a <unknown>
+#1 0x5c1167db520b <unknown>
+#2 0x5c1167e0690f <unknown>
+#3 0x5c1167e06b51 <unknown>
+#4 0x5c1167e54d84 <unknown>
+#5 0x5c1167e5220e <unknown>
+#6 0x5c1167df9232 <unknown>
+#7 0x5c1167df9ee1 <unknown>
+#8 0x5c11683013f9 <unknown>
+#9 0x5c116830434d <unknown>
+#10 0x5c11682ea122 <unknown>
+#11 0x5c1168304f2b <unknown>
+#12 0x5c11682d0c30 <unknown>
+#13 0x5c1168325d78 <unknown>
+#14 0x5c1168325f4c <unknown>
+#15 0x5c1168337973 <unknown>
+#16 0x7b513f69caa4 <unknown>
+#17 0x7b513f729c6c <unknown>
 
-[Question 3]: Explain implied volatility.
-[Response (6.37s)]:
-Implied volatility is a key concept in options trading that represents the market's expectation of future price movements for an underlying asset. It's derived from current option prices and reflects investors' sentiment about the uncertainty or risk associated with the asset's price action.
-
-Implied volatility can be thought of as a measure of how much the market anticipates the stock price will move, on average, over a specific period. A higher implied volatility indicates greater expected price swings and vice versa for lower implied volatility.
-
-This measurement is important because it influences option pricing. Other factors being equal, an increase in implied volatility causes option prices to rise since the potential for larger price moves increases the likelihood of in-the-money options. Conversely, a decrease in implied volatility leads to lower option prices as the probability of significant price swings decreases.
-
-In summary, implied volatility is an essential metric for understanding and evaluating options markets. It reflects market participants' perceptions about potential future asset price movements and plays a crucial role in determining option pricing.
---------------------------------------------------
-
-[Question 4]: What is an Iron Condor strategy?
-[Response (9.87s)]:
-An Iron Condor is a neutral options trading strategy, meaning it aims for limited profit with defined risk. It involves selling two credit spreads simultaneously in the same underlying asset but different strike prices and expiration dates. One spread consists of a bought option (long call or put) and sold option (short call or put), called a "near-term credit spread" or "naked spread." The other spread follows an identical setup but with reversed positions, called the "far-term debit spread" or "long spread."
-
-The goal of this strategy is to profit from the time decay and width convergence between both spreads while limiting potential losses. It requires a more nuanced understanding of options pricing and sensitivity, including concepts like Volatility Index (VIX), implied volatility, and Greeks such as Delta and Theta. If you have any specific questions regarding these terms or want to know how they apply to the Iron Condor strategy, feel free to ask!
-
-Please note that while I can explain various trading strategies, including the Iron Condor, my responses are based on general knowledge and do not consider real-time market data like the prices of AN ($215.29) or IRON ($92.53). If you have specific stocks or securities in mind when asking about a strategy, it's always best to consult with your financial advisor or broker for personalized advice based on current market conditions and your investment objectives.
-[Sources]: ['Quote (AN)', 'Quote (IRON)']
---------------------------------------------------
-
-[Question 5]: How does Theta affect option prices?
-[Response (6.97s)]:
-Theta is a Greek letter used in options pricing to represent the rate at which the time value of an option decays. As the expiration date approaches, the time value of an option decreases due to the reduction in potential volatility and probability of profitability. Therefore, as the time to expiration decreases, Theta causes option prices to decline. Conversely, a longer time until expiration generally results in higher option prices due to increased time value. It's important to note that Theta does not account for changes in underlying asset price or volatility; it only represents the effect of time passing on an option's price.
---------------------------------------------------
-
-[Question 6]: What is the difference between a call and a put?
-[Response (4.92s)]:
-In the context of options trading, a call option gives the holder the right, but not the obligation, to buy an underlying asset at a specified price (strike price) before a certain date (expiration date). On the other hand, a put option grants the holder the right to sell the underlying asset at the strike price before the expiration date.
-
-A call option is generally used when an investor expects the price of the underlying asset to rise, while a put option is typically employed when they anticipate a decline in the asset's value.
-[Sources]: ['Quote (A)']
---------------------------------------------------
-
-[Question 7]: Analyze the market trend for AAPL.
-[Response (5.40s)]:
-Based on the provided context data, Apple Inc. (AAPL) is currently trading at $276.97, representing an increase of 1.05 points or 0.38% compared to the previous price. This indicates a positive market trend for AAPL over the recent period. However, it's essential to note that short-term trends can be volatile and should not be the sole factor in making investment decisions. For a more comprehensive analysis, consider looking at historical charts, technical indicators, and fundamental data, which may provide further insights into market directionality and potential price movements for AAPL.
-[Sources]: ['Quote (AAPL)']
---------------------------------------------------
-
-[Question 8]: What is the VIX index?
-[Response (6.32s)]:
-The VIX Index, also known as the CBOE Volatility Index, is a popular measure of market volatility for the S&P 500 index. It's calculated using option prices on the S&P 500 index and reflects investors' expectations of future stock market volatility. A higher VIX value indicates greater anticipated volatility, while a lower value suggests calmer markets. The VIX is often referred to as the "fear gauge" due to its correlation with market anxiety. (Source: Investopedia)
-
-I don't have real-time data for the current VIX index, but you can check it from reputable financial websites or platforms like Yahoo Finance, Bloomberg, or CBOE Global Markets directly.
-[Sources]: ['Quote (INDEX)']
---------------------------------------------------
-
-[Question 9]: How do I hedge my portfolio?
-[Response (11.97s)]:
-To hedge your portfolio and reduce risk, you can consider using various financial instruments such as options or futures contracts. These derivatives allow you to offset potential losses in your portfolio by taking positions that will profit when the market moves against your existing holdings.
-
-For example, if you're concerned about a possible downturn in stocks like NVDA and TSLA, you could buy put options on those securities. A put option gives you the right to sell an underlying asset at a specified price (strike price) before a certain date (expiration). If the market moves against your prediction and these stocks decrease in value, the put options would increase in value, potentially offsetting or even outweighing the losses in your portfolio.
-
-It's essential to note that hedging involves additional costs, including option premiums and transaction fees. Furthermore, it requires careful analysis of market conditions and an understanding of the underlying financial instruments involved. It is recommended consulting with a financial advisor or professional before implementing any hedging strategies.
-
-In your current portfolio, you already hold options contracts (GOOGL260116C00225000) which serve as a form of hedge for GOOGL stock. Monitoring and adjusting these positions based on market conditions can help mitigate risk while maximizing returns in your portfolio.
-[Sources]: ['Alpaca Portfolio']
---------------------------------------------------
-
-[Question 10]: What is the price of NVDA?
-[Response (2.80s)]:
-The current price of NVDA according to our market data from Finnhub is $177.82.
-[Sources]: ['Quote (NVDA)']
---------------------------------------------------
-
-[Question 11]: Tell me about the current volatility surface for SPY.
-[Response (7.05s)]:
-I'm unable to provide real-time information on the current volatility surface for SPY directly from this context, as it is not explicitly provided in the given data. However, I can explain what a volatility surface is and how it relates to options pricing.
-
-A volatility surface is a graphical representation of implied volatilities at various strike prices and maturities for an underlying asset like SPY (SPDR S&P 500 ETF). Implied volatility represents the market's expectation of future price fluctuations, as priced in current options. A higher volatility surface implies investors anticipate greater price swings in the future, leading to a premium for option contracts to account for that risk.
-
-You can access this information through various financial data providers or by calculating it using historical market data and options prices. If you require more detailed assistance with analyzing SPY's volatility surface or have specific questions about options trading, please let me know!
-[Sources]: ['Quote (ME)', 'Quote (SPY)']
---------------------------------------------------
+INFO:__main__:Chrome driver closed
+INFO:__main__:
+============================================================
+INFO:__main__:TEST SUMMARY
+INFO:__main__:============================================================
+INFO:__main__:✅ PASS - Keys Loading
+INFO:__main__:✅ PASS - Async Components
+INFO:__main__:❌ FAIL - Chain Loading
+INFO:__main__:❌ FAIL - Greeks Calculation
+INFO:__main__:❌ FAIL - AI Recommendations
+INFO:__main__:❌ FAIL - Flow Analysis
+INFO:__main__:❌ FAIL - Strategy Builder
+INFO:__main__:------------------------------------------------------------
+INFO:__main__:TOTAL: 2/7 tests passed (28.6%)
+INFO:__main__:Finished: 2025-12-28 01:21:55
+INFO:__main__:============================================================

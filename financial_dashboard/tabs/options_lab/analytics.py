@@ -527,8 +527,8 @@ def create_volume_oi_heatmap(chain_data: Dict) -> go.Figure:
     
     for exp in expirations:
         chain = chains[exp]
-        call_vol = {c['strike']: c.get('volume', 0) for c in chain.get('calls', [])}
-        put_vol = {p['strike']: p.get('volume', 0) for p in chain.get('puts', [])}
+        call_vol = {c['strike']: (c.get('volume', 0) or 0) for c in chain.get('calls', [])}
+        put_vol = {p['strike']: (p.get('volume', 0) or 0) for p in chain.get('puts', [])}
         
         row = [call_vol.get(s, 0) + put_vol.get(s, 0) for s in strikes]
         volume_matrix.append(row)
@@ -597,16 +597,16 @@ def calculate_max_pain(chain_data: Dict, expiration: str) -> Tuple[float, go.Fig
         # Call pain: sum of (max(0, strike - test_strike) * OI) for all calls
         if not calls.empty:
             for _, row in calls.iterrows():
-                oi = row.get('openInterest', 0)
-                strike = row.get('strike', 0)
+                oi = row.get('openInterest', 0) or 0
+                strike = row.get('strike', 0) or 0
                 if test_strike > strike:
                     call_pain += (test_strike - strike) * oi * 100
         
         # Put pain: sum of (max(0, test_strike - strike) * OI) for all puts
         if not puts.empty:
             for _, row in puts.iterrows():
-                oi = row.get('openInterest', 0)
-                strike = row.get('strike', 0)
+                oi = row.get('openInterest', 0) or 0
+                strike = row.get('strike', 0) or 0
                 if test_strike < strike:
                     put_pain += (strike - test_strike) * oi * 100
         

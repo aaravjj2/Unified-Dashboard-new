@@ -105,21 +105,49 @@ class ServingClient:
             # For now, call sentiment and embedding examples as a proof-of-concept
             # In real usage, we'd send a feature matrix with price history
             logger.info(f"Calling Triton server for {ticker}")
-            # Attempt to fetch a price history of 60 days for the ticker using yfinance
+            # Attempt to fetch a price history using the unified fetch helper
             try:
+                # Lazy import the shared fetcher to avoid importing heavy deps at module load
+                from financial_dashboard.utils.price_fetch import fetch_historical_data
                 import numpy as np
-                import yfinance as yf
-                hist = yf.Ticker(ticker).history(period='90d', interval='1d', auto_adjust=True)
-                closes = hist['Close'].dropna().values
-                # Use the last 60 days (pad with last value if needed)
+                from datetime import datetime, timedelta
+
+                # Request a slightly larger window to ensure we can extract 60 points
+                end_date = datetime.utcnow().date()
+                start_date = end_date - timedelta(days=120)
+
+                df = fetch_historical_data([ticker], start_date=start_date, end_date=end_date, use_alpaca=True)
+                # fetch_historical_data returns a DataFrame with tickers as columns
+                if df is None or ticker not in df.columns or df[ticker].dropna().empty:
+                    raise RuntimeError('no historical data returned')
+
+                closes = df[ticker].dropna().values
                 seq_len = 60
                 if len(closes) < seq_len:
-                    pad = np.full((seq_len - len(closes),), closes[-1] if len(closes) else 0.0)
+                    pad_val = float(closes[-1]) if len(closes) else 0.0
+                    pad = np.full((seq_len - len(closes),), pad_val)
                     closes = np.concatenate([pad, closes])
                 price_hist = closes[-seq_len:].astype('float32').reshape(1, seq_len)
             except Exception as e:
-                logger.warning(f"Failed to fetch price history via yfinance for Triton forecast: {e}")
-                return {"status": "error", "source": "triton", "error": "failed to fetch price history"}
+                logger.warning(f"Failed to fetch price history via unified fetcher for Triton forecast: {e}")
+                # Optional explicit yfinance fallback controlled by env var
+                allow_yf = os.getenv('ALLOW_YFINANCE_FALLBACK', '0') == '1'
+                if allow_yf:
+                    try:
+                        import numpy as np
+                        import yfinance as yf
+                        hist = yf.Ticker(ticker).history(period='90d', interval='1d', auto_adjust=True)
+                        closes = hist['Close'].dropna().values
+                        seq_len = 60
+                        if len(closes) < seq_len:
+                            pad = np.full((seq_len - len(closes),), closes[-1] if len(closes) else 0.0)
+                            closes = np.concatenate([pad, closes])
+                        price_hist = closes[-seq_len:].astype('float32').reshape(1, seq_len)
+                    except Exception as ye:
+                        logger.warning(f"yfinance fallback failed for Triton forecast: {ye}")
+                        return {"status": "error", "source": "triton", "error": "failed to fetch price history"}
+                else:
+                    return {"status": "error", "source": "triton", "error": "failed to fetch price history"}
 
             try:
                 payload = self._triton_client.infer_forecast(price_hist, ticker_id=0)

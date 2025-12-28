@@ -14,3 +14,11 @@ repos:
         entry: python3 tools/precommit_analyzer.py
         language: system
         stages: [commit]
+
+      - id: pytest-alpaca
+        name: pytest-alpaca-options
+        entry: bash -c 'python -m pytest tests/test_alpaca_callbacks.py -v --tb=short -q'
+        language: system
+        pass_filenames: false
+        files: ^financial_dashboard/tabs/options_lab/
+        stages: [commit]

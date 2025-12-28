@@ -13,6 +13,9 @@ import os
 import logging
 import importlib.util
 import time
+import subprocess
+import socket
+import requests
 
 # Setup paths FIRST before any local imports
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -557,9 +560,9 @@ def create_layout():
             dcc.Interval(id='tab-refresh-interval', interval=60000, disabled=True),
             dcc.Interval(id='poll-interval', interval=2000, disabled=True),
             dcc.Interval(id='interval-component', interval=5000, n_intervals=0),
-            # Options Lab stores (CRITICAL: must be at app level for callbacks)
-            dcc.Store(id='options-chain-store'),
-            dcc.Store(id='options-surface-store'),
+            # Options Lab stores - REMOVED duplicates, now defined in layout_v2.py
+            # dcc.Store(id='options-chain-store'),  # Defined in options_lab/layout_v2.py
+            # dcc.Store(id='options-surface-store'),  # Defined in options_lab/layout_v2.py
             dcc.Store(id='ol-backtest-store'),
             dcc.Store(id='ol-settings-store'),
             dcc.Store(id='active-tab-store'),
@@ -567,6 +570,15 @@ def create_layout():
         ], style={'display': 'none'}),
         # Centralized placeholders (stores, intervals, hidden divs)
         html.Div(get_all_placeholders(), style={'display': 'none'}),
+        # E2E test helpers: hidden buttons that scripts can click to reliably switch tabs.
+        # These buttons are intentionally placed off-screen and nearly-transparent so they
+        # do not interfere with the UI but remain visible to automation tools.
+        html.Div([
+            html.Button(id=f'e2e-open-tab-{tab_key}', n_clicks=0, children=tab_key, style={
+                'position': 'fixed', 'left': '-10000px', 'top': '-10000px',
+                'width': '10px', 'height': '10px', 'opacity': '0.01'
+            }) for tab_key in ENABLED_TABS
+        ], style={'display': 'block'}),
         # Sprint 7: AI Chatbot Components
         create_chatbot_ui() if CHATBOT_AVAILABLE else html.Div(),
         create_floating_action_button() if CHATBOT_AVAILABLE else html.Div(),
@@ -600,7 +612,8 @@ def initialize_app():
         return app
     
     logger.info("Initializing app at module level...")
-    from app import create_app
+    # Use fully-qualified import to avoid "attempted relative import with no known parent" errors
+    from financial_dashboard.app import create_app
     app = create_app()
     server = app.server
     logger.info(f"✅ App initialized: {type(app)}")
@@ -612,10 +625,76 @@ def initialize_app():
     
     # Register local tab callback
     register_tab_callback(app)
+    # Register E2E callbacks to allow automated tests to switch tabs reliably
+    try:
+        register_e2e_callbacks(app)
+    except Exception:
+        logger.exception('Failed to register E2E callbacks')
+    # Pre-warm ForecastAdapter price cache to reduce first-load latency
+    try:
+        prewarm_env = os.environ.get('PREWARM_TICKERS')
+        if prewarm_env:
+            prewarm_tickers = [t.strip().upper() for t in prewarm_env.split(',') if t.strip()]
+        else:
+            prewarm_tickers = ['SPY', 'QQQ', 'AAPL', 'MSFT', 'NVDA']
+
+        from financial_dashboard.services.forecast_adapter import ForecastAdapter
+        fa = ForecastAdapter(deterministic=False)
+        fa.prewarm(prewarm_tickers, lookback_days=252)
+        logger.info(f"Prewarmed ForecastAdapter for {len(prewarm_tickers)} tickers")
+        try:
+            fa.warm_ml_runner()
+            logger.info('ML runner warmup invoked from initialize_app')
+        except Exception:
+            logger.exception('Failed to warm ML runner from initialize_app')
+    except Exception:
+        logger.exception('ForecastAdapter prewarm failed')
     
     logger.info("✅ Callbacks and layout registered")
-    
+
+    # Start RAG ingestion service if enabled and keys present
+    try:
+        from financial_dashboard.services.rag.ingestion_service import start_ingestion_service, get_ingestion_service
+        enable_ingest = os.getenv('ENABLE_RAG_INGEST', '1') != '0'
+        if enable_ingest:
+            service = get_ingestion_service()
+            cfg = service.get_status()
+            if cfg['configured_sources']['finnhub'] or cfg['configured_sources']['alpaca'] or os.getenv('FORCE_RAG_INGEST') == '1':
+                start_ingestion_service(update_interval_hours=int(os.getenv('RAG_INGEST_HOURS', '6')))
+                logger.info('✅ RAG ingestion service started from initialize_app')
+            else:
+                logger.info('🔕 RAG ingestion service not started - no provider keys configured (FINNHUB/APCA)')
+    except Exception as e:
+        logger.exception(f'Failed to start RAG ingestion service: {e}')
+
     return app
+
+
+def register_e2e_callbacks(app):
+    """Register callbacks that let E2E scripts switch tabs by clicking hidden buttons.
+
+    Each hidden button `e2e-open-tab-<tab_key>` sets the `dashboard-tabs` component's
+    `active_tab` property to the corresponding tab key when clicked. This provides a
+    stable, test-only selector for automation without changing the visible UI.
+    """
+    from dash import Input, Output
+
+    for tab_key in ENABLED_TABS:
+        # Use a closure to bind tab_key into the callback correctly
+        def make_callback(tk):
+            @app.callback(
+                Output('dashboard-tabs', 'active_tab'),
+                Input(f'e2e-open-tab-{tk}', 'n_clicks'),
+                prevent_initial_call=True
+            )
+            def _open_tab(n_clicks):
+                if n_clicks and n_clicks > 0:
+                    return tk
+                return dash.no_update
+
+            return _open_tab
+
+        make_callback(tab_key)
 
 # Call initialization immediately
 # DISABLED: This creates circular import when running index.py as main
@@ -871,6 +950,58 @@ if __name__ == '__main__':
     
     # Get port from environment variable (default 8051 to avoid conflicts)
     port = int(os.getenv('DASH_PORT', '8051'))
+
+    # Attempt to ensure AlphaSim service is running locally (starts uvicorn if not)
+    def _ensure_alphasim(port_alphasim=8065, host='127.0.0.1'):
+        """Try to connect to local AlphaSim health endpoint; if not reachable, start it.
+
+        This helper is conservative: it only starts AlphaSim when the host:port is not
+        accepting connections. The spawned process logs to `/tmp/alphasim.log`.
+        """
+        url = f"http://{host}:{port_alphasim}/health"
+        try:
+            resp = requests.get(url, timeout=1.0)
+            if resp.status_code == 200:
+                logger.info(f"AlphaSim already running at {host}:{port_alphasim}")
+                return
+        except Exception:
+            # Not available, try to start
+            logger.info(f"AlphaSim not reachable at {host}:{port_alphasim}, attempting to start it...")
+
+        # Check if port is already bound by another process
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.settimeout(0.5)
+            s.connect((host, port_alphasim))
+            s.close()
+            logger.info(f"Port {port_alphasim} appears bound; skipping auto-launch")
+            return
+        except Exception:
+            pass
+
+        # Spawn uvicorn to serve the internal AlphaSim FastAPI app
+        try:
+            alphasim_cmd = [sys.executable, '-m', 'uvicorn', 'financial_dashboard.services.alpha_sim.app:app', '--port', str(port_alphasim), '--host', host, '--log-level', 'warning']
+            logf = open('/tmp/alphasim.log', 'a')
+            # Ensure the spawned process can import the package by passing PYTHONPATH
+            env = os.environ.copy()
+            # PROJECT_ROOT is defined at module top-level
+            env_py = env.get('PYTHONPATH', '')
+            if 'PROJECT_ROOT' in globals() and PROJECT_ROOT:
+                env['PYTHONPATH'] = f"{PROJECT_ROOT}:{env_py}" if env_py else PROJECT_ROOT
+            proc = subprocess.Popen(alphasim_cmd, stdout=logf, stderr=logf, start_new_session=True, env=env, cwd=PROJECT_ROOT)
+            logger.info(f"Started AlphaSim (pid={proc.pid}), logging to /tmp/alphasim.log")
+            # Give a short warmup time
+            time.sleep(1.5)
+        except Exception as e:
+            logger.exception(f"Failed to auto-launch AlphaSim: {e}")
+
+    # Only attempt to start AlphaSim when running locally (not in some constrained env)
+    try:
+        if os.getenv('DISABLE_AUTO_ALPHASIM', '0') != '1':
+            _ensure_alphasim(port_alphasim=int(os.getenv('ALPHA_SIM_PORT', '8065')), host=os.getenv('ALPHA_SIM_HOST', '127.0.0.1'))
+    except Exception:
+        logger.exception('AlphaSim auto-launch check failed')
     
     logger.info("="*70)
     logger.info(f"Starting Financial Dashboard on http://localhost:{port}")

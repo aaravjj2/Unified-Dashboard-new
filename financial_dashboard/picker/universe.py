@@ -34,6 +34,15 @@ class StockUniverse:
         'MRNA', 'KLAC', 'SNPS', 'CDNS', 'MRVL', 'PANW', 'CRWD', 'FTNT', 'WDAY', 'ZS',
         'DDOG', 'SNOW', 'NET', 'OKTA', 'DOCU', 'TEAM', 'ZM', 'ABNB', 'UBER', 'LYFT'
     ]
+
+    # Mid-Cap Stocks (S&P 400 / Russell 1000 Mid representative)
+    MID_CAP_50 = [
+        'HUBB', 'DOV', 'TXT', 'MAS', 'IX', 'BALL', 'DRI', 'POOL', 'WAT', 'EXPD',
+        'BRO', 'ATO', 'CNP', 'CMS', 'PFG', 'HOLX', 'COO', 'DGX', 'LH', 'STE',
+        'RMD', 'TECH', 'BIO', 'PODD', 'ENTG', 'WOLF', 'LSCC', 'MPWR', 'TRMB', 'PTC',
+        'TYL', 'FICO', 'ANSS', 'CDW', 'KEYS', 'LDOS', 'WAB', 'GME', 'AMC', 'PLTR',
+        'DKNG', 'RBLX', 'U', 'AFRM', 'HOOD', 'COIN', 'MSTR', 'MARA', 'RIOT', 'CLSK'
+    ]
     
     @classmethod
     def get_sp500(cls, limit: Optional[int] = None) -> List[str]:
@@ -52,12 +61,28 @@ class StockUniverse:
             tickers = tickers[:limit]
         logger.info(f"Retrieved {len(tickers)} NASDAQ tickers")
         return tickers
+
+    @classmethod
+    def get_midcap(cls, limit: Optional[int] = None) -> List[str]:
+        """Get Mid-Cap tickers."""
+        tickers = cls.MID_CAP_50.copy()
+        if limit:
+            tickers = tickers[:limit]
+        logger.info(f"Retrieved {len(tickers)} Mid-Cap tickers")
+        return tickers
     
     @classmethod
     def get_combined_universe(cls) -> List[str]:
         """Get combined universe (S&P 500 + NASDAQ, deduplicated)."""
         combined = list(set(cls.SP500_TOP_100 + cls.NASDAQ_TOP_50))
         logger.info(f"Retrieved {len(combined)} unique tickers from combined universe")
+        return combined
+
+    @classmethod
+    def get_broad_universe(cls) -> List[str]:
+        """Get broad universe (S&P 500 + NASDAQ + Mid-Cap, deduplicated)."""
+        combined = list(set(cls.SP500_TOP_100 + cls.NASDAQ_TOP_50 + cls.MID_CAP_50))
+        logger.info(f"Retrieved {len(combined)} unique tickers from broad universe (Large + Tech + Mid)")
         return combined
     
     @classmethod

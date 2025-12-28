@@ -110,14 +110,38 @@ def create_heatmap(z_data, x_labels, y_labels, title="IV Heatmap", height=300):
         plotly.graph_objects.Figure
     """
     if not z_data or not x_labels or not y_labels:
-        # Empty figure with message
-        fig = go.Figure()
-        fig.add_annotation(
-            text="No data available - run IV calculation",
-            xref="paper", yref="paper", x=0.5, y=0.5,
-            showarrow=False, font=dict(size=14, color="#6c757d")
+        # Generate example IV surface instead of empty message
+        import numpy as np
+        # Create sample data for demo purposes
+        sample_strikes = ['90%', '95%', '100%', '105%', '110%']
+        sample_tenors = ['7D', '14D', '30D', '60D', '90D']
+        # Generate realistic IV surface (smile effect)
+        sample_z = []
+        for i, strike in enumerate(sample_strikes):
+            row = []
+            for j, tenor in enumerate(sample_tenors):
+                # Higher IV at wings (far from ATM), higher for longer tenors
+                distance_from_atm = abs(i - 2)  # 2 is ATM (100%)
+                base_iv = 0.20 + 0.02 * j  # Base IV increases with tenor
+                smile = 0.03 * distance_from_atm * distance_from_atm  # Volatility smile
+                row.append(base_iv + smile)
+            sample_z.append(row)
+        
+        fig = go.Figure(data=go.Heatmap(
+            z=sample_z,
+            x=sample_tenors,
+            y=sample_strikes,
+            colorscale='Viridis',
+            hovertemplate='Tenor: %{x}<br>Strike: %{y}<br>IV: %{z:.2%}<extra></extra>',
+            colorbar=dict(title="IV", tickformat=".1%")
+        ))
+        fig.update_layout(
+            title=dict(text="Example IV Surface (Click Compute for Live)", font=dict(size=14)),
+            xaxis_title="Days to Expiry",
+            yaxis_title="Strike (% of Spot)",
+            height=height, 
+            margin=dict(l=50, r=50, t=50, b=50)
         )
-        fig.update_layout(height=height, margin=dict(l=50, r=50, t=50, b=50))
         return fig
     
     fig = go.Figure(data=go.Heatmap(

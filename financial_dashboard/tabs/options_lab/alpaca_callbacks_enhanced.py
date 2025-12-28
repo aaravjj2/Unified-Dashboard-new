@@ -632,4 +632,285 @@ def register_enhanced_callbacks(app):
         return no_update
     
     
+    # Sentiment Analysis Callback
+    @app.callback(
+        Output('sentiment-analysis-display', 'children'),
+        [Input('alpaca-ticker-input', 'value')]
+    )
+    def update_sentiment(ticker):
+        if not ticker:
+            return html.Div("Enter ticker", style={'color': '#666'})
+            
+        try:
+            from .sentiment_analyzer import get_comprehensive_sentiment
+            sentiment = get_comprehensive_sentiment(ticker)
+            
+            color = '#4caf50' if sentiment['overall'] == 'Bullish' else '#f44336' if sentiment['overall'] == 'Bearish' else '#FF9800'
+            
+            return html.Div([
+                html.Div([
+                    html.Span("Overall: ", style={'color': '#aaa'}),
+                    html.Span(sentiment['overall'], style={'color': color, 'fontWeight': 'bold'})
+                ], style={'marginBottom': '5px'}),
+                
+                html.Div([
+                    html.Span("News Score: ", style={'color': '#aaa'}),
+                    html.Span(f"{sentiment['sources']['news']['score']:.2f}", style={'color': '#e0e0e0'})
+                ], style={'fontSize': '12px'})
+            ])
+        except Exception as e:
+            logger.error(f"Sentiment error: {e}")
+            return html.Div("Sentiment unavailable", style={'color': '#666'})
+
+    # Multi-Model Consensus Callback
+    @app.callback(
+        Output('consensus-results', 'children'),
+        [Input('generate-consensus-btn', 'n_clicks')],
+        [State('alpaca-options-store', 'data'),
+         State('alpaca-ticker-input', 'value')]
+    )
+    def update_consensus(n_clicks, options_data, ticker):
+        if not n_clicks or not options_data or not ticker:
+            return html.Div()
+            
+        try:
+            from .multi_model_recommendations import get_multi_model_recommendations
+            import asyncio
+            
+            spot = options_data.get('spot_price', 100)
+            
+            # Run consensus
+            try:
+                loop = asyncio.get_event_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+            
+            if loop.is_running():
+                # If loop is running, we can't use run_until_complete
+                # This happens if Dash is running with uvicorn
+                # We'll try to use a thread
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, get_multi_model_recommendations(ticker, spot, options_data))
+                    consensus = future.result()
+            else:
+                consensus = loop.run_until_complete(get_multi_model_recommendations(ticker, spot, options_data))
+            
+            # Store recommendation
+            try:
+                from .ml_performance import store_recommendation
+                store_recommendation(ticker, spot, consensus)
+            except Exception as e:
+                logger.error(f"Failed to store recommendation: {e}")
+            
+            # Format results
+            return html.Div([
+                html.Div([
+                    html.Span("Consensus: ", style={'color': '#aaa'}),
+                    html.Span(consensus.get('consensus_strategy', 'Unknown'), 
+                             style={'color': '#4caf50', 'fontWeight': 'bold', 'fontSize': '16px'})
+                ], style={'marginBottom': '10px'}),
+                
+                html.Div([
+                    html.Span("Confidence: ", style={'color': '#aaa'}),
+                    html.Span(f"{consensus.get('confidence_score', 0):.0%}", 
+                             style={'color': '#2196F3', 'fontWeight': 'bold'})
+                ], style={'marginBottom': '10px'}),
+                
+                html.Div([
+                    html.Div("Model Votes:", style={'color': '#aaa', 'fontSize': '12px', 'marginBottom': '5px'}),
+                    html.Div([
+                        html.Span(f"{model}: {vote}", 
+                                 style={'display': 'block', 'color': '#e0e0e0', 'fontSize': '12px', 'marginLeft': '10px'})
+                        for model, vote in consensus.get('model_votes', {}).items()
+                    ])
+                ], style={'marginBottom': '10px'}),
+                
+                html.Div([
+                    html.Div("Rationale:", style={'color': '#aaa', 'fontSize': '12px'}),
+                    html.Div(consensus.get('rationale', 'No rationale provided'), style={'color': '#fff', 'fontSize': '12px', 'fontStyle': 'italic'})
+                ])
+            ])
+            
+        except Exception as e:
+            logger.error(f"Consensus error: {e}")
+            return html.Div(f"Error generating consensus: {str(e)}", style={'color': 'red'})
+
+    
+    # Forecast dropdown population
+    @app.callback(
+        [Output('forecast-expiration-dropdown', 'options'),
+         Output('forecast-strike-dropdown', 'options')],
+        [Input('alpaca-options-store', 'data')]
+    )
+    def populate_forecast_dropdowns(options_data):
+        if not options_data:
+            return [], []
+        
+        expirations = []
+        strikes = set()
+        
+        chains = options_data.get('chains', {})
+        for exp, chain in chains.items():
+            expirations.append({'label': exp, 'value': exp})
+            for c in chain.get('calls', []):
+                strikes.add(c.get('strike', 0))
+        
+        strike_options = [{'label': f'${s:.0f}', 'value': s} for s in sorted(strikes)]
+        return expirations[:8], strike_options[:20]  # Limit options
+    
+    
+    # Monte Carlo Forecast Callback
+    @app.callback(
+        Output('forecast-results', 'children'),
+        [Input('generate-forecast-btn', 'n_clicks')],
+        [State('alpaca-options-store', 'data'),
+         State('alpaca-ticker-input', 'value'),
+         State('forecast-expiration-dropdown', 'value'),
+         State('forecast-strike-dropdown', 'value'),
+         State('forecast-type-radio', 'value')]
+    )
+    def generate_ai_forecast(n_clicks, options_data, ticker, expiration, strike, option_type):
+        if not n_clicks or not options_data or not ticker:
+            return html.Div()
+        
+        try:
+            import numpy as np
+            from datetime import datetime, timedelta
+            import plotly.graph_objects as go
+            
+            spot = options_data.get('spot_price', 100)
+            strike = float(strike) if strike else spot
+            
+            # Find contract IV
+            iv = 0.30  # Default
+            chains = options_data.get('chains', {})
+            if expiration and expiration in chains:
+                chain = chains[expiration]
+                contracts = chain.get('calls' if option_type == 'call' else 'puts', [])
+                for c in contracts:
+                    if abs(c.get('strike', 0) - strike) < 1:
+                        iv = c.get('impliedVolatility', 0.30) or 0.30
+                        break
+            
+            # Monte Carlo Simulation
+            days = 5
+            simulations = 500
+            dt = 1/252
+            r = 0.05  # Risk-free rate
+            
+            paths = np.zeros((simulations, days + 1))
+            paths[:, 0] = spot
+            
+            for t in range(1, days + 1):
+                z = np.random.standard_normal(simulations)
+                paths[:, t] = paths[:, t-1] * np.exp((r - 0.5 * iv**2) * dt + iv * np.sqrt(dt) * z)
+            
+            # Calculate option payoffs at end
+            final_prices = paths[:, -1]
+            if option_type == 'call':
+                payoffs = np.maximum(final_prices - strike, 0)
+            else:
+                payoffs = np.maximum(strike - final_prices, 0)
+            
+            # Statistics
+            forecast_price = np.median(final_prices)
+            price_low = np.percentile(final_prices, 10)
+            price_high = np.percentile(final_prices, 90)
+            prob_profit = np.mean(payoffs > 0) * 100
+            expected_payoff = np.mean(payoffs)
+            
+            # Price change
+            price_change_pct = ((forecast_price - spot) / spot) * 100
+            
+            # Determine signal
+            if price_change_pct > 5:
+                signal = "🚀 STRONG BUY"
+                signal_color = '#4caf50'
+            elif price_change_pct > 2:
+                signal = "📈 BUY"
+                signal_color = '#8bc34a'
+            elif price_change_pct < -5:
+                signal = "🔻 STRONG SELL"
+                signal_color = '#f44336'
+            elif price_change_pct < -2:
+                signal = "📉 SELL"
+                signal_color = '#ff5722'
+            else:
+                signal = "➡️ NEUTRAL"
+                signal_color = '#FF9800'
+            
+            # Create forecast chart
+            dates = [(datetime.now() + timedelta(days=i)).strftime('%m/%d') for i in range(days + 1)]
+            
+            fig = go.Figure()
+            
+            # Confidence bands
+            upper = [np.percentile(paths[:, i], 90) for i in range(days + 1)]
+            lower = [np.percentile(paths[:, i], 10) for i in range(days + 1)]
+            median = [np.median(paths[:, i]) for i in range(days + 1)]
+            
+            fig.add_trace(go.Scatter(x=dates, y=upper, mode='lines', line=dict(width=0), showlegend=False))
+            fig.add_trace(go.Scatter(x=dates, y=lower, mode='lines', line=dict(width=0),
+                                    fill='tonexty', fillcolor='rgba(33,150,243,0.2)', showlegend=False))
+            fig.add_trace(go.Scatter(x=dates, y=median, mode='lines+markers',
+                                    line=dict(color='#2196F3', width=2), name='Forecast'))
+            fig.add_hline(y=spot, line_dash="dash", line_color="gray", annotation_text=f"Current: ${spot:.2f}")
+            fig.add_hline(y=strike, line_dash="dot", line_color="orange", annotation_text=f"Strike: ${strike:.0f}")
+            
+            fig.update_layout(
+                title=f"5-Day Monte Carlo Forecast",
+                xaxis_title="Date",
+                yaxis_title="Stock Price ($)",
+                template='plotly_dark',
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(30,33,48,0.8)',
+                height=250,
+                margin=dict(l=40, r=40, t=40, b=40)
+            )
+            
+            return html.Div([
+                # Signal header
+                html.Div([
+                    html.Span(signal, style={'fontSize': '18px', 'fontWeight': 'bold', 'color': signal_color}),
+                    html.Span(f" | {ticker} {option_type.upper()} ${strike:.0f}", style={'color': '#aaa', 'marginLeft': '10px'})
+                ], style={'marginBottom': '10px'}),
+                
+                # Metrics row
+                html.Div([
+                    html.Div([
+                        html.Div("Forecast", style={'color': '#6b7280', 'fontSize': '10px'}),
+                        html.Div(f"${forecast_price:.2f}", style={'color': signal_color, 'fontWeight': 'bold'})
+                    ], style={'flex': '1', 'textAlign': 'center'}),
+                    html.Div([
+                        html.Div("Change", style={'color': '#6b7280', 'fontSize': '10px'}),
+                        html.Div(f"{price_change_pct:+.1f}%", style={'color': signal_color, 'fontWeight': 'bold'})
+                    ], style={'flex': '1', 'textAlign': 'center'}),
+                    html.Div([
+                        html.Div("Prob. Profit", style={'color': '#6b7280', 'fontSize': '10px'}),
+                        html.Div(f"{prob_profit:.0f}%", style={'color': '#2196F3', 'fontWeight': 'bold'})
+                    ], style={'flex': '1', 'textAlign': 'center'}),
+                    html.Div([
+                        html.Div("Exp. Payoff", style={'color': '#6b7280', 'fontSize': '10px'}),
+                        html.Div(f"${expected_payoff:.2f}", style={'color': '#4caf50', 'fontWeight': 'bold'})
+                    ], style={'flex': '1', 'textAlign': 'center'}),
+                ], style={'display': 'flex', 'marginBottom': '10px', 'backgroundColor': '#1a1a2e', 'padding': '10px', 'borderRadius': '4px'}),
+                
+                # Chart
+                dcc.Graph(figure=fig, config={'displayModeBar': False}),
+                
+                # Range info
+                html.Div([
+                    html.Span("5-Day Range: ", style={'color': '#aaa'}),
+                    html.Span(f"${price_low:.2f} - ${price_high:.2f}", style={'color': '#e0e0e0'}),
+                    html.Span(f" | IV: {iv*100:.1f}%", style={'color': '#FF9800', 'marginLeft': '15px'})
+                ], style={'fontSize': '12px', 'marginTop': '5px'})
+            ])
+            
+        except Exception as e:
+            logger.error(f"Forecast error: {e}")
+            return html.Div(f"Error: {str(e)}", style={'color': 'red'})
+    
+    
     logger.info("✅ Enhanced callbacks registered successfully")

@@ -26,6 +26,7 @@ def create_layout():
     return dbc.Container([
         # Stores for state management (no auto-load)
         dcc.Store(id="rl-config-store", data={}),
+        dcc.Store(id="rl-beginner-howto-store", data=None),
         dcc.Store(id="rl-query-store", data={}),
         dcc.Store(id="rl-briefs-store", data=[]),
         dcc.Store(id="rl-selected-brief-id", data=None),
@@ -48,8 +49,13 @@ def create_layout():
         # Main subtabs
         dbc.Tabs(
             id="rl-main-tabs",
-            active_tab="rl-scan-tab",
+            active_tab="rl-alphasim-tab",
             children=[
+                dbc.Tab(
+                    label="🔌 AlphaSim Console",
+                    tab_id="rl-alphasim-tab",
+                    children=[_create_alphasim_tab()]
+                ),
                 dbc.Tab(
                     label="📊 Research Scan",
                     tab_id="rl-scan-tab",
@@ -91,6 +97,10 @@ def create_layout():
         
         # Modal for brief editing (NOT auto-opened)
         _create_brief_modal(),
+        # Download helper for HOWTO modal
+        dcc.Download(id='rl-beginner-howto-download-file'),
+        # Modal for Beginner HOWTO (populated by callback)
+        _create_beginner_howto_modal(),
         
     ], fluid=True, className="px-4 py-3")
 
@@ -106,6 +116,64 @@ def _create_header():
             "Integrated research platform: scanning, factor analysis, RAG-powered Q&A, and experiment tracking",
             className="text-muted mb-3"
         ),
+        # Beginner-friendly accordion (in-app How-To / quickstart)
+        # Use a light, padded body so the guide visually matches Attribution Lab
+        dbc.Accordion([
+            dbc.AccordionItem([
+                html.Div(
+                    dcc.Markdown(
+                        """
+**🔬 What This Lab Does:**
+
+The Research Lab is your data exploration workspace for analyzing stocks, ETFs, and market trends before building strategies or making trades. It groups tools into scanning, factor analysis, screening, RAG-powered Q&A, experiment tracking, and briefs.
+
+**🚀 Quick Start (2-minute flow):**
+1. Click **AlphaSim Console** → run `TIME_SERIES_DAILY` for a sample ticker (e.g., `AAPL`).
+2. Switch to **Research Scan** and run a preset (Momentum / Value) to generate candidates.
+3. Open **Factor & Signal Lab** to inspect exposures and build a signal.
+4. Save findings as a **Brief** and run a quick preview in **Experiment Tracker**.
+
+**✨ Key Features:**
+- AlphaSim Console: Local Alpha Vantage-compatible API for price, indicators, news, and options snapshots.
+- Research Scan: Fast universe screening with quick presets and news feed.
+- Factor & Signal Lab: Compute factor exposures, correlation heatmaps, and create reusable signals.
+- Screen Builder: Save filters as reusable screens and export to weekly picks.
+- RAG Chat: Ask questions over indexed research documents and convert answers into briefs.
+- Experiment Tracker: Lightweight backtest previews and result snapshots.
+
+**🛠️ Common Workflows:**
+- Exploratory: Run scans → shortlist tickers → inspect factor exposures → save brief.
+- Signal Dev: Create factor signals → preview performance in Experiment Tracker → export to Strategy Lab.
+- Research Ops: Index documents → use RAG Chat to summarize → publish brief.
+
+**⚠️ Troubleshooting & Tips:**
+- If AlphaSim shows `Offline`, start the service: `uvicorn financial_dashboard.services.alpha_sim.app:app --port 8065`.
+- If news or prices are missing, check API keys in `keys.env` and restart the dashboard.
+- Use the **Diagnostics** tab to inspect index health and ingestion logs.
+
+**📖 Full Guide & Examples:**
+Click **Open Full Guide** below to read the complete how-to with examples, selectors, and troubleshooting steps.
+                        """,
+                        style={'color': '#000000', 'fontSize': '14px'}
+                    ),
+                    style={
+                        'backgroundColor': '#f8fafc',
+                        'padding': '12px 14px',
+                        'borderRadius': '8px',
+                        'color': '#000000'
+                    }
+                ),
+                html.Div([
+                    dbc.Button(
+                        "Open Full Guide",
+                        id="rl-beginner-open-howto",
+                        color="primary",
+                        size="sm",
+                        className="mt-3"
+                    )
+                ], className="mt-2")
+            ], title="📚 Beginner's Guide to Research Lab", className="mb-3")
+        ], start_collapsed=True, className="mb-4"),
     ], style={
         'backgroundColor': '#2b3035',
         'padding': '15px 20px',
@@ -117,6 +185,195 @@ def _create_header():
 # ============================================================================
 # SUBTAB LAYOUTS
 # ============================================================================
+
+def _create_alphasim_tab():
+    """Create the AlphaSim Console subtab content per research_lab_implementation_plan.md."""
+    return html.Div([
+        html.H4("🔌 AlphaSim Console", className="text-light mb-3 mt-3"),
+        html.P(
+            "Run Alpha Vantage-compatible queries against the internal AlphaSim service.",
+            className="text-muted mb-3"
+        ),
+        
+        dbc.Row([
+            # Left: Query builder
+            dbc.Col([
+                components.section_card("Query Builder", [
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Function", className="text-light"),
+                            dcc.Dropdown(
+                                id="rl-alphasim-function",
+                                options=[
+                                    {"label": "TIME_SERIES_DAILY", "value": "TIME_SERIES_DAILY"},
+                                    {"label": "TIME_SERIES_INTRADAY", "value": "TIME_SERIES_INTRADAY"},
+                                    {"label": "SMA (Simple Moving Average)", "value": "SMA"},
+                                    {"label": "EMA (Exponential Moving Average)", "value": "EMA"},
+                                    {"label": "RSI (Relative Strength Index)", "value": "RSI"},
+                                    {"label": "MACD", "value": "MACD"},
+                                    {"label": "NEWS_SENTIMENT", "value": "NEWS_SENTIMENT"},
+                                    {"label": "HISTORICAL_OPTIONS", "value": "HISTORICAL_OPTIONS"},
+                                ],
+                                value="TIME_SERIES_DAILY",
+                                className="mb-3"
+                            )
+                        ], md=6),
+                        dbc.Col([
+                            html.Label("Symbol", className="text-light"),
+                            dbc.Input(
+                                id="rl-alphasim-symbol",
+                                type="text",
+                                value="AAPL",
+                                placeholder="Enter ticker symbol",
+                                className="bg-dark text-light mb-3"
+                            )
+                        ], md=6)
+                    ]),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Time Period (indicators)", className="text-light"),
+                            dbc.Input(
+                                id="rl-alphasim-time-period",
+                                type="number",
+                                value=10,
+                                min=1,
+                                max=200,
+                                className="bg-dark text-light mb-3"
+                            )
+                        ], md=4),
+                        dbc.Col([
+                            html.Label("Interval (intraday)", className="text-light"),
+                            dcc.Dropdown(
+                                id="rl-alphasim-interval",
+                                options=[
+                                    {"label": "1 min", "value": "1min"},
+                                    {"label": "5 min", "value": "5min"},
+                                    {"label": "15 min", "value": "15min"},
+                                    {"label": "60 min", "value": "60min"},
+                                ],
+                                value="5min",
+                                className="mb-3"
+                            )
+                        ], md=4),
+                        dbc.Col([
+                            html.Label("Output Size", className="text-light"),
+                            dcc.Dropdown(
+                                id="rl-alphasim-outputsize",
+                                options=[
+                                    {"label": "Compact (100)", "value": "compact"},
+                                    {"label": "Full", "value": "full"},
+                                ],
+                                value="compact",
+                                className="mb-3"
+                            )
+                        ], md=4)
+                    ]),
+                    html.Div([
+                        dbc.Button(
+                            [html.I(className="bi bi-play-fill me-1"), "Run Query"],
+                            id="rl-alphasim-run-btn",
+                            color="primary",
+                            className="me-2"
+                        ),
+                        dbc.Button(
+                            [html.I(className="bi bi-clipboard me-1"), "Copy Result"],
+                            id="rl-alphasim-copy-btn",
+                            color="secondary",
+                            outline=True,
+                            className="me-2"
+                        ),
+                        dbc.Button(
+                            [html.I(className="bi bi-download me-1"), "Export JSON"],
+                            id="rl-alphasim-export-btn",
+                            color="secondary",
+                            outline=True
+                        )
+                    ], className="mt-3")
+                ], id_prefix="rl-alphasim-query"),
+                
+                # Recent queries table
+                components.section_card("Recent Queries", [
+                    html.Div(id="rl-alphasim-recent", children=[
+                        components.empty_state("No queries yet", icon="bi-clock-history")
+                    ])
+                ], id_prefix="rl-alphasim-recent-section")
+            ], md=6),
+            
+            # Right: Response viewer
+            dbc.Col([
+                components.section_card("Response Viewer", [
+                    html.Div([
+                        # Status badges
+                        html.Div([
+                            dbc.Badge("Ready", id="rl-alphasim-status", color="secondary", className="me-2"),
+                            dbc.Badge("Cache: --", id="rl-alphasim-cache-badge", color="info", className="me-2"),
+                            html.Span(id="rl-alphasim-latency", className="text-muted small")
+                        ], className="mb-3"),
+                        
+                        # JSON response viewer
+                        html.Pre(
+                            id="rl-alphasim-response",
+                            className="bg-dark text-light p-3 rounded",
+                            style={
+                                "maxHeight": "500px",
+                                "overflow": "auto",
+                                "fontFamily": "monospace",
+                                "fontSize": "12px",
+                                "whiteSpace": "pre-wrap"
+                            },
+                            children='{\n  "status": "ready",\n  "message": "Enter query parameters and click Run"\n}'
+                        )
+                    ])
+                ], id_prefix="rl-alphasim-response-section"),
+                
+                # Service status card
+                components.section_card("Service Status", [
+                    html.Div(id="rl-alphasim-service-status", children=[
+                        dbc.Row([
+                            dbc.Col([
+                                html.Div([
+                                    html.I(className="bi bi-circle-fill text-secondary me-2", id="rl-alphasim-health-icon"),
+                                    html.Span("AlphaSim Service", className="text-light")
+                                ]),
+                                html.Small("Checking...", id="rl-alphasim-health-text", className="text-muted")
+                            ], md=6),
+                            dbc.Col([
+                                html.Div([
+                                    html.I(className="bi bi-database me-2 text-info"),
+                                    html.Span("Cache", className="text-light")
+                                ]),
+                                html.Small("Size: --", id="rl-alphasim-cache-size", className="text-muted")
+                            ], md=6)
+                        ]),
+                        html.Hr(className="border-secondary my-3"),
+                        html.Div([
+                            dbc.Button(
+                                [html.I(className="bi bi-arrow-clockwise me-1"), "Check Health"],
+                                id="rl-alphasim-check-health-btn",
+                                size="sm",
+                                color="secondary",
+                                outline=True,
+                                className="me-2"
+                            ),
+                            dbc.Button(
+                                [html.I(className="bi bi-bar-chart me-1"), "View Metrics"],
+                                id="rl-alphasim-metrics-btn",
+                                size="sm",
+                                color="secondary",
+                                outline=True
+                            )
+                        ])
+                    ])
+                ], id_prefix="rl-alphasim-status-section")
+            ], md=6)
+        ]),
+        
+        # Store for query history
+        dcc.Store(id="rl-alphasim-query-history", data=[]),
+        dcc.Store(id="rl-alphasim-last-result", data=None),
+        dcc.Download(id="rl-alphasim-download")
+    ], id="rl-alphasim-content")
+
 
 def _create_scan_tab():
     """Create the Research Scan subtab content."""
@@ -337,7 +594,70 @@ def _create_rag_tab():
                     )
                 ], id_prefix="rl-rag-export")
             ], md=4)
-        ])
+        ]),
+        
+        html.Hr(className="my-4"),
+        
+        # FinGPT Forecaster Section
+        html.H4("📈 FinGPT Forecaster", className="text-light mb-3"),
+        html.P(
+            "Generate AI-powered stock price movement forecasts using news and fundamentals.",
+            className="text-muted mb-3"
+        ),
+        
+        dbc.Row([
+            dbc.Col([
+                components.section_card("Forecast Settings", [
+                    html.Label("Ticker Symbol:", className="text-light"),
+                    dbc.Input(
+                        id="rl-forecast-ticker",
+                        placeholder="e.g., AAPL, NVDA, MSFT",
+                        value="AAPL",
+                        className="mb-3"
+                    ),
+                    
+                    html.Label("Weeks of News History:", className="text-light"),
+                    dcc.Slider(
+                        id="rl-forecast-weeks",
+                        min=1,
+                        max=12,
+                        step=1,
+                        value=4,
+                        marks={1: '1w', 4: '4w', 8: '8w', 12: '12w'},
+                        className="mb-3"
+                    ),
+                    
+                    dbc.Checklist(
+                        id="rl-forecast-options",
+                        options=[
+                            {"label": "Include Financials", "value": "financials"}
+                        ],
+                        value=["financials"],
+                        className="mb-3"
+                    ),
+                    
+                    dbc.Button(
+                        [html.I(className="bi bi-graph-up-arrow me-1"), "Generate Forecast"],
+                        id="rl-forecast-run-btn",
+                        color="primary",
+                        className="w-100"
+                    )
+                ], id_prefix="rl-forecast-settings")
+            ], md=4),
+            
+            dbc.Col([
+                components.section_card("Forecast Result", [
+                    dcc.Loading(
+                        html.Div(id="rl-forecast-result", children=[
+                            components.empty_state("Click 'Generate Forecast' to see predictions", icon="bi-graph-up")
+                        ])
+                    )
+                ], id_prefix="rl-forecast-result-card")
+            ], md=8)
+        ]),
+        
+        dcc.Store(id="rl-forecast-data", data=None)
+        
     ], id="rl-rag-content")
 
 
@@ -567,3 +887,20 @@ def _create_brief_modal():
             dbc.Button("Save", id="rl-modal-save", color="primary")
         ])
     ], id="rl-brief-modal", is_open=False, size="lg")
+
+
+def _create_beginner_howto_modal():
+    """
+    Modal that displays the full Research Lab HOWTO content.
+    Content is loaded via a callback into the store `rl-beginner-howto-store`.
+    """
+    return dbc.Modal([
+        dbc.ModalHeader(dbc.ModalTitle("Beginner's Guide: Research Lab")),
+        dbc.ModalBody([
+            dcc.Markdown(id="rl-beginner-howto-md", children="Loading...", style={"color": "#000000"})
+        ], style={"maxHeight": "70vh", "overflow": "auto", "backgroundColor": "#ffffff", "padding": "12px"}),
+        dbc.ModalFooter([
+            dbc.Button("Download .md", id="rl-beginner-howto-download", color="secondary", size="sm", className="me-2"),
+            dbc.Button("Close", id="rl-beginner-howto-close", color="secondary")
+        ])
+    ], id="rl-beginner-howto-modal", is_open=False, size="lg")

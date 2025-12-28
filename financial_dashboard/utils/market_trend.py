@@ -1,6 +1,9 @@
 import json
 import os
 from datetime import datetime
+import pandas as pd
+import numpy as np
+
 
 
 def clip(x, lo, hi):
@@ -217,3 +220,70 @@ def compute_market_trend_and_pulse(
             pass
 
     return out
+
+
+def compute_technical_indicators(prices: pd.Series) -> dict:
+    """
+    Compute technical indicators (RSI, MACD, Bollinger Bands) from a price series.
+    
+    Args:
+        prices: pandas Series of prices (time-indexed)
+        
+    Returns:
+        Dictionary of latest indicator values and signals
+    """
+    if len(prices) < 26:
+        return {}
+        
+    try:
+        # RSI (14)
+        delta = prices.diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+        rs = gain / loss
+        rsi = 100 - (100 / (1 + rs))
+        current_rsi = rsi.iloc[-1]
+        
+        # MACD (12, 26, 9)
+        exp1 = prices.ewm(span=12, adjust=False).mean()
+        exp2 = prices.ewm(span=26, adjust=False).mean()
+        macd = exp1 - exp2
+        signal = macd.ewm(span=9, adjust=False).mean()
+        hist = macd - signal
+        
+        # Bollinger Bands (20, 2)
+        sma20 = prices.rolling(window=20).mean()
+        std20 = prices.rolling(window=20).std()
+        upper_band = sma20 + (std20 * 2)
+        lower_band = sma20 - (std20 * 2)
+        
+        current_price = prices.iloc[-1]
+        
+        # Determine signals
+        signals = []
+        if current_rsi < 30:
+            signals.append("Oversold (RSI < 30)")
+        elif current_rsi > 70:
+            signals.append("Overbought (RSI > 70)")
+            
+        if macd.iloc[-1] > signal.iloc[-1] and macd.iloc[-2] <= signal.iloc[-2]:
+            signals.append("MACD Bullish Crossover")
+        elif macd.iloc[-1] < signal.iloc[-1] and macd.iloc[-2] >= signal.iloc[-2]:
+            signals.append("MACD Bearish Crossover")
+            
+        if current_price < lower_band.iloc[-1]:
+            signals.append("Price below Lower Bollinger Band")
+        elif current_price > upper_band.iloc[-1]:
+            signals.append("Price above Upper Bollinger Band")
+            
+        return {
+            "rsi": round(current_rsi, 2),
+            "macd": round(macd.iloc[-1], 2),
+            "macd_signal": round(signal.iloc[-1], 2),
+            "bb_upper": round(upper_band.iloc[-1], 2),
+            "bb_lower": round(lower_band.iloc[-1], 2),
+            "signals": signals
+        }
+    except Exception as e:
+        print(f"Error computing indicators: {e}")
+        return {}
