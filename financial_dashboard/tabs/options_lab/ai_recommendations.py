@@ -2,6 +2,7 @@
 AI Trade Recommendations - Smart trade suggestions based on market conditions
 
 Author: Options Lab Enhancement Phase
+Enhanced: Integrated with FinGPT sentiment and advanced options analytics
 """
 
 import logging
@@ -12,6 +13,31 @@ import numpy as np
 import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
+
+# Import advanced analytics and sentiment services
+try:
+    from financial_dashboard.tabs.options_lab.options_analytics import (
+        calculate_iv_rank,
+        calculate_iv_percentile,
+        calculate_max_pain,
+        calculate_expected_move,
+        calculate_put_call_ratio,
+        get_iv_vs_hv_analysis
+    )
+    ANALYTICS_AVAILABLE = True
+except ImportError:
+    ANALYTICS_AVAILABLE = False
+    logger.warning("Options analytics module not available")
+
+try:
+    from financial_dashboard.services.unified_sentiment_service import (
+        analyze_text_sentiment,
+        analyze_headlines_sentiment
+    )
+    SENTIMENT_AVAILABLE = True
+except ImportError:
+    SENTIMENT_AVAILABLE = False
+    logger.warning("Sentiment service not available")
 
 
 # Trade recommendation types
@@ -495,6 +521,65 @@ class AIRecommendationEngine:
         # Sort by confidence
         self.recommendations.sort(key=lambda x: x.confidence, reverse=True)
         
+        return self.recommendations
+    
+    def generate_sentiment_enhanced_recommendations(
+        self, 
+        tickers: List[str], 
+        market_data: Dict,
+        news_headlines: Dict[str, List[str]] = None
+    ) -> List[TradeRecommendation]:
+        """
+        Generate recommendations enhanced with sentiment analysis.
+        
+        Args:
+            tickers: List of tickers to analyze
+            market_data: Dict of market data per ticker
+            news_headlines: Dict of news headlines per ticker
+            
+        Returns:
+            List of sentiment-enhanced recommendations
+        """
+        if not SENTIMENT_AVAILABLE:
+            logger.warning("Sentiment service not available, using standard recommendations")
+            return self.generate_recommendations(tickers, market_data)
+        
+        self.recommendations = []
+        
+        for ticker in tickers:
+            if ticker not in market_data:
+                continue
+                
+            data = market_data[ticker].copy()
+            
+            # Analyze sentiment for this ticker
+            headlines = news_headlines.get(ticker, []) if news_headlines else []
+            if headlines:
+                sentiment_result = analyze_headlines_sentiment(headlines)
+                data['sentiment'] = sentiment_result.get('overall_sentiment', 'neutral')
+                data['sentiment_score'] = sentiment_result.get('overall_score', 0)
+                data['sentiment_confidence'] = sentiment_result.get('confidence', 0)
+                
+                # Adjust trend based on sentiment
+                if sentiment_result.get('overall_score', 0) > 0.3 and data.get('trend') != 'bearish':
+                    data['trend'] = 'bullish'
+                elif sentiment_result.get('overall_score', 0) < -0.3 and data.get('trend') != 'bullish':
+                    data['trend'] = 'bearish'
+            
+            recs = self.analyze_ticker(ticker, data)
+            
+            # Enhance recommendations with sentiment info
+            for rec in recs:
+                if 'sentiment' in data:
+                    rec.rationale += f" [Sentiment: {data['sentiment'].upper()} ({data['sentiment_score']:.2f})]"
+                    # Boost confidence if sentiment aligns with recommendation
+                    if (rec.recommendation_type == 'bullish' and data['sentiment'] == 'positive') or \
+                       (rec.recommendation_type == 'bearish' and data['sentiment'] == 'negative'):
+                        rec.confidence = min(rec.confidence + 10, 95)
+            
+            self.recommendations.extend(recs)
+        
+        self.recommendations.sort(key=lambda x: x.confidence, reverse=True)
         return self.recommendations
     
     def get_top_recommendations(self, n: int = 5, 
