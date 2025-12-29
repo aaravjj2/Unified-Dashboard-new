@@ -88,9 +88,17 @@ def _build_main_layout():
                     ),
                     dbc.Button(
                         html.I(className="bi bi-arrow-repeat"),
-                        id='options-refresh-btn',
+                        id='options-load-btn',  # Changed to match callback
                         color='primary',
                         outline=True
+                    ),
+                    dbc.Button(
+                        "Mock",
+                        id='options-mock-btn',  # Added for mock data callback trigger
+                        color='secondary',
+                        outline=True,
+                        size='sm',
+                        style={'display': 'none'}  # Hidden but functional for callback
                     )
                 ])
             ], width=3),
@@ -111,6 +119,12 @@ def _build_main_layout():
                 html.H4(id='options-iv-pct-display', children="--", className="text-info mb-0")
             ], width=2),
         ], className="mb-4 p-3 bg-dark rounded"),
+        
+        # Status message (required for chain load callback output)
+        html.Div(id='options-status-message', className="mb-3 text-white"),
+        
+        # Hidden chain-spot-price (required for callback compatibility with legacy layout)
+        html.Div(id='chain-spot-price', style={'display': 'none'}),
         
         # Main Tabs (Consolidated from 12 to 5)
         dbc.Tabs(
