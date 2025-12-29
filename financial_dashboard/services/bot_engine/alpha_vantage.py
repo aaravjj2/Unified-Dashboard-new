@@ -1,9 +1,9 @@
 """
-Alpha Vantage Client with Rate Limiting
-========================================
+Technical Indicators Client (No External API Dependencies)
+==========================================================
 
-Implements strict 5 calls/minute rate limiting for Alpha Vantage API.
-Uses a TokenBucket algorithm with time.sleep for enforcement.
+Calculates RSI, MACD, and other indicators locally using yfinance data.
+NO Alpha Vantage or external paid API required.
 
 Author: Bot Engine Team
 Date: December 2025
@@ -18,42 +18,27 @@ from typing import Dict, Any, Optional, Callable
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 
-import requests
+import numpy as np
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-
-@dataclass
-class RateLimitState:
-    """Track rate limit state."""
-    tokens: float = 5.0
-    max_tokens: float = 5.0
-    refill_rate: float = 5.0 / 60.0  # 5 tokens per 60 seconds
-    last_refill: float = field(default_factory=time.time)
-    lock: threading.Lock = field(default_factory=threading.Lock)
-    
-    def __post_init__(self):
-        # Ensure lock is created even when using default_factory
-        if not hasattr(self, 'lock') or self.lock is None:
-            self.lock = threading.Lock()
+# Try to import yfinance
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except ImportError:
+    YFINANCE_AVAILABLE = False
+    logger.warning("yfinance not installed - using mock data only")
 
 
 class RateLimiter:
     """
     Token Bucket Rate Limiter for API calls.
-    
-    Enforces max 5 calls/minute for Alpha Vantage free tier.
-    Uses blocking wait if tokens exhausted.
-    
-    Usage:
-        limiter = RateLimiter(max_calls=5, period_seconds=60)
-        
-        @limiter.limit
-        def make_api_call():
-            ...
+    Still useful for rate-limiting yfinance calls to avoid IP blocks.
     """
     
-    def __init__(self, max_calls: int = 5, period_seconds: int = 60):
+    def __init__(self, max_calls: int = 10, period_seconds: int = 60):
         """
         Initialize rate limiter.
         
@@ -78,15 +63,7 @@ class RateLimiter:
         self.last_refill = now
     
     def acquire(self, timeout: Optional[float] = None) -> bool:
-        """
-        Acquire a token, blocking if necessary.
-        
-        Args:
-            timeout: Max seconds to wait (None = wait forever)
-            
-        Returns:
-            True if token acquired, False if timeout
-        """
+        """Acquire a token, blocking if necessary."""
         deadline = None if timeout is None else time.time() + timeout
         
         while True:
@@ -95,32 +72,20 @@ class RateLimiter:
                 
                 if self.tokens >= 1.0:
                     self.tokens -= 1.0
-                    logger.debug(f"Token acquired. Remaining: {self.tokens:.2f}")
                     return True
                 
-                # Calculate wait time for next token
                 wait_time = (1.0 - self.tokens) / self.refill_rate
             
-            # Check timeout
             if deadline is not None:
                 remaining = deadline - time.time()
                 if remaining <= 0:
-                    logger.warning("Rate limiter timeout - token not acquired")
                     return False
                 wait_time = min(wait_time, remaining)
             
-            logger.info(f"Rate limit reached. Waiting {wait_time:.1f}s for next token...")
-            time.sleep(wait_time)
+            time.sleep(min(wait_time, 1.0))
     
     def limit(self, func: Callable) -> Callable:
-        """
-        Decorator to rate-limit a function.
-        
-        Usage:
-            @limiter.limit
-            def api_call():
-                ...
-        """
+        """Decorator to rate-limit a function."""
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             self.acquire()
@@ -143,15 +108,62 @@ class RateLimiter:
             return (1.0 - self.tokens) / self.refill_rate
 
 
+def calculate_rsi(prices: pd.Series, period: int = 14) -> pd.Series:
+    """
+    Calculate RSI (Relative Strength Index) from price series.
+    
+    RSI = 100 - (100 / (1 + RS))
+    RS = Average Gain / Average Loss
+    """
+    delta = prices.diff()
+    
+    gain = delta.where(delta > 0, 0.0)
+    loss = (-delta).where(delta < 0, 0.0)
+    
+    # Use exponential moving average for smoother RSI
+    avg_gain = gain.ewm(span=period, adjust=False).mean()
+    avg_loss = loss.ewm(span=period, adjust=False).mean()
+    
+    rs = avg_gain / avg_loss.replace(0, 1e-10)  # Avoid division by zero
+    rsi = 100 - (100 / (1 + rs))
+    
+    return rsi
+
+
+def calculate_macd(prices: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> Dict[str, pd.Series]:
+    """
+    Calculate MACD (Moving Average Convergence Divergence).
+    
+    MACD Line = 12-day EMA - 26-day EMA
+    Signal Line = 9-day EMA of MACD Line
+    Histogram = MACD Line - Signal Line
+    """
+    ema_fast = prices.ewm(span=fast, adjust=False).mean()
+    ema_slow = prices.ewm(span=slow, adjust=False).mean()
+    
+    macd_line = ema_fast - ema_slow
+    signal_line = macd_line.ewm(span=signal, adjust=False).mean()
+    histogram = macd_line - signal_line
+    
+    return {
+        'macd': macd_line,
+        'signal': signal_line,
+        'histogram': histogram
+    }
+
+
 class AlphaVantageClient:
     """
-    Alpha Vantage API Client with Rate Limiting.
+    Technical Indicators Client - NO EXTERNAL API DEPENDENCY.
+    
+    Uses yfinance for price data and calculates indicators locally.
+    Falls back to deterministic mock data for testing.
     
     Features:
-    - Strict 5 calls/minute rate limiting
-    - RSI and MACD technical indicators
-    - Error handling with retries
-    - Deterministic mode for testing
+    - RSI calculation (local)
+    - MACD calculation (local)
+    - No paid API required
+    - Rate limiting for yfinance
     
     Usage:
         client = AlphaVantageClient()
@@ -159,80 +171,52 @@ class AlphaVantageClient:
         macd = client.get_macd("SPY")
     """
     
-    BASE_URL = "https://www.alphavantage.co/query"
-    
     def __init__(self, api_key: str = None, deterministic: bool = None):
         """
-        Initialize Alpha Vantage client.
+        Initialize client.
         
         Args:
-            api_key: API key (defaults to ALPHA_VANTAGE_API_KEY env var)
+            api_key: Ignored - no external API used
             deterministic: If True, return mock data (for testing)
         """
-        self.api_key = api_key or os.environ.get('ALPHA_VANTAGE_API_KEY', 'demo')
-        
         # Check deterministic mode
         if deterministic is None:
             deterministic = os.environ.get('BOT_DETERMINISTIC', '0') == '1'
         self.deterministic = deterministic
         
-        # Initialize rate limiter (5 calls per minute)
-        self._rate_limiter = RateLimiter(max_calls=5, period_seconds=60)
+        # Rate limiter for yfinance (more generous than paid APIs)
+        self._rate_limiter = RateLimiter(max_calls=10, period_seconds=60)
         
-        # Session for connection pooling
-        self._session = requests.Session()
-        self._session.headers.update({
-            'User-Agent': 'UnifiedDashboard/1.0 BotEngine'
-        })
-        
-        # Cache for recent calls
+        # Cache for recent data
         self._cache: Dict[str, Dict] = {}
         self._cache_ttl = 300  # 5 minutes
         
-        logger.info(f"AlphaVantageClient initialized (deterministic={deterministic})")
+        mode = "deterministic" if deterministic else "yfinance"
+        logger.info(f"TechnicalIndicatorsClient initialized (mode={mode}, NO external API)")
     
-    def _make_request(self, params: Dict[str, str]) -> Dict[str, Any]:
-        """
-        Make rate-limited API request.
-        
-        Args:
-            params: Query parameters
-            
-        Returns:
-            JSON response dict
-        """
-        # Add API key
-        params['apikey'] = self.api_key
-        
-        # Acquire rate limit token (blocks if needed)
-        self._rate_limiter.acquire()
+    def _fetch_prices(self, ticker: str, period: str = "3mo") -> Optional[pd.DataFrame]:
+        """Fetch price data from yfinance."""
+        if not YFINANCE_AVAILABLE or self.deterministic:
+            return None
         
         try:
-            response = self._session.get(
-                self.BASE_URL,
-                params=params,
-                timeout=30
-            )
-            response.raise_for_status()
+            self._rate_limiter.acquire()
             
-            data = response.json()
+            stock = yf.Ticker(ticker)
+            df = stock.history(period=period)
             
-            # Check for API errors
-            if 'Error Message' in data:
-                raise ValueError(f"Alpha Vantage error: {data['Error Message']}")
-            if 'Note' in data and 'call frequency' in data['Note'].lower():
-                logger.warning(f"Rate limit warning from AV: {data['Note']}")
+            if df.empty:
+                logger.warning(f"No data returned for {ticker}")
+                return None
             
-            return data
-            
-        except requests.RequestException as e:
-            logger.error(f"Alpha Vantage request failed: {e}")
-            raise
+            return df
+        except Exception as e:
+            logger.error(f"Failed to fetch {ticker}: {e}")
+            return None
     
     def _get_mock_rsi(self, ticker: str) -> Dict[str, Any]:
         """Return deterministic mock RSI data."""
         import hashlib
-        # Generate deterministic value based on ticker
         hash_val = int(hashlib.md5(ticker.encode()).hexdigest()[:8], 16)
         base_rsi = 30 + (hash_val % 40)  # RSI between 30-70
         
@@ -256,7 +240,7 @@ class AlphaVantageClient:
         import hashlib
         hash_val = int(hashlib.md5(ticker.encode()).hexdigest()[:8], 16)
         
-        macd_val = (hash_val % 200 - 100) / 100  # -1 to 1
+        macd_val = (hash_val % 200 - 100) / 100
         signal_val = macd_val * 0.8
         
         return {
@@ -287,10 +271,12 @@ class AlphaVantageClient:
         """
         Get RSI (Relative Strength Index) for a ticker.
         
+        Calculated locally from yfinance data - NO external API.
+        
         Args:
             ticker: Stock symbol
             period: RSI period (default 14)
-            interval: Time interval ('daily', '60min', etc.)
+            interval: Time interval (ignored, always daily)
             
         Returns:
             Dict with RSI data including latest value and history
@@ -298,7 +284,7 @@ class AlphaVantageClient:
         ticker = ticker.upper().strip()
         
         # Check cache
-        cache_key = f"rsi_{ticker}_{period}_{interval}"
+        cache_key = f"rsi_{ticker}_{period}"
         if cache_key in self._cache:
             cached = self._cache[cache_key]
             if time.time() - cached['timestamp'] < self._cache_ttl:
@@ -310,39 +296,32 @@ class AlphaVantageClient:
             logger.info(f"[MOCK] Getting RSI for {ticker}")
             return self._get_mock_rsi(ticker)
         
-        # Make API request
-        logger.info(f"Fetching RSI for {ticker} (period={period}, interval={interval})")
+        # Fetch real data from yfinance
+        logger.info(f"Calculating RSI for {ticker} (period={period}) using yfinance")
         
-        params = {
-            'function': 'RSI',
-            'symbol': ticker,
-            'interval': interval,
-            'time_period': str(period),
-            'series_type': 'close'
-        }
+        df = self._fetch_prices(ticker)
+        if df is None or len(df) < period + 5:
+            logger.warning(f"Insufficient data for {ticker}, using mock")
+            return self._get_mock_rsi(ticker)
         
-        data = self._make_request(params)
+        # Calculate RSI
+        rsi_series = calculate_rsi(df['Close'], period)
         
-        # Parse response
-        tech_key = f"Technical Analysis: RSI"
-        if tech_key not in data:
-            raise ValueError(f"No RSI data in response for {ticker}")
-        
-        rsi_data = data[tech_key]
-        dates = sorted(rsi_data.keys(), reverse=True)
+        # Get recent values
+        recent_rsi = rsi_series.dropna().tail(30)
         
         result = {
             'ticker': ticker,
             'indicator': 'RSI',
             'period': period,
-            'latest_value': float(rsi_data[dates[0]]['RSI']),
-            'previous_value': float(rsi_data[dates[1]]['RSI']) if len(dates) > 1 else None,
+            'latest_value': float(recent_rsi.iloc[-1]),
+            'previous_value': float(recent_rsi.iloc[-2]) if len(recent_rsi) > 1 else None,
             'timestamp': datetime.now().isoformat(),
             'data_points': [
-                {'date': d, 'value': float(rsi_data[d]['RSI'])}
-                for d in dates[:30]
+                {'date': idx.strftime('%Y-%m-%d'), 'value': float(val)}
+                for idx, val in recent_rsi.items()
             ],
-            'source': 'alphavantage'
+            'source': 'yfinance_local'
         }
         
         # Cache result
@@ -358,20 +337,12 @@ class AlphaVantageClient:
         """
         Get MACD (Moving Average Convergence Divergence) for a ticker.
         
-        Args:
-            ticker: Stock symbol
-            fast_period: Fast EMA period (default 12)
-            slow_period: Slow EMA period (default 26)
-            signal_period: Signal line period (default 9)
-            interval: Time interval ('daily', '60min', etc.)
-            
-        Returns:
-            Dict with MACD data including MACD line, signal, and histogram
+        Calculated locally from yfinance data - NO external API.
         """
         ticker = ticker.upper().strip()
         
         # Check cache
-        cache_key = f"macd_{ticker}_{fast_period}_{slow_period}_{signal_period}_{interval}"
+        cache_key = f"macd_{ticker}_{fast_period}_{slow_period}_{signal_period}"
         if cache_key in self._cache:
             cached = self._cache[cache_key]
             if time.time() - cached['timestamp'] < self._cache_ttl:
@@ -383,30 +354,21 @@ class AlphaVantageClient:
             logger.info(f"[MOCK] Getting MACD for {ticker}")
             return self._get_mock_macd(ticker)
         
-        # Make API request
-        logger.info(f"Fetching MACD for {ticker}")
+        # Fetch real data from yfinance
+        logger.info(f"Calculating MACD for {ticker} using yfinance")
         
-        params = {
-            'function': 'MACD',
-            'symbol': ticker,
-            'interval': interval,
-            'series_type': 'close',
-            'fastperiod': str(fast_period),
-            'slowperiod': str(slow_period),
-            'signalperiod': str(signal_period)
-        }
+        df = self._fetch_prices(ticker)
+        if df is None or len(df) < slow_period + signal_period + 5:
+            logger.warning(f"Insufficient data for {ticker}, using mock")
+            return self._get_mock_macd(ticker)
         
-        data = self._make_request(params)
+        # Calculate MACD
+        macd_data = calculate_macd(df['Close'], fast_period, slow_period, signal_period)
         
-        # Parse response
-        tech_key = "Technical Analysis: MACD"
-        if tech_key not in data:
-            raise ValueError(f"No MACD data in response for {ticker}")
-        
-        macd_data = data[tech_key]
-        dates = sorted(macd_data.keys(), reverse=True)
-        
-        latest = macd_data[dates[0]]
+        # Get recent values
+        recent_macd = macd_data['macd'].dropna().tail(30)
+        recent_signal = macd_data['signal'].dropna().tail(30)
+        recent_hist = macd_data['histogram'].dropna().tail(30)
         
         result = {
             'ticker': ticker,
@@ -415,21 +377,21 @@ class AlphaVantageClient:
             'slow_period': slow_period,
             'signal_period': signal_period,
             'latest': {
-                'macd': float(latest['MACD']),
-                'signal': float(latest['MACD_Signal']),
-                'histogram': float(latest['MACD_Hist'])
+                'macd': float(recent_macd.iloc[-1]),
+                'signal': float(recent_signal.iloc[-1]),
+                'histogram': float(recent_hist.iloc[-1])
             },
             'timestamp': datetime.now().isoformat(),
             'data_points': [
                 {
-                    'date': d,
-                    'macd': float(macd_data[d]['MACD']),
-                    'signal': float(macd_data[d]['MACD_Signal']),
-                    'histogram': float(macd_data[d]['MACD_Hist'])
+                    'date': idx.strftime('%Y-%m-%d'),
+                    'macd': float(recent_macd.loc[idx]) if idx in recent_macd.index else 0,
+                    'signal': float(recent_signal.loc[idx]) if idx in recent_signal.index else 0,
+                    'histogram': float(recent_hist.loc[idx]) if idx in recent_hist.index else 0
                 }
-                for d in dates[:30]
+                for idx in recent_macd.index
             ],
-            'source': 'alphavantage'
+            'source': 'yfinance_local'
         }
         
         # Cache result
@@ -441,15 +403,7 @@ class AlphaVantageClient:
         return result
     
     def get_quote(self, ticker: str) -> Dict[str, Any]:
-        """
-        Get real-time quote for a ticker.
-        
-        Args:
-            ticker: Stock symbol
-            
-        Returns:
-            Dict with current price, change, volume
-        """
+        """Get real-time quote for a ticker using yfinance."""
         ticker = ticker.upper().strip()
         
         if self.deterministic:
@@ -466,27 +420,31 @@ class AlphaVantageClient:
                 'source': 'mock'
             }
         
-        params = {
-            'function': 'GLOBAL_QUOTE',
-            'symbol': ticker
-        }
-        
-        data = self._make_request(params)
-        
-        if 'Global Quote' not in data:
-            raise ValueError(f"No quote data for {ticker}")
-        
-        quote = data['Global Quote']
-        
-        return {
-            'ticker': ticker,
-            'price': float(quote.get('05. price', 0)),
-            'change': float(quote.get('09. change', 0)),
-            'change_percent': float(quote.get('10. change percent', '0%').replace('%', '')),
-            'volume': int(quote.get('06. volume', 0)),
-            'timestamp': datetime.now().isoformat(),
-            'source': 'alphavantage'
-        }
+        try:
+            self._rate_limiter.acquire()
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            return {
+                'ticker': ticker,
+                'price': info.get('currentPrice', info.get('regularMarketPrice', 0)),
+                'change': info.get('regularMarketChange', 0),
+                'change_percent': info.get('regularMarketChangePercent', 0),
+                'volume': info.get('regularMarketVolume', 0),
+                'timestamp': datetime.now().isoformat(),
+                'source': 'yfinance'
+            }
+        except Exception as e:
+            logger.error(f"Failed to get quote for {ticker}: {e}")
+            # Return mock on error
+            import hashlib
+            hash_val = int(hashlib.md5(ticker.encode()).hexdigest()[:8], 16)
+            return {
+                'ticker': ticker,
+                'price': 100 + (hash_val % 400),
+                'error': str(e),
+                'source': 'fallback_mock'
+            }
     
     @property
     def rate_limit_status(self) -> Dict[str, Any]:
@@ -500,7 +458,7 @@ class AlphaVantageClient:
     def clear_cache(self):
         """Clear the response cache."""
         self._cache.clear()
-        logger.info("AlphaVantage cache cleared")
+        logger.info("Cache cleared")
 
 
 # Module-level singleton
@@ -508,7 +466,7 @@ _client: Optional[AlphaVantageClient] = None
 
 
 def get_av_client(deterministic: bool = None) -> AlphaVantageClient:
-    """Get or create the Alpha Vantage client singleton."""
+    """Get or create the client singleton."""
     global _client
     if _client is None:
         _client = AlphaVantageClient(deterministic=deterministic)

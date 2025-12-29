@@ -23,7 +23,7 @@ try:
     driver = webdriver.Chrome(options=chrome_options)
     
     print("1. Loading dashboard...")
-    driver.get('http://localhost:8090')
+    driver.get('http://localhost:8053')
     time.sleep(5)
     
     # Check if page loaded
