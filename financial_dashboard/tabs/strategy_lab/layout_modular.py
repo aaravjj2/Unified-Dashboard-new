@@ -19,7 +19,7 @@ from dash_extensions.enrich import html, dcc
 import dash_bootstrap_components as dbc
 
 # Import subtab layouts (backtest removed - merged into execution)
-from .subtabs import setup, execution, results, benchmark, risk
+from .subtabs import setup, execution, results, benchmark, risk, bots
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +131,12 @@ A comprehensive environment for building and testing quantitative trading strate
                 tab_id="sl-risk",
                 children=[risk.layout()],
                 className="sl-tab-risk"
+            ),
+            dbc.Tab(
+                label="🤖 Bots",
+                tab_id="sl-bots",
+                children=[bots.create_bots_layout()],
+                className="sl-tab-bots"
             ),
         ], id="strategy-lab-subtabs", active_tab="sl-setup", className="mb-4"),
         

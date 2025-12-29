@@ -672,16 +672,13 @@ def register_enhanced_callbacks(app):
             ticker = options_data.get('ticker', 'SPY')
             spot = options_data.get('spot_price', 100)
             
-            # 1. Analyze Market Regime
-            # Construct a mock market data object for the regime classifier
-            # In production, this would come from a real market data feed
-            market_data = {
-                'price': spot,
-                'returns': [0.01, -0.005, 0.002, 0.008, -0.001], # Mock returns
-                'volatility': 0.15, # Mock vol
-                'volume': 1000000 # Mock volume
-            }
-            regime = ti_engine.regime_classifier.classify_regime(market_data)
+            # 1. Analyze Market Regime (Mock for now)
+            class MockRegime:
+                def __init__(self):
+                    self.name = "Normal"
+                    self.trend_strength = 0.5
+                    self.volatility_regime = "Normal"
+            regime = MockRegime()
             
             # 2. Determine Direction & Strategy
             # Use user outlook if provided, otherwise use regime
@@ -702,25 +699,21 @@ def register_enhanced_callbacks(app):
             }
             
             # 3. Predict Win Rate
-            features = {
-                'iv_rank': 50, # Placeholder
-                'rsi': 50 + (regime.trend_strength * 20),
-                'trend': regime.trend_strength,
-                'volatility': regime.volatility_regime
-            }
-            win_prob = ti_engine.win_rate_predictor.predict_win_rate(features)
+            win_pred = ti_engine.win_rate_predictor.predict(ticker, strategy_type)
+            win_prob = win_pred.predicted_win_rate
             
             # 4. Calculate Kelly Size
-            kelly = po_engine.kelly.calculate_kelly(win_prob, 2.0) # Assuming 2:1 reward/risk
+            kelly_res = po_engine.kelly_calc.calculate(win_rate=win_prob, avg_win=200, avg_loss=100)
+            kelly = kelly_res.kelly_fraction
             
             # 5. Generate Strategy Cards
             cards = []
-            timing = ti_engine.timing_engine.analyze_timing(market_data)
+            timing = ti_engine.timing_optimizer.analyze_timing(ticker)
             
             card = html.Div([
                 html.H5(f"Recommended: {strategy_type.replace('_', ' ').title()}", className="text-white"),
                 html.P(f"Regime: {regime.name}", className="text-muted small"),
-                html.P(f"Timing: {timing.action} (Score: {timing.score})", className="text-info small"),
+                html.P(f"Timing: {timing.rationale} (Score: {timing.timing_score})", className="text-info small"),
                 html.Hr(className="border-secondary"),
                 html.Div([
                     html.Span("Win Rate: ", className="text-muted"),
@@ -783,7 +776,7 @@ def register_enhanced_callbacks(app):
             return "0.00", default_style, "0.00", default_style, "N/A", default_style, "$0", "0%", empty_fig
         
         try:
-            mm_engine = get_market_microstructure()
+            mm_engine = get_microstructure_engine()
             
             # Flatten data for flow analyzer
             trades = []
@@ -810,10 +803,10 @@ def register_enhanced_callbacks(app):
             # Calculate P/C ratios (using simple aggregation for now as flow analyzer is more about order flow)
             # We can reuse the logic or implement a helper in the engine.
             # For now, let's calculate manually from the flattened data to be safe
-            total_call_vol = sum(c.get('volume', 0) for exp in chains.values() for c in exp.get('calls', []))
-            total_put_vol = sum(p.get('volume', 0) for exp in chains.values() for p in exp.get('puts', []))
-            total_call_oi = sum(c.get('openInterest', 0) for exp in chains.values() for c in exp.get('calls', []))
-            total_put_oi = sum(p.get('openInterest', 0) for exp in chains.values() for p in exp.get('puts', []))
+            total_call_vol = sum((c.get('volume') or 0) for exp in chains.values() for c in exp.get('calls', []))
+            total_put_vol = sum((p.get('volume') or 0) for exp in chains.values() for p in exp.get('puts', []))
+            total_call_oi = sum((c.get('openInterest') or 0) for exp in chains.values() for c in exp.get('calls', []))
+            total_put_oi = sum((p.get('openInterest') or 0) for exp in chains.values() for p in exp.get('puts', []))
             
             vol_ratio = total_put_vol / total_call_vol if total_call_vol > 0 else 0
             oi_ratio = total_put_oi / total_call_oi if total_call_oi > 0 else 0
@@ -823,7 +816,7 @@ def register_enhanced_callbacks(app):
             oi_color = '#f44336' if oi_ratio > 1.2 else '#4caf50' if oi_ratio < 0.8 else '#FF9800'
             
             # Sentiment from Flow Analyzer
-            net_flow = flow_metrics.net_flow
+            net_flow = flow_metrics.volume_imbalance
             sentiment = "BULLISH" if net_flow > 0 else "BEARISH" if net_flow < 0 else "NEUTRAL"
             sent_color = '#4caf50' if sentiment == 'BULLISH' else '#f44336' if sentiment == 'BEARISH' else '#FF9800'
             
