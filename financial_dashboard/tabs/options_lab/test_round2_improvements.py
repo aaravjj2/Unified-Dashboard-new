@@ -216,7 +216,8 @@ class TestPortfolioOptimization(unittest.TestCase):
         result = engine.frontier_generator.generate(assets)
         
         self.assertIsNotNone(result)
-        self.assertIn('frontier_points', result.__dict__)
+        self.assertIsInstance(result, list)
+        self.assertGreater(len(result), 0)
         print("✅ Test 10: Efficient frontier generator - PASSED")
     
     def test_11_rebalancing_advisor(self):
@@ -303,9 +304,9 @@ class TestPricingModels(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.pricing_models import get_pricing_models
         engine = get_pricing_models()
         
-        result = engine.vol_surface_builder.build_surface(
+        result = engine.surface_builder.build_surface(
             ticker='SPY',
-            spot_price=500
+            spot=500
         )
         
         self.assertIsNotNone(result)
@@ -317,15 +318,10 @@ class TestPricingModels(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.pricing_models import get_pricing_models
         engine = get_pricing_models()
         
-        chain = [
-            {'strike': 480, 'iv': 28, 'option_type': 'put'},
-            {'strike': 490, 'iv': 26, 'option_type': 'put'},
-            {'strike': 500, 'iv': 25, 'option_type': 'call'},
-            {'strike': 510, 'iv': 24, 'option_type': 'call'},
-            {'strike': 520, 'iv': 23, 'option_type': 'call'}
-        ]
+        # Build surface first
+        surface = engine.surface_builder.build_surface(ticker='SPY', spot=500)
         
-        result = engine.skew_analyzer.analyze(chain, spot_price=500)
+        result = engine.skew_analyzer.analyze(surface)
         
         self.assertIsNotNone(result)
         self.assertIn('skew_direction', result.__dict__)
@@ -336,14 +332,10 @@ class TestPricingModels(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.pricing_models import get_pricing_models
         engine = get_pricing_models()
         
-        term_data = [
-            {'dte': 7, 'atm_iv': 30},
-            {'dte': 14, 'atm_iv': 28},
-            {'dte': 30, 'atm_iv': 25},
-            {'dte': 60, 'atm_iv': 24}
-        ]
+        # Build surface first
+        surface = engine.surface_builder.build_surface(ticker='SPY', spot=500)
         
-        result = engine.term_analyzer.analyze(term_data)
+        result = engine.term_analyzer.analyze(surface)
         
         self.assertIsNotNone(result)
         self.assertIn('structure_type', result.__dict__)
@@ -354,11 +346,16 @@ class TestPricingModels(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.pricing_models import get_pricing_models
         engine = get_pricing_models()
         
-        result = engine.greeks_attributor.attribute(
-            position_greeks={'delta': 0.5, 'gamma': 0.02, 'theta': -0.05, 'vega': 0.1},
+        position = {
+            'delta': 0.5, 'gamma': 0.02, 'theta': -0.05, 'vega': 0.1,
+            'quantity': 1, 'pnl': 50
+        }
+        
+        result = engine.attribution_engine.attribute(
+            position=position,
             price_change=2,
-            iv_change=-1,
-            days_passed=1
+            iv_change=-0.01,
+            time_elapsed=1
         )
         
         self.assertIsNotNone(result)
@@ -375,16 +372,14 @@ class TestTradeIntelligence(unittest.TestCase):
         engine = get_trade_intelligence()
         
         result = engine.win_rate_predictor.predict(
-            strategy='iron_condor',
-            iv_percentile=70,
-            dte=30,
-            delta=0.3
+            ticker='SPY',
+            strategy='iron_condor'
         )
         
         self.assertIsNotNone(result)
-        self.assertIn('predicted', result.__dict__)
-        self.assertGreater(result.predicted, 0)
-        self.assertLess(result.predicted, 1)
+        self.assertIn('predicted_win_rate', result.__dict__)
+        self.assertGreater(result.predicted_win_rate, 0)
+        self.assertLess(result.predicted_win_rate, 1)
         print("✅ Test 20: Win rate predictor - PASSED")
     
     def test_21_entry_timing_optimizer(self):
@@ -392,13 +387,12 @@ class TestTradeIntelligence(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.trade_intelligence import get_trade_intelligence
         engine = get_trade_intelligence()
         
-        result = engine.entry_timing_optimizer.optimize(
-            ticker='SPY',
-            strategy='bull_put_spread'
+        result = engine.timing_optimizer.analyze_timing(
+            ticker='SPY'
         )
         
         self.assertIsNotNone(result)
-        self.assertIn('best_day', result.__dict__)
+        self.assertIn('best_day_of_week', result.__dict__)
         self.assertIn('best_hour', result.__dict__)
         print("✅ Test 21: Entry timing optimizer - PASSED")
     
@@ -407,15 +401,18 @@ class TestTradeIntelligence(unittest.TestCase):
         from financial_dashboard.tabs.options_lab.trade_intelligence import get_trade_intelligence
         engine = get_trade_intelligence()
         
-        result = engine.exit_optimizer.optimize(
-            strategy='iron_condor',
-            dte=30,
-            credit=1.50
-        )
+        position = {
+            'ticker': 'SPY',
+            'strategy': 'iron_condor',
+            'entry_price': 1.50,
+            'dte': 30
+        }
+        
+        result = engine.exit_optimizer.optimize(position=position)
         
         self.assertIsNotNone(result)
-        self.assertIn('profit_target', result.__dict__)
-        self.assertIn('stop_loss', result.__dict__)
+        self.assertIn('profit_target_pct', result.__dict__)
+        self.assertIn('stop_loss_pct', result.__dict__)
         print("✅ Test 22: Exit strategy optimizer - PASSED")
     
     def test_23_spread_analyzer(self):
@@ -424,6 +421,7 @@ class TestTradeIntelligence(unittest.TestCase):
         engine = get_trade_intelligence()
         
         result = engine.spread_analyzer.analyze(
+            ticker='SPY',
             bid=1.45,
             ask=1.55
         )
@@ -438,13 +436,15 @@ class TestTradeIntelligence(unittest.TestCase):
         engine = get_trade_intelligence()
         
         result = engine.slippage_estimator.estimate(
+            ticker='SPY',
             order_size=10,
-            avg_volume=500,
-            bid_ask_spread=0.10
+            order_type='market',
+            current_price=5.0,
+            avg_volume=500
         )
         
         self.assertIsNotNone(result)
-        self.assertIn('expected_slippage', result.__dict__)
+        self.assertIn('expected_slippage_pct', result.__dict__)
         print("✅ Test 24: Slippage estimator - PASSED")
     
     def test_25_trade_intelligence_full(self):
@@ -475,7 +475,7 @@ class TestMarketMicrostructure(unittest.TestCase):
         
         self.assertIsNotNone(result)
         self.assertIn('flow_direction', result.__dict__)
-        self.assertIn('flow_intensity', result.__dict__)
+        self.assertIn('intensity', result.__dict__)
         print("✅ Test 26: Order flow analyzer - PASSED")
     
     def test_27_market_maker_detector(self):
@@ -486,7 +486,7 @@ class TestMarketMicrostructure(unittest.TestCase):
         result = engine.mm_detector.detect_activity('SPY')
         
         self.assertIsNotNone(result)
-        self.assertIn('activity_score', result.__dict__)
+        self.assertIn('mm_presence', result.__dict__)
         print("✅ Test 27: Market maker detector - PASSED")
     
     def test_28_sweep_detector(self):
@@ -519,7 +519,7 @@ class TestMarketMicrostructure(unittest.TestCase):
         result = engine.unusual_detector.detect_unusual('SPY')
         
         self.assertIsNotNone(result)
-        self.assertIn('is_unusual', result.__dict__)
+        self.assertIn('activity_level', result.__dict__)
         print("✅ Test 30: Unusual activity detector - PASSED")
     
     def test_31_microstructure_full(self):
@@ -817,11 +817,11 @@ class TestIntegration(unittest.TestCase):
         
         # Price option
         pricing = get_pricing_models()
-        price = pricing.bs_model.price(S=100, K=100, T=30/365, sigma=0.25)
+        price = pricing.bs.price(S=100, K=100, T=30/365, sigma=0.25)
         
         # Analyze trade
         intel = get_trade_intelligence()
-        analysis = intel.win_rate_predictor.predict('iron_condor', 70, 30, 0.3)
+        analysis = intel.win_rate_predictor.predict('SPY', 'iron_condor')
         
         # Backtest
         backtest = get_backtesting_engine()
@@ -843,7 +843,7 @@ class TestIntegration(unittest.TestCase):
         pricing = get_pricing_models()
         
         # Edge case inputs should not crash
-        result = pricing.bs_model.price(S=100, K=100, T=0.001, sigma=0.25)
+        result = pricing.bs.price(S=100, K=100, T=0.001, sigma=0.25)
         self.assertIsNotNone(result)  # Should not crash
         
         print("✅ Test 47: Error handling - PASSED")
@@ -904,9 +904,9 @@ class TestIntegration(unittest.TestCase):
         """Test all 35 improvements are accessible."""
         improvements = {
             'advanced_greeks': ['surface_builder', 'sensitivity_analyzer', 'gamma_calculator', 'vega_analyzer', 'theta_projector'],
-            'portfolio_optimizer': ['kelly_calculator', 'beta_optimizer', 'sharpe_analyzer', 'frontier_generator', 'rebalancing_advisor'],
-            'pricing_models': ['bs_model', 'binomial_model', 'mc_model', 'vol_surface_builder', 'skew_analyzer'],
-            'trade_intelligence': ['win_rate_predictor', 'entry_timing_optimizer', 'exit_optimizer', 'spread_analyzer', 'slippage_estimator'],
+            'portfolio_optimizer': ['kelly_calc', 'beta_optimizer', 'sharpe_analyzer', 'frontier_generator', 'rebalancing_advisor'],
+            'pricing_models': ['bs', 'binomial', 'mc', 'surface_builder', 'skew_analyzer'],
+            'trade_intelligence': ['win_rate_predictor', 'timing_optimizer', 'exit_optimizer', 'spread_analyzer', 'slippage_estimator'],
             'market_microstructure': ['flow_analyzer', 'mm_detector', 'sweep_detector', 'dark_pool_tracker', 'unusual_detector'],
             'backtesting': ['backtester', 'monte_carlo', 'walk_forward', 'scenario_analyzer', 'paper_trader'],
             'realtime_intelligence': ['pnl_tracker', 'alert_engine', 'webhooks', 'scanner', 'news_analyzer']

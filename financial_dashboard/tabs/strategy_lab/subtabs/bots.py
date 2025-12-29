@@ -8,6 +8,192 @@ from dash import html, dcc, Input, Output, State, callback_context
 import plotly.graph_objects as go
 from datetime import datetime
 
+# Import bot engine components
+try:
+    from financial_dashboard.services.bot_engine import (
+        get_bot_manager, BotConfig, BotStatus, SignalType
+    )
+    BOT_ENGINE_AVAILABLE = True
+except ImportError:
+    BOT_ENGINE_AVAILABLE = False
+
+
+def create_alphabot_control_panel() -> dbc.Card:
+    """
+    Create AlphaBot Control Panel - RSI Strategy Bot with AlphaVantage + Alpaca.
+    
+    Features:
+    - Single ticker RSI-based trading
+    - Paper trading mode (Alpaca)
+    - Real-time signal display
+    - Trade log viewer
+    """
+    return dbc.Card([
+        dbc.CardHeader([
+            html.Div([
+                html.Span("🤖", className="me-2"),
+                html.Strong("AlphaBot Control Panel"),
+                dbc.Badge(
+                    "PAPER MODE",
+                    color="warning",
+                    className="ms-auto"
+                )
+            ], className="d-flex align-items-center")
+        ], style={'backgroundColor': 'rgba(249, 115, 22, 0.2)', 'borderBottom': '2px solid #f97316'}),
+        dbc.CardBody([
+            # Status Row
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.Small("Status", className="text-muted"),
+                        html.Div(id="alphabot-status", children=[
+                            dbc.Badge("STOPPED", color="secondary", className="fs-6")
+                        ])
+                    ])
+                ], width=4),
+                dbc.Col([
+                    html.Small("Last Signal", className="text-muted"),
+                    html.Div(id="alphabot-signal", children=[
+                        dbc.Badge("HOLD", color="info", className="fs-6")
+                    ])
+                ], width=4),
+                dbc.Col([
+                    html.Small("RSI Value", className="text-muted"),
+                    html.Div(id="alphabot-rsi", children=[
+                        html.Span("--", className="fs-5 fw-bold text-warning")
+                    ])
+                ], width=4),
+            ], className="mb-3 text-center"),
+            
+            html.Hr(),
+            
+            # Configuration Row
+            dbc.Row([
+                dbc.Col([
+                    dbc.Label("Ticker", className="fw-bold"),
+                    dbc.Input(
+                        id="alphabot-ticker",
+                        type="text",
+                        value="AAPL",
+                        placeholder="AAPL",
+                        className="text-uppercase"
+                    )
+                ], width=4),
+                dbc.Col([
+                    dbc.Label("Strategy", className="fw-bold"),
+                    dcc.Dropdown(
+                        id="alphabot-strategy",
+                        options=[
+                            {'label': '📊 RSI (Oversold/Overbought)', 'value': 'rsi'},
+                            {'label': '📈 MACD (Trend Crossover)', 'value': 'macd'},
+                            {'label': '🔀 RSI + MACD Combined', 'value': 'rsi_macd'},
+                        ],
+                        value='rsi',
+                        clearable=False,
+                        style={'backgroundColor': '#2d2d2d'}
+                    )
+                ], width=4),
+                dbc.Col([
+                    dbc.Label("Quantity", className="fw-bold"),
+                    dbc.Input(
+                        id="alphabot-quantity",
+                        type="number",
+                        value=1,
+                        min=1,
+                        max=100
+                    )
+                ], width=4),
+            ], className="mb-3"),
+            
+            # RSI Parameters
+            dbc.Row([
+                dbc.Col([
+                    dbc.Label("RSI Oversold (<)", className="small"),
+                    dbc.Input(
+                        id="alphabot-rsi-oversold",
+                        type="number",
+                        value=30,
+                        min=10,
+                        max=40
+                    )
+                ], width=4),
+                dbc.Col([
+                    dbc.Label("RSI Overbought (>)", className="small"),
+                    dbc.Input(
+                        id="alphabot-rsi-overbought",
+                        type="number",
+                        value=70,
+                        min=60,
+                        max=90
+                    )
+                ], width=4),
+                dbc.Col([
+                    dbc.Label("Tick Interval (s)", className="small"),
+                    dbc.Input(
+                        id="alphabot-interval",
+                        type="number",
+                        value=60,
+                        min=30,
+                        max=3600
+                    )
+                ], width=4),
+            ], className="mb-3"),
+            
+            html.Hr(),
+            
+            # Control Buttons
+            dbc.ButtonGroup([
+                dbc.Button([
+                    html.I(className="fas fa-play me-1"),
+                    "Start Bot"
+                ], id="alphabot-start-btn", color="success", className="me-2"),
+                dbc.Button([
+                    html.I(className="fas fa-stop me-1"),
+                    "Stop Bot"
+                ], id="alphabot-stop-btn", color="danger", outline=True, className="me-2"),
+                dbc.Button([
+                    html.I(className="fas fa-bolt me-1"),
+                    "Run Once"
+                ], id="alphabot-tick-btn", color="info", outline=True),
+            ], className="mb-3"),
+            
+            # Live Trade Log
+            html.Div([
+                html.Small([
+                    html.I(className="fas fa-list me-1"),
+                    "Live Trade Log"
+                ], className="text-muted"),
+                html.Div(
+                    id="alphabot-trade-log",
+                    children=[
+                        html.Div(
+                            "No trades yet. Start the bot to begin.",
+                            className="text-muted text-center py-3"
+                        )
+                    ],
+                    style={
+                        'maxHeight': '150px',
+                        'overflowY': 'auto',
+                        'backgroundColor': 'rgba(0,0,0,0.3)',
+                        'padding': '10px',
+                        'borderRadius': '5px',
+                        'fontSize': '0.85rem'
+                    }
+                )
+            ]),
+            
+            # Rate Limit Warning
+            dbc.Alert([
+                html.I(className="fas fa-exclamation-triangle me-2"),
+                "Alpha Vantage: 5 calls/minute limit. Bot will auto-throttle."
+            ], color="warning", className="mt-3 mb-0 py-2 small"),
+        ])
+    ], className="mb-3", style={
+        'backgroundColor': 'rgba(249, 115, 22, 0.05)',
+        'border': '1px solid rgba(249, 115, 22, 0.3)'
+    })
+
+
 
 def create_bot_card(bot_id: str, bot_type: str, status: str, performance: dict = None) -> dbc.Card:
     """Create a trading bot status card."""
@@ -463,6 +649,13 @@ def create_bots_layout() -> html.Div:
         # Quick Stats
         create_quick_stats(),
         
+        # AlphaBot Control Panel - NEW RSI Strategy Bot
+        dbc.Row([
+            dbc.Col([
+                create_alphabot_control_panel()
+            ], width=12),
+        ], className="mb-3"),
+        
         # Main Content
         dbc.Row([
             # Bot Cards Column
@@ -547,11 +740,29 @@ def create_bots_layout() -> html.Div:
         # Store for bot state
         dcc.Store(id="bot-state-store", data={}),
         
+        # AlphaBot state store
+        dcc.Store(id="alphabot-state-store", data={
+            'status': 'stopped',
+            'ticker': 'AAPL',
+            'strategy': 'rsi',
+            'last_signal': 'hold',
+            'last_rsi': None,
+            'trade_logs': []
+        }),
+        
         # Refresh interval
         dcc.Interval(
             id="bot-refresh-interval",
             interval=5000,  # 5 seconds
             n_intervals=0
+        ),
+        
+        # AlphaBot refresh interval (matches tick interval)
+        dcc.Interval(
+            id="alphabot-refresh-interval",
+            interval=60000,  # 60 seconds default
+            n_intervals=0,
+            disabled=True  # Enabled when bot starts
         ),
         
         # Configuration Modal
