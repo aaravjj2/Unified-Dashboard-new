@@ -162,6 +162,49 @@ Set your backtest parameters and run the simulation:
             ])
         ], className="mb-4"),
         
+        # Phase 4: Engine Selection
+        dbc.Card([
+            dbc.CardHeader(html.H6("🔧 Backtest Engine", className="mb-0")),
+            dbc.CardBody([
+                dcc.RadioItems(
+                    id='sl-engine-select',
+                    options=[
+                        {
+                            'label': html.Div([
+                                html.Strong("⚡ VectorBT (Fast)"),
+                                html.Br(),
+                                html.Small("Vectorized computation, ideal for quick iterations", 
+                                         className="text-muted")
+                            ], style={'marginLeft': '8px'}),
+                            'value': 'vectorbt'
+                        },
+                        {
+                            'label': html.Div([
+                                html.Strong("🌊 Nautilus (Realistic)"),
+                                html.Br(),
+                                html.Small("Event-driven simulation with order book modeling", 
+                                         className="text-muted")
+                            ], style={'marginLeft': '8px'}),
+                            'value': 'nautilus'
+                        },
+                    ],
+                    value='vectorbt',
+                    className="mb-3",
+                    labelStyle={'display': 'block', 'marginBottom': '12px'}
+                ),
+                
+                # Nautilus-specific options (conditional)
+                html.Div(id='sl-nautilus-options', children=[
+                    dbc.Alert([
+                        html.I(className="bi bi-info-circle me-2"),
+                        html.Strong("Nautilus Mode: "),
+                        "Event-driven execution with realistic order fills, slippage, and latency simulation. "
+                        "Trade logs will show order-by-order execution details."
+                    ], color="info", className="mb-0")
+                ], style={'display': 'none'}),
+            ])
+        ], className="mb-4"),
+        
         # Execution Controls
         dbc.Row([
             dbc.Col([

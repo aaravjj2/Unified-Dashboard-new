@@ -52,6 +52,8 @@ try:
 except ImportError as e:
     NAUTILUS_AVAILABLE = False
     logger.warning(f"NautilusTrader not available: {e}")
+    # Define placeholder Strategy class for when nautilus is not available
+    Strategy = object
 
 
 def is_nautilus_available() -> bool:
@@ -185,7 +187,7 @@ class EMACrossStrategy(Strategy):
     
     def on_stop(self):
         """Called when the strategy stops."""
-        logger.info("EMArossStrategy stopped")
+        logger.info("EMACrossStrategy stopped")
 
 
 class EventDrivenBacktester:
@@ -259,7 +261,7 @@ class EventDrivenBacktester:
         self,
         df: pd.DataFrame,
         ticker: str,
-        strategy_class: type = EMArossStrategy,
+        strategy_class: type = EMACrossStrategy,
         strategy_params: Optional[Dict[str, Any]] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None
@@ -270,7 +272,7 @@ class EventDrivenBacktester:
         Args:
             df: Historical OHLCV data from yfinance
             ticker: Stock ticker
-            strategy_class: Strategy class to use (default: EMArossStrategy)
+            strategy_class: Strategy class to use (default: EMACrossStrategy)
             strategy_params: Parameters to pass to strategy constructor
             start_date: Backtest start date
             end_date: Backtest end date
@@ -494,7 +496,7 @@ def create_strategy(strategy_type: str, params: Optional[Dict] = None):
     params = params or {}
     
     if strategy_type == 'ema_cross':
-        return EMArossStrategy(
+        return EMACrossStrategy(
             fast_period=params.get('fast_period', 12),
             slow_period=params.get('slow_period', 26)
         )
