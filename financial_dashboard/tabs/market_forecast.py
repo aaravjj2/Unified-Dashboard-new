@@ -87,6 +87,8 @@ COLORS = {
     'prophet': '#3b82f6',
     'arima': '#8b5cf6',
     'lstm': '#06b6d4',
+    'qlib': '#f97316',
+    'neuralprophet': '#ec4899',
     'ensemble': '#10b981',
 }
 
@@ -293,8 +295,16 @@ def create_inputs_panel():
                             " LSTM (Deep Learning)"
                         ]), 'value': 'lstm'},
                         {'label': html.Span([
+                            html.Span("●", style={'color': '#f97316'}),
+                            " Qlib (Alpha + Deep)"
+                        ]), 'value': 'qlib'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': '#ec4899'}),
+                            " NeuralProphet (Neural + Trend)"
+                        ]), 'value': 'neuralprophet'},
+                        {'label': html.Span([
                             html.Span("●", style={'color': COLORS['ensemble']}),
-                            " Ensemble (Weighted Average)"
+                            " Ensemble (All Models)"
                         ]), 'value': 'ensemble'},
                     ],
                     value=['prophet', 'ensemble'],
@@ -912,6 +922,72 @@ def register_callbacks(app, SH=None):
                         logger.error(f"LSTM error: {e}")
                         model_errors['lstm'] = str(e)
                 
+                # Qlib-style forecaster (Alpha + Deep Learning)
+                if 'qlib' in (selected_models or []) and 'qlib' not in forecasts:
+                    try:
+                        from financial_dashboard.engines.qlib_forecaster import QlibStyleForecaster
+                        qlib_fc = QlibStyleForecaster(lookback=60)
+                        
+                        # Qlib needs OHLCV DataFrame - use hist which has that data
+                        qlib_result = qlib_fc.forecast(hist, horizon=horizon, ticker=ticker)
+                        
+                        if qlib_result and hasattr(qlib_result, 'forecast_values'):
+                            forecast_vals = qlib_result.forecast_values
+                            lower = qlib_result.confidence_lower
+                            upper = qlib_result.confidence_upper
+                            
+                            # Calculate spreads for different confidence bands
+                            spread = upper - forecast_vals
+                            
+                            # Build standard forecast dict
+                            forecasts['qlib'] = {
+                                'forecast': forecast_vals.tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals),
+                                'lower_50': (forecast_vals - 0.675 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals - 0.675 * spread),
+                                'upper_50': (forecast_vals + 0.675 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals + 0.675 * spread),
+                                'lower_80': (forecast_vals - 1.28 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals - 1.28 * spread),
+                                'upper_80': (forecast_vals + 1.28 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals + 1.28 * spread),
+                                'lower_95': lower.tolist() if hasattr(lower, 'tolist') else list(lower),
+                                'upper_95': upper.tolist() if hasattr(upper, 'tolist') else list(upper),
+                            }
+                            inference_sources['qlib'] = 'local_qlib'
+                            logger.info(f"✅ Qlib forecast complete (alpha: {qlib_result.alpha_score:.3f})")
+                    except Exception as e:
+                        logger.error(f"Qlib error: {e}")
+                        model_errors['qlib'] = str(e)
+                
+                # NeuralProphet forecaster (Neural + Trend decomposition)
+                if 'neuralprophet' in (selected_models or []) and 'neuralprophet' not in forecasts:
+                    try:
+                        from financial_dashboard.engines.neural_prophet_forecaster import NeuralProphetForecaster
+                        np_fc = NeuralProphetForecaster(n_lags=5, yearly_seasonality=True, weekly_seasonality=True)
+                        
+                        # Fit and forecast
+                        np_fc.fit(data)
+                        np_result = np_fc.predict(horizon)
+                        
+                        if np_result and hasattr(np_result, 'yhat'):
+                            forecast_vals = np_result.yhat
+                            lower = np_result.yhat_lower
+                            upper = np_result.yhat_upper
+                            
+                            # Calculate spread for different confidence bands
+                            spread = (upper - lower) / (2 * 1.96)  # Convert 95% to ~1 std
+                            
+                            forecasts['neuralprophet'] = {
+                                'forecast': forecast_vals.tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals),
+                                'lower_50': (forecast_vals - 0.675 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals - 0.675 * spread),
+                                'upper_50': (forecast_vals + 0.675 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals + 0.675 * spread),
+                                'lower_80': (forecast_vals - 1.28 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals - 1.28 * spread),
+                                'upper_80': (forecast_vals + 1.28 * spread).tolist() if hasattr(forecast_vals, 'tolist') else list(forecast_vals + 1.28 * spread),
+                                'lower_95': lower.tolist() if hasattr(lower, 'tolist') else list(lower),
+                                'upper_95': upper.tolist() if hasattr(upper, 'tolist') else list(upper),
+                            }
+                            inference_sources['neuralprophet'] = 'local_neuralprophet'
+                            logger.info("✅ NeuralProphet forecast complete")
+                    except Exception as e:
+                        logger.error(f"NeuralProphet error: {e}")
+                        model_errors['neuralprophet'] = str(e)
+                
                 if 'ensemble' in (selected_models or []) and 'ensemble' not in forecasts:
                     try:
                         ensemble = EnsembleForecaster()
@@ -922,6 +998,7 @@ def register_callbacks(app, SH=None):
                     except Exception as e:
                         logger.error(f"Ensemble error: {e}")
                         model_errors['ensemble'] = str(e)
+
             
             # Fallback: statistical forecast if no models succeeded
             if not forecasts:
@@ -1182,6 +1259,8 @@ def create_enhanced_fan_chart(
         'prophet': COLORS['prophet'],
         'arima': COLORS['arima'],
         'lstm': COLORS['lstm'],
+        'qlib': COLORS['qlib'],
+        'neuralprophet': COLORS['neuralprophet'],
         'ensemble': COLORS['ensemble'],
         'statistical': '#9ca3af'
     }
@@ -1262,6 +1341,8 @@ def create_model_comparison_chart(
         'prophet': COLORS['prophet'],
         'arima': COLORS['arima'],
         'lstm': COLORS['lstm'],
+        'qlib': COLORS['qlib'],
+        'neuralprophet': COLORS['neuralprophet'],
         'ensemble': COLORS['ensemble'],
         'statistical': '#9ca3af'
     }
@@ -1429,6 +1510,8 @@ def create_metrics_display(
             'prophet': COLORS['prophet'],
             'arima': COLORS['arima'],
             'lstm': COLORS['lstm'],
+            'qlib': COLORS['qlib'],
+            'neuralprophet': COLORS['neuralprophet'],
             'ensemble': COLORS['ensemble'],
             'statistical': '#9ca3af'
         }
