@@ -1078,27 +1078,27 @@ def register_enhanced_callbacks(app):
             days = 5
             simulations = 1000
             
-            # Run simulation
-            # Note: The pricing_models.py likely has a MonteCarloSimulator class
-            # We'll use it to generate paths
+            # Run simulation using Monte Carlo
+            # Use the mc attribute from MultiModelPricer which is a MonteCarloModel instance
+            mc_model = pricing_engine.mc
             
-            mc_sim = pricing_engine.monte_carlo # Access the simulator instance
+            # Generate price paths manually since MonteCarloModel.price doesn't return paths
+            # We'll simulate using the same logic as MonteCarloModel
+            dt = (days/252) / days
+            r = 0.05
             
-            # If the engine doesn't expose it directly, we might need to instantiate it
-            # But based on previous patterns, it should be available
+            # Generate random paths
+            np.random.seed(None)  # Different seed each time for variety
+            Z = np.random.standard_normal((simulations, days))
             
-            # Simulate paths
-            # We'll use the engine's method if available, otherwise fallback to manual
-            # Let's assume the engine has a `simulate_paths` method
+            drift = (r - 0.5 * iv**2) * dt
+            diffusion = iv * np.sqrt(dt) * Z
             
-            paths = mc_sim.simulate_paths(
-                S0=spot,
-                T=days/252,
-                r=0.05, # Risk-free rate
-                sigma=iv,
-                n_sims=simulations,
-                n_steps=days
-            )
+            log_returns = drift + diffusion
+            paths = spot * np.exp(np.cumsum(log_returns, axis=1))
+            
+            # Add initial price as first column
+            paths = np.column_stack([np.full(simulations, spot), paths])
             
             # Calculate option payoffs at end
             final_prices = paths[:, -1]
@@ -1204,6 +1204,154 @@ def register_enhanced_callbacks(app):
         except Exception as e:
             logger.error(f"Forecast error: {e}")
             return html.Div(f"Error: {str(e)}", style={'color': 'red'})
+    
+    # ==========================================
+    # Execute Strategy Callback (Paper Trading)
+    # ==========================================
+    @app.callback(
+        Output('execute-strategy-result', 'children', allow_duplicate=True),
+        Input('execute-strategy-btn', 'n_clicks'),
+        [
+            State('strategy-legs-store', 'data'),
+            State('alpaca-ticker-input', 'value'),
+            State('alpaca-expiration-dropdown', 'value')
+        ],
+        prevent_initial_call=True
+    )
+    def execute_strategy_paper(n_clicks, legs, ticker, expiration):
+        """Execute the current strategy on Alpaca Paper Trading."""
+        if not n_clicks or not legs or len(legs) == 0:
+            return html.Div("No strategy to execute. Build a strategy first.", 
+                           style={'color': '#FF9800', 'padding': '10px'})
+        
+        try:
+            import os
+            from alpaca.trading.client import TradingClient
+            from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
+            from alpaca.trading.enums import OrderSide, TimeInForce, OrderClass
+            
+            # Get Alpaca credentials
+            api_key = os.getenv('APCA_API_KEY_ID') or os.getenv('ALPACA_KEY_ID')
+            secret_key = os.getenv('APCA_API_SECRET_KEY') or os.getenv('ALPACA_SECRET_KEY')
+            
+            if not api_key or not secret_key:
+                return html.Div([
+                    html.Div("❌ Alpaca credentials not configured", style={'color': '#f44336', 'fontWeight': 'bold'}),
+                    html.Div("Set APCA_API_KEY_ID and APCA_API_SECRET_KEY in keys.env", 
+                            style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '5px'})
+                ], style={'padding': '15px', 'backgroundColor': '#1a1a2e', 'borderRadius': '8px'})
+            
+            # Initialize Paper Trading client
+            client = TradingClient(api_key, secret_key, paper=True)
+            
+            # Check account status
+            account = client.get_account()
+            buying_power = float(account.buying_power)
+            
+            executed_orders = []
+            total_cost = 0
+            
+            for leg in legs:
+                # Parse leg data
+                strike = float(leg.get('strike', '$0').replace('$', '').replace(',', ''))
+                qty = int(leg.get('qty', 1))
+                action = leg.get('action', 'BUY')
+                opt_type = leg.get('type', 'CALL')
+                premium_str = leg.get('premium', '$0')
+                premium = float(premium_str.replace('$', '').replace(',', ''))
+                
+                # Calculate cost
+                leg_cost = premium * qty * 100  # Options are in 100 share lots
+                if action == 'BUY':
+                    total_cost += leg_cost
+                else:
+                    total_cost -= leg_cost  # Credit for selling
+                
+                # Build option symbol (OCC format): SPY250117C00500000
+                exp_date = expiration.replace('-', '') if expiration else '250117'
+                opt_char = 'C' if opt_type == 'CALL' else 'P'
+                strike_int = int(strike * 1000)
+                option_symbol = f"{ticker}{exp_date[2:]}{opt_char}{strike_int:08d}"
+                
+                # Create order
+                order_side = OrderSide.BUY if action == 'BUY' else OrderSide.SELL
+                
+                try:
+                    order_request = MarketOrderRequest(
+                        symbol=option_symbol,
+                        qty=qty,
+                        side=order_side,
+                        time_in_force=TimeInForce.DAY
+                    )
+                    
+                    order = client.submit_order(order_request)
+                    executed_orders.append({
+                        'symbol': option_symbol,
+                        'side': action,
+                        'qty': qty,
+                        'status': order.status.value,
+                        'order_id': str(order.id)[:8]
+                    })
+                    
+                except Exception as order_error:
+                    executed_orders.append({
+                        'symbol': option_symbol,
+                        'side': action,
+                        'qty': qty,
+                        'status': 'FAILED',
+                        'error': str(order_error)[:50]
+                    })
+            
+            # Build result display
+            success_count = sum(1 for o in executed_orders if o['status'] != 'FAILED')
+            
+            return html.Div([
+                html.Div([
+                    html.Span("📝 Strategy Executed" if success_count > 0 else "⚠️ Execution Issues", 
+                             style={'fontWeight': 'bold', 'fontSize': '16px'}),
+                    html.Span(f" ({success_count}/{len(executed_orders)} orders)", 
+                             style={'color': '#9ca3af', 'marginLeft': '10px'})
+                ], style={'marginBottom': '15px', 
+                         'color': '#4caf50' if success_count > 0 else '#FF9800'}),
+                
+                # Account info
+                html.Div([
+                    html.Span("Buying Power: ", style={'color': '#9ca3af'}),
+                    html.Span(f"${buying_power:,.2f}", style={'color': '#4caf50', 'fontWeight': 'bold'}),
+                    html.Span(f" | Est. Cost: ", style={'color': '#9ca3af', 'marginLeft': '15px'}),
+                    html.Span(f"${abs(total_cost):,.2f}", 
+                             style={'color': '#f44336' if total_cost > 0 else '#4caf50', 'fontWeight': 'bold'})
+                ], style={'marginBottom': '15px', 'fontSize': '13px'}),
+                
+                # Order details
+                html.Div([
+                    html.Div([
+                        html.Span(f"{o['side']} ", style={'color': '#4caf50' if o['side'] == 'BUY' else '#f44336'}),
+                        html.Span(f"{o['qty']}x {o['symbol']}", style={'color': '#e0e0e0'}),
+                        html.Span(f" → {o['status']}", style={
+                            'color': '#4caf50' if o['status'] in ['accepted', 'filled', 'new'] else '#f44336',
+                            'marginLeft': '10px'
+                        })
+                    ], style={'marginBottom': '5px', 'fontSize': '12px'})
+                    for o in executed_orders
+                ], style={'backgroundColor': '#262a3d', 'padding': '10px', 'borderRadius': '5px'})
+                
+            ], style={'padding': '15px', 'backgroundColor': '#1a1a2e', 'borderRadius': '8px', 'marginTop': '10px'})
+            
+        except ImportError as e:
+            return html.Div([
+                html.Div("❌ Alpaca SDK not installed", style={'color': '#f44336', 'fontWeight': 'bold'}),
+                html.Div("Run: pip install alpaca-py", 
+                        style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '5px'}),
+                html.Div(f"Error: {str(e)}", style={'color': '#666', 'fontSize': '11px', 'marginTop': '5px'})
+            ], style={'padding': '15px', 'backgroundColor': '#1a1a2e', 'borderRadius': '8px'})
+            
+        except Exception as e:
+            logger.error(f"Strategy execution error: {e}")
+            return html.Div([
+                html.Div("❌ Execution Error", style={'color': '#f44336', 'fontWeight': 'bold'}),
+                html.Div(f"{str(e)}", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '5px'})
+            ], style={'padding': '15px', 'backgroundColor': '#1a1a2e', 'borderRadius': '8px'})
     
     
     logger.info("✅ Enhanced callbacks registered successfully")

@@ -89,6 +89,9 @@ COLORS = {
     'lstm': '#06b6d4',
     'qlib': '#f97316',
     'neuralprophet': '#ec4899',
+    'nbeats': '#06b6d4',
+    'nhits': '#8b5cf6',
+    'neural_ensemble': '#10b981',
     'ensemble': '#10b981',
 }
 
@@ -302,6 +305,18 @@ def create_inputs_panel():
                             html.Span("●", style={'color': '#ec4899'}),
                             " NeuralProphet (Neural + Trend)"
                         ]), 'value': 'neuralprophet'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': '#06b6d4'}),
+                            " NBEATS (Neural Basis Expansion)"
+                        ]), 'value': 'nbeats'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': '#8b5cf6'}),
+                            " NHITS (Neural Hierarchical)"
+                        ]), 'value': 'nhits'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': '#10b981'}),
+                            " Neural Ensemble (NBEATS + NHITS)"
+                        ]), 'value': 'neural_ensemble'},
                         {'label': html.Span([
                             html.Span("●", style={'color': COLORS['ensemble']}),
                             " Ensemble (All Models)"
@@ -988,6 +1003,122 @@ def register_callbacks(app, SH=None):
                         logger.error(f"NeuralProphet error: {e}")
                         model_errors['neuralprophet'] = str(e)
                 
+                # Phase 4: NBEATS and NHITS Neural Forecasters
+                if ('nbeats' in (selected_models or []) or 'nhits' in (selected_models or []) or 
+                    'neural_ensemble' in (selected_models or [])):
+                    try:
+                        from .neural_engine import DeepForecaster, is_neural_available
+                        
+                        if is_neural_available():
+                            neural_forecaster = DeepForecaster()
+                            
+                            # NBEATS model
+                            if 'nbeats' in (selected_models or []) and 'nbeats' not in forecasts:
+                                try:
+                                    logger.info("Running NBEATS forecast...")
+                                    nbeats_result = neural_forecaster.forecast_nbeats(
+                                        df=hist,
+                                        ticker=ticker,
+                                        horizon=horizon,
+                                        confidence_levels=[int(x) for x in (selected_intervals or ['80', '95'])]
+                                    )
+                                    
+                                    # Convert to standard forecast format
+                                    forecast_vals = nbeats_result['predictions']
+                                    intervals = nbeats_result['intervals']
+                                    
+                                    forecasts['nbeats'] = {
+                                        'forecast': forecast_vals,
+                                        'lower_50': intervals.get('50_lower', forecast_vals),
+                                        'upper_50': intervals.get('50_upper', forecast_vals),
+                                        'lower_80': intervals.get('80_lower', forecast_vals),
+                                        'upper_80': intervals.get('80_upper', forecast_vals),
+                                        'lower_95': intervals.get('95_lower', forecast_vals),
+                                        'upper_95': intervals.get('95_upper', forecast_vals),
+                                    }
+                                    inference_sources['nbeats'] = 'neural_nbeats'
+                                    logger.info(f"✅ NBEATS forecast complete (RMSE: {nbeats_result['metrics']['rmse']:.2f})")
+                                except Exception as e:
+                                    logger.error(f"NBEATS error: {e}")
+                                    model_errors['nbeats'] = str(e)
+                            
+                            # NHITS model
+                            if 'nhits' in (selected_models or []) and 'nhits' not in forecasts:
+                                try:
+                                    logger.info("Running NHITS forecast...")
+                                    nhits_result = neural_forecaster.forecast_nhits(
+                                        df=hist,
+                                        ticker=ticker,
+                                        horizon=horizon,
+                                        confidence_levels=[int(x) for x in (selected_intervals or ['80', '95'])]
+                                    )
+                                    
+                                    forecast_vals = nhits_result['predictions']
+                                    intervals = nhits_result['intervals']
+                                    
+                                    forecasts['nhits'] = {
+                                        'forecast': forecast_vals,
+                                        'lower_50': intervals.get('50_lower', forecast_vals),
+                                        'upper_50': intervals.get('50_upper', forecast_vals),
+                                        'lower_80': intervals.get('80_lower', forecast_vals),
+                                        'upper_80': intervals.get('80_upper', forecast_vals),
+                                        'lower_95': intervals.get('95_lower', forecast_vals),
+                                        'upper_95': intervals.get('95_upper', forecast_vals),
+                                    }
+                                    inference_sources['nhits'] = 'neural_nhits'
+                                    logger.info(f"✅ NHITS forecast complete (RMSE: {nhits_result['metrics']['rmse']:.2f})")
+                                except Exception as e:
+                                    logger.error(f"NHITS error: {e}")
+                                    model_errors['nhits'] = str(e)
+                            
+                            # Neural Ensemble (NBEATS + NHITS)
+                            if 'neural_ensemble' in (selected_models or []) and 'neural_ensemble' not in forecasts:
+                                try:
+                                    logger.info("Running Neural Ensemble forecast...")
+                                    ensemble_result = neural_forecaster.forecast_ensemble(
+                                        df=hist,
+                                        ticker=ticker,
+                                        horizon=horizon,
+                                        confidence_levels=[int(x) for x in (selected_intervals or ['80', '95'])]
+                                    )
+                                    
+                                    forecast_vals = ensemble_result['predictions']
+                                    intervals = ensemble_result['intervals']
+                                    
+                                    forecasts['neural_ensemble'] = {
+                                        'forecast': forecast_vals,
+                                        'lower_50': intervals.get('50_lower', forecast_vals),
+                                        'upper_50': intervals.get('50_upper', forecast_vals),
+                                        'lower_80': intervals.get('80_lower', forecast_vals),
+                                        'upper_80': intervals.get('80_upper', forecast_vals),
+                                        'lower_95': intervals.get('95_lower', forecast_vals),
+                                        'upper_95': intervals.get('95_upper', forecast_vals),
+                                    }
+                                    inference_sources['neural_ensemble'] = 'neural_ensemble_nbeats_nhits'
+                                    logger.info(f"✅ Neural Ensemble forecast complete (RMSE: {ensemble_result['metrics']['rmse']:.2f})")
+                                except Exception as e:
+                                    logger.error(f"Neural Ensemble error: {e}")
+                                    model_errors['neural_ensemble'] = str(e)
+                        else:
+                            logger.warning("NeuralForecast not available")
+                            if 'nbeats' in (selected_models or []):
+                                model_errors['nbeats'] = 'NeuralForecast not installed'
+                            if 'nhits' in (selected_models or []):
+                                model_errors['nhits'] = 'NeuralForecast not installed'
+                            if 'neural_ensemble' in (selected_models or []):
+                                model_errors['neural_ensemble'] = 'NeuralForecast not installed'
+                    except ImportError as e:
+                        logger.error(f"Neural forecaster import error: {e}")
+                        if 'nbeats' in (selected_models or []):
+                            model_errors['nbeats'] = 'Module not available'
+                        if 'nhits' in (selected_models or []):
+                            model_errors['nhits'] = 'Module not available'
+                        if 'neural_ensemble' in (selected_models or []):
+                            model_errors['neural_ensemble'] = 'Module not available'
+                    except Exception as e:
+                        logger.error(f"Neural forecaster error: {e}")
+                        model_errors['neural_models'] = str(e)
+                
                 if 'ensemble' in (selected_models or []) and 'ensemble' not in forecasts:
                     try:
                         ensemble = EnsembleForecaster()
@@ -1512,6 +1643,9 @@ def create_metrics_display(
             'lstm': COLORS['lstm'],
             'qlib': COLORS['qlib'],
             'neuralprophet': COLORS['neuralprophet'],
+            'nbeats': COLORS['nbeats'],
+            'nhits': COLORS['nhits'],
+            'neural_ensemble': COLORS['neural_ensemble'],
             'ensemble': COLORS['ensemble'],
             'statistical': '#9ca3af'
         }

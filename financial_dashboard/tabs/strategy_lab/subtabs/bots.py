@@ -1,12 +1,21 @@
 """
 Strategy Lab - Trading Bots Subtab
 Live trading bot management and automation
+
+Features:
+- AlphaBot: RSI/MACD strategy with real-time signals
+- Alpaca Paper Trading integration
+- Live price and account monitoring
+- Trade execution logging
 """
 
 import dash_bootstrap_components as dbc
 from dash import html, dcc, Input, Output, State, callback_context
 import plotly.graph_objects as go
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Import bot engine components
 try:
@@ -18,12 +27,122 @@ except ImportError:
     BOT_ENGINE_AVAILABLE = False
 
 
+def create_connection_status_panel() -> dbc.Card:
+    """Create Alpaca connection status panel with account info."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.Div([
+                html.I(className="fas fa-plug me-2"),
+                html.Strong("Broker Connection"),
+            ], className="d-flex align-items-center")
+        ], style={'backgroundColor': 'rgba(40, 167, 69, 0.15)'}),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.Small("Status", className="text-muted d-block"),
+                        html.Div(id="bot-connection-status", children=[
+                            dbc.Spinner(size="sm", color="primary"),
+                            html.Span(" Checking...", className="ms-2")
+                        ])
+                    ])
+                ], width=3),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Account Type", className="text-muted d-block"),
+                        html.Span(id="bot-account-type", children="--", className="fw-bold")
+                    ])
+                ], width=3),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Buying Power", className="text-muted d-block"),
+                        html.Span(id="bot-buying-power", children="$--", className="fw-bold text-success")
+                    ])
+                ], width=3),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Portfolio Value", className="text-muted d-block"),
+                        html.Span(id="bot-portfolio-value", children="$--", className="fw-bold")
+                    ])
+                ], width=3),
+            ]),
+            # Refresh button
+            dbc.Button([
+                html.I(className="fas fa-sync-alt me-1"),
+                "Refresh"
+            ], id="bot-refresh-connection", color="outline-secondary", size="sm", className="mt-2")
+        ], className="py-2")
+    ], className="mb-3", style={'border': '1px solid rgba(40, 167, 69, 0.3)'})
+
+
+def create_live_price_panel() -> dbc.Card:
+    """Create live price and indicator panel."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.Div([
+                html.I(className="fas fa-chart-line me-2"),
+                html.Strong("Live Market Data"),
+                dbc.Badge("REAL-TIME", color="success", className="ms-auto", pill=True)
+            ], className="d-flex align-items-center")
+        ], style={'backgroundColor': 'rgba(0, 123, 255, 0.1)'}),
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.Small("Symbol", className="text-muted d-block"),
+                        html.Span(id="live-ticker-display", children="AAPL", className="fs-4 fw-bold")
+                    ])
+                ], width=2),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Last Price", className="text-muted d-block"),
+                        html.Span(id="live-price-display", children="$--", className="fs-4 fw-bold text-info")
+                    ])
+                ], width=2),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Change", className="text-muted d-block"),
+                        html.Span(id="live-change-display", children="--", className="fs-5 fw-bold")
+                    ])
+                ], width=2),
+                dbc.Col([
+                    html.Div([
+                        html.Small("RSI (14)", className="text-muted d-block"),
+                        html.Div([
+                            html.Span(id="live-rsi-value", children="--", className="fs-4 fw-bold"),
+                            html.Span(id="live-rsi-signal", className="ms-2")
+                        ])
+                    ])
+                ], width=2),
+                dbc.Col([
+                    html.Div([
+                        html.Small("MACD", className="text-muted d-block"),
+                        html.Span(id="live-macd-value", children="--", className="fs-5 fw-bold")
+                    ])
+                ], width=2),
+                dbc.Col([
+                    html.Div([
+                        html.Small("Volume", className="text-muted d-block"),
+                        html.Span(id="live-volume-display", children="--", className="fs-5")
+                    ])
+                ], width=2),
+            ]),
+            # RSI Gauge
+            dcc.Graph(
+                id="rsi-gauge-chart",
+                config={'displayModeBar': False},
+                style={'height': '120px', 'marginTop': '10px'}
+            )
+        ])
+    ], className="mb-3", style={'border': '1px solid rgba(0, 123, 255, 0.3)'})
+
+
 def create_alphabot_control_panel() -> dbc.Card:
     """
-    Create AlphaBot Control Panel - RSI Strategy Bot with AlphaVantage + Alpaca.
+    Create AlphaBot Control Panel - RSI Strategy Bot with Alpaca.
     
     Features:
-    - Single ticker RSI-based trading
+    - Single ticker RSI/MACD-based trading
     - Paper trading mode (Alpaca)
     - Real-time signal display
     - Trade log viewer
@@ -31,168 +150,307 @@ def create_alphabot_control_panel() -> dbc.Card:
     return dbc.Card([
         dbc.CardHeader([
             html.Div([
-                html.Span("🤖", className="me-2"),
-                html.Strong("AlphaBot Control Panel"),
-                dbc.Badge(
-                    "PAPER MODE",
-                    color="warning",
-                    className="ms-auto"
-                )
+                html.Span("🤖", className="me-2 fs-5"),
+                html.Strong("AlphaBot Trading Engine", className="fs-5"),
+                html.Div([
+                    dbc.Badge("PAPER", color="warning", className="me-1"),
+                    dbc.Badge("yfinance", color="info", pill=True),
+                ], className="ms-auto")
             ], className="d-flex align-items-center")
         ], style={'backgroundColor': 'rgba(249, 115, 22, 0.2)', 'borderBottom': '2px solid #f97316'}),
         dbc.CardBody([
-            # Status Row
+            # Top Status Row - Live Metrics
             dbc.Row([
                 dbc.Col([
-                    html.Div([
-                        html.Small("Status", className="text-muted"),
-                        html.Div(id="alphabot-status", children=[
-                            dbc.Badge("STOPPED", color="secondary", className="fs-6")
-                        ])
-                    ])
-                ], width=4),
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Small("Bot Status", className="text-muted"),
+                            html.Div(id="alphabot-status", children=[
+                                dbc.Badge("STOPPED", color="secondary", className="fs-6")
+                            ], className="mt-1")
+                        ], className="text-center py-2")
+                    ], style={'backgroundColor': 'rgba(0,0,0,0.2)'})
+                ], width=3),
                 dbc.Col([
-                    html.Small("Last Signal", className="text-muted"),
-                    html.Div(id="alphabot-signal", children=[
-                        dbc.Badge("HOLD", color="info", className="fs-6")
-                    ])
-                ], width=4),
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Small("Signal", className="text-muted"),
+                            html.Div(id="alphabot-signal", children=[
+                                dbc.Badge("HOLD", color="info", className="fs-6")
+                            ], className="mt-1")
+                        ], className="text-center py-2")
+                    ], style={'backgroundColor': 'rgba(0,0,0,0.2)'})
+                ], width=3),
                 dbc.Col([
-                    html.Small("RSI Value", className="text-muted"),
-                    html.Div(id="alphabot-rsi", children=[
-                        html.Span("--", className="fs-5 fw-bold text-warning")
-                    ])
-                ], width=4),
-            ], className="mb-3 text-center"),
-            
-            html.Hr(),
-            
-            # Configuration Row
-            dbc.Row([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Small("RSI", className="text-muted"),
+                            html.Div(id="alphabot-rsi", children=[
+                                html.Span("--", className="fs-4 fw-bold text-warning")
+                            ], className="mt-1")
+                        ], className="text-center py-2")
+                    ], style={'backgroundColor': 'rgba(0,0,0,0.2)'})
+                ], width=3),
                 dbc.Col([
-                    dbc.Label("Ticker", className="fw-bold"),
-                    dbc.Input(
-                        id="alphabot-ticker",
-                        type="text",
-                        value="AAPL",
-                        placeholder="AAPL",
-                        className="text-uppercase"
-                    )
-                ], width=4),
-                dbc.Col([
-                    dbc.Label("Strategy", className="fw-bold"),
-                    dcc.Dropdown(
-                        id="alphabot-strategy",
-                        options=[
-                            {'label': '📊 RSI (Oversold/Overbought)', 'value': 'rsi'},
-                            {'label': '📈 MACD (Trend Crossover)', 'value': 'macd'},
-                            {'label': '🔀 RSI + MACD Combined', 'value': 'rsi_macd'},
-                        ],
-                        value='rsi',
-                        clearable=False,
-                        style={'backgroundColor': '#2d2d2d'}
-                    )
-                ], width=4),
-                dbc.Col([
-                    dbc.Label("Quantity", className="fw-bold"),
-                    dbc.Input(
-                        id="alphabot-quantity",
-                        type="number",
-                        value=1,
-                        min=1,
-                        max=100
-                    )
-                ], width=4),
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Small("Trades Today", className="text-muted"),
+                            html.Div(id="alphabot-trade-count", children=[
+                                html.Span("0", className="fs-4 fw-bold text-info")
+                            ], className="mt-1")
+                        ], className="text-center py-2")
+                    ], style={'backgroundColor': 'rgba(0,0,0,0.2)'})
+                ], width=3),
             ], className="mb-3"),
             
-            # RSI Parameters
-            dbc.Row([
-                dbc.Col([
-                    dbc.Label("RSI Oversold (<)", className="small"),
-                    dbc.Input(
-                        id="alphabot-rsi-oversold",
-                        type="number",
-                        value=30,
-                        min=10,
-                        max=40
-                    )
-                ], width=4),
-                dbc.Col([
-                    dbc.Label("RSI Overbought (>)", className="small"),
-                    dbc.Input(
-                        id="alphabot-rsi-overbought",
-                        type="number",
-                        value=70,
-                        min=60,
-                        max=90
-                    )
-                ], width=4),
-                dbc.Col([
-                    dbc.Label("Tick Interval (s)", className="small"),
-                    dbc.Input(
-                        id="alphabot-interval",
-                        type="number",
-                        value=60,
-                        min=30,
-                        max=3600
-                    )
-                ], width=4),
-            ], className="mb-3"),
+            html.Hr(className="my-2"),
             
-            html.Hr(),
+            # Configuration Section
+            html.Div([
+                html.H6([
+                    html.I(className="fas fa-cog me-2"),
+                    "Bot Configuration"
+                ], className="text-muted mb-3"),
+                
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Label("Ticker Symbol", className="fw-bold small"),
+                        dbc.InputGroup([
+                            dbc.InputGroupText(html.I(className="fas fa-search")),
+                            dbc.Input(
+                                id="alphabot-ticker",
+                                type="text",
+                                value="AAPL",
+                                placeholder="Enter ticker...",
+                                className="text-uppercase",
+                                style={'textTransform': 'uppercase'}
+                            )
+                        ], size="sm")
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Label("Strategy", className="fw-bold small"),
+                        dcc.Dropdown(
+                            id="alphabot-strategy",
+                            options=[
+                                {'label': '📊 RSI Only', 'value': 'rsi'},
+                                {'label': '📈 MACD Only', 'value': 'macd'},
+                                {'label': '🔀 RSI + MACD', 'value': 'rsi_macd'},
+                            ],
+                            value='rsi',
+                            clearable=False,
+                            className="dash-dropdown-dark"
+                        )
+                    ], width=3),
+                    dbc.Col([
+                        dbc.Label("Shares per Trade", className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-quantity",
+                            type="number",
+                            value=1,
+                            min=1,
+                            max=100,
+                            size="sm"
+                        )
+                    ], width=2),
+                    dbc.Col([
+                        dbc.Label("Interval (sec)", className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-interval",
+                            type="number",
+                            value=60,
+                            min=30,
+                            max=3600,
+                            size="sm"
+                        )
+                    ], width=2),
+                    dbc.Col([
+                        dbc.Label("Max Daily Trades", className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-max-trades",
+                            type="number",
+                            value=10,
+                            min=1,
+                            max=100,
+                            size="sm"
+                        )
+                    ], width=2),
+                ], className="mb-2"),
+                
+                # RSI Thresholds with visual indicator
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Label([
+                            html.Span("RSI Oversold", className="me-2"),
+                            dbc.Badge("BUY", color="success", className="small")
+                        ], className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-rsi-oversold",
+                            type="number",
+                            value=30,
+                            min=10,
+                            max=40,
+                            size="sm"
+                        ),
+                        html.Small("Buy when RSI drops below this", className="text-muted")
+                    ], width=4),
+                    dbc.Col([
+                        dbc.Label([
+                            html.Span("RSI Overbought", className="me-2"),
+                            dbc.Badge("SELL", color="danger", className="small")
+                        ], className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-rsi-overbought",
+                            type="number",
+                            value=70,
+                            min=60,
+                            max=90,
+                            size="sm"
+                        ),
+                        html.Small("Sell when RSI rises above this", className="text-muted")
+                    ], width=4),
+                    dbc.Col([
+                        dbc.Label("Risk Per Trade ($)", className="fw-bold small"),
+                        dbc.Input(
+                            id="alphabot-risk-amount",
+                            type="number",
+                            value=100,
+                            min=10,
+                            max=10000,
+                            size="sm"
+                        ),
+                        html.Small("Max loss per position", className="text-muted")
+                    ], width=4),
+                ], className="mb-3"),
+            ]),
             
-            # Control Buttons
-            dbc.ButtonGroup([
-                dbc.Button([
-                    html.I(className="fas fa-play me-1"),
-                    "Start Bot"
-                ], id="alphabot-start-btn", color="success", className="me-2"),
-                dbc.Button([
-                    html.I(className="fas fa-stop me-1"),
-                    "Stop Bot"
-                ], id="alphabot-stop-btn", color="danger", outline=True, className="me-2"),
-                dbc.Button([
-                    html.I(className="fas fa-bolt me-1"),
-                    "Run Once"
-                ], id="alphabot-tick-btn", color="info", outline=True),
+            html.Hr(className="my-2"),
+            
+            # Control Buttons - Larger and more prominent
+            html.Div([
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Button([
+                            html.I(className="fas fa-play me-2"),
+                            "Start Bot"
+                        ], id="alphabot-start-btn", color="success", size="lg", className="w-100")
+                    ], width=4),
+                    dbc.Col([
+                        dbc.Button([
+                            html.I(className="fas fa-stop me-2"),
+                            "Stop Bot"
+                        ], id="alphabot-stop-btn", color="danger", outline=True, size="lg", className="w-100")
+                    ], width=4),
+                    dbc.Col([
+                        dbc.Button([
+                            html.I(className="fas fa-bolt me-2"),
+                            "Run Single Tick"
+                        ], id="alphabot-tick-btn", color="info", outline=True, size="lg", className="w-100")
+                    ], width=4),
+                ])
             ], className="mb-3"),
             
             # Live Trade Log
             html.Div([
-                html.Small([
-                    html.I(className="fas fa-list me-1"),
-                    "Live Trade Log"
-                ], className="text-muted"),
+                html.Div([
+                    html.H6([
+                        html.I(className="fas fa-list-alt me-2"),
+                        "Activity Log"
+                    ], className="text-muted mb-0 d-inline"),
+                    dbc.Button([
+                        html.I(className="fas fa-trash-alt")
+                    ], id="alphabot-clear-log", color="link", size="sm", className="float-end text-muted")
+                ], className="mb-2"),
                 html.Div(
                     id="alphabot-trade-log",
                     children=[
-                        html.Div(
-                            "No trades yet. Start the bot to begin.",
-                            className="text-muted text-center py-3"
-                        )
+                        html.Div([
+                            html.I(className="fas fa-info-circle me-2 text-muted"),
+                            "Click 'Run Single Tick' to fetch current RSI and generate a signal."
+                        ], className="text-muted text-center py-4")
                     ],
                     style={
-                        'maxHeight': '150px',
+                        'maxHeight': '200px',
                         'overflowY': 'auto',
-                        'backgroundColor': 'rgba(0,0,0,0.3)',
-                        'padding': '10px',
-                        'borderRadius': '5px',
-                        'fontSize': '0.85rem'
+                        'backgroundColor': 'rgba(0,0,0,0.4)',
+                        'padding': '12px',
+                        'borderRadius': '8px',
+                        'fontSize': '0.85rem',
+                        'fontFamily': 'monospace'
                     }
                 )
             ]),
             
-            # Rate Limit Warning
+            # Data Source Info
             dbc.Alert([
-                html.I(className="fas fa-exclamation-triangle me-2"),
-                "Alpha Vantage: 5 calls/minute limit. Bot will auto-throttle."
-            ], color="warning", className="mt-3 mb-0 py-2 small"),
+                html.I(className="fas fa-database me-2"),
+                html.Strong("Data Source: "),
+                "yfinance (free, real-time delayed 15min). RSI/MACD calculated locally.",
+                html.Br(),
+                html.I(className="fas fa-paper-plane me-2 mt-1"),
+                html.Strong("Execution: "),
+                "Alpaca Paper Trading API (no real money at risk)"
+            ], color="info", className="mt-3 mb-0 py-2 small"),
         ])
     ], className="mb-3", style={
         'backgroundColor': 'rgba(249, 115, 22, 0.05)',
-        'border': '1px solid rgba(249, 115, 22, 0.3)'
+        'border': '1px solid rgba(249, 115, 22, 0.4)',
+        'borderRadius': '10px'
     })
 
+
+def create_strategy_guide_panel() -> dbc.Card:
+    """Create a strategy guide and help panel."""
+    return dbc.Card([
+        dbc.CardHeader([
+            html.Div([
+                html.I(className="fas fa-graduation-cap me-2"),
+                html.Strong("RSI Strategy Guide"),
+            ], className="d-flex align-items-center")
+        ]),
+        dbc.CardBody([
+            dbc.Accordion([
+                dbc.AccordionItem([
+                    html.P([
+                        html.Strong("RSI (Relative Strength Index)"),
+                        " measures momentum on a 0-100 scale."
+                    ]),
+                    html.Ul([
+                        html.Li([html.Strong("RSI < 30: "), "Oversold → Potential BUY signal"]),
+                        html.Li([html.Strong("RSI > 70: "), "Overbought → Potential SELL signal"]),
+                        html.Li([html.Strong("RSI 30-70: "), "Neutral zone → HOLD"]),
+                    ]),
+                    dbc.Alert([
+                        html.I(className="fas fa-lightbulb me-2"),
+                        "This is a mean-reversion strategy - it bets that extreme moves will reverse."
+                    ], color="warning", className="small mb-0")
+                ], title="How RSI Trading Works"),
+                
+                dbc.AccordionItem([
+                    html.Ol([
+                        html.Li("Set your ticker (e.g., AAPL, MSFT, SPY)"),
+                        html.Li("Adjust RSI thresholds (default: 30/70)"),
+                        html.Li("Set position size (shares per trade)"),
+                        html.Li("Click 'Run Single Tick' to test"),
+                        html.Li("Click 'Start Bot' for auto-trading"),
+                    ]),
+                    dbc.Alert([
+                        html.I(className="fas fa-shield-alt me-2"),
+                        "All trades execute in Alpaca PAPER mode - no real money!"
+                    ], color="success", className="small mb-0")
+                ], title="Quick Start"),
+                
+                dbc.AccordionItem([
+                    html.Ul([
+                        html.Li("Start with small position sizes (1-5 shares)"),
+                        html.Li("Use on liquid stocks (high volume)"),
+                        html.Li("Don't trade during major news events"),
+                        html.Li("Set a maximum daily trade limit"),
+                        html.Li("Monitor your paper P&L before going live"),
+                    ])
+                ], title="Best Practices"),
+            ], start_collapsed=True)
+        ])
+    ], className="mb-3")
 
 
 def create_bot_card(bot_id: str, bot_type: str, status: str, performance: dict = None) -> dbc.Card:
@@ -626,7 +884,7 @@ def create_bots_layout() -> html.Div:
                     html.I(className="fas fa-robot me-2"),
                     "Trading Bots"
                 ], className="mb-0"),
-                html.Small("Automated trading strategies powered by Alpaca", className="text-muted")
+                html.Small("Automated trading strategies powered by Alpaca Paper Trading", className="text-muted")
             ], width=8),
             dbc.Col([
                 dbc.ButtonGroup([
@@ -646,14 +904,23 @@ def create_bots_layout() -> html.Div:
             ], width=4, className="text-end"),
         ], className="mb-4"),
         
+        # Connection Status Panel - Shows Alpaca connection state
+        create_connection_status_panel(),
+        
+        # Live Price Panel - Shows real-time data
+        create_live_price_panel(),
+        
         # Quick Stats
         create_quick_stats(),
         
-        # AlphaBot Control Panel - NEW RSI Strategy Bot
+        # AlphaBot Control Panel - RSI Strategy Bot
         dbc.Row([
             dbc.Col([
                 create_alphabot_control_panel()
-            ], width=12),
+            ], width=8),
+            dbc.Col([
+                create_strategy_guide_panel()
+            ], width=4),
         ], className="mb-3"),
         
         # Main Content

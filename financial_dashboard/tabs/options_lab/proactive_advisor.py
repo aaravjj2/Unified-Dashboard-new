@@ -56,8 +56,8 @@ class ProactiveAdvisor:
         self.recommendations: List[ProactiveRecommendation] = []
         self._rec_counter = 0
         
-        # Watchlist for proactive monitoring
-        self.watchlist = ['SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'AMZN', 'META', 'GOOGL', 'MSFT']
+        # Watchlist for proactive monitoring - includes precious metals and major tech
+        self.watchlist = ['GLD', 'SLV', 'SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'AMZN', 'META', 'GOOGL', 'MSFT', 'AMD', 'AVGO']
         
         # Cache for market analysis
         self._market_cache = {}

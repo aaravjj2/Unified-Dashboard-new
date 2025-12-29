@@ -19,6 +19,25 @@ import requests
 
 # Setup paths FIRST before any local imports
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_FOR_ENV = os.path.dirname(APP_DIR)
+
+# Load environment variables from keys.env EARLY before any other code
+try:
+    from dotenv import load_dotenv
+    keys_env_path = os.path.join(PROJECT_ROOT_FOR_ENV, 'keys.env')
+    if os.path.exists(keys_env_path):
+        load_dotenv(keys_env_path, override=True)
+        print(f"✅ Loaded environment from {keys_env_path}")
+    else:
+        # Try alternative locations
+        for alt_path in ['.env', 'doppler.env']:
+            alt_full = os.path.join(PROJECT_ROOT_FOR_ENV, alt_path)
+            if os.path.exists(alt_full):
+                load_dotenv(alt_full, override=True)
+                print(f"✅ Loaded environment from {alt_full}")
+                break
+except ImportError:
+    print("⚠️ python-dotenv not installed, skipping .env loading")
 if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 

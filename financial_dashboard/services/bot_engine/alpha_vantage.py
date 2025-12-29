@@ -413,6 +413,7 @@ class AlphaVantageClient:
             return {
                 'ticker': ticker,
                 'price': price,
+                'previous_close': price - (hash_val % 20 - 10) / 10,
                 'change': (hash_val % 20 - 10) / 10,
                 'change_percent': (hash_val % 100 - 50) / 100,
                 'volume': hash_val % 10000000,
@@ -425,10 +426,14 @@ class AlphaVantageClient:
             stock = yf.Ticker(ticker)
             info = stock.info
             
+            price = info.get('currentPrice', info.get('regularMarketPrice', 0))
+            prev_close = info.get('previousClose', info.get('regularMarketPreviousClose', price))
+            
             return {
                 'ticker': ticker,
-                'price': info.get('currentPrice', info.get('regularMarketPrice', 0)),
-                'change': info.get('regularMarketChange', 0),
+                'price': price,
+                'previous_close': prev_close,
+                'change': info.get('regularMarketChange', price - prev_close),
                 'change_percent': info.get('regularMarketChangePercent', 0),
                 'volume': info.get('regularMarketVolume', 0),
                 'timestamp': datetime.now().isoformat(),
@@ -442,6 +447,7 @@ class AlphaVantageClient:
             return {
                 'ticker': ticker,
                 'price': 100 + (hash_val % 400),
+                'previous_close': 100 + (hash_val % 400),
                 'error': str(e),
                 'source': 'fallback_mock'
             }

@@ -235,7 +235,10 @@ def create_strategy_builder() -> html.Div:
                            'fontSize': '14px',
                            'cursor': 'pointer'
                        })
-        ], style={'textAlign': 'center', 'marginTop': '15px'})
+        ], style={'textAlign': 'center', 'marginTop': '15px'}),
+        
+        # Execute strategy result output
+        html.Div(id='execute-strategy-result', style={'marginTop': '10px'})
         
     ], style={
         'backgroundColor': '#1e2130',

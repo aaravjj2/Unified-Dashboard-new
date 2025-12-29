@@ -783,9 +783,9 @@ class AutonomousMonitor:
         vix = market_data.get('vix', 20)
         regime = self.vol_tracker.update_regime(vix)
         
-        # 2. Check earnings
+        # 2. Check earnings - includes precious metals and major tech
         earnings = self.earnings_monitor.check_upcoming_earnings(
-            watchlist=['SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA'],
+            watchlist=['GLD', 'SLV', 'SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'MSFT', 'GOOGL', 'AMZN', 'META', 'AMD'],
             positions=positions
         )
         
