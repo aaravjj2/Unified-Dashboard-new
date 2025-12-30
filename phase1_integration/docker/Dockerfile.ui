@@ -1,0 +1,82 @@
+# ============================================================================
+# Multi-Stage Dockerfile for Alpaca Options Lab UI
+# Optimized for production with minimal image size
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Stage 1: Python Base with Dependencies
+# ----------------------------------------------------------------------------
+FROM python:3.10-slim AS python-base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ----------------------------------------------------------------------------
+# Stage 2: Dependency Builder
+# ----------------------------------------------------------------------------
+FROM python-base AS builder
+
+# Copy requirements
+COPY requirements.txt .
+
+# Create virtual environment and install dependencies
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt
+
+# ----------------------------------------------------------------------------
+# Stage 3: Production Runtime
+# ----------------------------------------------------------------------------
+FROM python:3.10-slim AS production
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    PORT=8050 \
+    HOST=0.0.0.0
+
+WORKDIR /app
+
+# Install minimal runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash appuser
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY financial_dashboard/ /app/financial_dashboard/
+COPY assets/ /app/assets/
+COPY signal_dashboard.py /app/
+
+# Set ownership
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+# Expose port
+EXPOSE 8050
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${PORT}/health || exit 1
+
+# Default command
+CMD ["python", "-m", "financial_dashboard.index"]

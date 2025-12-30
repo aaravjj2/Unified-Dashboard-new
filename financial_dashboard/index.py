@@ -19,6 +19,25 @@ import requests
 
 # Setup paths FIRST before any local imports
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_FOR_ENV = os.path.dirname(APP_DIR)
+
+# Load environment variables from keys.env EARLY before any other code
+try:
+    from dotenv import load_dotenv
+    keys_env_path = os.path.join(PROJECT_ROOT_FOR_ENV, 'keys.env')
+    if os.path.exists(keys_env_path):
+        load_dotenv(keys_env_path, override=True)
+        print(f"✅ Loaded environment from {keys_env_path}")
+    else:
+        # Try alternative locations
+        for alt_path in ['.env', 'doppler.env']:
+            alt_full = os.path.join(PROJECT_ROOT_FOR_ENV, alt_path)
+            if os.path.exists(alt_full):
+                load_dotenv(alt_full, override=True)
+                print(f"✅ Loaded environment from {alt_full}")
+                break
+except ImportError:
+    print("⚠️ python-dotenv not installed, skipping .env loading")
 if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 
@@ -231,6 +250,8 @@ TAB_CONFIG = [
     {'id': 'portfolio', 'name': 'Portfolio', 'module': 'tabs/portfolio_tracker_refactored.py'},
     # PHASE 0.8 EXPANSION - AGENT 1B: Options Lab (Lite) - Modular implementation
     {'id': 'options_lab', 'name': '💹 Options Lab', 'module': 'tabs/options_lab/__init__.py'},
+    # OPTIONS BOTS - Automated trading bots (OptionsAlpha style)
+    {'id': 'options_bots', 'name': '🤖 Options Bots', 'module': 'tabs/options_bots/__init__.py'},
     # PHASE 0.8 EXPANSION - AGENT 1B: Research Lab - 5 subtabs for research and analysis
     # Now uses research_lab_tab.py which checks USE_NEW_RESEARCH_LAB flag
     {'id': 'research_lab', 'name': '🔬 Research Lab', 'module': 'tabs/research_lab_tab.py'},
@@ -250,6 +271,7 @@ ENABLED_TABS = [
     'volatility_lab',
     'portfolio',
     'options_lab',
+    'options_bots',  # NEW: Automated options trading bots
     'quant_lab',  # PHASE 3: RL Trading, QLib Factors, Deep Hedging
 ]
 
@@ -260,7 +282,7 @@ for tab_config in TAB_CONFIG:
         module_path = os.path.join(APP_DIR, tab_config['module'])
         
         # Special handling for package modules (directories with __init__.py)
-        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'home_lab', 'command_center_pkg', 'quant_lab'):
+        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'home_lab', 'command_center_pkg', 'quant_lab', 'options_bots'):
             # Use importlib.import_module to avoid importing entire tabs package
             import importlib
             tab_mod = importlib.import_module(f"financial_dashboard.tabs.{tab_config['id']}")

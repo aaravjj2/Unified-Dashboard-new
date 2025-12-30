@@ -1,0 +1,129 @@
+// Signal Service Protocol Buffer Definition
+// For broadcasting trading signals between analysis and execution engines
+
+syntax = "proto3";
+
+package alpaca.signals;
+
+option python_package = "alpaca.grpc.signals";
+
+// -----------------------------------------------------------------------------
+// Signal Service
+// -----------------------------------------------------------------------------
+
+service SignalService {
+    // Publish a new signal
+    rpc PublishSignal(SignalRequest) returns (SignalResponse);
+    
+    // Subscribe to signals stream
+    rpc SubscribeSignals(SubscriptionRequest) returns (stream Signal);
+    
+    // Get recent signals
+    rpc GetRecentSignals(RecentSignalsRequest) returns (SignalsListResponse);
+    
+    // Get signal by ID
+    rpc GetSignal(GetSignalRequest) returns (Signal);
+    
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// -----------------------------------------------------------------------------
+// Messages
+// -----------------------------------------------------------------------------
+
+message Signal {
+    string id = 1;
+    string type = 2;                    // buy, sell, hold, hedge, close
+    string symbol = 3;
+    string strategy = 4;                // iron_condor, spread, straddle, etc.
+    double confidence = 5;              // 0.0 - 1.0
+    string source = 6;                  // lstm, xgb, ensemble, rule_based
+    string timestamp = 7;               // ISO format
+    SignalData data = 8;
+    map<string, string> metadata = 9;
+}
+
+message SignalData {
+    string direction = 1;               // bullish, bearish, neutral
+    double target_price = 2;
+    double stop_loss = 3;
+    double take_profit = 4;
+    int32 dte = 5;                      // Days to expiration
+    repeated Strike strikes = 6;
+    Greeks greeks = 7;
+    RiskMetrics risk = 8;
+}
+
+message Strike {
+    double strike_price = 1;
+    string option_type = 2;             // call, put
+    string side = 3;                    // buy, sell
+    int32 quantity = 4;
+    double premium = 5;
+}
+
+message Greeks {
+    double delta = 1;
+    double gamma = 2;
+    double theta = 3;
+    double vega = 4;
+    double rho = 5;
+    double iv = 6;
+}
+
+message RiskMetrics {
+    double max_loss = 1;
+    double max_profit = 2;
+    double breakeven_low = 3;
+    double breakeven_high = 4;
+    double pop = 5;                     // Probability of profit
+    double expected_value = 6;
+}
+
+// -----------------------------------------------------------------------------
+// Request/Response Messages
+// -----------------------------------------------------------------------------
+
+message SignalRequest {
+    Signal signal = 1;
+    bool broadcast = 2;                 // Also publish to pub/sub
+}
+
+message SignalResponse {
+    bool success = 1;
+    string signal_id = 2;
+    string error = 3;
+}
+
+message SubscriptionRequest {
+    repeated string symbols = 1;        // Empty = all symbols
+    repeated string strategies = 2;     // Empty = all strategies
+    repeated string sources = 3;        // Empty = all sources
+    double min_confidence = 4;          // Minimum confidence threshold
+}
+
+message RecentSignalsRequest {
+    int32 count = 1;
+    string symbol = 2;                  // Optional filter
+    string strategy = 3;                // Optional filter
+    string since = 4;                   // ISO timestamp
+}
+
+message SignalsListResponse {
+    repeated Signal signals = 1;
+    int32 total_count = 2;
+}
+
+message GetSignalRequest {
+    string signal_id = 1;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+    bool healthy = 1;
+    string status = 2;
+    int32 signals_today = 3;
+    double avg_latency_ms = 4;
+}

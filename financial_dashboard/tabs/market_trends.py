@@ -37,6 +37,13 @@ from financial_dashboard import _shared as SH
 from financial_dashboard.utils import market_trend as MT
 from financial_dashboard.utils.cache_manager import CacheManager
 from financial_dashboard.utils.news_manager import NewsManager
+
+# Phase 5: Regime Detection Engine
+try:
+    from financial_dashboard.tabs.market_trends.regime_engine import RegimeDetector, REGIME_LABELS, REGIME_COLORS
+    REGIME_ENGINE_AVAILABLE = True
+except ImportError as e:
+    REGIME_ENGINE_AVAILABLE = False
 try:
     from financial_dashboard.serving.serving_client import ServingClient
     _SC = ServingClient()
@@ -49,6 +56,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
+
+# Log regime engine status after logger is defined
+if REGIME_ENGINE_AVAILABLE:
+    logger.info("✅ Regime Detection Engine loaded (Phase 5)")
 
 # Finnhub client for sector and market cap data
 try:
@@ -1887,7 +1898,129 @@ def layout():
                         ])
                     ], width=9)
                 ], className="mt-3")
-            ])  # Close Screener Tab children list
+            ]),  # Close Screener Tab children list
+            
+            # Tab 3: Regime Monitor (Phase 5 - Market Intelligence)
+            dcc.Tab(label='🎯 Regime Monitor', value='regime-tab', children=[
+                dbc.Row([
+                    # Left Column - Controls
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.I(className="bi bi-cpu me-2"),
+                                "Regime Detection Settings"
+                            ]),
+                            dbc.CardBody([
+                                html.Label("Select Ticker", className="fw-bold", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.Dropdown(
+                                    id='regime-ticker-select',
+                                    options=[
+                                        {'label': 'NVDA', 'value': 'NVDA'},
+                                        {'label': 'AAPL', 'value': 'AAPL'},
+                                        {'label': 'MSFT', 'value': 'MSFT'},
+                                        {'label': 'GOOGL', 'value': 'GOOGL'},
+                                        {'label': 'META', 'value': 'META'},
+                                        {'label': 'AMZN', 'value': 'AMZN'},
+                                        {'label': 'TSLA', 'value': 'TSLA'},
+                                        {'label': 'SPY', 'value': 'SPY'},
+                                    ],
+                                    value='NVDA',
+                                    clearable=False,
+                                    style={'backgroundColor': 'rgba(0,0,0,0.3)'}
+                                ),
+                                
+                                html.Label("Detection Method", className="fw-bold mt-3", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.RadioItems(
+                                    id='regime-method-select',
+                                    options=[
+                                        {'label': ' HMM (Hidden Markov Model)', 'value': 'hmm'},
+                                        {'label': ' K-Means Clustering', 'value': 'kmeans'},
+                                    ],
+                                    value='hmm',
+                                    inline=False,
+                                    style={'color': '#e2e8f0'},
+                                    labelStyle={'display': 'block', 'marginBottom': '8px'}
+                                ),
+                                
+                                html.Label("Lookback Days", className="fw-bold mt-3", style={'fontSize': '13px', 'color': '#e2e8f0'}),
+                                dcc.Slider(
+                                    id='regime-lookback-slider',
+                                    min=30, max=365, step=30, value=252,
+                                    marks={
+                                        30: '30d',
+                                        90: '90d',
+                                        180: '6M',
+                                        252: '1Y',
+                                        365: '365d'
+                                    },
+                                    tooltip={"placement": "bottom", "always_visible": False}
+                                ),
+                                
+                                dbc.Button(
+                                    [html.I(className="bi bi-cpu me-2"), "Detect Regimes"],
+                                    id='regime-detect-btn',
+                                    color="primary",
+                                    className='mt-4 w-100',
+                                    style={'fontWeight': 'bold'}
+                                ),
+                            ])
+                        ], style={'backgroundColor': 'rgba(0,0,0,0.4)', 'border': '1px solid rgba(255,255,255,0.15)'}),
+                        
+                        # Current Regime Card
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.I(className="bi bi-activity me-2"),
+                                "Current Regime"
+                            ]),
+                            dbc.CardBody([
+                                html.Div(id='regime-current-display', children=[
+                                    html.P("Run detection to see current market regime", 
+                                           className="text-muted mb-0", style={'fontSize': '14px'})
+                                ])
+                            ])
+                        ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.4)', 'border': '1px solid rgba(255,255,255,0.15)'}),
+                        
+                    ], width=3),
+                    
+                    # Right Column - Results
+                    dbc.Col([
+                        # Regime Chart
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.I(className="bi bi-graph-up me-2"),
+                                "Regime Detection Results"
+                            ]),
+                            dbc.CardBody([
+                                dcc.Loading(
+                                    html.Div(id='regime-chart-container', children=[
+                                        html.Div([
+                                            html.I(className="bi bi-cpu text-muted", style={'fontSize': '64px'}),
+                                            html.H4("Regime Detection Ready", className="mt-4 text-muted"),
+                                            html.P("Select a ticker and method, then click 'Detect Regimes' to analyze market conditions.", 
+                                                   className="text-muted", style={'fontSize': '14px'})
+                                        ], style={'textAlign': 'center', 'padding': '80px 40px'})
+                                    ]),
+                                    type='circle'
+                                )
+                            ])
+                        ], style={'backgroundColor': 'rgba(0,0,0,0.4)', 'border': '1px solid rgba(255,255,255,0.15)'}),
+                        
+                        # Regime Statistics
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.I(className="bi bi-bar-chart me-2"),
+                                "Regime Statistics"
+                            ]),
+                            dbc.CardBody([
+                                html.Div(id='regime-stats-container', children=[
+                                    html.P("Statistics will appear after detection", 
+                                           className="text-muted mb-0", style={'fontSize': '14px', 'textAlign': 'center'})
+                                ])
+                            ])
+                        ], className="mt-3", style={'backgroundColor': 'rgba(0,0,0,0.4)', 'border': '1px solid rgba(255,255,255,0.15)'}),
+                    ], width=9)
+                ], className="mt-3")
+            ])  # Close Regime Monitor Tab
         ]),  # Close dcc.Tabs children list
         
         # Hidden stores: trends-results-store is centralized in `layout_placeholders.py`.
@@ -2476,6 +2609,145 @@ def register_callbacks(app):
                 f"❌ Error: {str(e)[:200]}",
                 style={'color': '#ef4444', 'padding': '20px'}
             ), "❌ Screening failed"
+    
+    # ====================================================================
+    # CALLBACK: Regime Detection (Phase 5 - Market Intelligence)
+    # ====================================================================
+    @app.callback(
+        Output('regime-chart-container', 'children'),
+        Output('regime-current-display', 'children'),
+        Output('regime-stats-container', 'children'),
+        Input('regime-detect-btn', 'n_clicks'),
+        State('regime-ticker-select', 'value'),
+        State('regime-method-select', 'value'),
+        State('regime-lookback-slider', 'value'),
+        prevent_initial_call=True
+    )
+    def detect_market_regimes(n_clicks, ticker, method, lookback_days):
+        """Detect market regimes using HMM or K-Means clustering."""
+        logger.info(f"🎯 REGIME DETECTION CALLBACK: ticker={ticker}, method={method}, lookback={lookback_days}")
+        
+        if not n_clicks or not ticker:
+            raise PreventUpdate
+        
+        # Check if regime engine is available
+        if not REGIME_ENGINE_AVAILABLE:
+            error_msg = html.Div([
+                html.I(className="bi bi-exclamation-triangle text-warning", style={'fontSize': '48px'}),
+                html.H5("Regime Engine Not Available", className="mt-3 text-warning"),
+                html.P("Install hmmlearn: pip install hmmlearn", className="text-muted")
+            ], style={'textAlign': 'center', 'padding': '40px'})
+            return error_msg, "❌ Engine not available", "N/A"
+        
+        try:
+            # Initialize detector
+            detector = RegimeDetector(n_regimes=3, method=method)
+            
+            # Detect regimes
+            result = detector.detect_regimes(ticker, lookback_days=lookback_days)
+            
+            if result is None:
+                error_ui = html.Div([
+                    html.I(className="bi bi-x-circle text-danger", style={'fontSize': '48px'}),
+                    html.H5(f"No data for {ticker}", className="mt-3 text-danger"),
+                    html.P("Unable to fetch price data. Try another ticker.", className="text-muted")
+                ], style={'textAlign': 'center', 'padding': '40px'})
+                return error_ui, "❌ No data", "N/A"
+            
+            # Create regime chart
+            df = result['data']
+            current_regime = result['current_regime']
+            regime_probs = result.get('regime_probabilities', {})
+            
+            # Build chart
+            fig = go.Figure()
+            
+            # Add price line
+            fig.add_trace(go.Scatter(
+                x=df['Date'] if 'Date' in df.columns else df.index,
+                y=df['Close'],
+                mode='lines',
+                name='Price',
+                line=dict(color='#60a5fa', width=2)
+            ))
+            
+            # Color regions by regime
+            regimes = df['regime'].values
+            dates = df['Date'].values if 'Date' in df.columns else df.index.values
+            
+            # Add colored background for each regime period
+            for i in range(len(regimes)):
+                regime = int(regimes[i])
+                color = REGIME_COLORS.get(regime, 'gray')
+                if i > 0:
+                    fig.add_vrect(
+                        x0=dates[i-1], x1=dates[i],
+                        fillcolor=color, opacity=0.15,
+                        layer="below", line_width=0
+                    )
+            
+            # Update layout
+            fig.update_layout(
+                title=dict(text=f"{ticker} Regime Detection ({method.upper()})", font=dict(color='white', size=16)),
+                xaxis=dict(title='Date', gridcolor='rgba(255,255,255,0.1)', color='white'),
+                yaxis=dict(title='Price ($)', gridcolor='rgba(255,255,255,0.1)', color='white'),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0.2)',
+                legend=dict(font=dict(color='white')),
+                height=400,
+                margin=dict(l=50, r=20, t=50, b=50)
+            )
+            
+            chart_ui = dcc.Graph(figure=fig, config={'displayModeBar': False})
+            
+            # Current regime display
+            regime_label = REGIME_LABELS.get(current_regime, 'Unknown')
+            regime_color = REGIME_COLORS.get(current_regime, 'gray')
+            
+            current_ui = html.Div([
+                html.Div([
+                    html.Span("●", style={'color': regime_color, 'fontSize': '24px', 'marginRight': '10px'}),
+                    html.Span(regime_label, style={'fontSize': '18px', 'fontWeight': 'bold', 'color': regime_color})
+                ]),
+                html.Hr(style={'borderColor': 'rgba(255,255,255,0.1)', 'margin': '12px 0'}),
+                html.Div([
+                    html.Small("Confidence: ", style={'color': '#94a3b8'}),
+                    html.Small(f"{regime_probs.get(current_regime, 0.0)*100:.1f}%", 
+                              style={'color': regime_color, 'fontWeight': 'bold'})
+                ]) if regime_probs else html.Div()
+            ])
+            
+            # Regime statistics
+            regime_counts = df['regime'].value_counts().sort_index()
+            stats_children = []
+            for regime_id in range(3):
+                count = regime_counts.get(regime_id, 0)
+                pct = (count / len(df)) * 100 if len(df) > 0 else 0
+                label = REGIME_LABELS.get(regime_id, f'Regime {regime_id}')
+                color = REGIME_COLORS.get(regime_id, 'gray')
+                
+                stats_children.append(
+                    dbc.Row([
+                        dbc.Col(html.Span("●", style={'color': color, 'fontSize': '16px'}), width=1),
+                        dbc.Col(html.Span(label, style={'color': '#e2e8f0', 'fontSize': '13px'}), width=6),
+                        dbc.Col(html.Span(f"{pct:.1f}%", style={'color': color, 'fontWeight': 'bold', 'fontSize': '13px'}), width=3),
+                        dbc.Col(html.Span(f"({count}d)", style={'color': '#94a3b8', 'fontSize': '12px'}), width=2),
+                    ], className="mb-2")
+                )
+            
+            stats_ui = html.Div(stats_children)
+            
+            logger.info(f"✅ Regime detection complete: {ticker} is in {regime_label}")
+            return chart_ui, current_ui, stats_ui
+            
+        except Exception as e:
+            logger.error(f"Regime detection error: {e}", exc_info=True)
+            error_ui = html.Div([
+                html.I(className="bi bi-exclamation-triangle text-danger", style={'fontSize': '48px'}),
+                html.H5("Detection Error", className="mt-3 text-danger"),
+                html.P(str(e)[:200], className="text-muted", style={'fontSize': '12px'})
+            ], style={'textAlign': 'center', 'padding': '40px'})
+            return error_ui, "❌ Error", "N/A"
     
     logger.info("✅ Market Trends callbacks registered successfully!")
 

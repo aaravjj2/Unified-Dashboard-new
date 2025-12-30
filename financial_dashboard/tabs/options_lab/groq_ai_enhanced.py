@@ -876,7 +876,8 @@ class UnifiedGroqAI:
         """Get proactive insights."""
         market_data = {'vix': 20, 'spy_change_pct': 0.5}
         positions = positions or []
-        watchlist = watchlist or ['SPY', 'QQQ', 'AAPL', 'NVDA']
+        # Default watchlist includes GLD, SLV, SPY and major tech stocks
+        watchlist = watchlist or ['GLD', 'SLV', 'SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'MSFT', 'GOOGL', 'AMZN', 'META']
         return self.proactive.generate_daily_insights(market_data, positions, watchlist)
     
     def chat(self, message: str, conversation_id: str = None) -> str:

@@ -16,6 +16,18 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 from enum import Enum
 from dataclasses import dataclass, field
+from pathlib import Path
+
+# Load environment variables from keys.env
+try:
+    from dotenv import load_dotenv
+    _project_root = Path(__file__).parent.parent.parent.parent
+    _keys_env = _project_root / 'keys.env'
+    if _keys_env.exists():
+        load_dotenv(_keys_env, override=True)
+        logging.getLogger(__name__).debug(f"Loaded keys from {_keys_env}")
+except ImportError:
+    pass
 
 # alpaca-py imports
 try:
@@ -137,13 +149,14 @@ class AlpacaBroker:
         Initialize Alpaca broker.
         
         Args:
-            api_key: Alpaca API key (env: ALPACA_API_KEY)
-            api_secret: Alpaca API secret (env: ALPACA_API_SECRET)
+            api_key: Alpaca API key (checks multiple env vars)
+            api_secret: Alpaca API secret (checks multiple env vars)
             paper: Force paper trading (default True)
             deterministic: Return mock data for testing
         """
-        self.api_key = api_key or os.environ.get('ALPACA_API_KEY', '')
-        self.api_secret = api_secret or os.environ.get('ALPACA_API_SECRET', '')
+        # Try multiple environment variable names for API key
+        self.api_key = api_key or self._get_api_key()
+        self.api_secret = api_secret or self._get_api_secret()
         
         # SAFETY: Check FORCE_PLACE_LIVE flag
         force_live = os.environ.get('FORCE_PLACE_LIVE', 'false').lower() == 'true'
@@ -173,13 +186,53 @@ class AlpacaBroker:
                     secret_key=self.api_secret,
                     paper=self.paper
                 )
-                logger.info(f"AlpacaBroker initialized (paper={self.paper})")
+                logger.info(f"✅ AlpacaBroker connected (paper={self.paper}, key={self.api_key[:8]}...)")
             except Exception as e:
                 logger.error(f"Failed to initialize Alpaca client: {e}")
                 self._client = None
         else:
-            mode = "deterministic" if self.deterministic else "no-credentials"
-            logger.info(f"AlpacaBroker in {mode} mode")
+            if self.deterministic:
+                logger.info("AlpacaBroker in deterministic (mock) mode")
+            elif not self.api_key:
+                logger.warning("AlpacaBroker: No API key found - orders will not execute")
+            else:
+                logger.info("AlpacaBroker in mock mode (alpaca-py not available)")
+    
+    @staticmethod
+    def _get_api_key() -> str:
+        """Get Alpaca API key from available environment variables."""
+        key_vars = [
+            'STRATEGY_LAB_ALPACA_KEY',  # Bot-specific key
+            'ALPACA_KEY_WEEKLY',         # Weekly trading key
+            'ALPACA_API_KEY',            # Standard name
+            'APCA_API_KEY_ID',           # Alternate name
+            'ALPACA2_KEY',               # Numbered keys
+            'ALPACA3_KEY',
+        ]
+        for var in key_vars:
+            key = os.environ.get(var, '')
+            if key:
+                logger.debug(f"Using Alpaca API key from {var}")
+                return key
+        return ''
+    
+    @staticmethod
+    def _get_api_secret() -> str:
+        """Get Alpaca API secret from available environment variables."""
+        secret_vars = [
+            'STRATEGY_LAB_ALPACA_SECRET',  # Bot-specific secret
+            'ALPACA_SECRET_WEEKLY',         # Weekly trading secret
+            'ALPACA_API_SECRET',            # Standard name
+            'APCA_API_SECRET_KEY',          # Alternate name
+            'ALPACA2_SECRET',               # Numbered secrets
+            'ALPACA3_SECRET',
+        ]
+        for var in secret_vars:
+            secret = os.environ.get(var, '')
+            if secret:
+                logger.debug(f"Using Alpaca API secret from {var}")
+                return secret
+        return ''
     
     @property
     def is_connected(self) -> bool:

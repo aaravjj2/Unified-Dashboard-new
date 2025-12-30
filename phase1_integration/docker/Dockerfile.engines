@@ -1,0 +1,106 @@
+# ============================================================================
+# Multi-Stage Dockerfile for Alpaca Options Lab Python Engines
+# Supports: AI/ML engines, analysis, trading, monitoring
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Stage 1: Base with common dependencies
+# ----------------------------------------------------------------------------
+FROM python:3.10-slim AS base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Install system dependencies for ML/data processing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    g++ \
+    libpq-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ----------------------------------------------------------------------------
+# Stage 2: Dependency Builder
+# ----------------------------------------------------------------------------
+FROM base AS builder
+
+# Copy requirements files
+COPY requirements.txt .
+COPY phase1_integration/requirements.engines.txt .
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    pip install -r requirements.engines.txt
+
+# ----------------------------------------------------------------------------
+# Stage 3: gRPC Builder
+# ----------------------------------------------------------------------------
+FROM builder AS grpc-builder
+
+# Install grpcio-tools for proto compilation
+RUN pip install grpcio-tools
+
+# Copy proto files
+COPY phase1_integration/grpc/protos/ /app/protos/
+
+# Generate Python code from protos
+RUN python -m grpc_tools.protoc \
+    -I/app/protos \
+    --python_out=/app/generated \
+    --grpc_python_out=/app/generated \
+    /app/protos/*.proto || mkdir -p /app/generated
+
+# ----------------------------------------------------------------------------
+# Stage 4: Production Runtime
+# ----------------------------------------------------------------------------
+FROM python:3.10-slim AS production
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    PYTHONPATH="/app:/app/generated"
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    libpq5 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash appuser
+
+# Copy virtual environment
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy generated gRPC code
+COPY --from=grpc-builder /app/generated /app/generated
+
+# Copy application code
+COPY financial_dashboard/engines/ /app/engines/
+COPY financial_dashboard/config/ /app/config/
+COPY phase1_integration/ /app/phase1/
+
+# Set ownership
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+# Default port for engines
+EXPOSE 50051
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD python -c "import grpc; print('healthy')" || exit 1
+
+# Default command (override in compose)
+CMD ["python", "-m", "phase1.grpc.services.signal_service"]

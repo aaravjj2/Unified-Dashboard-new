@@ -73,6 +73,24 @@ def _create_fingpt_panel_safe():
         ], className="bg-dark border-secondary")
 
 
+# Import NeuralForecast engine (Phase 4)
+try:
+    from financial_dashboard.tabs.market_forecast.neural_engine import DeepForecaster
+    NEURAL_FORECAST_AVAILABLE = True
+    logger.info("✅ NeuralForecast engine loaded (Phase 4)")
+except ImportError as e:
+    NEURAL_FORECAST_AVAILABLE = False
+    logger.warning(f"⚠️ NeuralForecast not available: {e}")
+
+# Phase 5: Sentiment Consensus Engine with FinBERT
+try:
+    from financial_dashboard.tabs.market_forecast.sentiment_engine import SentimentAnalyzer
+    SENTIMENT_ENGINE_AVAILABLE = True
+    logger.info("✅ Sentiment Consensus Engine loaded (Phase 5)")
+except ImportError as e:
+    SENTIMENT_ENGINE_AVAILABLE = False
+    logger.warning(f"⚠️ Sentiment engine not available: {e}")
+
 # Color scheme for dark theme
 COLORS = {
     'background': '#1a1a2e',
@@ -89,6 +107,9 @@ COLORS = {
     'lstm': '#06b6d4',
     'qlib': '#f97316',
     'neuralprophet': '#ec4899',
+    'nbeats': '#06b6d4',       # Phase 4: NBEATS
+    'nhits': '#8b5cf6',        # Phase 4: NHITS
+    'neural_ensemble': '#10b981',  # Phase 4: Neural Ensemble
     'ensemble': '#10b981',
 }
 
@@ -111,6 +132,11 @@ COMPONENT_IDS = {
     'loading': 'mf-loading-overlay',
     'price_info': 'mf-price-info',
     'sentiment_display': 'mf-sentiment-display',
+    # Phase 5: Enhanced sentiment consensus
+    'sentiment_distribution': 'mf-sentiment-distribution',
+    'sentiment_headlines': 'mf-sentiment-headlines',
+    'sentiment_collapse': 'mf-sentiment-collapse',
+    'toggle_headlines_btn': 'mf-toggle-headlines-btn',
 }
 
 
@@ -302,6 +328,19 @@ def create_inputs_panel():
                             html.Span("●", style={'color': '#ec4899'}),
                             " NeuralProphet (Neural + Trend)"
                         ]), 'value': 'neuralprophet'},
+                        # Phase 4: Neural Forecast Models
+                        {'label': html.Span([
+                            html.Span("●", style={'color': COLORS['nbeats']}),
+                            " NBEATS (Neural Basis Expansion)"
+                        ]), 'value': 'nbeats'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': COLORS['nhits']}),
+                            " NHITS (Neural Hierarchical)"
+                        ]), 'value': 'nhits'},
+                        {'label': html.Span([
+                            html.Span("●", style={'color': COLORS['neural_ensemble']}),
+                            " Neural Ensemble (NBEATS + NHITS)"
+                        ]), 'value': 'neural_ensemble'},
                         {'label': html.Span([
                             html.Span("●", style={'color': COLORS['ensemble']}),
                             " Ensemble (All Models)"
@@ -547,22 +586,40 @@ def _empty_chart(message: str, height: int = 500) -> go.Figure:
 
 
 def create_sentiment_panel():
-    """AI-powered sentiment analysis panel using FinBERT."""
+    """AI-powered sentiment analysis panel using FinBERT with consensus display (Phase 5)."""
     return dbc.Card([
         dbc.CardHeader([
             html.Div([
                 html.I(className="bi bi-robot", style={'color': COLORS['primary']}),
-                html.Span(" AI Sentiment Analysis", className="ms-2 fw-bold"),
-                dbc.Badge("FinBERT", color="info", className="ms-2", pill=True)
+                html.Span(" AI Sentiment Consensus", className="ms-2 fw-bold"),
+                dbc.Badge("FinBERT", color="info", className="ms-2", pill=True),
+                dbc.Badge("Phase 5", color="success", className="ms-1", pill=True, style={'fontSize': '0.65rem'})
             ])
         ], className="bg-dark border-secondary"),
         dbc.CardBody([
+            # Consensus summary section
             html.Div(id='mf-sentiment-display', children=[
                 html.Div([
                     html.I(className="bi bi-info-circle me-2 text-muted"),
                     html.Span("Run forecast to analyze market sentiment", className="text-muted small")
                 ])
-            ])
+            ]),
+            # Sentiment distribution bars
+            html.Div(id='mf-sentiment-distribution', className="mt-2"),
+            # Collapsible headline details
+            dbc.Collapse(
+                html.Div(id='mf-sentiment-headlines', className="mt-2", style={'maxHeight': '200px', 'overflowY': 'auto'}),
+                id='mf-sentiment-collapse',
+                is_open=False
+            ),
+            dbc.Button(
+                [html.I(className="bi bi-chevron-down me-1"), "Show Headlines"],
+                id='mf-toggle-headlines-btn',
+                size="sm",
+                color="link",
+                className="mt-2 p-0 text-muted",
+                style={'fontSize': '0.75rem'}
+            )
         ], className="bg-dark p-3")
     ], className="bg-dark border-secondary")
 
@@ -668,6 +725,8 @@ def register_callbacks(app, SH=None):
         Output(COMPONENT_IDS['scenario_apply_btn'], 'disabled'),
         Output(COMPONENT_IDS['price_info'], 'children'),
         Output(COMPONENT_IDS['sentiment_display'], 'children'),
+        Output(COMPONENT_IDS['sentiment_distribution'], 'children'),
+        Output(COMPONENT_IDS['sentiment_headlines'], 'children'),
         Input(COMPONENT_IDS['run_btn'], 'n_clicks'),
         State(COMPONENT_IDS['ticker_input'], 'value'),
         State(COMPONENT_IDS['horizon_select'], 'value'),
@@ -718,7 +777,7 @@ def register_callbacks(app, SH=None):
                     html.I(className="bi bi-exclamation-triangle me-2"),
                     f"No data available for {ticker}. Please check the ticker symbol."
                 ], color="danger", dismissable=True)
-                return None, _empty_chart(f"No data for {ticker}"), _empty_chart("No data", 280), [], status, True, "", sentiment_display
+                return None, _empty_chart(f"No data for {ticker}"), _empty_chart("No data", 280), [], status, True, "", sentiment_display, "", ""
             
             # Get current price info
             current_price = hist['Close'].iloc[-1]
@@ -999,6 +1058,67 @@ def register_callbacks(app, SH=None):
                         logger.error(f"Ensemble error: {e}")
                         model_errors['ensemble'] = str(e)
 
+            # ============ Phase 4: NeuralForecast Models (NBEATS, NHITS, Neural Ensemble) ============
+            if NEURAL_FORECAST_AVAILABLE:
+                # NBEATS - Neural Basis Expansion Analysis
+                if 'nbeats' in (selected_models or []) and 'nbeats' not in forecasts:
+                    try:
+                        forecaster = DeepForecaster(
+                            model_type='nbeats',
+                            horizon=horizon,
+                            deterministic=os.getenv('PHASE4_DETERMINISTIC', '0') == '1'
+                        )
+                        nbeats_result = forecaster.forecast(hist, ticker=ticker)
+                        
+                        if nbeats_result and 'forecast' in nbeats_result:
+                            forecasts['nbeats'] = nbeats_result
+                            inference_sources['nbeats'] = 'neuralforecast_nbeats'
+                            logger.info("✅ NBEATS forecast complete (Phase 4)")
+                    except Exception as e:
+                        logger.error(f"NBEATS error: {e}")
+                        model_errors['nbeats'] = str(e)
+                
+                # NHITS - Neural Hierarchical Interpolation
+                if 'nhits' in (selected_models or []) and 'nhits' not in forecasts:
+                    try:
+                        forecaster = DeepForecaster(
+                            model_type='nhits',
+                            horizon=horizon,
+                            deterministic=os.getenv('PHASE4_DETERMINISTIC', '0') == '1'
+                        )
+                        nhits_result = forecaster.forecast(hist, ticker=ticker)
+                        
+                        if nhits_result and 'forecast' in nhits_result:
+                            forecasts['nhits'] = nhits_result
+                            inference_sources['nhits'] = 'neuralforecast_nhits'
+                            logger.info("✅ NHITS forecast complete (Phase 4)")
+                    except Exception as e:
+                        logger.error(f"NHITS error: {e}")
+                        model_errors['nhits'] = str(e)
+                
+                # Neural Ensemble - Combined NBEATS + NHITS
+                if 'neural_ensemble' in (selected_models or []) and 'neural_ensemble' not in forecasts:
+                    try:
+                        forecaster = DeepForecaster(
+                            model_type='ensemble',
+                            horizon=horizon,
+                            deterministic=os.getenv('PHASE4_DETERMINISTIC', '0') == '1'
+                        )
+                        ensemble_result = forecaster.forecast(hist, ticker=ticker)
+                        
+                        if ensemble_result and 'forecast' in ensemble_result:
+                            forecasts['neural_ensemble'] = ensemble_result
+                            inference_sources['neural_ensemble'] = 'neuralforecast_ensemble'
+                            logger.info("✅ Neural Ensemble forecast complete (Phase 4)")
+                    except Exception as e:
+                        logger.error(f"Neural Ensemble error: {e}")
+                        model_errors['neural_ensemble'] = str(e)
+            else:
+                # Log warnings for neural models if requested but unavailable
+                for model in ['nbeats', 'nhits', 'neural_ensemble']:
+                    if model in (selected_models or []):
+                        model_errors[model] = "NeuralForecast not available"
+                        logger.warning(f"⚠️ {model} requested but NeuralForecast not installed")
             
             # Fallback: statistical forecast if no models succeeded
             if not forecasts:
@@ -1080,7 +1200,39 @@ def register_callbacks(app, SH=None):
                 f"Forecast generated for {ticker} • {len(forecasts)} model(s) • {horizon} days{source_info}{inference_info}"
             ], color="success", dismissable=True, duration=5000)
             
-            return store_data, main_fig, comparison_fig, metrics_children, status, False, price_info, sentiment_display
+            # Phase 5: Build enhanced sentiment with distribution bars and headlines
+            sentiment_distribution = ""
+            sentiment_headlines = ""
+            if sentiment_data and sentiment_data.get('sentiment_count', 0) > 0:
+                # Build distribution bars (pos/neg/neutral)
+                count = sentiment_data.get('sentiment_count', 0)
+                pos_count = sentiment_data.get('positive_count', count // 2)
+                neg_count = sentiment_data.get('negative_count', count // 4)
+                neu_count = count - pos_count - neg_count if count > 0 else 0
+                
+                pos_pct = (pos_count / count) * 100 if count > 0 else 33
+                neg_pct = (neg_count / count) * 100 if count > 0 else 33
+                neu_pct = (neu_count / count) * 100 if count > 0 else 34
+                
+                sentiment_distribution = html.Div([
+                    html.Div([
+                        html.Div(style={'width': f'{pos_pct}%', 'height': '8px', 'backgroundColor': '#10b981', 'borderRadius': '4px 0 0 4px'}),
+                        html.Div(style={'width': f'{neu_pct}%', 'height': '8px', 'backgroundColor': '#9ca3af'}),
+                        html.Div(style={'width': f'{neg_pct}%', 'height': '8px', 'backgroundColor': '#ef4444', 'borderRadius': '0 4px 4px 0'}),
+                    ], style={'display': 'flex', 'width': '100%', 'marginBottom': '4px'}),
+                    html.Div([
+                        html.Small(f"🟢 {pos_pct:.0f}%", className="me-2", style={'color': '#10b981'}),
+                        html.Small(f"⚪ {neu_pct:.0f}%", className="me-2", style={'color': '#9ca3af'}),
+                        html.Small(f"🔴 {neg_pct:.0f}%", style={'color': '#ef4444'}),
+                    ], style={'fontSize': '0.7rem'})
+                ])
+                
+                # Build headline details (placeholder - headlines come from news fetcher)
+                sentiment_headlines = html.Div([
+                    html.Small(f"Analyzed {count} recent headlines", className="text-muted")
+                ])
+            
+            return store_data, main_fig, comparison_fig, metrics_children, status, False, price_info, sentiment_display, sentiment_distribution, sentiment_headlines
             
         except Exception as e:
             logger.exception(f"Forecast error: {e}")
@@ -1092,7 +1244,7 @@ def register_callbacks(app, SH=None):
                 html.I(className="bi bi-x-circle me-2 text-danger"),
                 html.Span("Sentiment analysis unavailable", className="text-muted small")
             ])
-            return None, _empty_chart(f"Error: {str(e)}"), _empty_chart("Error", 280), [], status, True, "", error_sentiment
+            return None, _empty_chart(f"Error: {str(e)}"), _empty_chart("Error", 280), [], status, True, "", error_sentiment, "", ""
     
     @app.callback(
         Output(COMPONENT_IDS['scenario_chart'], 'figure'),
@@ -1147,6 +1299,23 @@ def register_callbacks(app, SH=None):
                 f"Scenario error: {str(e)}"
             ], color="danger", dismissable=True)
             return _empty_chart(f"Error: {str(e)}", 280), status
+    
+    # Phase 5: Toggle headline collapse
+    @app.callback(
+        Output(COMPONENT_IDS['sentiment_collapse'], 'is_open'),
+        Output(COMPONENT_IDS['toggle_headlines_btn'], 'children'),
+        Input(COMPONENT_IDS['toggle_headlines_btn'], 'n_clicks'),
+        State(COMPONENT_IDS['sentiment_collapse'], 'is_open'),
+        prevent_initial_call=True
+    )
+    def toggle_headline_collapse(n_clicks, is_open):
+        """Toggle sentiment headline details visibility."""
+        if n_clicks:
+            new_state = not is_open
+            icon = "bi-chevron-up" if new_state else "bi-chevron-down"
+            text = "Hide Headlines" if new_state else "Show Headlines"
+            return new_state, [html.I(className=f"bi {icon} me-1"), text]
+        return is_open, [html.I(className="bi bi-chevron-down me-1"), "Show Headlines"]
     
     logger.info("✅ Market Forecast callbacks registered")
 

@@ -801,6 +801,23 @@ def register_callbacks(app):
     callback_count += 1
     
     # ========================================================================
+    # CALLBACK 2.5: Toggle Nautilus Options (Phase 4)
+    # ========================================================================
+    @app.callback(
+        Output('sl-nautilus-options', 'style'),
+        Input('sl-engine-select', 'value'),
+        prevent_initial_call=False
+    )
+    def toggle_nautilus_options(engine_type):
+        """Show/hide Nautilus-specific options based on engine selection."""
+        if engine_type == 'nautilus':
+            return {'display': 'block'}
+        else:
+            return {'display': 'none'}
+    
+    callback_count += 1
+    
+    # ========================================================================
     # CALLBACK 3: Run Backtest
     # ========================================================================
     @app.callback(
@@ -819,12 +836,13 @@ def register_callbacks(app):
          State('sl-entry-condition', 'value'),
          State('sl-exit-condition', 'value'),
          State('sl-validation-status', 'data'),
-         State('sl-random-seed', 'value')],
+         State('sl-random-seed', 'value'),
+         State('sl-engine-select', 'value')],  # Phase 4: Engine selection
         prevent_initial_call=True
     )
     def run_backtest(n_clicks, strategy_type, tickers, start_date, end_date, 
                      initial_capital, tx_cost, slippage, position_size, max_positions,
-                     entry, exit, validation, random_seed):
+                     entry, exit, validation, random_seed, engine_type='vectorbt'):
         """Execute backtest simulation with deterministic reproducibility."""
         # Set random seed for reproducibility
         if random_seed is not None:
@@ -879,10 +897,111 @@ def register_callbacks(app):
             'position_size': position_size,
             'max_positions': max_positions,
             'entry_condition': entry,
-            'exit_condition': exit
+            'exit_condition': exit,
+            'engine': engine_type or 'vectorbt'
         }
         
-        # PHASE 18B: REAL BACKTEST with historical data simulation
+        # Phase 4: Nautilus Event-Driven Backtest
+        if engine_type == 'nautilus':
+            try:
+                from .nautilus_runner import EventDrivenBacktester, is_nautilus_available
+                
+                if not is_nautilus_available():
+                    alert = dbc.Alert([
+                        html.I(className="bi bi-exclamation-triangle me-2"),
+                        html.Strong("Nautilus Not Available"),
+                        html.P("NautilusTrader is not installed. Please install with: pip install nautilus_trader")
+                    ], color="warning")
+                    return alert, {}
+                
+                logger.info("🌊 Running Nautilus event-driven backtest...")
+                
+                # Parse tickers
+                ticker_list = [t.strip().upper() for t in tickers.split(',') if t.strip()]
+                if not ticker_list:
+                    raise ValueError("No valid tickers provided")
+                
+                # Use first ticker for simplicity (Nautilus is single-instrument focused)
+                ticker = ticker_list[0]
+                if len(ticker_list) > 1:
+                    logger.warning(f"Nautilus mode: Using only first ticker {ticker} (multi-asset not yet supported)")
+                
+                # Fetch data using yfinance
+                import yfinance as yf
+                df = yf.download(ticker, start=start_date, end=end_date, progress=False)
+                
+                if df.empty:
+                    raise ValueError(f"No data available for {ticker}")
+                
+                # Initialize Nautilus backtester
+                backtester = EventDrivenBacktester(
+                    venue="SIMULATED",
+                    initial_capital=initial_capital
+                )
+                
+                # Run backtest
+                result = backtester.run_backtest(
+                    df=df,
+                    ticker=ticker,
+                    start_date=pd.to_datetime(start_date),
+                    end_date=pd.to_datetime(end_date)
+                )
+                
+                if not result['success']:
+                    raise ValueError(result.get('error', 'Backtest failed'))
+                
+                # Convert Nautilus results to standard format
+                equity_curve = result['equity_curve']
+                metrics = result['metrics']
+                trade_log = result['trade_log']
+                
+                # Create benchmark (SPY)
+                spy_data = yf.download('SPY', start=start_date, end=end_date, progress=False)
+                spy_returns = spy_data['Close'].pct_change().dropna()
+                benchmark_equity = initial_capital * (1 + spy_returns).cumprod()
+                
+                # Build results dict
+                backtest_results = {
+                    'success': True,
+                    'engine': 'nautilus',
+                    'equity_curve': equity_curve.to_dict('records'),
+                    'benchmark': {
+                        'Date': benchmark_equity.index.tolist(),
+                        'Value': benchmark_equity.values.tolist()
+                    },
+                    'metrics': metrics,
+                    'trades': trade_log.to_dict('records'),
+                    'metadata': result['metadata']
+                }
+                
+                # Success alert
+                alert = dbc.Alert([
+                    html.I(className="bi bi-check-circle me-2"),
+                    html.Strong("✅ Nautilus Backtest Complete"),
+                    html.P(f"{len(trade_log)} fills executed, Final Value: ${metrics['final_value']:,.2f}",
+                           className="mb-0")
+                ], color="success")
+                
+                logger.info(f"✅ Nautilus backtest complete: CAGR={metrics['cagr']*100:.2f}%, Sharpe={metrics['sharpe_ratio']:.2f}")
+                
+                return alert, backtest_results
+                
+            except ImportError as e:
+                logger.error(f"Nautilus import error: {e}")
+                alert = dbc.Alert([
+                    html.I(className="bi bi-exclamation-triangle me-2"),
+                    f"Nautilus Import Error: {str(e)}"
+                ], color="danger")
+                return alert, {}
+            except Exception as e:
+                logger.error(f"Nautilus backtest error: {e}", exc_info=True)
+                alert = dbc.Alert([
+                    html.I(className="bi bi-exclamation-triangle me-2"),
+                    f"Nautilus Error: {str(e)}"
+                ], color="danger")
+                return alert, {}
+        
+        # PHASE 18B: REAL BACKTEST with historical data simulation (VectorBT mode)
         try:
             logger.info(f"🚀 Running REAL backtest for: {tickers}")
             
@@ -2450,10 +2569,215 @@ def register_callbacks(app):
     
     callback_count += 1
     
+    # ========================================================================
+    # CALLBACK 25: Alpaca Connection Status Refresh
+    # ========================================================================
+    @app.callback(
+        [Output('bot-connection-status', 'children'),
+         Output('bot-account-type', 'children'),
+         Output('bot-buying-power', 'children'),
+         Output('bot-portfolio-value', 'children')],
+        [Input('bot-refresh-connection', 'n_clicks'),
+         Input('bot-refresh-interval', 'n_intervals')],
+        prevent_initial_call=False
+    )
+    def refresh_connection_status(n_clicks, n_intervals):
+        """Refresh Alpaca broker connection status and account info."""
+        try:
+            from financial_dashboard.services.bot_engine import get_broker
+            
+            broker = get_broker()
+            
+            if broker.is_connected:
+                # Connected - get account info (returns dict)
+                account = broker.get_account_info()
+                buying_power = account.get('buying_power', 0)
+                portfolio_value = account.get('portfolio_value', 0)
+                
+                # Determine account type
+                account_type = "PAPER" if broker.paper else "LIVE"
+                type_color = "warning" if broker.paper else "danger"
+                
+                return (
+                    html.Div([
+                        html.I(className="fas fa-check-circle text-success me-2"),
+                        html.Strong("Connected", className="text-success")
+                    ]),
+                    dbc.Badge(account_type, color=type_color),
+                    f"${buying_power:,.2f}",
+                    f"${portfolio_value:,.2f}"
+                )
+            else:
+                return (
+                    html.Div([
+                        html.I(className="fas fa-times-circle text-danger me-2"),
+                        html.Strong("Disconnected", className="text-danger")
+                    ]),
+                    dbc.Badge("--", color="secondary"),
+                    "$--",
+                    "$--"
+                )
+        except Exception as e:
+            logger.error(f"Connection status error: {e}")
+            return (
+                html.Div([
+                    html.I(className="fas fa-exclamation-circle text-warning me-2"),
+                    html.Strong("Error", className="text-warning")
+                ]),
+                dbc.Badge("--", color="secondary"),
+                "$--",
+                "$--"
+            )
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 26: Live Price & RSI Display
+    # ========================================================================
+    @app.callback(
+        [Output('live-ticker-display', 'children'),
+         Output('live-price-display', 'children'),
+         Output('live-change-display', 'children'),
+         Output('live-rsi-value', 'children'),
+         Output('live-rsi-signal', 'children'),
+         Output('live-macd-value', 'children'),
+         Output('live-volume-display', 'children'),
+         Output('rsi-gauge-chart', 'figure')],
+        [Input('alphabot-ticker', 'value'),
+         Input('bot-refresh-interval', 'n_intervals')],
+        prevent_initial_call=False
+    )
+    def update_live_price(ticker, n_intervals):
+        """Update live price and indicator display."""
+        import plotly.graph_objects as go
+        
+        ticker = (ticker or 'AAPL').upper().strip()
+        
+        try:
+            from financial_dashboard.services.bot_engine import get_av_client
+            
+            av_client = get_av_client()
+            
+            # Get RSI data (includes price info)
+            rsi_data = av_client.get_rsi(ticker, time_period=14)
+            rsi_value = rsi_data.get('latest_value', 50)
+            
+            # Get quote data
+            quote_data = av_client.get_quote(ticker)
+            price = quote_data.get('price', 0)
+            prev_close = quote_data.get('previous_close', price)
+            change = price - prev_close
+            change_pct = (change / prev_close * 100) if prev_close else 0
+            volume = quote_data.get('volume', 0)
+            
+            # Get MACD
+            try:
+                macd_data = av_client.get_macd(ticker)
+                macd_value = macd_data.get('latest_value', 0)
+            except:
+                macd_value = 0
+            
+            # Determine RSI signal
+            if rsi_value < 30:
+                rsi_signal = dbc.Badge("OVERSOLD", color="success", className="small")
+            elif rsi_value > 70:
+                rsi_signal = dbc.Badge("OVERBOUGHT", color="danger", className="small")
+            else:
+                rsi_signal = dbc.Badge("NEUTRAL", color="secondary", className="small")
+            
+            # Format change
+            change_color = "text-success" if change >= 0 else "text-danger"
+            change_icon = "↑" if change >= 0 else "↓"
+            change_display = html.Span(
+                f"{change_icon} ${abs(change):.2f} ({abs(change_pct):.2f}%)",
+                className=change_color
+            )
+            
+            # Format volume
+            if volume >= 1_000_000:
+                volume_str = f"{volume/1_000_000:.1f}M"
+            elif volume >= 1_000:
+                volume_str = f"{volume/1_000:.1f}K"
+            else:
+                volume_str = str(volume)
+            
+            # Create RSI gauge chart
+            gauge_fig = go.Figure(go.Indicator(
+                mode="gauge+number",
+                value=rsi_value,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                gauge={
+                    'axis': {'range': [0, 100], 'tickwidth': 1},
+                    'bar': {'color': "#00d4aa" if 30 <= rsi_value <= 70 else "#ff6b6b" if rsi_value > 70 else "#4ecdc4"},
+                    'bgcolor': "rgba(0,0,0,0)",
+                    'borderwidth': 0,
+                    'steps': [
+                        {'range': [0, 30], 'color': 'rgba(78, 205, 196, 0.3)'},
+                        {'range': [30, 70], 'color': 'rgba(100, 100, 100, 0.2)'},
+                        {'range': [70, 100], 'color': 'rgba(255, 107, 107, 0.3)'}
+                    ],
+                    'threshold': {
+                        'line': {'color': "white", 'width': 2},
+                        'thickness': 0.75,
+                        'value': rsi_value
+                    }
+                },
+                number={'font': {'size': 24, 'color': 'white'}},
+                title={'text': "RSI", 'font': {'size': 12, 'color': 'gray'}}
+            ))
+            gauge_fig.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                margin=dict(l=20, r=20, t=20, b=20),
+                height=120,
+                font={'color': 'white'}
+            )
+            
+            return (
+                ticker,
+                f"${price:.2f}",
+                change_display,
+                f"{rsi_value:.1f}",
+                rsi_signal,
+                f"{macd_value:.3f}",
+                volume_str,
+                gauge_fig
+            )
+            
+        except Exception as e:
+            logger.warning(f"Live price update error: {e}")
+            # Return placeholders
+            empty_gauge = go.Figure(go.Indicator(
+                mode="gauge+number",
+                value=50,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                gauge={'axis': {'range': [0, 100]}}
+            ))
+            empty_gauge.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                margin=dict(l=20, r=20, t=20, b=20),
+                height=120
+            )
+            return ticker, "$--", "--", "--", "", "--", "--", empty_gauge
+    
+    callback_count += 1
+    
     logger.info(f"✅ Strategy Lab Phase 23 callbacks registered: Benchmark & Risk subtabs now synchronized")
     logger.info(f"✅ Strategy Lab live order callbacks registered (LIVE_ORDER_ALLOWED=True)")
     logger.info(f"✅ AlphaBot callbacks registered (AlphaVantage + Alpaca integration)")
+    logger.info(f"✅ Bot connection status callbacks registered")
     logger.info(f"✅ Strategy Lab callbacks registered successfully ({callback_count} callbacks)")
+    
+    # Register Options Bot callbacks
+    try:
+        from financial_dashboard.engines.options_engine.callbacks import register_options_callbacks
+        register_options_callbacks(app)
+        logger.info(f"✅ Options Bot callbacks registered (GLD + Alpaca automation)")
+    except ImportError as e:
+        logger.warning(f"⚠️ Options Bot callbacks not available: {e}")
+    except Exception as e:
+        logger.error(f"❌ Error registering Options Bot callbacks: {e}")
     
     # Mark callbacks as registered (global declared at function start)
     _callbacks_registered = True
