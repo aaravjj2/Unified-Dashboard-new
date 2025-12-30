@@ -39,6 +39,7 @@ print(f"Running: {status['is_running']}, Trades: {status['total_trades']}")
 
 from __future__ import annotations
 import asyncio
+import aiohttp
 import json
 import logging
 import os
@@ -50,6 +51,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 from uuid import uuid4
+from concurrent.futures import ThreadPoolExecutor
 
 from .schema import Recipe, TriggerType, create_short_put_spread_recipe
 from .engine import RecipeExecutor, ExecutionEvent, ExecutorState
@@ -443,9 +445,14 @@ class OptionsScheduler:
         
         # Runtime state
         self._running_bots: Dict[str, dict] = {}  # bot_id -> runtime info
-        self._stop_events: Dict[str, threading.Event] = {}
-        self._threads: Dict[str, threading.Thread] = {}
+        self._tasks: Dict[str, asyncio.Task] = {} # bot_id -> asyncio.Task
         self._lock = threading.Lock()
+        
+        # Asyncio Loop Management
+        self.loop = asyncio.new_event_loop()
+        self.executor = ThreadPoolExecutor(max_workers=10) # For blocking calls
+        self._loop_thread = threading.Thread(target=self._start_background_loop, daemon=True)
+        self._loop_thread.start()
         
         # Event callbacks for UI updates
         self._event_callbacks: List[Callable[[str, dict], None]] = []
@@ -453,7 +460,12 @@ class OptionsScheduler:
         # Auto-start bots that were running
         self._auto_start_bots()
         
-        logger.info("OptionsScheduler initialized")
+        logger.info("OptionsScheduler initialized (Async Mode)")
+
+    def _start_background_loop(self):
+        """Run the asyncio event loop in a background thread."""
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_forever()
     
     def _auto_start_bots(self):
         """Restart bots that were running before shutdown."""
@@ -528,21 +540,10 @@ class OptionsScheduler:
             logger.warning(f"Bot already running: {bot_id}")
             return True
         
-        # Create stop event
-        stop_event = threading.Event()
-        self._stop_events[bot_id] = stop_event
-        
-        # Start background thread
-        thread = threading.Thread(
-            target=self._run_bot_loop,
-            args=(bot_id, stop_event),
-            daemon=True,
-            name=f"OptionsBot-{bot_id}"
-        )
-        thread.start()
+        # Schedule the bot coroutine on the background loop
+        asyncio.run_coroutine_threadsafe(self._start_bot_task(bot_id), self.loop)
         
         with self._lock:
-            self._threads[bot_id] = thread
             self._running_bots[bot_id] = {
                 "started_at": datetime.now().isoformat(),
                 "config": config,
@@ -553,26 +554,24 @@ class OptionsScheduler:
         
         logger.info(f"Started bot: {config.name} ({bot_id})")
         return True
+
+    async def _start_bot_task(self, bot_id):
+        """Helper to create task in the loop."""
+        task = asyncio.create_task(self._run_bot_loop_async(bot_id))
+        self._tasks[bot_id] = task
     
     def stop_bot(self, bot_id: str) -> bool:
         """Stop a bot's execution."""
-        if bot_id not in self._stop_events:
+        if bot_id not in self._running_bots:
             logger.warning(f"Bot not running: {bot_id}")
             return False
         
-        # Signal thread to stop
-        self._stop_events[bot_id].set()
-        
-        # Wait for thread to finish (with timeout)
-        thread = self._threads.get(bot_id)
-        if thread:
-            thread.join(timeout=5.0)
+        # Cancel the task via the loop
+        asyncio.run_coroutine_threadsafe(self._stop_bot_task(bot_id), self.loop)
         
         # Clean up
         with self._lock:
             self._running_bots.pop(bot_id, None)
-            self._threads.pop(bot_id, None)
-            self._stop_events.pop(bot_id, None)
         
         self.db.update_bot_status(bot_id, "stopped")
         
@@ -581,6 +580,16 @@ class OptionsScheduler:
         
         logger.info(f"Stopped bot: {bot_id}")
         return True
+
+    async def _stop_bot_task(self, bot_id):
+        """Helper to cancel task in the loop."""
+        if bot_id in self._tasks:
+            self._tasks[bot_id].cancel()
+            try:
+                await self._tasks[bot_id]
+            except asyncio.CancelledError:
+                pass
+            del self._tasks[bot_id]
     
     def delete_bot(self, bot_id: str) -> bool:
         """Delete a bot completely."""
@@ -598,9 +607,10 @@ class OptionsScheduler:
     # BOT EXECUTION LOOP
     # =========================================================================
     
-    def _run_bot_loop(self, bot_id: str, stop_event: threading.Event):
-        """Main execution loop for a bot (runs in background thread)."""
-        config = self.db.get_bot(bot_id)
+    async def _run_bot_loop_async(self, bot_id: str):
+        """Main execution loop for a bot (runs in asyncio task)."""
+        # Run DB access in executor
+        config = await self.loop.run_in_executor(self.executor, self.db.get_bot, bot_id)
         if not config:
             return
         
@@ -609,48 +619,63 @@ class OptionsScheduler:
             recipe = Recipe.model_validate_json(config.recipe_json)
             
             # Create executor for this bot
+            # Note: RecipeExecutor init is lightweight, but load_recipe might do I/O?
+            # Let's assume it's safe or wrap it if needed.
             executor = RecipeExecutor(
                 data_handler=self.data_handler,
                 broker=self.broker,
             )
             
             # Load the recipe and get the context
-            context = executor.load_recipe(recipe)
+            # Running in executor just in case
+            context = await self.loop.run_in_executor(self.executor, executor.load_recipe, recipe)
             
             # Start the bot (sets state to RUNNING)
             executor.start(context.bot_id)
             
             logger.info(f"Bot {config.name} starting execution loop (interval={config.check_interval}s)")
             
-            while not stop_event.is_set():
+            while True:
                 try:
-                    # Check market status
-                    market_status = self.data_handler.get_market_status()
+                    # Check market status (run in executor)
+                    market_status = await self.loop.run_in_executor(self.executor, self.data_handler.get_market_status)
                     
                     # Only check conditions when market is open
                     # (Or always check if configured)
                     if market_status.get("is_open", False) or os.environ.get("BOT_ALWAYS_CHECK", "0") == "1":
-                        self._execute_check(bot_id, executor, config, recipe, context.bot_id)
+                        # Run the check in executor
+                        await self.loop.run_in_executor(
+                            self.executor, 
+                            self._execute_check, 
+                            bot_id, executor, config, recipe, context.bot_id
+                        )
                     else:
-                        self.db.log_event(bot_id, "market_closed", "Market is closed, skipping check")
+                        await self.loop.run_in_executor(
+                            self.executor,
+                            self.db.log_event,
+                            bot_id, "market_closed", "Market is closed, skipping check"
+                        )
                     
-                    # Wait for next interval (or stop signal)
-                    stop_event.wait(timeout=config.check_interval)
+                    # Wait for next interval
+                    await asyncio.sleep(config.check_interval)
                     
+                except asyncio.CancelledError:
+                    logger.info(f"Bot {config.name} task cancelled")
+                    raise
                 except Exception as e:
                     logger.exception(f"Error in bot loop for {bot_id}")
-                    self._increment_error(bot_id)
-                    self.db.log_event(bot_id, "error", str(e))
+                    await self.loop.run_in_executor(self.executor, self._increment_error, bot_id)
+                    await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "error", str(e))
                     
                     # Back off on errors
-                    stop_event.wait(timeout=30)
+                    await asyncio.sleep(30)
             
+        except asyncio.CancelledError:
             logger.info(f"Bot {config.name} execution loop stopped")
-            
         except Exception as e:
             logger.exception(f"Fatal error in bot {bot_id}")
-            self.db.update_bot_status(bot_id, "error")
-            self.db.log_event(bot_id, "fatal_error", str(e))
+            await self.loop.run_in_executor(self.executor, self.db.update_bot_status, bot_id, "error")
+            await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "fatal_error", str(e))
     
     def _execute_check(
         self,

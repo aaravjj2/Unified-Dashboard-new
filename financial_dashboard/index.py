@@ -243,6 +243,8 @@ TAB_CONFIG = [
     {'id': 'volatility_lab', 'name': '⚡ Volatility Lab', 'module': 'tabs/volatility_lab_pkg/__init__.py'},  # Phase 34 rebuild
     {'id': 'attribution_lab', 'name': '📊 Attribution Lab', 'module': 'tabs/attribution_lab/__init__.py'},
     {'id': 'strategy_lab', 'name': '⚡ Strategy Lab', 'module': 'tabs/strategy_lab/__init__.py'},
+    # PHASE 3: Iron Condor Builder
+    {'id': 'strategy_builder', 'name': '🦅 Strategy Builder', 'module': 'tabs/strategy_builder.py'},
     # Use the rebuilt tab implementations (clean, testable rebuilds)
     {'id': 'picks', 'name': '⭐ Stock Picks', 'module': 'tabs/picks_unified.py'},
     # DISABLED: Analysis Hub - renamed to .bak due to duplicate callback issues
@@ -265,6 +267,7 @@ ENABLED_TABS = [
     'research_lab',      # PRIORITY: Force render first
     'attribution_lab',   # PRIORITY: Force render second
     'strategy_lab',      # PHASE 2: Real data integration complete
+    'strategy_builder',  # PHASE 3: Iron Condor Builder
     'picks',
     'market_trends',
     'market_forecast',
