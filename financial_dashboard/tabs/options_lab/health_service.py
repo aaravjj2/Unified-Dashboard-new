@@ -184,9 +184,19 @@ class HealthService:
                 results["redis"] = {"service_name": "redis", "status": "unhealthy", "latency_ms": latency_ms, "message": "PING failed"}
             client.close()
         except ImportError:
-            results["redis"] = {"service_name": "redis", "status": "unknown", "latency_ms": 0, "message": "redis not installed"}
+            results["redis"] = {"service_name": "redis", "status": "unavailable", "latency_ms": 0, "message": "Not Installed"}
         except Exception as e:
-            results["redis"] = {"service_name": "redis", "status": "unhealthy", "latency_ms": 0, "message": f"Error: {str(e)[:40]}"}
+            # Clean up error messages for common cases
+            err_str = str(e).lower()
+            if "connection refused" in err_str or "111" in err_str:
+                msg = "Service Not Running"
+            elif "timeout" in err_str:
+                msg = "Connection Timeout"
+            elif "auth" in err_str or "password" in err_str:
+                msg = "Auth Failed"
+            else:
+                msg = "Unavailable"
+            results["redis"] = {"service_name": "redis", "status": "unavailable", "latency_ms": 0, "message": msg}
         
         # Check TimescaleDB synchronously
         try:
@@ -215,9 +225,21 @@ class HealthService:
             cur.close()
             conn.close()
         except ImportError:
-            results["timescaledb"] = {"service_name": "timescaledb", "status": "unknown", "latency_ms": 0, "message": "psycopg2 not installed"}
+            results["timescaledb"] = {"service_name": "timescaledb", "status": "unavailable", "latency_ms": 0, "message": "Not Installed"}
         except Exception as e:
-            results["timescaledb"] = {"service_name": "timescaledb", "status": "unknown", "latency_ms": 0, "message": f"DB unavailable: {str(e)[:30]}"}
+            # Clean up error messages for common cases
+            err_str = str(e).lower()
+            if "connection refused" in err_str or "111" in err_str:
+                msg = "Service Not Running"
+            elif "timeout" in err_str:
+                msg = "Connection Timeout"
+            elif "could not connect" in err_str or "no route" in err_str:
+                msg = "Service Unavailable"
+            elif "auth" in err_str or "password" in err_str:
+                msg = "Auth Failed"
+            else:
+                msg = "Unavailable"
+            results["timescaledb"] = {"service_name": "timescaledb", "status": "unavailable", "latency_ms": 0, "message": msg}
         
         return results
     

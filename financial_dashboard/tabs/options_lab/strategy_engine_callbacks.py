@@ -257,6 +257,446 @@ def register_strategy_engine_callbacks(app: dash.Dash):
         return ai_rec, cards_container
     
     # =========================================================================
+    # STRATEGY SELECTION CALLBACK
+    # =========================================================================
+    
+    @app.callback(
+        Output('selected-strategy-display', 'children'),
+        Input({'type': 'select-strategy', 'index': ALL}, 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def handle_strategy_selection(n_clicks_list):
+        """Handle strategy card selection."""
+        ctx = dash.callback_context
+        
+        if not ctx.triggered or not any(n_clicks_list):
+            raise PreventUpdate
+        
+        # Get the triggered button
+        triggered = ctx.triggered[0]
+        prop_id = triggered['prop_id']
+        
+        # Extract strategy ID from the pattern-matching ID
+        import json
+        id_dict = json.loads(prop_id.split('.')[0])
+        strategy_id = id_dict.get('index', '')
+        
+        if not strategy_id:
+            raise PreventUpdate
+        
+        # Generate strategy configuration based on strategy_id
+        strategy_config = _build_strategy_config(strategy_id)
+        
+        if not strategy_config:
+            return html.Div([
+                html.P(f"Strategy '{strategy_id}' configuration not available yet.", 
+                       style={'color': '#ff9800'})
+            ])
+        
+        # Create strategy details display
+        return _create_strategy_details(strategy_config)
+    
+    def _build_strategy_config(strategy_id: str) -> Optional[Dict]:
+        """Build strategy configuration for the selected strategy."""
+        # Sample stock price for demonstration (in real app, would use live data)
+        stock_price = 500.0  # e.g., SPY
+        
+        # Strategy configurations
+        configs = {
+            'iron_condor': {
+                'name': 'Iron Condor',
+                'type': 'neutral',
+                'description': 'Sell OTM put spread + OTM call spread',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of spread - credit',
+                'breakevens': ['Lower strike + credit', 'Higher strike - credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 2.50, 'delta': -0.25},
+                    {'type': 'Buy Put', 'strike': stock_price * 0.90, 'premium': 1.00, 'delta': -0.10},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.05, 'premium': 2.50, 'delta': 0.25},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.10, 'premium': 1.00, 'delta': 0.10},
+                ],
+                'net_credit': 3.00,
+                'margin_req': 500.0
+            },
+            'iron_condor_wide': {
+                'name': 'Iron Condor (Wide)',
+                'type': 'neutral',
+                'description': 'Wider wings for higher probability',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of spread - credit',
+                'breakevens': ['Lower strike + credit', 'Higher strike - credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.92, 'premium': 3.00, 'delta': -0.20},
+                    {'type': 'Buy Put', 'strike': stock_price * 0.85, 'premium': 1.00, 'delta': -0.08},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.08, 'premium': 3.00, 'delta': 0.20},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.15, 'premium': 1.00, 'delta': 0.08},
+                ],
+                'net_credit': 4.00,
+                'margin_req': 700.0
+            },
+            'iron_butterfly': {
+                'name': 'Iron Butterfly',
+                'type': 'neutral',
+                'description': 'ATM short straddle + OTM wing protection',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of wing - credit',
+                'breakevens': ['ATM strike ± credit'],
+                'legs': [
+                    {'type': 'Buy Put', 'strike': stock_price * 0.95, 'premium': 1.50, 'delta': -0.15},
+                    {'type': 'Sell Put', 'strike': stock_price, 'premium': 4.00, 'delta': -0.50},
+                    {'type': 'Sell Call', 'strike': stock_price, 'premium': 4.00, 'delta': 0.50},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.05, 'premium': 1.50, 'delta': 0.15},
+                ],
+                'net_credit': 5.00,
+                'margin_req': 500.0
+            },
+            'short_straddle': {
+                'name': 'Short Straddle',
+                'type': 'neutral',
+                'description': 'Sell ATM put + ATM call (undefined risk)',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Unlimited',
+                'breakevens': ['Strike ± total credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price, 'premium': 5.00, 'delta': -0.50},
+                    {'type': 'Sell Call', 'strike': stock_price, 'premium': 5.00, 'delta': 0.50},
+                ],
+                'net_credit': 10.00,
+                'margin_req': 5000.0
+            },
+            'short_strangle': {
+                'name': 'Short Strangle',
+                'type': 'neutral',
+                'description': 'Sell OTM put + OTM call (undefined risk)',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Unlimited',
+                'breakevens': ['Put strike - credit', 'Call strike + credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 2.50, 'delta': -0.25},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.05, 'premium': 2.50, 'delta': 0.25},
+                ],
+                'net_credit': 5.00,
+                'margin_req': 3000.0
+            },
+            'bull_call_spread': {
+                'name': 'Bull Call Spread',
+                'type': 'bullish',
+                'description': 'Buy ATM call + Sell OTM call',
+                'max_profit': 'Width of spread - debit',
+                'max_loss': 'Net debit paid',
+                'breakevens': ['Long strike + debit'],
+                'legs': [
+                    {'type': 'Buy Call', 'strike': stock_price, 'premium': 5.00, 'delta': 0.50},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.05, 'premium': 2.00, 'delta': 0.25},
+                ],
+                'net_credit': -3.00,  # Debit
+                'margin_req': 300.0
+            },
+            'bull_put_spread': {
+                'name': 'Bull Put Spread',
+                'type': 'bullish',
+                'description': 'Sell ATM put + Buy OTM put (credit spread)',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of spread - credit',
+                'breakevens': ['Short strike - credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price, 'premium': 5.00, 'delta': -0.50},
+                    {'type': 'Buy Put', 'strike': stock_price * 0.95, 'premium': 2.00, 'delta': -0.25},
+                ],
+                'net_credit': 3.00,
+                'margin_req': 500.0
+            },
+            'long_call': {
+                'name': 'Long Call',
+                'type': 'bullish',
+                'description': 'Buy a call option (unlimited upside)',
+                'max_profit': 'Unlimited',
+                'max_loss': 'Premium paid',
+                'breakevens': ['Strike + premium'],
+                'legs': [
+                    {'type': 'Buy Call', 'strike': stock_price * 1.02, 'premium': 4.00, 'delta': 0.45},
+                ],
+                'net_credit': -4.00,  # Debit
+                'margin_req': 400.0
+            },
+            'cash_secured_put': {
+                'name': 'Cash-Secured Put',
+                'type': 'bullish',
+                'description': 'Sell put with cash to cover assignment',
+                'max_profit': 'Premium received',
+                'max_loss': 'Strike - premium (if stock goes to 0)',
+                'breakevens': ['Strike - premium'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 3.00, 'delta': -0.30},
+                ],
+                'net_credit': 3.00,
+                'margin_req': stock_price * 0.95 * 100  # Full cash secured
+            },
+            'bear_put_spread': {
+                'name': 'Bear Put Spread',
+                'type': 'bearish',
+                'description': 'Buy ATM put + Sell OTM put',
+                'max_profit': 'Width of spread - debit',
+                'max_loss': 'Net debit paid',
+                'breakevens': ['Long strike - debit'],
+                'legs': [
+                    {'type': 'Buy Put', 'strike': stock_price, 'premium': 5.00, 'delta': -0.50},
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 2.00, 'delta': -0.25},
+                ],
+                'net_credit': -3.00,  # Debit
+                'margin_req': 300.0
+            },
+            'bear_call_spread': {
+                'name': 'Bear Call Spread',
+                'type': 'bearish',
+                'description': 'Sell ATM call + Buy OTM call (credit spread)',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of spread - credit',
+                'breakevens': ['Short strike + credit'],
+                'legs': [
+                    {'type': 'Sell Call', 'strike': stock_price, 'premium': 5.00, 'delta': 0.50},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.05, 'premium': 2.00, 'delta': 0.25},
+                ],
+                'net_credit': 3.00,
+                'margin_req': 500.0
+            },
+            'long_put': {
+                'name': 'Long Put',
+                'type': 'bearish',
+                'description': 'Buy a put option (profit from downside)',
+                'max_profit': 'Strike - premium (if stock goes to 0)',
+                'max_loss': 'Premium paid',
+                'breakevens': ['Strike - premium'],
+                'legs': [
+                    {'type': 'Buy Put', 'strike': stock_price * 0.98, 'premium': 4.00, 'delta': -0.45},
+                ],
+                'net_credit': -4.00,  # Debit
+                'margin_req': 400.0
+            },
+            'covered_call': {
+                'name': 'Covered Call',
+                'type': 'bearish',
+                'description': 'Own stock + Sell OTM call',
+                'max_profit': 'Strike - stock cost + premium',
+                'max_loss': 'Stock cost - premium',
+                'breakevens': ['Stock cost - premium'],
+                'legs': [
+                    {'type': '100 Shares', 'strike': stock_price, 'premium': 0, 'delta': 1.00},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.05, 'premium': 2.50, 'delta': 0.25},
+                ],
+                'net_credit': 2.50,
+                'margin_req': stock_price * 100
+            },
+            'credit_spread': {
+                'name': 'Credit Spread',
+                'type': 'high_iv',
+                'description': 'Sell premium with limited risk',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Width of spread - credit',
+                'breakevens': ['Depends on direction'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 3.50, 'delta': -0.30},
+                    {'type': 'Buy Put', 'strike': stock_price * 0.90, 'premium': 1.50, 'delta': -0.15},
+                ],
+                'net_credit': 2.00,
+                'margin_req': 500.0
+            },
+            'jade_lizard': {
+                'name': 'Jade Lizard',
+                'type': 'high_iv',
+                'description': 'Short put + Short call spread (no upside risk)',
+                'max_profit': 'Net credit received',
+                'max_loss': 'Put strike - credit',
+                'breakevens': ['Put strike - credit'],
+                'legs': [
+                    {'type': 'Sell Put', 'strike': stock_price * 0.95, 'premium': 3.00, 'delta': -0.25},
+                    {'type': 'Sell Call', 'strike': stock_price * 1.05, 'premium': 2.50, 'delta': 0.25},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.10, 'premium': 1.00, 'delta': 0.10},
+                ],
+                'net_credit': 4.50,
+                'margin_req': 600.0
+            },
+            'long_straddle': {
+                'name': 'Long Straddle',
+                'type': 'low_iv',
+                'description': 'Buy ATM put + ATM call (profit from big move)',
+                'max_profit': 'Unlimited',
+                'max_loss': 'Total premium paid',
+                'breakevens': ['Strike ± total debit'],
+                'legs': [
+                    {'type': 'Buy Put', 'strike': stock_price, 'premium': 4.00, 'delta': -0.50},
+                    {'type': 'Buy Call', 'strike': stock_price, 'premium': 4.00, 'delta': 0.50},
+                ],
+                'net_credit': -8.00,  # Debit
+                'margin_req': 800.0
+            },
+            'long_strangle': {
+                'name': 'Long Strangle',
+                'type': 'low_iv',
+                'description': 'Buy OTM put + OTM call (profit from big move)',
+                'max_profit': 'Unlimited',
+                'max_loss': 'Total premium paid',
+                'breakevens': ['Put strike - debit', 'Call strike + debit'],
+                'legs': [
+                    {'type': 'Buy Put', 'strike': stock_price * 0.95, 'premium': 2.00, 'delta': -0.25},
+                    {'type': 'Buy Call', 'strike': stock_price * 1.05, 'premium': 2.00, 'delta': 0.25},
+                ],
+                'net_credit': -4.00,  # Debit
+                'margin_req': 400.0
+            },
+            'calendar_spread': {
+                'name': 'Calendar Spread',
+                'type': 'low_iv',
+                'description': 'Sell near-term, buy far-term (same strike)',
+                'max_profit': 'Dependent on IV expansion',
+                'max_loss': 'Net debit paid',
+                'breakevens': ['Around strike price'],
+                'legs': [
+                    {'type': 'Sell Call (Near)', 'strike': stock_price, 'premium': 2.00, 'delta': 0.50},
+                    {'type': 'Buy Call (Far)', 'strike': stock_price, 'premium': 4.00, 'delta': 0.55},
+                ],
+                'net_credit': -2.00,  # Debit
+                'margin_req': 200.0
+            },
+            'diagonal_spread': {
+                'name': 'Diagonal Spread',
+                'type': 'low_iv',
+                'description': 'Calendar with different strikes',
+                'max_profit': 'Dependent on price movement + IV',
+                'max_loss': 'Net debit paid',
+                'breakevens': ['Complex - depends on movement'],
+                'legs': [
+                    {'type': 'Sell Call (Near)', 'strike': stock_price * 1.02, 'premium': 1.50, 'delta': 0.40},
+                    {'type': 'Buy Call (Far)', 'strike': stock_price, 'premium': 4.50, 'delta': 0.55},
+                ],
+                'net_credit': -3.00,  # Debit
+                'margin_req': 300.0
+            },
+        }
+        
+        return configs.get(strategy_id)
+    
+    def _create_strategy_details(config: Dict) -> html.Div:
+        """Create detailed strategy display."""
+        is_credit = config['net_credit'] > 0
+        credit_label = "Net Credit" if is_credit else "Net Debit"
+        credit_color = '#4caf50' if is_credit else '#f44336'
+        
+        # Type color mapping
+        type_colors = {
+            'neutral': '#9ca3af',
+            'bullish': '#4caf50',
+            'bearish': '#f44336',
+            'high_iv': '#ff9800',
+            'low_iv': '#2196f3'
+        }
+        type_color = type_colors.get(config['type'], '#9ca3af')
+        
+        # Build legs table
+        legs_rows = []
+        for leg in config['legs']:
+            row = html.Tr([
+                html.Td(leg['type'], style={'color': '#00d4ff' if 'Buy' in leg['type'] else '#ff9800'}),
+                html.Td(f"${leg['strike']:.0f}", style={'color': '#ffffff'}),
+                html.Td(f"${leg['premium']:.2f}", style={'color': '#9ca3af'}),
+                html.Td(f"{leg['delta']:+.2f}", style={'color': '#9ca3af'}),
+            ])
+            legs_rows.append(row)
+        
+        return html.Div([
+            # Header
+            html.Div([
+                html.H5([
+                    html.Span("✅ ", style={'color': '#4caf50'}),
+                    config['name'],
+                    dbc.Badge(config['type'].replace('_', ' ').title(), 
+                             color='primary', 
+                             style={'marginLeft': '10px', 'backgroundColor': type_color})
+                ], style={'color': '#ffffff', 'marginBottom': '5px'}),
+                html.P(config['description'], style={'color': '#9ca3af', 'fontSize': '13px'})
+            ]),
+            
+            # Key metrics
+            html.Div([
+                html.Div([
+                    html.Div(credit_label, style={'color': '#6b7280', 'fontSize': '11px'}),
+                    html.Div(f"${abs(config['net_credit']):.2f}", 
+                            style={'color': credit_color, 'fontWeight': 'bold', 'fontSize': '16px'})
+                ], style={'flex': '1', 'textAlign': 'center'}),
+                html.Div([
+                    html.Div("Max Profit", style={'color': '#6b7280', 'fontSize': '11px'}),
+                    html.Div(config['max_profit'], 
+                            style={'color': '#4caf50', 'fontWeight': 'bold', 'fontSize': '12px'})
+                ], style={'flex': '1', 'textAlign': 'center'}),
+                html.Div([
+                    html.Div("Max Loss", style={'color': '#6b7280', 'fontSize': '11px'}),
+                    html.Div(config['max_loss'], 
+                            style={'color': '#f44336', 'fontWeight': 'bold', 'fontSize': '12px'})
+                ], style={'flex': '1', 'textAlign': 'center'}),
+                html.Div([
+                    html.Div("Margin Req", style={'color': '#6b7280', 'fontSize': '11px'}),
+                    html.Div(f"${config['margin_req']:,.0f}", 
+                            style={'color': '#ff9800', 'fontWeight': 'bold', 'fontSize': '12px'})
+                ], style={'flex': '1', 'textAlign': 'center'}),
+            ], style={
+                'display': 'flex', 
+                'backgroundColor': '#1a1a2e', 
+                'padding': '15px', 
+                'borderRadius': '8px',
+                'marginBottom': '15px'
+            }),
+            
+            # Legs table
+            html.Div([
+                html.H6("Strategy Legs", style={'color': '#ffffff', 'marginBottom': '10px'}),
+                html.Table([
+                    html.Thead(html.Tr([
+                        html.Th("Leg", style={'color': '#9ca3af', 'textAlign': 'left', 'padding': '8px'}),
+                        html.Th("Strike", style={'color': '#9ca3af', 'textAlign': 'left', 'padding': '8px'}),
+                        html.Th("Premium", style={'color': '#9ca3af', 'textAlign': 'left', 'padding': '8px'}),
+                        html.Th("Delta", style={'color': '#9ca3af', 'textAlign': 'left', 'padding': '8px'}),
+                    ])),
+                    html.Tbody(legs_rows)
+                ], style={'width': '100%', 'borderCollapse': 'collapse'})
+            ], style={
+                'backgroundColor': '#262a3d',
+                'padding': '15px',
+                'borderRadius': '8px',
+                'marginBottom': '15px'
+            }),
+            
+            # Breakevens
+            html.Div([
+                html.Span("📊 Breakevens: ", style={'color': '#9ca3af', 'fontWeight': 'bold'}),
+                html.Span(' | '.join(config['breakevens']), style={'color': '#ffffff'})
+            ], style={'marginBottom': '15px'}),
+            
+            # Action buttons
+            html.Div([
+                dbc.Button(
+                    [html.Span("🚀 "), "Execute Trade"],
+                    id='execute-selected-strategy-btn',
+                    color='success',
+                    className='me-2'
+                ),
+                dbc.Button(
+                    [html.Span("📈 "), "View Payoff Chart"],
+                    id='view-payoff-btn',
+                    color='info',
+                    outline=True
+                )
+            ])
+            
+        ], style={
+            'backgroundColor': '#1e2130',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'border': '2px solid #4caf50',
+            'marginTop': '15px'
+        })
+    
+    # =========================================================================
     # MAX PAIN CALLBACKS
     # =========================================================================
     

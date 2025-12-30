@@ -14,10 +14,12 @@ from datetime import datetime
 
 STATUS_COLORS = {
     "healthy": "#28a745", "degraded": "#ffc107", "unhealthy": "#dc3545", "unknown": "#6c757d",
+    "unavailable": "#6c757d",  # Gray for unavailable services
     "connected": "#28a745", "disconnected": "#dc3545", "stale": "#ffc107", "error": "#dc3545",
 }
 STATUS_ICONS = {
     "healthy": "✓", "degraded": "⚠", "unhealthy": "✗", "unknown": "?",
+    "unavailable": "○",  # Empty circle for unavailable
     "connected": "●", "disconnected": "○", "stale": "◐", "error": "✗",
 }
 
@@ -26,13 +28,17 @@ def create_health_badge(service_name: str, status: str = "unknown", latency_ms: 
     """Create a health status badge card."""
     color = STATUS_COLORS.get(status, STATUS_COLORS["unknown"])
     icon = STATUS_ICONS.get(status, "?")
+    
+    # Show N/A for latency if service is unavailable
+    latency_display = "N/A" if status in ["unavailable", "unknown"] else f"{latency_ms:.1f} ms"
+    
     return dbc.Card([
         dbc.CardHeader(html.Div([
             html.Span(icon, style={"fontSize": "1.5rem", "color": color, "marginRight": "10px"}),
             html.Span(service_name.upper(), style={"fontWeight": "bold", "color": "#fff"})
         ], style={"display": "flex", "alignItems": "center"})),
         dbc.CardBody([
-            html.H3(f"{latency_ms:.1f} ms", style={"color": color, "marginBottom": "5px"}, id=f"health-latency-{service_name}"),
+            html.H3(latency_display, style={"color": color, "marginBottom": "5px"}, id=f"health-latency-{service_name}"),
             html.P(message, style={"color": "#aaa", "fontSize": "0.85rem", "marginBottom": "0"}, id=f"health-message-{service_name}")
         ])
     ], style={"backgroundColor": "#1e1e1e", "border": f"1px solid {color}", "borderRadius": "8px", "minWidth": "180px"}, id=f"health-badge-{service_name}")

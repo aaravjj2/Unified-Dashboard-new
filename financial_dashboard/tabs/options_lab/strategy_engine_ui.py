@@ -280,7 +280,10 @@ def create_strategy_picker_panel() -> html.Div:
         # Strategy cards
         html.Div(id='strategy-cards-container', children=[
             _create_strategy_placeholder()
-        ])
+        ]),
+        
+        # Selected Strategy Details (populated when user clicks Select)
+        html.Div(id='selected-strategy-display', children=[], style={'marginTop': '15px'})
         
     ], style={
         'backgroundColor': '#1e2130',
