@@ -251,6 +251,26 @@ class TechnicalAnalysisEngine:
         
         return clustered
 
+    # Compatibility Wrappers
+    def calculate_rsi(self, prices: pd.Series, period: int = 14) -> pd.Series:
+        """Calculate RSI (Public Wrapper)."""
+        return self._calculate_rsi(prices, period)
+
+    def calculate_macd(self, prices: pd.Series) -> Dict:
+        """Calculate MACD values."""
+        if len(prices) < 26:
+            return {'macd': 0, 'signal': 0, 'hist': 0}
+        ema12 = prices.ewm(span=12).mean()
+        ema26 = prices.ewm(span=26).mean()
+        macd = ema12 - ema26
+        signal = macd.ewm(span=9).mean()
+        hist = macd - signal
+        return {
+            'macd': macd.iloc[-1],
+            'signal': signal.iloc[-1],
+            'hist': hist.iloc[-1]
+        }
+
 
 # =============================================================================
 # IMPROVEMENT 31-35: IV Analysis Engine
@@ -360,6 +380,9 @@ class IVAnalysisEngine:
             'atm_iv': round(atm_iv, 4),
             'interpretation': interpretation
         }
+
+    # Alias for compatibility
+    calculate_iv_skew = analyze_skew
     
     # Improvement #34: IV crush prediction
     def predict_iv_crush(self, current_iv: float, event_date: str,
@@ -537,6 +560,22 @@ class OptionsFlowAnalyzer:
                 })
         
         return sorted(unusual, key=lambda x: x['score'], reverse=True)
+
+    # Alias for compatibility
+    analyze_unusual_activity = find_unusual_activity
+
+    def calculate_put_call_ratio(self, trades: List[Dict]) -> Dict:
+        """Calculate Put/Call Ratios."""
+        call_vol = sum(t.get('volume', 0) for t in trades if t.get('type') == 'call')
+        put_vol = sum(t.get('volume', 0) for t in trades if t.get('type') == 'put')
+        
+        call_prem = sum(t.get('premium', 0) for t in trades if t.get('type') == 'call')
+        put_prem = sum(t.get('premium', 0) for t in trades if t.get('type') == 'put')
+        
+        return {
+            'volume_pcr': put_vol / call_vol if call_vol > 0 else 1.0,
+            'premium_pcr': put_prem / call_prem if call_prem > 0 else 1.0
+        }
     
     # Improvement #39: Dark pool print detection
     def detect_dark_pool(self, trade: Dict) -> Dict:
@@ -625,6 +664,9 @@ class PortfolioAnalytics:
         
         excess_returns = returns - risk_free_rate / 252  # Daily risk-free rate
         return np.sqrt(252) * excess_returns.mean() / excess_returns.std()
+
+    # Alias for compatibility
+    calculate_sharpe_ratio = calculate_sharpe
     
     # Improvement #42: Sortino ratio
     def calculate_sortino(self, returns: pd.Series, risk_free_rate: float = 0.05) -> float:

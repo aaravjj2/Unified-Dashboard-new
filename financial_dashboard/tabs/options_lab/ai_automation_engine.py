@@ -221,6 +221,26 @@ class AISignalGenerator:
             if signal:
                 signals.append(signal)
         return signals
+
+    def generate_signal(self, ticker: str, price: float, iv: float, 
+                       iv_rank: float, trend: str) -> Optional[TradeSignal]:
+        """Public method to generate a signal for a specific ticker."""
+        data = {
+            'price': price,
+            'iv': iv,
+            'iv_rank': iv_rank,
+            'trend': trend
+        }
+        return self._generate_signal(ticker, data)
+
+    def validate_signal(self, signal_data: Dict) -> bool:
+        """Validate a signal dictionary."""
+        if not isinstance(signal_data, dict):
+            return False
+        # Basic validation logic
+        if 'confidence' in signal_data and not (0 <= signal_data['confidence'] <= 1):
+            return False
+        return True
     
     # Improvement #7: Multi-factor signal scoring
     def score_signal(self, signal: TradeSignal) -> float:
@@ -375,6 +395,9 @@ class AutoGreeksEngine:
             'vega': round(vega, 4),
             'rho': round(rho, 4)
         }
+
+    # Alias for compatibility
+    calculate_greeks = calculate_all_greeks
     
     # Improvement #12: Portfolio Greeks aggregation
     def aggregate_portfolio_greeks(self, positions: List[Dict]) -> Dict:
@@ -390,6 +413,9 @@ class AutoGreeksEngine:
                 total[greek] += greeks.get(greek, 0) * qty * multiplier
         
         return {k: round(v, 2) for k, v in total.items()}
+
+    # Alias for compatibility
+    calculate_portfolio_greeks = aggregate_portfolio_greeks
     
     # Improvement #13: Auto Greeks alerts
     def check_greeks_limits(self, portfolio_greeks: Dict, limits: Dict) -> List[str]:
@@ -544,6 +570,30 @@ class AutoPositionManager:
         typical_spread_width = 5  # $5 wide spread
         contracts = int(max_risk / (typical_spread_width * 100))
         return max(1, min(contracts, 10))  # 1-10 contracts
+
+    # Improvement #20b: Portfolio Balance Check
+    def check_portfolio_balance(self, portfolio_value: float, cash_balance: float) -> Dict:
+        """Check portfolio balance and health."""
+        total_value = portfolio_value + cash_balance
+        cash_ratio = cash_balance / total_value if total_value > 0 else 0
+        
+        status = "HEALTHY"
+        warnings = []
+        
+        if cash_ratio < 0.1:
+            status = "WARNING"
+            warnings.append("Low cash balance (<10%)")
+        
+        if cash_ratio < 0.05:
+            status = "CRITICAL"
+            warnings.append("Critical cash level (<5%)")
+            
+        return {
+            'total_value': total_value,
+            'cash_ratio': round(cash_ratio, 4),
+            'status': status,
+            'warnings': warnings
+        }
 
 
 # =============================================================================

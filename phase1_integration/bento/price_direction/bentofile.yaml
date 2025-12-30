@@ -1,0 +1,13 @@
+service: "service:PriceDirectionService"
+labels:
+  owner: alpaca-options-lab
+  stage: production
+include:
+  - "*.py"
+python:
+  packages:
+    - numpy>=1.24.0
+    - pandas>=2.0.0
+    - scikit-learn>=1.3.0
+docker:
+  python_version: "3.10"

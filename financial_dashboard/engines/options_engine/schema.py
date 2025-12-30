@@ -640,6 +640,7 @@ def create_short_put_spread_recipe(
     rsi_threshold: float = 70,
     take_profit_pct: float = 50,
     stop_loss_pct: float = 200,
+    require_market_hours: bool = True,
 ) -> Recipe:
     """
     Factory function to create a standard Short Put Spread recipe.
@@ -649,7 +650,33 @@ def create_short_put_spread_recipe(
     - IF: RSI(14) > 70 (overbought = bullish bias = sell puts)
     - THEN: Open short put spread at 0.30 delta, 30 DTE
     - MANAGE: Take profit at 50%, stop loss at 200%
+    
+    Args:
+        symbol: Trading symbol
+        rsi_threshold: RSI value to trigger trade (RSI > threshold)
+        take_profit_pct: Take profit at this percent of max profit
+        stop_loss_pct: Stop loss at this percent of max profit
+        require_market_hours: If True, only trade during market hours
     """
+    conditions = [
+        IndicatorCondition(
+            symbol=symbol,
+            indicator=Indicator.RSI,
+            period=14,
+            operator=ComparisonOperator.GT,
+            value=rsi_threshold
+        ),
+    ]
+    
+    if require_market_hours:
+        conditions.append(
+            GeneralCondition(
+                field="is_market_hours",
+                operator=ComparisonOperator.EQ,
+                value=True
+            )
+        )
+    
     return Recipe(
         metadata=RecipeMetadata(
             name=f"RSI Short Put Spread - {symbol}",
@@ -666,20 +693,7 @@ def create_short_put_spread_recipe(
         ],
         entry_conditions=ConditionGroup(
             operator=ConditionOperator.AND,
-            conditions=[
-                IndicatorCondition(
-                    symbol=symbol,
-                    indicator=Indicator.RSI,
-                    period=14,
-                    operator=ComparisonOperator.GT,
-                    value=rsi_threshold
-                ),
-                GeneralCondition(
-                    field="is_market_hours",
-                    operator=ComparisonOperator.EQ,
-                    value=True
-                )
-            ]
+            conditions=conditions
         ),
         actions=[
             OpenPositionAction(

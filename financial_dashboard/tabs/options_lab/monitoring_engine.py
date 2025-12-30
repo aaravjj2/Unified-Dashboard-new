@@ -257,6 +257,9 @@ class IVGreeksMonitor:
             )
         
         return None
+
+    # Alias for compatibility
+    check_iv_alerts = check_iv_spike
     
     # Improvement #82: IV rank alerts
     def check_iv_rank_extremes(self, ticker: str, iv_rank: float) -> Optional[Alert]:

@@ -1,0 +1,207 @@
+// Order Service Protocol Buffer Definition
+// For order execution communication between trading and execution engines
+
+syntax = "proto3";
+
+package alpaca.orders;
+
+option python_package = "alpaca.grpc.orders";
+
+// -----------------------------------------------------------------------------
+// Order Service
+// -----------------------------------------------------------------------------
+
+service OrderService {
+    // Submit a new order
+    rpc SubmitOrder(OrderRequest) returns (OrderResponse);
+    
+    // Cancel an order
+    rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+    
+    // Modify an order
+    rpc ModifyOrder(ModifyOrderRequest) returns (OrderResponse);
+    
+    // Get order status
+    rpc GetOrderStatus(GetOrderStatusRequest) returns (Order);
+    
+    // Stream order updates
+    rpc StreamOrderUpdates(OrderStreamRequest) returns (stream OrderUpdate);
+    
+    // Get open orders
+    rpc GetOpenOrders(GetOpenOrdersRequest) returns (OrdersListResponse);
+    
+    // Get order history
+    rpc GetOrderHistory(OrderHistoryRequest) returns (OrdersListResponse);
+    
+    // Bulk cancel
+    rpc BulkCancel(BulkCancelRequest) returns (BulkCancelResponse);
+    
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// -----------------------------------------------------------------------------
+// Order Messages
+// -----------------------------------------------------------------------------
+
+message Order {
+    string order_id = 1;
+    string client_order_id = 2;
+    string symbol = 3;
+    string side = 4;                    // buy, sell
+    string order_type = 5;              // market, limit, stop, stop_limit
+    string time_in_force = 6;           // day, gtc, ioc, fok
+    int32 quantity = 7;
+    double limit_price = 8;
+    double stop_price = 9;
+    
+    string status = 10;                 // pending, submitted, partial, filled, cancelled, rejected
+    int32 filled_quantity = 11;
+    double avg_fill_price = 12;
+    
+    string strategy = 13;
+    repeated OrderLeg legs = 14;
+    
+    string created_at = 15;
+    string updated_at = 16;
+    
+    OrderMetadata metadata = 17;
+}
+
+message OrderLeg {
+    string leg_id = 1;
+    string symbol = 2;                  // Option symbol
+    string underlying = 3;
+    double strike = 4;
+    string expiry = 5;
+    string option_type = 6;             // call, put
+    string side = 7;                    // buy, sell
+    int32 quantity = 8;
+    double limit_price = 9;
+    int32 filled_quantity = 10;
+    double avg_fill_price = 11;
+}
+
+message OrderMetadata {
+    string signal_id = 1;               // Originating signal
+    string strategy_id = 2;
+    double target_credit = 3;
+    double target_debit = 4;
+    double max_slippage = 5;
+    bool paper_mode = 6;
+    map<string, string> tags = 7;
+}
+
+message OrderUpdate {
+    string order_id = 1;
+    string event_type = 2;              // submitted, partial, filled, cancelled, rejected
+    Order order = 3;
+    Fill fill = 4;                      // Present on fills
+    string timestamp = 5;
+    string message = 6;
+}
+
+message Fill {
+    string fill_id = 1;
+    string order_id = 2;
+    string leg_id = 3;
+    int32 quantity = 4;
+    double price = 5;
+    double commission = 6;
+    string timestamp = 7;
+    string venue = 8;
+}
+
+// -----------------------------------------------------------------------------
+// Request/Response Messages
+// -----------------------------------------------------------------------------
+
+message OrderRequest {
+    string symbol = 1;
+    string side = 2;
+    string order_type = 3;
+    string time_in_force = 4;
+    int32 quantity = 5;
+    double limit_price = 6;
+    double stop_price = 7;
+    string strategy = 8;
+    repeated OrderLeg legs = 9;
+    OrderMetadata metadata = 10;
+}
+
+message OrderResponse {
+    bool success = 1;
+    string order_id = 2;
+    string client_order_id = 3;
+    Order order = 4;
+    string error = 5;
+}
+
+message CancelOrderRequest {
+    string order_id = 1;
+}
+
+message CancelOrderResponse {
+    bool success = 1;
+    string order_id = 2;
+    string error = 3;
+}
+
+message ModifyOrderRequest {
+    string order_id = 1;
+    int32 quantity = 2;
+    double limit_price = 3;
+    double stop_price = 4;
+}
+
+message GetOrderStatusRequest {
+    string order_id = 1;
+}
+
+message OrderStreamRequest {
+    repeated string order_ids = 1;      // Empty = all orders
+    repeated string symbols = 2;
+    bool include_fills = 3;
+}
+
+message GetOpenOrdersRequest {
+    string symbol = 1;                  // Optional filter
+    string strategy = 2;
+}
+
+message OrderHistoryRequest {
+    int32 count = 1;
+    string symbol = 2;
+    string strategy = 3;
+    string since = 4;                   // ISO timestamp
+    string until = 5;                   // ISO timestamp
+    repeated string statuses = 6;       // Filter by status
+}
+
+message OrdersListResponse {
+    repeated Order orders = 1;
+    int32 total_count = 2;
+}
+
+message BulkCancelRequest {
+    repeated string order_ids = 1;
+    string symbol = 2;                  // Cancel all for symbol
+    bool cancel_all = 3;
+}
+
+message BulkCancelResponse {
+    int32 cancelled_count = 1;
+    repeated string cancelled_ids = 2;
+    repeated string failed_ids = 3;
+    string error = 4;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+    bool healthy = 1;
+    string status = 2;
+    int32 open_orders = 3;
+    int32 orders_today = 4;
+    double avg_latency_ms = 5;
+}

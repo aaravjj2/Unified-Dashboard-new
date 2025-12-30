@@ -1,0 +1,13 @@
+service: "service:SentimentService"
+labels:
+  owner: alpaca-options-lab
+  stage: production
+include:
+  - "*.py"
+python:
+  packages:
+    - numpy>=1.24.0
+    - transformers>=4.30.0
+    - torch>=2.0.0
+docker:
+  python_version: "3.10"

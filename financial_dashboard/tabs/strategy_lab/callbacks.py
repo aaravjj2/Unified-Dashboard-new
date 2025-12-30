@@ -2769,6 +2769,16 @@ def register_callbacks(app):
     logger.info(f"✅ Bot connection status callbacks registered")
     logger.info(f"✅ Strategy Lab callbacks registered successfully ({callback_count} callbacks)")
     
+    # Register Options Bot callbacks
+    try:
+        from financial_dashboard.engines.options_engine.callbacks import register_options_callbacks
+        register_options_callbacks(app)
+        logger.info(f"✅ Options Bot callbacks registered (GLD + Alpaca automation)")
+    except ImportError as e:
+        logger.warning(f"⚠️ Options Bot callbacks not available: {e}")
+    except Exception as e:
+        logger.error(f"❌ Error registering Options Bot callbacks: {e}")
+    
     # Mark callbacks as registered (global declared at function start)
     _callbacks_registered = True
     

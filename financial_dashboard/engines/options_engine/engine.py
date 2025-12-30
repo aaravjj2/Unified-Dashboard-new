@@ -639,38 +639,28 @@ class PositionManager:
     ) -> tuple[bool, str]:
         """Check all exit conditions for a single position."""
         # Take Profit
-        if management.take_profit:
+        if management.take_profit and management.take_profit.enabled:
             tp = management.take_profit
-            if tp.type == "percent":
-                if position.unrealized_pnl_pct >= tp.value:
-                    return True, f"Take profit triggered ({position.unrealized_pnl_pct:.1f}% >= {tp.value}%)"
-            elif tp.type == "max_profit_pct" and position.max_profit:
+            # Check if position profit >= take profit threshold as % of max profit
+            if position.max_profit and position.max_profit > 0:
                 pct_of_max = (position.unrealized_pnl / position.max_profit) * 100
-                if pct_of_max >= tp.value:
-                    return True, f"Take profit at {tp.value}% of max profit"
-            elif tp.type == "dollar":
-                if position.unrealized_pnl >= tp.value:
-                    return True, f"Take profit triggered (${position.unrealized_pnl:.2f} >= ${tp.value})"
+                if pct_of_max >= tp.percent:
+                    return True, f"Take profit triggered ({pct_of_max:.1f}% >= {tp.percent}%)"
+            elif position.unrealized_pnl_pct >= tp.percent:
+                return True, f"Take profit triggered ({position.unrealized_pnl_pct:.1f}% >= {tp.percent}%)"
         
         # Stop Loss
-        if management.stop_loss:
+        if management.stop_loss and management.stop_loss.enabled:
             sl = management.stop_loss
-            if sl.type == "percent":
-                if position.unrealized_pnl_pct <= -sl.value:
-                    return True, f"Stop loss triggered ({position.unrealized_pnl_pct:.1f}% <= -{sl.value}%)"
-            elif sl.type == "max_loss_pct" and position.max_loss:
-                pct_of_max = (abs(position.unrealized_pnl) / abs(position.max_loss)) * 100
-                if position.unrealized_pnl < 0 and pct_of_max >= sl.value:
-                    return True, f"Stop loss at {sl.value}% of max loss"
-            elif sl.type == "dollar":
-                if position.unrealized_pnl <= -sl.value:
-                    return True, f"Stop loss triggered (${position.unrealized_pnl:.2f} <= -${sl.value})"
+            # Stop loss as % of credit received (entry cost)
+            if position.unrealized_pnl_pct <= -sl.percent:
+                return True, f"Stop loss triggered ({position.unrealized_pnl_pct:.1f}% <= -{sl.percent}%)"
         
         # DTE Exit
-        if management.dte_exit:
+        if management.dte_exit and management.dte_exit.enabled:
             dte = management.dte_exit
-            if position.dte is not None and position.dte <= dte.days:
-                return True, f"DTE exit triggered ({position.dte} days <= {dte.days})"
+            if position.dte is not None and position.dte <= dte.dte_threshold:
+                return True, f"DTE exit triggered ({position.dte} days <= {dte.dte_threshold})"
         
         return False, ""
     

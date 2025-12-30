@@ -1,0 +1,242 @@
+// Inference Service Protocol Buffer Definition
+// For ML model inference requests (Triton/BentoML gateway)
+
+syntax = "proto3";
+
+package alpaca.inference;
+
+option python_package = "alpaca.grpc.inference";
+
+// -----------------------------------------------------------------------------
+// Inference Service
+// -----------------------------------------------------------------------------
+
+service InferenceService {
+    // Price direction prediction
+    rpc PredictDirection(DirectionRequest) returns (DirectionResponse);
+    
+    // IV forecast
+    rpc ForecastIV(IVForecastRequest) returns (IVForecastResponse);
+    
+    // Sentiment analysis
+    rpc AnalyzeSentiment(SentimentRequest) returns (SentimentResponse);
+    
+    // Regime detection
+    rpc DetectRegime(RegimeRequest) returns (RegimeResponse);
+    
+    // Ensemble prediction (combines multiple models)
+    rpc EnsemblePredict(EnsembleRequest) returns (EnsembleResponse);
+    
+    // Batch inference
+    rpc BatchPredict(BatchRequest) returns (BatchResponse);
+    
+    // Model info
+    rpc GetModelInfo(ModelInfoRequest) returns (ModelInfoResponse);
+    
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// -----------------------------------------------------------------------------
+// Direction Prediction (LSTM/XGBoost)
+// -----------------------------------------------------------------------------
+
+message DirectionRequest {
+    string symbol = 1;
+    int32 horizon_days = 2;             // Prediction horizon (default: 5)
+    repeated double features = 3;        // Optional custom features
+    string model_version = 4;            // Optional specific version
+}
+
+message DirectionResponse {
+    string symbol = 1;
+    string direction = 2;               // up, down, neutral
+    double confidence = 3;
+    double probability_up = 4;
+    double probability_down = 5;
+    double expected_return = 6;
+    string model_version = 7;
+    double latency_ms = 8;
+}
+
+// -----------------------------------------------------------------------------
+// IV Forecast (XGBoost/Prophet)
+// -----------------------------------------------------------------------------
+
+message IVForecastRequest {
+    string symbol = 1;
+    int32 dte = 2;                      // Target DTE for forecast
+    repeated double historical_iv = 3;   // Optional historical IV series
+    string model_version = 4;
+}
+
+message IVForecastResponse {
+    string symbol = 1;
+    int32 dte = 2;
+    double predicted_iv = 3;
+    double iv_percentile = 4;           // IV rank/percentile
+    double confidence_low = 5;
+    double confidence_high = 6;
+    IVSurface surface = 7;              // Optional full surface
+    string model_version = 8;
+    double latency_ms = 9;
+}
+
+message IVSurface {
+    repeated int32 dtes = 1;
+    repeated double moneyness = 2;       // Strike/Spot ratios
+    repeated double ivs = 3;            // Flattened IV grid
+}
+
+// -----------------------------------------------------------------------------
+// Sentiment Analysis (BERT/FinBERT)
+// -----------------------------------------------------------------------------
+
+message SentimentRequest {
+    string text = 1;
+    string symbol = 2;                  // Optional context symbol
+    bool return_scores = 3;             // Return all class scores
+}
+
+message SentimentResponse {
+    string sentiment = 1;               // positive, negative, neutral
+    double confidence = 2;
+    double score_positive = 3;
+    double score_negative = 4;
+    double score_neutral = 5;
+    string model_version = 6;
+    double latency_ms = 7;
+}
+
+message BatchSentimentRequest {
+    repeated string texts = 1;
+    string symbol = 2;
+}
+
+message BatchSentimentResponse {
+    repeated SentimentResponse results = 1;
+    double total_latency_ms = 2;
+}
+
+// -----------------------------------------------------------------------------
+// Regime Detection (HMM/Bayesian)
+// -----------------------------------------------------------------------------
+
+message RegimeRequest {
+    string symbol = 1;
+    repeated double returns = 2;         // Historical returns
+    repeated double volatility = 3;      // Historical volatility
+}
+
+message RegimeResponse {
+    string symbol = 1;
+    string regime = 2;                  // bull, bear, volatile, stable
+    double confidence = 3;
+    repeated RegimeProbability regime_probs = 4;
+    int32 days_in_regime = 5;
+    double transition_prob = 6;         // Probability of regime change
+    string model_version = 7;
+    double latency_ms = 8;
+}
+
+message RegimeProbability {
+    string regime = 1;
+    double probability = 2;
+}
+
+// -----------------------------------------------------------------------------
+// Ensemble Prediction
+// -----------------------------------------------------------------------------
+
+message EnsembleRequest {
+    string symbol = 1;
+    int32 horizon_days = 2;
+    bool include_sentiment = 3;
+    bool include_regime = 4;
+    bool include_iv = 5;
+    repeated string models = 6;         // Specific models to include
+}
+
+message EnsembleResponse {
+    string symbol = 1;
+    
+    // Combined prediction
+    string direction = 2;
+    double confidence = 3;
+    string recommended_strategy = 4;
+    
+    // Individual model outputs
+    DirectionResponse direction_model = 5;
+    SentimentResponse sentiment_model = 6;
+    RegimeResponse regime_model = 7;
+    IVForecastResponse iv_model = 8;
+    
+    // Ensemble metadata
+    repeated string models_used = 9;
+    map<string, double> model_weights = 10;
+    double total_latency_ms = 11;
+}
+
+// -----------------------------------------------------------------------------
+// Batch Inference
+// -----------------------------------------------------------------------------
+
+message BatchRequest {
+    repeated string symbols = 1;
+    string prediction_type = 2;         // direction, iv, sentiment, regime, ensemble
+    int32 horizon_days = 3;
+}
+
+message BatchResponse {
+    map<string, EnsembleResponse> results = 1;
+    int32 success_count = 2;
+    int32 error_count = 3;
+    repeated string errors = 4;
+    double total_latency_ms = 5;
+}
+
+// -----------------------------------------------------------------------------
+// Model Info
+// -----------------------------------------------------------------------------
+
+message ModelInfoRequest {
+    string model_name = 1;              // Empty = all models
+}
+
+message ModelInfoResponse {
+    repeated ModelInfo models = 1;
+}
+
+message ModelInfo {
+    string name = 1;
+    string version = 2;
+    string backend = 3;                 // triton, bentoml, local
+    string status = 4;                  // ready, loading, error
+    int64 last_updated = 5;
+    ModelMetrics metrics = 6;
+}
+
+message ModelMetrics {
+    double accuracy = 1;
+    double precision = 2;
+    double recall = 3;
+    double f1_score = 4;
+    double avg_latency_ms = 5;
+    int64 total_predictions = 6;
+}
+
+// -----------------------------------------------------------------------------
+// Health Check
+// -----------------------------------------------------------------------------
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+    bool healthy = 1;
+    string status = 2;
+    map<string, bool> model_status = 3;
+    double gpu_utilization = 4;
+    double memory_usage_mb = 5;
+    int64 predictions_today = 6;
+    double avg_latency_ms = 7;
+}

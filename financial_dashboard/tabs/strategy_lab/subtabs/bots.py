@@ -1041,5 +1041,36 @@ def create_bots_layout() -> html.Div:
 
 
 def get_layout():
-    """Return the Trading Bots subtab layout."""
-    return create_bots_layout()
+    """Return the Trading Bots subtab layout with Options Bot tab."""
+    # Try to import Options Bot UI
+    try:
+        from financial_dashboard.engines.options_engine.dashboard_ui import create_options_bots_layout
+        OPTIONS_BOTS_AVAILABLE = True
+    except ImportError:
+        OPTIONS_BOTS_AVAILABLE = False
+    
+    # Create tabs layout
+    if OPTIONS_BOTS_AVAILABLE:
+        return html.Div([
+            dbc.Tabs([
+                dbc.Tab(
+                    label="Strategy Bots",
+                    tab_id="strategy-bots-tab",
+                    children=[create_bots_layout()]
+                ),
+                dbc.Tab(
+                    label="Options Bots",
+                    tab_id="options-bots-tab",
+                    tab_style={"marginLeft": "auto"},
+                    label_style={"color": "#ffc107"},  # Gold color for GLD
+                    children=[
+                        html.Div([
+                            create_options_bots_layout()
+                        ], className="p-3")
+                    ]
+                ),
+            ], id="bots-tabs", active_tab="strategy-bots-tab", className="mb-3")
+        ])
+    else:
+        return create_bots_layout()
+

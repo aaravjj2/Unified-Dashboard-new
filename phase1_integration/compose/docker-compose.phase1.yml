@@ -1,0 +1,450 @@
+# =============================================================================
+# Alpaca Options Lab - Phase 1 Docker Compose
+# Full containerized stack with Redis, TimescaleDB, gRPC services, and ML serving
+# =============================================================================
+
+version: '3.8'
+
+networks:
+  alpaca-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  redis_data:
+  timescale_data:
+  triton_models:
+  parquet_data:
+
+# =============================================================================
+# Services
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Redis - Pub/Sub and Streams
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: alpaca-redis
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ---------------------------------------------------------------------------
+  # TimescaleDB - Time-series data storage
+  # ---------------------------------------------------------------------------
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: alpaca-timescaledb
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: timeseries_data
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./timescale/schema:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # NVIDIA Triton Inference Server (GPU optional)
+  # ---------------------------------------------------------------------------
+  triton:
+    image: nvcr.io/nvidia/tritonserver:23.12-py3
+    container_name: alpaca-triton
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "8100:8000"   # HTTP
+      - "8101:8001"   # gRPC
+      - "8102:8002"   # Metrics
+    volumes:
+      - ../triton_models:/models:ro
+    command: >
+      tritonserver 
+      --model-repository=/models 
+      --strict-model-config=false
+      --log-verbose=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v2/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    profiles:
+      - gpu  # Only start with --profile gpu
+
+  # ---------------------------------------------------------------------------
+  # Triton CPU-only fallback
+  # ---------------------------------------------------------------------------
+  triton-cpu:
+    image: nvcr.io/nvidia/tritonserver:23.12-py3-cpu
+    container_name: alpaca-triton-cpu
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "8100:8000"
+      - "8101:8001"
+      - "8102:8002"
+    volumes:
+      - ../triton_models:/models:ro
+    command: >
+      tritonserver 
+      --model-repository=/models 
+      --strict-model-config=false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v2/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    profiles:
+      - cpu  # Only start with --profile cpu
+
+  # ---------------------------------------------------------------------------
+  # BentoML - Price Direction Model
+  # ---------------------------------------------------------------------------
+  bento-price:
+    build:
+      context: ./bento/price_direction
+      dockerfile: Dockerfile
+    container_name: alpaca-bento-price
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "3000:3000"
+    environment:
+      BENTOML_PORT: 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # BentoML - IV Forecast Model
+  # ---------------------------------------------------------------------------
+  bento-iv:
+    build:
+      context: ./bento/iv_forecast
+      dockerfile: Dockerfile
+    container_name: alpaca-bento-iv
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "3001:3000"
+    environment:
+      BENTOML_PORT: 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # BentoML - Sentiment Classifier
+  # ---------------------------------------------------------------------------
+  bento-sentiment:
+    build:
+      context: ./bento/sentiment
+      dockerfile: Dockerfile
+    container_name: alpaca-bento-sentiment
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "3002:3000"
+    environment:
+      BENTOML_PORT: 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # gRPC Signal Service
+  # ---------------------------------------------------------------------------
+  signal-service:
+    build:
+      context: ..
+      dockerfile: phase1_integration/docker/Dockerfile.engines
+    container_name: alpaca-signal-service
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "50051:50051"
+    environment:
+      SIGNAL_SERVICE_PORT: 50051
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PYTHONPATH: /app:/app/phase1
+    command: ["python", "-m", "phase1.grpc.services.signal_service"]
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import grpc; print('ok')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ---------------------------------------------------------------------------
+  # gRPC Order Service
+  # ---------------------------------------------------------------------------
+  order-service:
+    build:
+      context: ..
+      dockerfile: phase1_integration/docker/Dockerfile.engines
+    container_name: alpaca-order-service
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "50052:50052"
+    environment:
+      ORDER_SERVICE_PORT: 50052
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PAPER_MODE: "true"
+      PYTHONPATH: /app:/app/phase1
+    command: ["python", "-m", "phase1.grpc.services.order_service"]
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import grpc; print('ok')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ---------------------------------------------------------------------------
+  # FastAPI Gateway
+  # ---------------------------------------------------------------------------
+  gateway:
+    build:
+      context: ..
+      dockerfile: phase1_integration/docker/Dockerfile.engines
+    container_name: alpaca-gateway
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "8090:8090"
+    environment:
+      GATEWAY_PORT: 8090
+      REDIS_HOST: redis
+      SIGNAL_SERVICE_HOST: signal-service
+      SIGNAL_SERVICE_PORT: 50051
+      ORDER_SERVICE_HOST: order-service
+      ORDER_SERVICE_PORT: 50052
+      TIMESCALE_HOST: timescaledb
+      TIMESCALE_PORT: 5432
+      BENTO_PRICE_URL: http://bento-price:3000
+      BENTO_IV_URL: http://bento-iv:3000
+      BENTO_SENTIMENT_URL: http://bento-sentiment:3000
+      TRITON_URL: http://triton-cpu:8000
+      PYTHONPATH: /app:/app/phase1
+    command: ["python", "-m", "phase1.gateway.main"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+      signal-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # Data Ingestion Worker
+  # ---------------------------------------------------------------------------
+  ingestion-worker:
+    build:
+      context: ..
+      dockerfile: phase1_integration/docker/Dockerfile.engines
+    container_name: alpaca-ingestion
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    environment:
+      REDIS_HOST: redis
+      TIMESCALE_HOST: timescaledb
+      TIMESCALE_PORT: 5432
+      ALPACA_API_KEY_ID: ${ALPACA_API_KEY_ID}
+      ALPACA_API_SECRET_KEY: ${ALPACA_API_SECRET_KEY}
+      PYTHONPATH: /app:/app/phase1
+    command: ["python", "-m", "phase1.ingestion.worker"]
+    volumes:
+      - parquet_data:/app/data/parquet
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # Alpaca Options Lab UI
+  # ---------------------------------------------------------------------------
+  ui:
+    build:
+      context: ..
+      dockerfile: phase1_integration/docker/Dockerfile.ui
+    container_name: alpaca-ui
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "8050:8050"
+    environment:
+      PORT: 8050
+      HOST: 0.0.0.0
+      GATEWAY_URL: http://gateway:8090
+      REDIS_HOST: redis
+      ALPACA_API_KEY_ID: ${ALPACA_API_KEY_ID}
+      ALPACA_API_SECRET_KEY: ${ALPACA_API_SECRET_KEY}
+    env_file:
+      - ../.env
+    depends_on:
+      gateway:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # Prometheus - Metrics collection
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: alpaca-prometheus
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+    profiles:
+      - monitoring
+
+  # ---------------------------------------------------------------------------
+  # Grafana - Metrics visualization
+  # ---------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:latest
+    container_name: alpaca-grafana
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    ports:
+      - "3003:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    profiles:
+      - monitoring
+
+# =============================================================================
+# Health Check Shortcut
+# =============================================================================
+# docker compose exec redis redis-cli ping
+# docker compose exec timescaledb pg_isready -U postgres
+# curl http://localhost:8090/health
+# curl http://localhost:8050/health

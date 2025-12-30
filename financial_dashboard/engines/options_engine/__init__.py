@@ -152,6 +152,38 @@ from .engine import (
     backtest_recipe,
 )
 
+# Live data handler with Alpaca + yfinance
+from .live_data import (
+    AlpacaDataHandler,
+    create_live_data_handler,
+)
+
+# Background scheduler for automated execution
+from .scheduler import (
+    OptionsScheduler,
+    get_options_scheduler,
+    create_gld_rsi_bot,
+    BotConfig,
+    BotStats,
+    OptionsBotDB,
+)
+
+# Dashboard UI components
+from .dashboard_ui import (
+    create_options_bots_layout,
+    create_options_connection_panel,
+    create_options_market_panel,
+    create_bot_builder_panel,
+    create_active_bots_panel,
+    add_options_tab_to_existing,
+    get_layout,
+)
+
+# Dashboard callbacks
+from .callbacks import (
+    register_options_callbacks,
+)
+
 __all__ = [
     # Schema
     "Recipe",
@@ -223,4 +255,24 @@ __all__ = [
     "AsyncRecipeRunner",
     "run_recipe_once",
     "backtest_recipe",
+    # Live Data Handler
+    "AlpacaDataHandler",
+    "create_live_data_handler",
+    # Scheduler
+    "OptionsScheduler",
+    "get_options_scheduler",
+    "create_gld_rsi_bot",
+    "BotConfig",
+    "BotStats",
+    "OptionsBotDB",
+    # Dashboard UI
+    "create_options_bots_layout",
+    "create_options_connection_panel",
+    "create_options_market_panel",
+    "create_bot_builder_panel",
+    "create_active_bots_panel",
+    "add_options_tab_to_existing",
+    "get_layout",
+    # Callbacks
+    "register_options_callbacks",
 ]

@@ -337,6 +337,19 @@ class AutoOrderExecutor:
                 self.pending_orders.remove(order)
         
         return cancelled
+
+    def create_order(self, symbol: str, quantity: int, side: str, 
+                     order_type: str = 'market', price: Optional[float] = None) -> Dict:
+        """Create a new order dictionary."""
+        return {
+            'symbol': symbol,
+            'quantity': quantity,
+            'side': side,
+            'type': order_type,
+            'price': price,
+            'status': 'created',
+            'created_at': datetime.now().isoformat()
+        }
     
     def _submit_order(self, order: Dict) -> Dict:
         """Internal order submission."""
@@ -455,6 +468,46 @@ class AutoRiskManager:
                 })
         
         return suggestions
+
+    def check_new_position_risk(self, account_value: float, max_loss: float, 
+                               current_positions_count: int, margin_usage: float) -> Dict:
+        """
+        Check if a new position is allowed based on risk parameters.
+        """
+        reasons = []
+        allowed = True
+        
+        # Check max loss per trade
+        if max_loss > account_value * self.max_single_trade_risk:
+            allowed = False
+            reasons.append(f"Max loss ${max_loss} exceeds {self.max_single_trade_risk*100}% of account")
+            
+        # Check position count
+        if current_positions_count >= self.max_position_size:
+            allowed = False
+            reasons.append(f"Max positions ({self.max_position_size}) reached")
+            
+        # Check margin
+        if margin_usage > 0.8:  # 80% margin limit
+            allowed = False
+            reasons.append(f"Margin usage {margin_usage*100:.1f}% too high")
+            
+        return {
+            'allowed': allowed,
+            'reasons': reasons
+        }
+
+    def check_position_limit(self, ticker: str, current_exposure_pct: float) -> Dict:
+        """Check if adding to a position exceeds concentration limits."""
+        limit = 0.25  # 25% max per ticker
+        allowed = current_exposure_pct < limit
+        
+        return {
+            'allowed': allowed,
+            'current_exposure': current_exposure_pct,
+            'limit': limit,
+            'message': f"Exposure {current_exposure_pct:.1%} exceeds limit {limit:.1%}" if not allowed else "OK"
+        }
 
 
 # =============================================================================
@@ -596,6 +649,29 @@ class AutoProfitTaker:
         
         return suggestions
 
+    def check_exit_conditions(self, position: Dict) -> Dict:
+        """Check if position should be exited."""
+        # Check profit target
+        profit_pct = position.get('profit_pct', 0)
+        target = self.get_profit_target(position.get('strategy', 'credit_spread'), 
+                                      position.get('dte', 30), 50)
+        
+        if profit_pct >= target:
+            return {
+                'should_exit': True,
+                'reason': f'Profit target {target:.0%} reached'
+            }
+            
+        # Check time exit
+        dte = position.get('dte', 30)
+        if dte <= 7:
+             return {
+                'should_exit': True,
+                'reason': f'Near expiry ({dte} DTE)'
+            }
+            
+        return {'should_exit': False}
+
 
 # =============================================================================
 # IMPROVEMENT 71-75: Auto Rolling Engine
@@ -725,6 +801,14 @@ class AutoRollingEngine:
             'close_order': close_order,
             'open_order': open_order,
             'timestamp': datetime.now().isoformat()
+        }
+
+    def check_roll_needed(self, position: Dict) -> Dict:
+        """Check if position needs rolling."""
+        should_roll, reason = self.should_roll(position)
+        return {
+            'needs_roll': should_roll,
+            'reason': reason
         }
 
 
