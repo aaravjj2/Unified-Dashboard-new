@@ -31,6 +31,8 @@ from .system_status_ui import create_system_status_panel
 from .strategy_engine_ui import create_strategy_analysis_tab
 # Import ML forecast tab (Phase 2)
 from forecast_ui.tabs.forecasts import create_forecast_tab
+# Import Trade Ops tab (Phase 4/5)
+from tradeops_ui.tabs.trade_ops import create_trade_ops_tab
 
 logger = logging.getLogger(__name__)
 
@@ -1124,6 +1126,12 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
                 create_system_status_panel()
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
+            
+            # Tab 9: Trade Operations (Phase 4/5)
+            dcc.Tab(label='⚙️ Trade Ops', children=[
+                create_trade_ops_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}),
             
         ], style={'marginBottom': '15px'}),
         

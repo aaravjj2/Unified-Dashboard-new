@@ -58,10 +58,15 @@ register_strategy_engine_callbacks(app)
 from forecast_ui.tabs.forecast_callbacks import register_forecast_callbacks
 register_forecast_callbacks(app)
 
+# Register Trade Ops callbacks (Phase 4/5 - Execution Router, Risk Guards, Alert Watchdog)
+from tradeops_ui.tabs.trade_ops_callbacks import register_tradeops_callbacks
+register_tradeops_callbacks(app)
+
 if __name__ == '__main__':
     print("🚀 Starting Enhanced Alpaca Options Lab on port 8053...")
-    print("📊 Features: Chain, Greeks & IV, Strategy Builder, Strategy Engine, AI, Forecast, Flow, Positions, Status")
+    print("📊 Features: Chain, Greeks & IV, Strategy Builder, Strategy Engine, AI, Forecast, Flow, Positions, Status, Trade Ops")
     print(f"🔐 Alpaca API: {'✅ Configured' if os.getenv('APCA_API_KEY_ID') else '❌ Not configured'}")
     print(f"📈 Data Sources: Alpaca → yfinance → mock")
     print("🔮 ML Forecast Engine: Phase 2 Active")
+    print("⚙️ Trade Ops Engine: Phase 4/5 Active")
     app.run(debug=False, port=8053, host='0.0.0.0')
