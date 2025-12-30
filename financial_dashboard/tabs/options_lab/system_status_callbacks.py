@@ -42,18 +42,23 @@ def register_system_status_callbacks(app):
         prevent_initial_call=False
     )
     def fetch_health_data(n_intervals: int):
-        """Fetch health data from services."""
+        """Fetch health data from services (synchronous version)."""
         try:
             health_service = get_health_service()
             
-            # Run async check synchronously
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Run async check safely without nested event loop issues
             try:
-                health_results = loop.run_until_complete(health_service.check_all())
-                health_data = {name: result.to_dict() for name, result in health_results.items()}
-            finally:
-                loop.close()
+                # Try to get existing event loop
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If loop is running (Dash's event loop), use synchronous fallback
+                    health_data = health_service.check_all_sync()
+                else:
+                    health_results = loop.run_until_complete(health_service.check_all())
+                    health_data = {name: result.to_dict() for name, result in health_results.items()}
+            except RuntimeError:
+                # No event loop exists or nested issue, use sync fallback
+                health_data = health_service.check_all_sync()
             
             # Get feed metrics
             data_fetcher = get_data_fetcher()

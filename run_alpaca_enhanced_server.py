@@ -13,6 +13,16 @@ from financial_dashboard.utils.load_keys_env import load_keys_env
 loaded_keys = load_keys_env()
 print(f"🔑 Loaded {len(loaded_keys)} API keys from keys.env")
 
+# Use ALPACA2 key for Options Lab (second key in keys.env)
+alpaca2_key = os.getenv('ALPACA2_KEY')
+alpaca2_secret = os.getenv('ALPACA2_SECRET')
+if alpaca2_key and alpaca2_secret:
+    os.environ['APCA_API_KEY_ID'] = alpaca2_key
+    os.environ['APCA_API_SECRET_KEY'] = alpaca2_secret
+    print(f"🔑 Using ALPACA2 key: {alpaca2_key[:8]}...")
+else:
+    print("⚠️ ALPACA2 key not found, using default APCA key")
+
 from dash import Dash
 import dash_bootstrap_components as dbc
 

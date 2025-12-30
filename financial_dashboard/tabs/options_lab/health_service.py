@@ -157,6 +157,70 @@ class HealthService:
                 output[name] = result
         return output
     
+    def check_all_sync(self) -> Dict[str, Dict[str, Any]]:
+        """Synchronous health check fallback for when async isn't possible."""
+        results = {}
+        
+        # Check Redis synchronously
+        try:
+            import redis
+            start = time.perf_counter()
+            client = redis.from_url(self.redis_url, socket_timeout=2.0)
+            pong = client.ping()
+            latency_ms = (time.perf_counter() - start) * 1000
+            
+            if pong:
+                status = "unhealthy" if latency_ms > self.REDIS_LATENCY_CRIT else "degraded" if latency_ms > self.REDIS_LATENCY_WARN else "healthy"
+                info = client.info(section="server")
+                results["redis"] = {
+                    "service_name": "redis",
+                    "status": status,
+                    "latency_ms": round(latency_ms, 2),
+                    "message": f"OK ({latency_ms:.1f}ms)",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "metadata": {"redis_version": info.get("redis_version", "?"), "connected_clients": info.get("connected_clients", 0)}
+                }
+            else:
+                results["redis"] = {"service_name": "redis", "status": "unhealthy", "latency_ms": latency_ms, "message": "PING failed"}
+            client.close()
+        except ImportError:
+            results["redis"] = {"service_name": "redis", "status": "unknown", "latency_ms": 0, "message": "redis not installed"}
+        except Exception as e:
+            results["redis"] = {"service_name": "redis", "status": "unhealthy", "latency_ms": 0, "message": f"Error: {str(e)[:40]}"}
+        
+        # Check TimescaleDB synchronously
+        try:
+            import psycopg2
+            start = time.perf_counter()
+            conn = psycopg2.connect(self.timescale_dsn, connect_timeout=5)
+            cur = conn.cursor()
+            cur.execute("SELECT 1")
+            val = cur.fetchone()[0]
+            latency_ms = (time.perf_counter() - start) * 1000
+            
+            if val == 1:
+                status = "unhealthy" if latency_ms > self.TIMESCALE_LATENCY_CRIT else "degraded" if latency_ms > self.TIMESCALE_LATENCY_WARN else "healthy"
+                cur.execute("SELECT version()")
+                pg_ver = cur.fetchone()[0][:40] if cur.rowcount else "?"
+                results["timescaledb"] = {
+                    "service_name": "timescaledb",
+                    "status": status,
+                    "latency_ms": round(latency_ms, 2),
+                    "message": f"OK ({latency_ms:.1f}ms)",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "metadata": {"pg_version": pg_ver}
+                }
+            else:
+                results["timescaledb"] = {"service_name": "timescaledb", "status": "unhealthy", "latency_ms": latency_ms, "message": "Query failed"}
+            cur.close()
+            conn.close()
+        except ImportError:
+            results["timescaledb"] = {"service_name": "timescaledb", "status": "unknown", "latency_ms": 0, "message": "psycopg2 not installed"}
+        except Exception as e:
+            results["timescaledb"] = {"service_name": "timescaledb", "status": "unknown", "latency_ms": 0, "message": f"DB unavailable: {str(e)[:30]}"}
+        
+        return results
+    
     def get_last_checks(self) -> Dict[str, Dict[str, Any]]:
         return {n: r.to_dict() for n, r in self._last_checks.items()}
 
