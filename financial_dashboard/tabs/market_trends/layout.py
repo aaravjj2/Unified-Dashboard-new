@@ -1,11 +1,12 @@
 """
-Market Trends Layout - Phase 1 Macro Dashboard
+Market Trends Layout - Phase 1 Macro Dashboard + Phase 5 Regime Detection
 
 Contains Dash components for OpenBB macro data integration.
 Includes GDP, CPI, and Unemployment visualizations.
+Phase 5: Added Regime Detection (HMM/K-Means)
 
-Author: Agent-P1
-Date: 2025-12-28
+Author: Agent-P1, Agent-P5
+Date: 2025-12-28, 2025-12-29
 """
 
 import dash
@@ -17,6 +18,17 @@ import logging
 from typing import Dict, List, Any, Optional
 
 logger = logging.getLogger(__name__)
+
+# Import Regime Engine (Phase 5)
+try:
+    from .regime_engine import (
+        RegimeDetector, detect_regimes, is_regime_detection_available,
+        REGIME_LABELS, REGIME_COLORS, REGIME_SOLID_COLORS
+    )
+    REGIME_AVAILABLE = is_regime_detection_available()
+except ImportError:
+    REGIME_AVAILABLE = False
+    logger.warning("Regime detection engine not available")
 
 
 def create_macro_indicator_card(
@@ -151,6 +163,170 @@ def create_macro_dashboard_tab() -> dbc.Tab:
                 
                 # Store for macro data
                 dcc.Store(id="store-macro-data"),
+                
+            ], className="p-3")
+        ]
+    )
+
+
+def create_regime_monitor_tab() -> dbc.Tab:
+    """
+    Create the Regime Monitor tab content (Phase 5).
+    
+    Features:
+    - Ticker input for regime analysis
+    - Method selection (HMM vs K-Means)
+    - Price chart with regime background colors
+    - Regime statistics cards
+    
+    Returns:
+        dbc.Tab containing regime monitor
+    """
+    return dbc.Tab(
+        label="🎯 Regime Monitor",
+        tab_id="tab-regime",
+        children=[
+            html.Div([
+                # Header
+                dbc.Row([
+                    dbc.Col([
+                        html.H5([
+                            html.I(className="fas fa-signal me-2"),
+                            "Market Regime Detection"
+                        ], className="mb-1"),
+                        html.P(
+                            "Detect Bull/Bear/Sideways market regimes using AI",
+                            className="text-muted small mb-3"
+                        )
+                    ], md=8),
+                    dbc.Col([
+                        dbc.Button(
+                            [html.I(className="fas fa-play me-2"), "Detect Regimes"],
+                            id="btn-detect-regimes",
+                            color="primary",
+                            size="sm",
+                            className="float-end"
+                        )
+                    ], md=4)
+                ]),
+                
+                # Controls Row
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardBody([
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.Label("Ticker", className="small text-muted"),
+                                        dbc.Input(
+                                            id="regime-ticker-input",
+                                            type="text",
+                                            value="SPY",
+                                            placeholder="Enter ticker...",
+                                            className="bg-dark text-white border-secondary",
+                                            style={'maxWidth': '150px'}
+                                        )
+                                    ], md=3),
+                                    dbc.Col([
+                                        html.Label("Method", className="small text-muted"),
+                                        dcc.RadioItems(
+                                            id="regime-method-select",
+                                            options=[
+                                                {'label': ' HMM (Statistical)', 'value': 'hmm'},
+                                                {'label': ' K-Means (Clustering)', 'value': 'kmeans'}
+                                            ],
+                                            value='hmm',
+                                            inline=True,
+                                            className="text-white",
+                                            labelStyle={'marginRight': '15px'}
+                                        )
+                                    ], md=5),
+                                    dbc.Col([
+                                        html.Label("Lookback", className="small text-muted"),
+                                        dcc.Dropdown(
+                                            id="regime-lookback-select",
+                                            options=[
+                                                {'label': '6 Months', 'value': 180},
+                                                {'label': '1 Year', 'value': 365},
+                                                {'label': '2 Years', 'value': 730},
+                                            ],
+                                            value=365,
+                                            clearable=False,
+                                            className="dash-dropdown-dark"
+                                        )
+                                    ], md=4)
+                                ])
+                            ], className="py-2")
+                        ], className="bg-dark border-secondary mb-3")
+                    ])
+                ]),
+                
+                # Current Regime Banner
+                html.Div(id="regime-current-banner", className="mb-3"),
+                
+                # Main Chart
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.H6([
+                                    html.I(className="fas fa-chart-line me-2"),
+                                    "Price Chart with Regime Backgrounds"
+                                ], className="mb-0")
+                            ]),
+                            dbc.CardBody([
+                                dcc.Loading(
+                                    type="circle",
+                                    children=[
+                                        dcc.Graph(
+                                            id="graph-regime-chart",
+                                            config={'displayModeBar': True, 'displaylogo': False},
+                                            style={'height': '400px'}
+                                        )
+                                    ]
+                                )
+                            ])
+                        ], className="shadow-sm")
+                    ], md=9),
+                    
+                    # Stats Column
+                    dbc.Col([
+                        dbc.Card([
+                            dbc.CardHeader([
+                                html.H6([
+                                    html.I(className="fas fa-chart-pie me-2"),
+                                    "Regime Statistics"
+                                ], className="mb-0")
+                            ]),
+                            dbc.CardBody([
+                                html.Div(id="regime-stats-cards")
+                            ])
+                        ], className="shadow-sm h-100")
+                    ], md=3)
+                ], className="mb-3"),
+                
+                # Legend
+                dbc.Row([
+                    dbc.Col([
+                        html.Div([
+                            html.Span([
+                                html.Span("●", style={'color': REGIME_SOLID_COLORS[2], 'fontSize': '1.5em'}),
+                                html.Span(" Bull  ", className="text-white small me-3"),
+                            ]),
+                            html.Span([
+                                html.Span("●", style={'color': REGIME_SOLID_COLORS[1], 'fontSize': '1.5em'}),
+                                html.Span(" Sideways  ", className="text-white small me-3"),
+                            ]),
+                            html.Span([
+                                html.Span("●", style={'color': REGIME_SOLID_COLORS[0], 'fontSize': '1.5em'}),
+                                html.Span(" Bear", className="text-white small"),
+                            ]),
+                        ], className="d-flex justify-content-center")
+                    ])
+                ]) if REGIME_AVAILABLE else html.Div(),
+                
+                # Store for regime data
+                dcc.Store(id="store-regime-data"),
                 
             ], className="p-3")
         ]
@@ -429,6 +605,102 @@ def create_empty_figure(message: str = "Loading...") -> go.Figure:
     return fig
 
 
+def create_regime_chart_figure(
+    dates: List,
+    prices: List[float],
+    regimes: List[int],
+    ticker: str,
+    method: str
+) -> go.Figure:
+    """
+    Create price chart with regime-colored background regions.
+    
+    Args:
+        dates: List of datetime objects
+        prices: List of price values
+        regimes: List of regime labels (0=Bear, 1=Sideways, 2=Bull)
+        ticker: Stock ticker symbol
+        method: Detection method used (HMM or K-Means)
+        
+    Returns:
+        Plotly Figure with regime visualization
+    """
+    import numpy as np
+    
+    fig = go.Figure()
+    
+    # Add price line
+    fig.add_trace(go.Scatter(
+        x=dates,
+        y=prices,
+        mode='lines',
+        name=f'{ticker} Price',
+        line=dict(color='white', width=2),
+        hovertemplate='%{x}<br>Price: $%{y:.2f}<extra></extra>'
+    ))
+    
+    # Add regime background colors
+    if len(regimes) > 0:
+        # Find regime change points
+        regime_changes = [0]
+        for i in range(1, len(regimes)):
+            if regimes[i] != regimes[i-1]:
+                regime_changes.append(i)
+        regime_changes.append(len(regimes))
+        
+        # Add vrect for each regime period
+        for i in range(len(regime_changes) - 1):
+            start_idx = regime_changes[i]
+            end_idx = regime_changes[i + 1] - 1
+            
+            if start_idx >= len(dates) or end_idx >= len(dates):
+                continue
+                
+            regime = regimes[start_idx]
+            color = REGIME_COLORS.get(regime, 'rgba(128,128,128,0.2)')
+            
+            fig.add_vrect(
+                x0=dates[start_idx],
+                x1=dates[end_idx],
+                fillcolor=color,
+                layer='below',
+                line_width=0,
+            )
+    
+    # Add legend for regimes
+    for regime, label in REGIME_LABELS.items():
+        color = REGIME_SOLID_COLORS.get(regime, 'gray')
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode='markers',
+            name=label,
+            marker=dict(size=15, color=color, symbol='square'),
+            showlegend=True
+        ))
+    
+    fig.update_layout(
+        title=dict(
+            text=f"{ticker} Market Regimes ({method})",
+            font=dict(size=14)
+        ),
+        xaxis_title="Date",
+        yaxis_title="Price ($)",
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
+        margin=dict(l=50, r=20, t=60, b=50),
+        hovermode='x unified'
+    )
+    
+    _apply_dark_theme(fig)
+    return fig
+
+
 # =============================================================================
 # Main Layout
 # =============================================================================
@@ -459,6 +731,9 @@ def get_layout() -> html.Div:
         dbc.Tabs([
             # Macro Dashboard Tab
             create_macro_dashboard_tab(),
+            
+            # Regime Monitor Tab (Phase 5)
+            create_regime_monitor_tab(),
             
             # Placeholder for other tabs
             dbc.Tab(
@@ -567,7 +842,170 @@ def register_callbacks(app):
                 create_empty_figure("Error"),
                 None
             ]
+    
+    # ==== Phase 5: Regime Detection Callbacks ====
+    
+    @app.callback(
+        [
+            Output("graph-regime-chart", "figure"),
+            Output("regime-current-banner", "children"),
+            Output("regime-current-banner", "style"),
+            Output("regime-stats-cards", "children"),
+            Output("store-regime-data", "data")
+        ],
+        [
+            Input("btn-detect-regimes", "n_clicks")
+        ],
+        [
+            State("input-regime-ticker", "value"),
+            State("radio-regime-method", "value"),
+            State("select-regime-lookback", "value")
+        ],
+        prevent_initial_call=True
+    )
+    def detect_market_regimes(n_clicks, ticker, method, lookback):
+        """
+        Detect market regimes when button is clicked.
+        
+        Args:
+            n_clicks: Button click count
+            ticker: Stock ticker symbol
+            method: Detection method ('hmm' or 'kmeans')
+            lookback: Number of days to analyze
+            
+        Returns:
+            Tuple of (figure, banner_text, banner_style, stats_cards, store_data)
+        """
+        import yfinance as yf
+        from datetime import datetime, timedelta
+        
+        if not n_clicks or not ticker:
+            return [
+                create_empty_figure("Enter ticker and click Detect"),
+                "No Data",
+                {"backgroundColor": "gray", "color": "white", "padding": "10px", 
+                 "borderRadius": "8px", "textAlign": "center", "fontSize": "18px"},
+                [],
+                None
+            ]
+        
+        try:
+            ticker = ticker.upper().strip()
+            lookback = int(lookback) if lookback else 252
+            
+            # Fetch historical data
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=int(lookback * 1.5))  # Extra buffer
+            
+            logger.info(f"Fetching {ticker} data for regime detection...")
+            stock = yf.Ticker(ticker)
+            hist = stock.history(start=start_date, end=end_date)
+            
+            if hist.empty or len(hist) < 50:
+                raise ValueError(f"Insufficient data for {ticker}")
+            
+            # Trim to exact lookback
+            hist = hist.tail(lookback)
+            
+            dates = hist.index.tolist()
+            prices = hist['Close'].values.tolist()
+            
+            # Detect regimes
+            regimes, detector = detect_regimes(
+                prices=prices,
+                method=method,
+                n_regimes=3,
+                window=20
+            )
+            
+            # Get current regime
+            current_regime = detector.get_current_regime()
+            current_label = REGIME_LABELS.get(current_regime, "Unknown")
+            current_color = REGIME_SOLID_COLORS.get(current_regime, "gray")
+            
+            # Create chart
+            fig = create_regime_chart_figure(
+                dates=dates,
+                prices=prices,
+                regimes=regimes.tolist(),
+                ticker=ticker,
+                method=method.upper()
+            )
+            
+            # Banner style
+            banner_style = {
+                "backgroundColor": current_color,
+                "color": "white",
+                "padding": "15px",
+                "borderRadius": "8px",
+                "textAlign": "center",
+                "fontSize": "20px",
+                "fontWeight": "bold"
+            }
+            banner_text = f"Current Regime: {current_label}"
+            
+            # Stats cards
+            stats = detector.get_regime_stats()
+            stats_cards = []
+            
+            for regime_id, regime_stats in stats.items():
+                regime_name = REGIME_LABELS.get(regime_id, f"Regime {regime_id}")
+                regime_color = REGIME_SOLID_COLORS.get(regime_id, "gray")
+                
+                card = dbc.Card([
+                    dbc.CardHeader(
+                        regime_name,
+                        style={"backgroundColor": regime_color, "color": "white", 
+                               "fontWeight": "bold", "textAlign": "center"}
+                    ),
+                    dbc.CardBody([
+                        html.P([
+                            html.Strong("Days: "),
+                            f"{regime_stats['count']}"
+                        ], className="mb-1"),
+                        html.P([
+                            html.Strong("Frequency: "),
+                            f"{regime_stats['frequency']:.1%}"
+                        ], className="mb-1"),
+                        html.P([
+                            html.Strong("Avg Return: "),
+                            f"{regime_stats['mean_return']:.2%}"
+                        ], className="mb-1"),
+                        html.P([
+                            html.Strong("Volatility: "),
+                            f"{regime_stats['volatility']:.2%}"
+                        ], className="mb-0"),
+                    ], className="p-2")
+                ], className="h-100")
+                
+                stats_cards.append(dbc.Col(card, md=4, className="mb-2"))
+            
+            stats_row = dbc.Row(stats_cards)
+            
+            # Store data
+            store_data = {
+                "ticker": ticker,
+                "method": method,
+                "lookback": lookback,
+                "current_regime": current_regime,
+                "regime_counts": {str(k): v for k, v in stats.items()},
+                "last_updated": datetime.now().isoformat()
+            }
+            
+            logger.info(f"Regime detection complete for {ticker}: {current_label}")
+            return [fig, banner_text, banner_style, stats_row, store_data]
+            
+        except Exception as e:
+            logger.error(f"Regime detection error: {e}")
+            return [
+                create_empty_figure(f"Error: {str(e)[:50]}"),
+                f"Error: {str(e)[:30]}",
+                {"backgroundColor": "#dc3545", "color": "white", "padding": "10px",
+                 "borderRadius": "8px", "textAlign": "center"},
+                [],
+                None
+            ]
 
 
 # Export
-__all__ = ['get_layout', 'register_callbacks', 'create_macro_dashboard_tab']
+__all__ = ['get_layout', 'register_callbacks', 'create_macro_dashboard_tab', 'create_regime_monitor_tab']
