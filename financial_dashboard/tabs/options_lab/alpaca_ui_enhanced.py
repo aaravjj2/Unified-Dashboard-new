@@ -29,6 +29,8 @@ import logging
 from .system_status_ui import create_system_status_panel
 # Import strategy engine panel (Phase 3)
 from .strategy_engine_ui import create_strategy_analysis_tab
+# Import ML forecast tab (Phase 2)
+from dash.tabs.forecasts import create_forecast_tab
 
 logger = logging.getLogger(__name__)
 
@@ -1094,7 +1096,13 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 6: Flow Analysis
+            # Tab 6: ML Forecast (Phase 2)
+            dcc.Tab(label='🔮 Forecast', children=[
+                create_forecast_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#9c27b0'}),
+            
+            # Tab 7: Flow Analysis
             dcc.Tab(label='🔥 Flow', children=[
                 html.Div([
                     create_flow_analysis_panel()
