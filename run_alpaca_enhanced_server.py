@@ -36,6 +36,10 @@ import financial_dashboard.tabs.options_lab.alpaca_callbacks
 from financial_dashboard.tabs.options_lab.alpaca_callbacks_enhanced import register_enhanced_callbacks
 register_enhanced_callbacks(app)
 
+# Register system status callbacks (Phase 1 Data Fabric)
+from financial_dashboard.tabs.options_lab.system_status_callbacks import register_system_status_callbacks
+register_system_status_callbacks(app)
+
 if __name__ == '__main__':
     print("🚀 Starting Enhanced Alpaca Options Lab on port 8053...")
     print("📊 Features: Chain, Greeks & IV, Strategy Builder, AI, Flow, Positions")

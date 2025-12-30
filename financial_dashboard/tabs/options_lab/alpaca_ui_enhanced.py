@@ -14,6 +14,7 @@ Major enhancements:
 - Smart Analysis Engine
 - Auto Trading Engine
 - Monitoring & Alerts System
+- System Status (Phase 1 Data Fabric)
 """
 
 import dash
@@ -23,6 +24,9 @@ from typing import Dict, List, Optional
 import pandas as pd
 import numpy as np
 import logging
+
+# Import system status panel
+from .system_status_ui import create_system_status_panel
 
 logger = logging.getLogger(__name__)
 
@@ -1096,6 +1100,12 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
                     create_positions_panel(),
                     create_risk_analytics_panel()
                 ], style={'padding': '15px'})
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
+            
+            # Tab 7: System Status (Phase 1 Data Fabric)
+            dcc.Tab(label='🔧 Status', children=[
+                create_system_status_panel()
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
