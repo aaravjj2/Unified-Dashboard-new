@@ -373,6 +373,27 @@ def create_inputs_panel():
                 )
             ], className="mb-4"),
             
+            # Quick Presets Dropdown
+            html.Div([
+                html.Label([
+                    html.I(className="bi bi-lightning-charge me-1"),
+                    "Quick Presets"
+                ], className="small fw-bold text-white mb-1"),
+                dcc.Dropdown(
+                    id='mf-preset-dropdown',
+                    options=[
+                        {'label': '⚡ Fast & Light (Prophet + ARIMA)', 'value': 'fast'},
+                        {'label': '⚖️ Balanced (Prophet + LSTM + NeuralProphet)', 'value': 'balanced'},
+                        {'label': '🎯 Maximum Accuracy (All Models)', 'value': 'all'},
+                        {'label': '🚀 GPU Beast Mode (Neural Models)', 'value': 'gpu'},
+                    ],
+                    value=None,
+                    placeholder='Select a preset...',
+                    className="dash-dropdown-dark mb-2",
+                    style={'backgroundColor': COLORS['card']}
+                )
+            ], className="mb-3"),
+            
             # Run Button - Large and prominent
             dbc.Button([
                 html.I(className="bi bi-play-fill me-2"),
@@ -383,6 +404,24 @@ def create_inputs_panel():
                 size="lg",
                 className="w-100 fw-bold",
                 style={'borderRadius': '0.5rem'}
+            ),
+            
+            # NEW: Train All Models Button
+            dbc.Button([
+                html.I(className="bi bi-lightning-charge-fill me-2"),
+                html.Span("⚡ TRAIN ALL MODELS", className="fw-bold"),
+                html.Small(" (One-Click)", className="d-block text-white-50", style={'fontSize': '10px'})
+            ],
+                id='mf-train-all-btn',
+                color="warning",
+                size="lg",
+                n_clicks=0,
+                className="w-100 mt-2",
+                style={
+                    'borderRadius': '0.5rem',
+                    'boxShadow': '0 4px 15px rgba(255, 193, 7, 0.3)',
+                    'transition': 'all 0.3s ease'
+                }
             ),
         ], className="bg-dark")
     ], className="h-100 bg-dark border-secondary")
@@ -716,6 +755,27 @@ def register_callbacks(app, SH=None):
     
     from dash.exceptions import PreventUpdate
     
+    # Callback: Apply preset to model checklist
+    @app.callback(
+        Output(COMPONENT_IDS['model_checklist'], 'value'),
+        Input('mf-preset-dropdown', 'value'),
+        prevent_initial_call=True
+    )
+    def apply_preset(preset):
+        """Apply quick preset to model selection."""
+        if not preset:
+            raise PreventUpdate
+        
+        PRESETS = {
+            'fast': ['prophet', 'arima'],
+            'balanced': ['prophet', 'lstm', 'neuralprophet'],
+            'all': ['prophet', 'arima', 'lstm', 'qlib', 'neuralprophet', 'nbeats', 'nhits', 'neural_ensemble', 'ensemble'],
+            'gpu': ['lstm', 'nbeats', 'nhits', 'neural_ensemble']
+        }
+        
+        return PRESETS.get(preset, ['prophet', 'ensemble'])
+    
+    # Run Forecast callback - accepts BOTH regular Run button AND Train All button
     @app.callback(
         Output(COMPONENT_IDS['forecast_store'], 'data'),
         Output(COMPONENT_IDS['forecast_chart'], 'figure'),
@@ -728,15 +788,43 @@ def register_callbacks(app, SH=None):
         Output(COMPONENT_IDS['sentiment_distribution'], 'children'),
         Output(COMPONENT_IDS['sentiment_headlines'], 'children'),
         Input(COMPONENT_IDS['run_btn'], 'n_clicks'),
+        Input('mf-train-all-btn', 'n_clicks'),  # Train All button as additional input
         State(COMPONENT_IDS['ticker_input'], 'value'),
         State(COMPONENT_IDS['horizon_select'], 'value'),
         State(COMPONENT_IDS['model_checklist'], 'value'),
         State(COMPONENT_IDS['interval_checklist'], 'value'),
         prevent_initial_call=True
     )
-    def run_forecast(n_clicks, ticker, horizon, selected_models, selected_intervals):
-        """Main forecast generation callback with AI sentiment."""
-        if not n_clicks or not ticker:
+    def run_forecast(n_clicks, train_all_clicks, ticker, horizon, selected_models, selected_intervals):
+        """Main forecast generation callback with AI sentiment.
+        
+        Triggered by either:
+        - Regular 'Generate Forecast' button (uses selected models)
+        - 'Train All Models' button (automatically selects ALL models)
+        """
+        from dash import callback_context
+        
+        # Determine which button triggered the callback
+        ctx = callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        
+        triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        
+        # If Train All was clicked, use ALL available models
+        if triggered_id == 'mf-train-all-btn':
+            if not train_all_clicks:
+                raise PreventUpdate
+            # Override selected_models with ALL models
+            selected_models = ['prophet', 'arima', 'lstm', 'neuralprophet', 'ensemble']
+            if NEURAL_FORECAST_AVAILABLE:
+                selected_models.extend(['nbeats', 'nhits', 'neural_ensemble'])
+            logger.info(f"⚡ TRAIN ALL triggered - using all models: {selected_models}")
+        else:
+            if not n_clicks:
+                raise PreventUpdate
+        
+        if not ticker:
             raise PreventUpdate
         
         ticker = ticker.strip().upper()

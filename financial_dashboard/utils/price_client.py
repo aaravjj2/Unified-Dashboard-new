@@ -168,9 +168,9 @@ class PriceClient:
         Args:
             auto_validate: If True, ensure environment is loaded via load_env
         """
-        # Always load environment and validate keys
+        # Load environment - use graceful degradation if keys are missing
         from .load_env import load_environment
-        env_status = load_environment(raise_on_missing=True)
+        env_status = load_environment(raise_on_missing=False)
         # Alpaca credentials (normalize ALPACA_API_KEY → APCA_API_KEY_ID)
         # Allow explicit keys to be passed to the client for per-purpose keys
         self.alpaca_key_id = alpaca_key_id or os.getenv('APCA_API_KEY_ID') or os.getenv('ALPACA_API_KEY', '')

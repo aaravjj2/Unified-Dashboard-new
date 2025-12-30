@@ -1478,7 +1478,7 @@ def _create_improvement_cards(result: Dict) -> html.Div:
                     ], className="mb-3 text-center"),
                     dbc.Table([
                         html.Tbody(momentum_rows)
-                    ], size="sm", striped=True, style={'backgroundColor': 'rgba(0,0,0,0.3)'}
+                    ], size="sm", striped=True, style={'backgroundColor': 'rgba(0,0,0,0.3)'})
                 ])
             ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
         ], width=4))
