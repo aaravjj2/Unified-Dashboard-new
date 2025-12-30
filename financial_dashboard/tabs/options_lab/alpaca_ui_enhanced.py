@@ -27,6 +27,8 @@ import logging
 
 # Import system status panel
 from .system_status_ui import create_system_status_panel
+# Import strategy engine panel (Phase 3)
+from .strategy_engine_ui import create_strategy_analysis_tab
 
 logger = logging.getLogger(__name__)
 
@@ -1075,7 +1077,13 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 4: ML Recommendations
+            # Tab 4: Strategy Engine (Phase 3 - IC Builder, Picker, Greeks Rollup)
+            dcc.Tab(label='🦅 Strategy Engine', children=[
+                create_strategy_analysis_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#00d4ff'}),
+            
+            # Tab 5: ML Recommendations
             dcc.Tab(label='🤖 AI', children=[
                 html.Div([
                     create_ml_recommendations_panel(),
@@ -1086,7 +1094,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 5: Flow Analysis
+            # Tab 6: Flow Analysis
             dcc.Tab(label='🔥 Flow', children=[
                 html.Div([
                     create_flow_analysis_panel()
@@ -1094,7 +1102,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 6: Positions & Risk
+            # Tab 7: Positions & Risk
             dcc.Tab(label='💼 Positions', children=[
                 html.Div([
                     create_positions_panel(),
@@ -1103,7 +1111,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 7: System Status (Phase 1 Data Fabric)
+            # Tab 8: System Status (Phase 1 Data Fabric)
             dcc.Tab(label='🔧 Status', children=[
                 create_system_status_panel()
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
@@ -1128,6 +1136,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
         dcc.Store(id='positions-store', data=[]),
         dcc.Store(id='watchlist-store', data=['SPY', 'QQQ', 'AAPL']),
         dcc.Store(id='alerts-store', data=[]),
+        dcc.Store(id='strategy-engine-refresh-trigger', data=0),  # Phase 3 Greeks rollup trigger
         dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
         dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
         

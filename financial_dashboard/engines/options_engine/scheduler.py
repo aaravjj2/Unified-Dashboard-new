@@ -447,6 +447,7 @@ class OptionsScheduler:
         self._running_bots: Dict[str, dict] = {}  # bot_id -> runtime info
         self._tasks: Dict[str, asyncio.Task] = {} # bot_id -> asyncio.Task
         self._lock = threading.Lock()
+        self._shutdown = False
         
         # Asyncio Loop Management
         self.loop = asyncio.new_event_loop()
@@ -469,10 +470,16 @@ class OptionsScheduler:
     
     def _auto_start_bots(self):
         """Restart bots that were running before shutdown."""
+        # Give the loop a moment to start
+        import time
+        time.sleep(0.1)
         for config in self.db.get_all_bots():
             if config.status == "running":
                 logger.info(f"Auto-starting bot: {config.name}")
-                self.start_bot(config.bot_id)
+                try:
+                    self.start_bot(config.bot_id)
+                except Exception as e:
+                    logger.error(f"Failed to auto-start bot {config.name}: {e}")
     
     # =========================================================================
     # BOT LIFECYCLE
@@ -609,7 +616,10 @@ class OptionsScheduler:
     
     async def _run_bot_loop_async(self, bot_id: str):
         """Main execution loop for a bot (runs in asyncio task)."""
-        # Run DB access in executor
+        # Run DB access in executor - but only if not shut down
+        if self._shutdown:
+            return
+            
         config = await self.loop.run_in_executor(self.executor, self.db.get_bot, bot_id)
         if not config:
             return
@@ -619,15 +629,12 @@ class OptionsScheduler:
             recipe = Recipe.model_validate_json(config.recipe_json)
             
             # Create executor for this bot
-            # Note: RecipeExecutor init is lightweight, but load_recipe might do I/O?
-            # Let's assume it's safe or wrap it if needed.
             executor = RecipeExecutor(
                 data_handler=self.data_handler,
                 broker=self.broker,
             )
             
             # Load the recipe and get the context
-            # Running in executor just in case
             context = await self.loop.run_in_executor(self.executor, executor.load_recipe, recipe)
             
             # Start the bot (sets state to RUNNING)
@@ -635,7 +642,7 @@ class OptionsScheduler:
             
             logger.info(f"Bot {config.name} starting execution loop (interval={config.check_interval}s)")
             
-            while True:
+            while not self._shutdown:
                 try:
                     # Check market status (run in executor)
                     market_status = await self.loop.run_in_executor(self.executor, self.data_handler.get_market_status)
@@ -663,9 +670,15 @@ class OptionsScheduler:
                     logger.info(f"Bot {config.name} task cancelled")
                     raise
                 except Exception as e:
+                    if self._shutdown:
+                        break
                     logger.exception(f"Error in bot loop for {bot_id}")
-                    await self.loop.run_in_executor(self.executor, self._increment_error, bot_id)
-                    await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "error", str(e))
+                    try:
+                        await self.loop.run_in_executor(self.executor, self._increment_error, bot_id)
+                        await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "error", str(e))
+                    except RuntimeError:
+                        # Executor shut down
+                        break
                     
                     # Back off on errors
                     await asyncio.sleep(30)
@@ -914,12 +927,23 @@ class OptionsScheduler:
     
     def stop_all(self):
         """Stop all running bots."""
+        self._shutdown = True
         for bot_id in list(self._running_bots.keys()):
             self.stop_bot(bot_id)
     
+    def shutdown(self):
+        """Gracefully shutdown the scheduler."""
+        self._shutdown = True
+        self.stop_all()
+        self.executor.shutdown(wait=False)
+        self.loop.call_soon_threadsafe(self.loop.stop)
+    
     def __del__(self):
         """Cleanup on destruction."""
-        self.stop_all()
+        try:
+            self.shutdown()
+        except Exception:
+            pass
 
 
 # =============================================================================

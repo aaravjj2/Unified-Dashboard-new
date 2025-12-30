@@ -40,9 +40,13 @@ register_enhanced_callbacks(app)
 from financial_dashboard.tabs.options_lab.system_status_callbacks import register_system_status_callbacks
 register_system_status_callbacks(app)
 
+# Register strategy engine callbacks (Phase 3 - Iron Condor, Strategy Picker, Max Pain, Greeks Rollup)
+from financial_dashboard.tabs.options_lab.strategy_engine_callbacks import register_strategy_engine_callbacks
+register_strategy_engine_callbacks(app)
+
 if __name__ == '__main__':
     print("🚀 Starting Enhanced Alpaca Options Lab on port 8053...")
-    print("📊 Features: Chain, Greeks & IV, Strategy Builder, AI, Flow, Positions")
+    print("📊 Features: Chain, Greeks & IV, Strategy Builder, Strategy Engine, AI, Flow, Positions, Status")
     print(f"🔐 Alpaca API: {'✅ Configured' if os.getenv('APCA_API_KEY_ID') else '❌ Not configured'}")
     print(f"📈 Data Sources: Alpaca → yfinance → mock")
     app.run(debug=False, port=8053, host='0.0.0.0')

@@ -272,107 +272,122 @@ def register_callbacks(app):
     )
     def calculate_and_visualize_strategy(n_clicks, price_data, width, contracts, credit, expiry):
         """Calculate strategy metrics and generate payoff chart"""
-        
-        # Get underlying price
-        underlying_price = price_data.get('price', 450.00) if price_data else 450.00
-        
-        # Validate inputs
-        if not width or not contracts or not credit:
-            width = width or 10
-            contracts = contracts or 1
-            credit = credit or 2.50
-        
-        # Calculate strike prices for iron condor
-        # Put strikes below current price
-        put_short_strike = underlying_price - width
-        put_long_strike = put_short_strike - width
-        
-        # Call strikes above current price
-        call_short_strike = underlying_price + width
-        call_long_strike = call_short_strike + width
-        
-        # Create iron condor params
-        params = IronCondorParams(
-            underlying_price=underlying_price,
-            put_long_strike=put_long_strike,
-            put_short_strike=put_short_strike,
-            call_short_strike=call_short_strike,
-            call_long_strike=call_long_strike,
-            premium_received=credit,
-            contracts=contracts
-        )
-        
-        # Calculate metrics using Iron Condor engine
-        condor = IronCondor(params)
-        summary = condor.get_summary()
-        
-        # Generate payoff curve
-        prices, pnls = condor.generate_pnl_curve(num_points=150, price_range_pct=0.25)
-        
-        # Also generate T+0 curve using PayoffGenerator
-        # Calculate days to expiry
-        if expiry:
-            try:
-                expiry_date = datetime.strptime(expiry, '%Y-%m-%d')
-                days_to_expiry = (expiry_date - datetime.now()).days
-            except:
+        try:
+            # Get underlying price with null safety
+            if price_data is None:
+                price_data = {'price': 450.00, 'ticker': 'SPY'}
+            underlying_price = price_data.get('price', 450.00)
+            
+            # Validate inputs
+            if not width or not contracts or not credit:
+                width = width or 10
+                contracts = contracts or 1
+                credit = credit or 2.50
+            
+            # Calculate strike prices for iron condor
+            # Put strikes below current price
+            put_short_strike = underlying_price - width
+            put_long_strike = put_short_strike - width
+            
+            # Call strikes above current price
+            call_short_strike = underlying_price + width
+            call_long_strike = call_short_strike + width
+            
+            # Create iron condor params
+            params = IronCondorParams(
+                underlying_price=underlying_price,
+                put_long_strike=put_long_strike,
+                put_short_strike=put_short_strike,
+                call_short_strike=call_short_strike,
+                call_long_strike=call_long_strike,
+                premium_received=credit,
+                contracts=contracts
+            )
+            
+            # Calculate metrics using Iron Condor engine
+            condor = IronCondor(params)
+            summary = condor.get_summary()
+            
+            # Generate payoff curve
+            prices, pnls = condor.generate_pnl_curve(num_points=150, price_range_pct=0.25)
+            
+            # Also generate T+0 curve using PayoffGenerator
+            # Calculate days to expiry
+            if expiry:
+                try:
+                    expiry_date = datetime.strptime(expiry, '%Y-%m-%d')
+                    days_to_expiry = (expiry_date - datetime.now()).days
+                except:
+                    days_to_expiry = 30
+            else:
                 days_to_expiry = 30
-        else:
-            days_to_expiry = 30
-        
-        # Create option legs for PayoffGenerator
-        legs = [
-            OptionLeg(put_long_strike, 'put', 'long', credit * 0.2, contracts),
-            OptionLeg(put_short_strike, 'put', 'short', credit * 0.6, contracts),
-            OptionLeg(call_short_strike, 'call', 'short', credit * 0.6, contracts),
-            OptionLeg(call_long_strike, 'call', 'long', credit * 0.2, contracts),
-        ]
-        
-        payoff_gen = PayoffGenerator(underlying_price, legs, days_to_expiry)
-        prices_today, pnls_today = payoff_gen.generate_payoff_today(num_points=150, price_range_pct=0.25)
-        
-        # Create visualization
-        breakevens = [summary['lower_breakeven'], summary['upper_breakeven']]
-        fig = create_payoff_chart(
-            prices=prices,
-            pnls=pnls,
-            underlying_price=underlying_price,
-            breakevens=breakevens,
-            max_profit=summary['max_profit'],
-            max_loss=summary['max_loss'],
-            title=f"Iron Condor on {price_data.get('ticker', 'SPY')} - ${underlying_price:.2f}",
-            show_today=True,
-            prices_today=prices_today,
-            pnls_today=pnls_today
-        )
-        
-        # Format display values
-        max_profit_display = f"${summary['max_profit']:.2f}"
-        max_loss_display = f"${summary['max_loss']:.2f}"
-        lower_be_display = f"${summary['lower_breakeven']:.2f}"
-        upper_be_display = f"${summary['upper_breakeven']:.2f}"
-        risk_reward_display = f"{summary['risk_reward_ratio']:.2f}"
-        
-        # Store strategy params
-        strategy_data = {
-            'underlying_price': underlying_price,
-            'strikes': {
-                'put_long': put_long_strike,
-                'put_short': put_short_strike,
-                'call_short': call_short_strike,
-                'call_long': call_long_strike,
-            },
-            'contracts': contracts,
-            'credit': credit,
-            'metrics': summary
-        }
-        
-        return (
-            strategy_data,
-            max_profit_display,
-            max_loss_display,
-            lower_be_display,
-            upper_be_display,
-            risk_reward_display,
-            fig
-        )
+            
+            # Create option legs for PayoffGenerator
+            legs = [
+                OptionLeg(put_long_strike, 'put', 'long', credit * 0.2, contracts),
+                OptionLeg(put_short_strike, 'put', 'short', credit * 0.6, contracts),
+                OptionLeg(call_short_strike, 'call', 'short', credit * 0.6, contracts),
+                OptionLeg(call_long_strike, 'call', 'long', credit * 0.2, contracts),
+            ]
+            
+            payoff_gen = PayoffGenerator(underlying_price, legs, days_to_expiry)
+            prices_today, pnls_today = payoff_gen.generate_payoff_today(num_points=150, price_range_pct=0.25)
+            
+            # Create visualization
+            breakevens = [summary['lower_breakeven'], summary['upper_breakeven']]
+            fig = create_payoff_chart(
+                prices=prices,
+                pnls=pnls,
+                underlying_price=underlying_price,
+                breakevens=breakevens,
+                max_profit=summary['max_profit'],
+                max_loss=summary['max_loss'],
+                title=f"Iron Condor on {price_data.get('ticker', 'SPY')} - ${underlying_price:.2f}",
+                show_today=True,
+                prices_today=prices_today,
+                pnls_today=pnls_today
+            )
+            
+            # Format display values
+            max_profit_display = f"${summary['max_profit']:.2f}"
+            max_loss_display = f"${summary['max_loss']:.2f}"
+            lower_be_display = f"${summary['lower_breakeven']:.2f}"
+            upper_be_display = f"${summary['upper_breakeven']:.2f}"
+            risk_reward_display = f"{summary['risk_reward_ratio']:.2f}"
+            
+            # Store strategy params
+            strategy_data = {
+                'underlying_price': underlying_price,
+                'strikes': {
+                    'put_long': put_long_strike,
+                    'put_short': put_short_strike,
+                    'call_short': call_short_strike,
+                    'call_long': call_long_strike,
+                },
+                'contracts': contracts,
+                'credit': credit,
+                'metrics': summary
+            }
+            
+            return (
+                strategy_data,
+                max_profit_display,
+                max_loss_display,
+                lower_be_display,
+                upper_be_display,
+                risk_reward_display,
+                fig
+            )
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Strategy calculation error: {e}", exc_info=True)
+            # Return safe defaults on error
+            import plotly.graph_objects as go
+            empty_fig = go.Figure()
+            empty_fig.update_layout(
+                title="Error calculating strategy - please check inputs",
+                template="plotly_dark"
+            )
+            return ({}, "Error", "Error", "Error", "Error", "Error", empty_fig)
+

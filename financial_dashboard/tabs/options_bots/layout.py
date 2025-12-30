@@ -126,6 +126,17 @@ def create_options_bots_layout() -> html.Div:
             ),
         ], id="options-bots-tabs", active_tab="tab-bots-dashboard"),
         
+        # Toast notification for bot creation
+        dbc.Toast(
+            id="options-bots-toast",
+            header="Bot Status",
+            is_open=False,
+            dismissable=True,
+            duration=5000,
+            icon="success",
+            style={"position": "fixed", "top": 66, "right": 10, "width": 350, "zIndex": 9999},
+        ),
+        
         # Hidden stores for state management
         dcc.Store(id="options-bots-connection-store", data={}),
         dcc.Store(id="options-bots-active-bots-store", data=[]),
@@ -350,44 +361,156 @@ def create_dashboard_tab() -> html.Div:
 
 
 def create_bot_builder_tab() -> html.Div:
-    """Create the bot builder tab."""
+    """Create the bot builder tab with Strategy Wizard."""
     return html.Div([
+        # Strategy Wizard Header
         dbc.Row([
-            # Template Selection
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.Div([
+                            html.H4([
+                                html.I(className="fas fa-magic me-2"),
+                                "Strategy Wizard"
+                            ], className="mb-2"),
+                            html.P("Build automated options strategies in 3 easy steps", className="text-muted mb-0"),
+                        ], className="d-flex flex-column align-items-center"),
+                        html.Hr(),
+                        # Wizard Steps Progress
+                        html.Div([
+                            dbc.Progress([
+                                dbc.Progress(value=33, color="success", bar=True, label="1. Select"),
+                                dbc.Progress(value=33, color="primary", bar=True, label="2. Configure"),
+                                dbc.Progress(value=34, color="info", bar=True, label="3. Launch"),
+                            ], className="mb-3"),
+                        ]),
+                    ]),
+                ], className="mb-3"),
+            ]),
+        ]),
+        
+        dbc.Row([
+            # Template Selection - Enhanced
             dbc.Col([
                 dbc.Card([
                     dbc.CardHeader([
                         html.I(className="fas fa-th-large me-2"),
-                        "Strategy Templates"
-                    ]),
+                        "Step 1: Choose Strategy"
+                    ], className="bg-success text-white"),
                     dbc.CardBody([
                         dbc.RadioItems(
                             id="options-bots-template-select",
                             options=[
-                                {"label": "RSI Short Put Spread", "value": "rsi_put_spread"},
-                                {"label": "VIX Iron Condor", "value": "vix_iron_condor"},
-                                {"label": "Earnings Strangle", "value": "earnings_strangle"},
-                                {"label": "Custom Recipe", "value": "custom"},
+                                # Income Strategies
+                                {"label": html.Div([
+                                    html.Strong("📉 RSI Short Put Spread"),
+                                    html.Br(),
+                                    html.Small("Sell puts on oversold conditions", className="text-muted")
+                                ]), "value": "rsi_put_spread"},
+                                {"label": html.Div([
+                                    html.Strong("🦅 VIX Iron Condor"),
+                                    html.Br(),
+                                    html.Small("Range-bound strategy for high IV", className="text-muted")
+                                ]), "value": "vix_iron_condor"},
+                                {"label": html.Div([
+                                    html.Strong("🦋 Iron Butterfly"),
+                                    html.Br(),
+                                    html.Small("ATM premium selling strategy", className="text-muted")
+                                ]), "value": "iron_butterfly"},
+                                # Spreads
+                                {"label": html.Div([
+                                    html.Strong("📈 Bull Put Spread"),
+                                    html.Br(),
+                                    html.Small("Bullish credit spread on support", className="text-muted")
+                                ]), "value": "bull_put_spread"},
+                                {"label": html.Div([
+                                    html.Strong("📉 Bear Call Spread"),
+                                    html.Br(),
+                                    html.Small("Bearish credit spread on resistance", className="text-muted")
+                                ]), "value": "bear_call_spread"},
+                                {"label": html.Div([
+                                    html.Strong("📅 Calendar Spread"),
+                                    html.Br(),
+                                    html.Small("Time decay play in low IV", className="text-muted")
+                                ]), "value": "calendar_spread"},
+                                # Volatility Plays
+                                {"label": html.Div([
+                                    html.Strong("💥 Long Straddle"),
+                                    html.Br(),
+                                    html.Small("Bet on big moves (low IV entry)", className="text-muted")
+                                ]), "value": "long_straddle"},
+                                {"label": html.Div([
+                                    html.Strong("🎯 Short Strangle"),
+                                    html.Br(),
+                                    html.Small("Collect premium in high IV", className="text-muted")
+                                ]), "value": "short_strangle"},
+                                # Covered Strategies
+                                {"label": html.Div([
+                                    html.Strong("🔄 The Wheel"),
+                                    html.Br(),
+                                    html.Small("CSP + CC income cycle", className="text-muted")
+                                ]), "value": "wheel_strategy"},
+                                {"label": html.Div([
+                                    html.Strong("💵 Covered Call"),
+                                    html.Br(),
+                                    html.Small("Income on stock holdings", className="text-muted")
+                                ]), "value": "covered_call"},
+                                # Hedging
+                                {"label": html.Div([
+                                    html.Strong("⚖️ Delta Neutralizer"),
+                                    html.Br(),
+                                    html.Small("Auto-hedge portfolio delta", className="text-muted")
+                                ]), "value": "delta_neutralizer"},
+                                {"label": html.Div([
+                                    html.Strong("🛡️ VIX Tail Hedge"),
+                                    html.Br(),
+                                    html.Small("Crash protection with VIX calls", className="text-muted")
+                                ]), "value": "vix_hedge"},
+                                # Custom
+                                {"label": html.Div([
+                                    html.Strong("⚙️ Custom Recipe"),
+                                    html.Br(),
+                                    html.Small("Build from scratch (advanced)", className="text-muted")
+                                ]), "value": "custom"},
                             ],
                             value="rsi_put_spread",
                             className="mb-3",
+                            style={"maxHeight": "350px", "overflowY": "auto"}
                         ),
                         html.Hr(),
                         html.Div(id="options-bots-template-description", children=[
                             html.H6("RSI Short Put Spread"),
                             html.P("Sell put spreads when RSI indicates oversold conditions, with automatic position management.", className="text-muted small"),
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Small("Risk Level", className="text-muted"),
+                                    html.Div([
+                                        html.I(className="fas fa-circle text-warning me-1"),
+                                        html.I(className="fas fa-circle text-warning me-1"),
+                                        html.I(className="fas fa-circle text-secondary me-1"),
+                                    ]),
+                                ], width=4),
+                                dbc.Col([
+                                    html.Small("Win Rate", className="text-muted"),
+                                    html.Div("~65-70%", className="fw-bold text-success"),
+                                ], width=4),
+                                dbc.Col([
+                                    html.Small("Capital Req", className="text-muted"),
+                                    html.Div("$2K-5K", className="fw-bold"),
+                                ], width=4),
+                            ], className="mt-2"),
                         ]),
                     ]),
                 ]),
             ], md=4, className="mb-3"),
             
-            # Configuration
+            # Configuration - Enhanced
             dbc.Col([
                 dbc.Card([
                     dbc.CardHeader([
                         html.I(className="fas fa-sliders-h me-2"),
-                        "Bot Configuration"
-                    ]),
+                        "Step 2: Configure Bot"
+                    ], className="bg-primary text-white"),
                     dbc.CardBody([
                         dbc.Form([
                             dbc.Row([
@@ -488,6 +611,8 @@ def create_bot_builder_tab() -> html.Div:
                                 ]),
                             ], className="mb-3"),
                             html.Hr(),
+                            # Creation status message
+                            html.Div(id="options-bots-create-status", className="mb-3"),
                             dbc.Row([
                                 dbc.Col([
                                     dbc.Button([
@@ -506,6 +631,56 @@ def create_bot_builder_tab() -> html.Div:
                     ]),
                 ]),
             ], md=8, className="mb-3"),
+        ]),
+        
+        # Payoff Diagram and Vol Surface Row
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="fas fa-chart-area me-2"),
+                        "Strategy Payoff Diagram"
+                    ]),
+                    dbc.CardBody([
+                        dcc.Graph(id="options-bots-payoff-diagram", style={"height": "400px"}),
+                    ]),
+                ]),
+            ], md=6, className="mb-3"),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="fas fa-cube me-2"),
+                        "3D Volatility Surface"
+                    ]),
+                    dbc.CardBody([
+                        dcc.Graph(id="options-bots-vol-surface", style={"height": "400px"}),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Rotation Angle", className="small"),
+                                dcc.Slider(
+                                    id="options-bots-surface-angle",
+                                    min=0, max=360, step=15, value=45,
+                                    marks={0: "0°", 90: "90°", 180: "180°", 270: "270°", 360: "360°"},
+                                ),
+                            ], width=8),
+                            dbc.Col([
+                                dbc.Label("Color Scale", className="small"),
+                                dcc.Dropdown(
+                                    id="options-bots-surface-color",
+                                    options=[
+                                        {"label": "Viridis", "value": "Viridis"},
+                                        {"label": "Plasma", "value": "Plasma"},
+                                        {"label": "Jet", "value": "Jet"},
+                                        {"label": "Hot", "value": "Hot"},
+                                    ],
+                                    value="Viridis",
+                                    clearable=False,
+                                ),
+                            ], width=4),
+                        ], className="mt-2"),
+                    ]),
+                ]),
+            ], md=6, className="mb-3"),
         ]),
         
         # Recipe Preview
