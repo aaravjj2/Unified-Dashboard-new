@@ -521,7 +521,7 @@ def _render_screener_results(results: List[Dict]) -> html.Div:
                 html.Th("Score", style={'color': '#94a3b8'})
             ])),
             html.Tbody(rows)
-        ], dark=True, striped=True, hover=True, responsive=True, style={'fontSize': '14px'})
+        ], striped=True, hover=True, responsive=True, style={'fontSize': '14px', 'backgroundColor': 'rgba(0,0,0,0.3)'})
     ])
 
 
@@ -1425,7 +1425,7 @@ def _create_improvement_cards(result: Dict) -> html.Div:
                 dbc.CardBody([
                     dbc.Table([
                         html.Tbody(risk_rows)
-                    ], size="sm", dark=True, striped=True)
+                    ], size="sm", striped=True, style={'backgroundColor': 'rgba(0,0,0,0.3)'})
                 ])
             ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
         ], width=4))
@@ -1478,7 +1478,7 @@ def _create_improvement_cards(result: Dict) -> html.Div:
                     ], className="mb-3 text-center"),
                     dbc.Table([
                         html.Tbody(momentum_rows)
-                    ], size="sm", dark=True, striped=True)
+                    ], size="sm", striped=True, style={'backgroundColor': 'rgba(0,0,0,0.3)'}
                 ])
             ], style={'backgroundColor': 'rgba(0,0,0,0.3)', 'border': '1px solid rgba(255,255,255,0.1)'})
         ], width=4))
