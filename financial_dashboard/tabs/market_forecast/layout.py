@@ -9,6 +9,7 @@ A professional-grade market forecasting dashboard featuring:
 - Scenario analysis for what-if simulations
 - Model performance comparison metrics
 - Clean, intuitive UI with dark theme
+- Phase 5: Sentiment Consensus Engine with FinBERT
 
 Data Sources (priority order):
 - Alpaca (requires API key)
@@ -59,6 +60,18 @@ try:
 except ImportError:
     FINGPT_AVAILABLE = False
     logger.info("FinGPT panel not available")
+
+# Phase 5: Import Sentiment Engine
+try:
+    from .sentiment_engine import (
+        SentimentAnalyzer, analyze_headlines, get_sample_headlines,
+        is_finbert_available, SENTIMENT_COLORS, SentimentLabel
+    )
+    SENTIMENT_ENGINE_AVAILABLE = True
+    logger.info("✅ Phase 5 Sentiment Engine available")
+except ImportError as e:
+    SENTIMENT_ENGINE_AVAILABLE = False
+    logger.warning(f"Sentiment Engine not available: {e}")
 
 
 def _create_fingpt_panel_safe():
@@ -535,6 +548,135 @@ def create_scenario_results_panel():
     ], className="bg-dark border-secondary")
 
 
+def create_sentiment_consensus_display(consensus_result) -> List:
+    """
+    Create sentiment consensus display components from ConsensusResult.
+    
+    Args:
+        consensus_result: ConsensusResult object from sentiment engine
+        
+    Returns:
+        List of Dash HTML components
+    """
+    if not consensus_result or consensus_result.num_headlines == 0:
+        return [
+            html.Div([
+                html.I(className="bi bi-exclamation-circle me-2 text-warning"),
+                html.Span("No headlines available for sentiment analysis", className="text-muted small")
+            ])
+        ]
+    
+    # Consensus label styling
+    label_colors = {
+        'Bullish': {'bg': '#2ecc71', 'icon': 'bi-arrow-up-circle-fill'},
+        'Bearish': {'bg': '#e74c3c', 'icon': 'bi-arrow-down-circle-fill'},
+        'Neutral': {'bg': '#95a5a6', 'icon': 'bi-dash-circle-fill'}
+    }
+    
+    label_style = label_colors.get(consensus_result.consensus_label, label_colors['Neutral'])
+    
+    # Banner
+    banner = html.Div([
+        html.Div([
+            html.I(className=f"bi {label_style['icon']}", 
+                   style={'fontSize': '2rem', 'color': label_style['bg']}),
+            html.Div([
+                html.Span(consensus_result.consensus_label.upper(), 
+                         className="fw-bold", 
+                         style={'fontSize': '1.2rem', 'color': label_style['bg']}),
+                html.Div(f"Score: {consensus_result.consensus_score:+.3f}", 
+                        className="small text-muted")
+            ], className="ms-2")
+        ], className="d-flex align-items-center")
+    ], className="mb-2")
+    
+    # Distribution bars
+    distribution = html.Div([
+        # Positive bar
+        html.Div([
+            html.Div([
+                html.Span("Positive", className="small text-muted"),
+                html.Span(f"{consensus_result.positive_pct:.1f}%", className="small text-success")
+            ], className="d-flex justify-content-between mb-1"),
+            dbc.Progress(value=consensus_result.positive_pct, color="success", 
+                        style={'height': '8px'}, className="mb-2")
+        ]),
+        # Neutral bar
+        html.Div([
+            html.Div([
+                html.Span("Neutral", className="small text-muted"),
+                html.Span(f"{consensus_result.neutral_pct:.1f}%", className="small text-secondary")
+            ], className="d-flex justify-content-between mb-1"),
+            dbc.Progress(value=consensus_result.neutral_pct, color="secondary", 
+                        style={'height': '8px'}, className="mb-2")
+        ]),
+        # Negative bar
+        html.Div([
+            html.Div([
+                html.Span("Negative", className="small text-muted"),
+                html.Span(f"{consensus_result.negative_pct:.1f}%", className="small text-danger")
+            ], className="d-flex justify-content-between mb-1"),
+            dbc.Progress(value=consensus_result.negative_pct, color="danger", 
+                        style={'height': '8px'})
+        ])
+    ])
+    
+    # Stats row
+    stats = html.Div([
+        html.Span([
+            html.I(className="bi bi-newspaper me-1"),
+            f"{consensus_result.num_headlines} headlines"
+        ], className="small text-muted me-3"),
+        html.Span([
+            html.I(className="bi bi-shield-check me-1"),
+            f"{consensus_result.avg_confidence*100:.0f}% confidence"
+        ], className="small text-muted")
+    ], className="mt-2")
+    
+    return [banner, distribution, stats]
+
+
+def create_sentiment_details_list(consensus_result) -> List:
+    """
+    Create detailed list of individual sentiment results.
+    
+    Args:
+        consensus_result: ConsensusResult object
+        
+    Returns:
+        List of Dash HTML components for each headline
+    """
+    if not consensus_result or not consensus_result.individual_results:
+        return []
+    
+    items = []
+    for i, result in enumerate(consensus_result.individual_results[:10]):  # Limit to 10
+        label = result.label.value
+        conf = result.confidence
+        
+        color_map = {
+            'positive': 'success',
+            'negative': 'danger',
+            'neutral': 'secondary'
+        }
+        color = color_map.get(label, 'secondary')
+        
+        item = html.Div([
+            html.Div([
+                dbc.Badge(label.capitalize()[:3], color=color, className="me-2"),
+                html.Span(result.text[:80] + ("..." if len(result.text) > 80 else ""),
+                         className="small text-white-50"),
+            ], className="d-flex align-items-center"),
+            html.Div([
+                dbc.Progress(value=conf*100, color=color, style={'height': '4px'})
+            ], className="mt-1")
+        ], className="mb-2 p-2 rounded", style={'backgroundColor': 'rgba(255,255,255,0.05)'})
+        
+        items.append(item)
+    
+    return items
+
+
 def _empty_chart(message: str, height: int = 500) -> go.Figure:
     """Create empty placeholder chart with dark theme."""
     fig = go.Figure()
@@ -562,22 +704,59 @@ def _empty_chart(message: str, height: int = 500) -> go.Figure:
 
 
 def create_sentiment_panel():
-    """AI-powered sentiment analysis panel using FinBERT."""
+    """
+    AI-powered sentiment analysis panel using Phase 5 Sentiment Engine.
+    
+    Features:
+    - FinBERT-powered sentiment classification
+    - Multi-headline consensus aggregation
+    - Sentiment distribution visualization
+    - Confidence-weighted scoring
+    """
+    finbert_badge = dbc.Badge(
+        "FinBERT" if SENTIMENT_ENGINE_AVAILABLE and is_finbert_available() else "Lexicon",
+        color="info" if SENTIMENT_ENGINE_AVAILABLE and is_finbert_available() else "secondary",
+        className="ms-2",
+        pill=True
+    )
+    
     return dbc.Card([
         dbc.CardHeader([
             html.Div([
                 html.I(className="bi bi-robot", style={'color': COLORS['primary']}),
-                html.Span(" AI Sentiment Analysis", className="ms-2 fw-bold"),
-                dbc.Badge("FinBERT", color="info", className="ms-2", pill=True)
+                html.Span(" Sentiment Consensus", className="ms-2 fw-bold"),
+                finbert_badge,
+                dbc.Badge("Phase 5", color="success", className="ms-1", pill=True)
             ])
         ], className="bg-dark border-secondary"),
         dbc.CardBody([
-            html.Div(id='mf-sentiment-display', children=[
+            # Consensus Banner
+            html.Div(id='mf-sentiment-consensus-banner', children=[
                 html.Div([
                     html.I(className="bi bi-info-circle me-2 text-muted"),
                     html.Span("Run forecast to analyze market sentiment", className="text-muted small")
                 ])
-            ])
+            ], className="mb-3"),
+            
+            # Sentiment Distribution 
+            html.Div(id='mf-sentiment-distribution', children=[], className="mb-2"),
+            
+            # Legacy sentiment display for backward compatibility
+            html.Div(id='mf-sentiment-display', style={'display': 'none'}),
+            
+            # Detailed Results (collapsible)
+            dbc.Collapse([
+                html.Hr(className="my-2"),
+                html.Div(id='mf-sentiment-details', children=[], 
+                         style={'maxHeight': '200px', 'overflowY': 'auto'})
+            ], id='mf-sentiment-details-collapse', is_open=False),
+            
+            # Toggle Details Button
+            dbc.Button([
+                html.I(className="bi bi-chevron-down me-1"),
+                "Show Headlines"
+            ], id='mf-sentiment-toggle-btn', size="sm", color="secondary", 
+               outline=True, className="w-100 mt-2", style={'display': 'none'})
         ], className="bg-dark p-3")
     ], className="bg-dark border-secondary")
 
@@ -683,6 +862,10 @@ def register_callbacks(app, SH=None):
         Output(COMPONENT_IDS['scenario_apply_btn'], 'disabled'),
         Output(COMPONENT_IDS['price_info'], 'children'),
         Output(COMPONENT_IDS['sentiment_display'], 'children'),
+        Output('mf-sentiment-consensus-banner', 'children'),
+        Output('mf-sentiment-distribution', 'children'),
+        Output('mf-sentiment-details', 'children'),
+        Output('mf-sentiment-toggle-btn', 'style'),
         Input(COMPONENT_IDS['run_btn'], 'n_clicks'),
         State(COMPONENT_IDS['ticker_input'], 'value'),
         State(COMPONENT_IDS['horizon_select'], 'value'),
@@ -691,7 +874,7 @@ def register_callbacks(app, SH=None):
         prevent_initial_call=True
     )
     def run_forecast(n_clicks, ticker, horizon, selected_models, selected_intervals):
-        """Main forecast generation callback with AI sentiment."""
+        """Main forecast generation callback with Phase 5 Sentiment Consensus Engine."""
         if not n_clicks or not ticker:
             raise PreventUpdate
         
@@ -700,6 +883,12 @@ def register_callbacks(app, SH=None):
             html.I(className="bi bi-hourglass-split me-2 text-muted"),
             html.Span("Analyzing sentiment...", className="text-muted small")
         ])
+        
+        # Default sentiment consensus outputs
+        consensus_banner = []
+        consensus_distribution = []
+        consensus_details = []
+        toggle_btn_style = {'display': 'none'}
         
         try:
             # Import models
@@ -710,7 +899,7 @@ def register_callbacks(app, SH=None):
                 logger.warning(f"Models import failed: {e}")
                 models_available = False
             
-            # Import AI sentiment analyzer
+            # Import AI sentiment analyzer (legacy)
             try:
                 from ..models import get_market_sentiment
                 sentiment_available = True
@@ -733,7 +922,9 @@ def register_callbacks(app, SH=None):
                     html.I(className="bi bi-exclamation-triangle me-2"),
                     f"No data available for {ticker}. Please check the ticker symbol."
                 ], color="danger", dismissable=True)
-                return None, _empty_chart(f"No data for {ticker}"), _empty_chart("No data", 280), [], status, True, "", sentiment_display
+                return (None, _empty_chart(f"No data for {ticker}"), _empty_chart("No data", 280), 
+                        [], status, True, "", sentiment_display,
+                        consensus_banner, consensus_distribution, consensus_details, toggle_btn_style)
             
             # Get current price info
             current_price = hist['Close'].iloc[-1]
@@ -758,9 +949,46 @@ def register_callbacks(app, SH=None):
                 source_badge
             ])
             
-            # Get AI sentiment
+            # ====== Phase 5: Sentiment Consensus Engine ======
+            consensus_result = None
+            
+            if SENTIMENT_ENGINE_AVAILABLE:
+                try:
+                    # Try to fetch real headlines
+                    headlines = []
+                    try:
+                        from financial_dashboard.utils.news_manager import NewsManager
+                        nm = NewsManager(ttl_seconds=300)
+                        news_df = nm.fetch_news([ticker], max_per_ticker=15)
+                        for hdf in news_df.values():
+                            for r in hdf:
+                                if r.get('title'):
+                                    headlines.append(r['title'])
+                    except Exception as e:
+                        logger.warning(f"News fetch failed, using samples: {e}")
+                    
+                    # Fallback to sample headlines for demo
+                    if not headlines:
+                        headlines = get_sample_headlines(ticker)
+                    
+                    # Run sentiment analysis
+                    if headlines:
+                        consensus_result = analyze_headlines(headlines)
+                        
+                        # Build consensus display components
+                        consensus_banner = create_sentiment_consensus_display(consensus_result)
+                        consensus_details = create_sentiment_details_list(consensus_result)
+                        toggle_btn_style = {'display': 'block'}
+                        
+                        logger.info(f"✅ Phase 5 Sentiment Consensus: {consensus_result.consensus_label} "
+                                  f"(score: {consensus_result.consensus_score:.3f})")
+                        
+                except Exception as e:
+                    logger.error(f"Phase 5 Sentiment Engine error: {e}")
+            
+            # Legacy sentiment fallback
             sentiment_data = None
-            if sentiment_available:
+            if sentiment_available and not consensus_result:
                 try:
                     # If ServingClient exists (bento/triton), use it to analyze fetched headlines
                     if sc and sc.mode in ['bento', 'triton']:
@@ -1211,7 +1439,9 @@ def register_callbacks(app, SH=None):
                 f"Forecast generated for {ticker} • {len(forecasts)} model(s) • {horizon} days{source_info}{inference_info}"
             ], color="success", dismissable=True, duration=5000)
             
-            return store_data, main_fig, comparison_fig, metrics_children, status, False, price_info, sentiment_display
+            return (store_data, main_fig, comparison_fig, metrics_children, status, False, 
+                    price_info, sentiment_display, consensus_banner, consensus_distribution, 
+                    consensus_details, toggle_btn_style)
             
         except Exception as e:
             logger.exception(f"Forecast error: {e}")
@@ -1223,7 +1453,25 @@ def register_callbacks(app, SH=None):
                 html.I(className="bi bi-x-circle me-2 text-danger"),
                 html.Span("Sentiment analysis unavailable", className="text-muted small")
             ])
-            return None, _empty_chart(f"Error: {str(e)}"), _empty_chart("Error", 280), [], status, True, "", error_sentiment
+            return (None, _empty_chart(f"Error: {str(e)}"), _empty_chart("Error", 280), [], 
+                    status, True, "", error_sentiment, [], [], [], {'display': 'none'})
+    
+    # Phase 5: Sentiment details toggle callback
+    @app.callback(
+        Output('mf-sentiment-details-collapse', 'is_open'),
+        Output('mf-sentiment-toggle-btn', 'children'),
+        Input('mf-sentiment-toggle-btn', 'n_clicks'),
+        State('mf-sentiment-details-collapse', 'is_open'),
+        prevent_initial_call=True
+    )
+    def toggle_sentiment_details(n_clicks, is_open):
+        """Toggle sentiment details visibility."""
+        if n_clicks:
+            new_state = not is_open
+            icon = "bi-chevron-up" if new_state else "bi-chevron-down"
+            text = "Hide Headlines" if new_state else "Show Headlines"
+            return new_state, [html.I(className=f"bi {icon} me-1"), text]
+        return is_open, [html.I(className="bi bi-chevron-down me-1"), "Show Headlines"]
     
     @app.callback(
         Output(COMPONENT_IDS['scenario_chart'], 'figure'),
