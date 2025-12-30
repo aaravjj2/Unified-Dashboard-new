@@ -33,6 +33,8 @@ from .strategy_engine_ui import create_strategy_analysis_tab
 from forecast_ui.tabs.forecasts import create_forecast_tab
 # Import Trade Ops tab (Phase 4/5)
 from tradeops_ui.tabs.trade_ops import create_trade_ops_tab
+# Import Research tab (Phase 7)
+from dash.tabs.research import create_research_tab
 
 logger = logging.getLogger(__name__)
 
@@ -1132,6 +1134,12 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
                 create_trade_ops_tab()
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}),
+            
+            # Tab 10: Research Lab (Phase 7)
+            dcc.Tab(label='📊 Research', children=[
+                create_research_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#00bcd4'}),
             
         ], style={'marginBottom': '15px'}),
         
