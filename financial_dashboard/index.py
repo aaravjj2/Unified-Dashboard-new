@@ -259,8 +259,6 @@ TAB_CONFIG = [
     {'id': 'research_lab', 'name': '🔬 Research Lab', 'module': 'tabs/research_lab_tab.py'},
     # PHASE 3: Quantitative Lab - RL Trading, QLib Factors, Deep Hedging
     {'id': 'quant_lab', 'name': '🧮 Quant Lab', 'module': 'tabs/quant_lab/__init__.py'},
-    # PHASE 1 DATA: System Status - Health monitoring dashboard
-    {'id': 'system_status', 'name': '🔧 System Status', 'module': 'dash/pages/system_status.py'},
 ]
 
 # Module-level constant for enabled tabs (used by create_layout)
@@ -278,7 +276,6 @@ ENABLED_TABS = [
     'options_lab',
     'options_bots',  # NEW: Automated options trading bots
     'quant_lab',  # PHASE 3: RL Trading, QLib Factors, Deep Hedging
-    'system_status',  # PHASE 1 DATA: Health monitoring
 ]
 
 # Load tab modules dynamically
@@ -296,10 +293,6 @@ for tab_config in TAB_CONFIG:
             # CRITICAL FIX: Import the NEW package (volatility_lab_pkg) instead of the legacy folder (volatility_lab)
             import importlib
             tab_mod = importlib.import_module("financial_dashboard.tabs.volatility_lab_pkg")
-        elif tab_config['id'] == 'system_status':
-            # PHASE 1 DATA: System Status page from dash/pages module
-            import importlib
-            tab_mod = importlib.import_module("financial_dashboard.dash.pages.system_status")
         else:
             if not os.path.exists(module_path):
                 logger.warning(f"Tab module not found: {module_path}")
