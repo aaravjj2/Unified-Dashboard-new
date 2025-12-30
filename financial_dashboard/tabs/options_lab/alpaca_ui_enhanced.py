@@ -30,7 +30,7 @@ from .system_status_ui import create_system_status_panel
 # Import strategy engine panel (Phase 3)
 from .strategy_engine_ui import create_strategy_analysis_tab
 # Import ML forecast tab (Phase 2)
-from dash.tabs.forecasts import create_forecast_tab
+from forecast_ui.tabs.forecasts import create_forecast_tab
 
 logger = logging.getLogger(__name__)
 

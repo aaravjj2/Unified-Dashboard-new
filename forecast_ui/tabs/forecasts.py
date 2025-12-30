@@ -137,16 +137,14 @@ def create_price_path_chart(
             font=dict(color='#fff', size=14)
         ),
         xaxis=dict(
-            title="Date",
+            title=dict(text="Date", font=dict(color='#aaa')),
             gridcolor='#333',
-            tickfont=dict(color='#aaa'),
-            titlefont=dict(color='#aaa')
+            tickfont=dict(color='#aaa')
         ),
         yaxis=dict(
-            title="Price ($)",
+            title=dict(text="Price ($)", font=dict(color='#aaa')),
             gridcolor='#333',
             tickfont=dict(color='#aaa'),
-            titlefont=dict(color='#aaa'),
             tickprefix='$'
         ),
         paper_bgcolor='rgba(0,0,0,0)',

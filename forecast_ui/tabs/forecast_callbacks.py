@@ -26,7 +26,7 @@ from engines.ml.predictor import (
 )
 
 # Import UI components
-from dash.tabs.forecasts import (
+from forecast_ui.tabs.forecasts import (
     create_signal_gauge,
     create_price_path_chart,
     create_regime_badge,

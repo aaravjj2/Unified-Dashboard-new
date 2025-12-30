@@ -55,7 +55,7 @@ from financial_dashboard.tabs.options_lab.strategy_engine_callbacks import regis
 register_strategy_engine_callbacks(app)
 
 # Register ML Forecast callbacks (Phase 2 - Price & Volatility Forecast Engine)
-from dash.tabs.forecast_callbacks import register_forecast_callbacks
+from forecast_ui.tabs.forecast_callbacks import register_forecast_callbacks
 register_forecast_callbacks(app)
 
 if __name__ == '__main__':
