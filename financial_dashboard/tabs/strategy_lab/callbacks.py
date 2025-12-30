@@ -2203,8 +2203,256 @@ def register_callbacks(app):
     
     callback_count += 1
     
+    # ========================================================================
+    # CALLBACK 23: AlphaBot Start/Stop Control
+    # ========================================================================
+    @app.callback(
+        [Output('alphabot-state-store', 'data'),
+         Output('alphabot-status', 'children'),
+         Output('alphabot-refresh-interval', 'disabled')],
+        [Input('alphabot-start-btn', 'n_clicks'),
+         Input('alphabot-stop-btn', 'n_clicks')],
+        [State('alphabot-ticker', 'value'),
+         State('alphabot-strategy', 'value'),
+         State('alphabot-quantity', 'value'),
+         State('alphabot-rsi-oversold', 'value'),
+         State('alphabot-rsi-overbought', 'value'),
+         State('alphabot-interval', 'value'),
+         State('alphabot-state-store', 'data')],
+        prevent_initial_call=True
+    )
+    def alphabot_start_stop(start_clicks, stop_clicks, ticker, strategy, quantity,
+                            rsi_oversold, rsi_overbought, interval, current_state):
+        """Start or stop the AlphaBot."""
+        from dash import callback_context
+        
+        if not callback_context.triggered:
+            return no_update, no_update, no_update
+        
+        trigger_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+        
+        state = current_state or {
+            'status': 'stopped',
+            'ticker': 'AAPL',
+            'strategy': 'rsi',
+            'last_signal': 'hold',
+            'last_rsi': None,
+            'trade_logs': []
+        }
+        
+        if trigger_id == 'alphabot-start-btn':
+            # Start the bot
+            state['status'] = 'running'
+            state['ticker'] = (ticker or 'AAPL').upper().strip()
+            state['strategy'] = strategy or 'rsi'
+            state['quantity'] = quantity or 1
+            state['rsi_oversold'] = rsi_oversold or 30
+            state['rsi_overbought'] = rsi_overbought or 70
+            
+            status_badge = dbc.Badge("RUNNING", color="success", className="fs-6 pulse-animation")
+            interval_disabled = False  # Enable refresh
+            
+            logger.info(f"AlphaBot started: {state['ticker']} ({state['strategy']})")
+            
+        elif trigger_id == 'alphabot-stop-btn':
+            # Stop the bot
+            state['status'] = 'stopped'
+            status_badge = dbc.Badge("STOPPED", color="secondary", className="fs-6")
+            interval_disabled = True  # Disable refresh
+            
+            logger.info(f"AlphaBot stopped: {state['ticker']}")
+        else:
+            return no_update, no_update, no_update
+        
+        return state, status_badge, interval_disabled
+    
+    callback_count += 1
+    
+    # ========================================================================
+    # CALLBACK 24: AlphaBot Single Tick (Run Once)
+    # ========================================================================
+    @app.callback(
+        [Output('alphabot-signal', 'children'),
+         Output('alphabot-rsi', 'children'),
+         Output('alphabot-trade-log', 'children'),
+         Output('alphabot-state-store', 'data', allow_duplicate=True)],
+        [Input('alphabot-tick-btn', 'n_clicks'),
+         Input('alphabot-refresh-interval', 'n_intervals')],
+        [State('alphabot-state-store', 'data'),
+         State('alphabot-ticker', 'value'),
+         State('alphabot-strategy', 'value'),
+         State('alphabot-quantity', 'value'),
+         State('alphabot-rsi-oversold', 'value'),
+         State('alphabot-rsi-overbought', 'value')],
+        prevent_initial_call=True
+    )
+    def alphabot_run_tick(tick_clicks, n_intervals, state, ticker, strategy,
+                          quantity, rsi_oversold, rsi_overbought):
+        """Run a single tick of the AlphaBot (fetch RSI, check signal, optionally trade)."""
+        from dash import callback_context
+        import os
+        
+        if not callback_context.triggered:
+            return no_update, no_update, no_update, no_update
+        
+        trigger_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+        
+        # Skip if interval triggered but bot not running
+        if trigger_id == 'alphabot-refresh-interval':
+            if not state or state.get('status') != 'running':
+                return no_update, no_update, no_update, no_update
+        
+        # Import bot engine
+        try:
+            from financial_dashboard.services.bot_engine import (
+                get_av_client, get_broker, Side, OrderType, BotConfig
+            )
+        except ImportError as e:
+            logger.error(f"Bot engine import failed: {e}")
+            error_log = html.Div([
+                html.Span(datetime.now().strftime("%H:%M:%S"), className="text-muted me-2"),
+                dbc.Badge("ERROR", color="danger", className="me-2"),
+                html.Span(f"Bot engine not available: {e}")
+            ], className="mb-1")
+            return (
+                dbc.Badge("ERROR", color="danger", className="fs-6"),
+                html.Span("--", className="fs-5 fw-bold text-danger"),
+                error_log,
+                state or {}
+            )
+        
+        # Get or initialize state
+        state = state or {
+            'status': 'stopped',
+            'ticker': 'AAPL',
+            'strategy': 'rsi',
+            'last_signal': 'hold',
+            'last_rsi': None,
+            'trade_logs': []
+        }
+        
+        # Use form values
+        ticker = (ticker or state.get('ticker', 'AAPL')).upper().strip()
+        strategy = strategy or state.get('strategy', 'rsi')
+        quantity = quantity or state.get('quantity', 1)
+        rsi_oversold = rsi_oversold or state.get('rsi_oversold', 30)
+        rsi_overbought = rsi_overbought or state.get('rsi_overbought', 70)
+        
+        # Check deterministic mode
+        deterministic = os.environ.get('BOT_DETERMINISTIC', '0') == '1'
+        
+        try:
+            # Get Alpha Vantage client
+            av_client = get_av_client(deterministic=deterministic)
+            
+            # Fetch RSI
+            rsi_data = av_client.get_rsi(ticker)
+            rsi_value = rsi_data.get('latest_value', 50)
+            
+            # Determine signal
+            if rsi_value < rsi_oversold:
+                signal = 'BUY'
+                signal_color = 'success'
+            elif rsi_value > rsi_overbought:
+                signal = 'SELL'
+                signal_color = 'danger'
+            else:
+                signal = 'HOLD'
+                signal_color = 'info'
+            
+            # Update state
+            state['last_rsi'] = rsi_value
+            state['last_signal'] = signal.lower()
+            state['ticker'] = ticker
+            
+            # Create log entry
+            log_entry = {
+                'timestamp': datetime.now().strftime("%H:%M:%S"),
+                'ticker': ticker,
+                'rsi': rsi_value,
+                'signal': signal,
+                'action': 'none'
+            }
+            
+            # Execute trade if signal and bot running
+            action_text = "Signal only (bot not running)"
+            if state.get('status') == 'running' and signal != 'HOLD':
+                try:
+                    broker = get_broker(deterministic=deterministic)
+                    
+                    if signal == 'BUY':
+                        result = broker.submit_order(ticker, Side.BUY, quantity, OrderType.MARKET)
+                    else:
+                        result = broker.submit_order(ticker, Side.SELL, quantity, OrderType.MARKET)
+                    
+                    if result.success:
+                        log_entry['action'] = f"{signal} {quantity} @ ${result.filled_price:.2f}"
+                        action_text = f"Executed: {signal} {quantity} shares"
+                    else:
+                        log_entry['action'] = f"Failed: {result.error}"
+                        action_text = f"Failed: {result.error}"
+                        
+                except Exception as e:
+                    log_entry['action'] = f"Error: {str(e)}"
+                    action_text = f"Error: {str(e)}"
+            
+            # Add to trade logs (keep last 10)
+            trade_logs = state.get('trade_logs', [])
+            trade_logs.insert(0, log_entry)
+            state['trade_logs'] = trade_logs[:10]
+            
+            # Build log display
+            log_items = []
+            for log in state['trade_logs']:
+                badge_color = 'success' if log['signal'] == 'BUY' else 'danger' if log['signal'] == 'SELL' else 'info'
+                log_items.append(
+                    html.Div([
+                        html.Span(log['timestamp'], className="text-muted me-2"),
+                        dbc.Badge(log['signal'], color=badge_color, className="me-2"),
+                        html.Span(f"{log['ticker']} RSI={log['rsi']:.1f}"),
+                        html.Span(f" | {log['action']}", className="text-muted small") if log.get('action') != 'none' else None
+                    ], className="mb-1")
+                )
+            
+            if not log_items:
+                log_items = [html.Div("No trades yet.", className="text-muted text-center py-3")]
+            
+            return (
+                dbc.Badge(signal, color=signal_color, className="fs-6"),
+                html.Span(f"{rsi_value:.1f}", className=f"fs-5 fw-bold text-{signal_color}"),
+                log_items,
+                state
+            )
+            
+        except Exception as e:
+            logger.error(f"AlphaBot tick error: {e}")
+            error_entry = {
+                'timestamp': datetime.now().strftime("%H:%M:%S"),
+                'ticker': ticker,
+                'rsi': 0,
+                'signal': 'ERROR',
+                'action': str(e)
+            }
+            trade_logs = state.get('trade_logs', [])
+            trade_logs.insert(0, error_entry)
+            state['trade_logs'] = trade_logs[:10]
+            
+            return (
+                dbc.Badge("ERROR", color="danger", className="fs-6"),
+                html.Span("--", className="fs-5 fw-bold text-danger"),
+                [html.Div([
+                    html.Span(error_entry['timestamp'], className="text-muted me-2"),
+                    dbc.Badge("ERROR", color="danger", className="me-2"),
+                    html.Span(str(e))
+                ], className="mb-1")],
+                state
+            )
+    
+    callback_count += 1
+    
     logger.info(f"✅ Strategy Lab Phase 23 callbacks registered: Benchmark & Risk subtabs now synchronized")
     logger.info(f"✅ Strategy Lab live order callbacks registered (LIVE_ORDER_ALLOWED=True)")
+    logger.info(f"✅ AlphaBot callbacks registered (AlphaVantage + Alpaca integration)")
     logger.info(f"✅ Strategy Lab callbacks registered successfully ({callback_count} callbacks)")
     
     # Mark callbacks as registered (global declared at function start)

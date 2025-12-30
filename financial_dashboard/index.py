@@ -234,6 +234,8 @@ TAB_CONFIG = [
     # PHASE 0.8 EXPANSION - AGENT 1B: Research Lab - 5 subtabs for research and analysis
     # Now uses research_lab_tab.py which checks USE_NEW_RESEARCH_LAB flag
     {'id': 'research_lab', 'name': '🔬 Research Lab', 'module': 'tabs/research_lab_tab.py'},
+    # PHASE 3: Quantitative Lab - RL Trading, QLib Factors, Deep Hedging
+    {'id': 'quant_lab', 'name': '🧮 Quant Lab', 'module': 'tabs/quant_lab/__init__.py'},
 ]
 
 # Module-level constant for enabled tabs (used by create_layout)
@@ -247,7 +249,8 @@ ENABLED_TABS = [
     'market_forecast',
     'volatility_lab',
     'portfolio',
-    'options_lab'
+    'options_lab',
+    'quant_lab',  # PHASE 3: RL Trading, QLib Factors, Deep Hedging
 ]
 
 # Load tab modules dynamically
@@ -257,7 +260,7 @@ for tab_config in TAB_CONFIG:
         module_path = os.path.join(APP_DIR, tab_config['module'])
         
         # Special handling for package modules (directories with __init__.py)
-        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'home_lab', 'command_center_pkg'):
+        if tab_config['id'] in ('options_lab', 'attribution_lab', 'strategy_lab', 'home_lab', 'command_center_pkg', 'quant_lab'):
             # Use importlib.import_module to avoid importing entire tabs package
             import importlib
             tab_mod = importlib.import_module(f"financial_dashboard.tabs.{tab_config['id']}")

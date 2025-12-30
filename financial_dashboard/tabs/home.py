@@ -755,3 +755,142 @@ def register_callbacks(app):
                 ], className='mb-2')
             )
         return rows
+    # =========================================================================
+    # AI MORNING BRIEF CALLBACK
+    # =========================================================================
+    @app.callback(
+        Output('morning-brief-content', 'children'),
+        Input('refresh-morning-brief-btn', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def update_morning_brief(n_clicks):
+        """Generate AI Morning Brief using AIMorningBriefService."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        if not n_clicks:
+            raise dash.exceptions.PreventUpdate
+        
+        logger.info(f"Morning Brief: Refresh clicked (n_clicks={n_clicks})")
+        
+        try:
+            from financial_dashboard.services.ai_morning_brief import AIMorningBriefService
+            svc = AIMorningBriefService()
+            brief = svc.generate_full_brief()
+            
+            # Extract sections
+            sections = brief.get('sections', [])
+            summary_section = next((s for s in sections if s.get('category') == 'summary'), None)
+            market_section = next((s for s in sections if s.get('category') == 'market'), None)
+            ai_section = next((s for s in sections if s.get('category') == 'ai'), None)
+            
+            # Build sentiment info
+            sentiment_info = "Neutral"
+            if summary_section:
+                sentiment_data = summary_section.get('content', {}).get('market_sentiment', {})
+                sentiment_info = sentiment_data.get('overall', 'Neutral')
+            
+            # Build market prices
+            market_lines = []
+            if market_section:
+                mc = market_section.get('content', {})
+                for ticker in ['SPY', 'QQQ', 'VIX']:
+                    if mc.get(ticker) and mc[ticker].get('price'):
+                        trend = mc[ticker].get('trend', 'neutral')
+                        cls = 'text-success' if trend == 'bullish' else 'text-danger' if trend == 'bearish' else 'text-warning'
+                        market_lines.append(
+                            html.Li(f"{ticker}: ${mc[ticker]['price']:.2f} ({mc[ticker].get('change_1d', 0):+.2f}%)", 
+                                   className=f"small mb-1 {cls}")
+                        )
+            
+            # Build AI signals
+            signal_badges = []
+            if ai_section:
+                signals = ai_section.get('content', {}).get('signals', {})
+                for ticker, sig_data in list(signals.items())[:3]:
+                    signal = sig_data.get('signal', 'HOLD')
+                    color = 'success' if 'BUY' in signal else 'danger' if 'SELL' in signal else 'warning'
+                    signal_badges.append(
+                        dbc.Col([
+                            dbc.Badge(signal.replace('STRONG ', ''), color=color, className="me-1"),
+                            html.Span(ticker, className="fw-bold"),
+                        ], width=12, className="mb-1")
+                    )
+            
+            # Get key events
+            key_events = []
+            if summary_section:
+                events = summary_section.get('content', {}).get('key_events', [])
+                for evt in events[:3]:
+                    key_events.append(html.Li(evt.get('event', 'No event'), className="small mb-1"))
+            
+            # Build the content
+            return html.Div([
+                # Market Sentiment
+                dbc.Row([
+                    dbc.Col([
+                        html.H6("Market Sentiment", className="text-muted mb-2"),
+                        dbc.Progress(
+                            value=65 if sentiment_info == 'Bullish' else 35 if sentiment_info == 'Bearish' else 50,
+                            color="success" if sentiment_info == 'Bullish' else "danger" if sentiment_info == 'Bearish' else "warning",
+                            className="mb-1",
+                            style={"height": "8px"}
+                        ),
+                        html.Small(f"{sentiment_info}", 
+                                  className=f"text-{'success' if sentiment_info == 'Bullish' else 'danger' if sentiment_info == 'Bearish' else 'warning'}")
+                    ], width=12)
+                ], className="mb-3"),
+                
+                html.Hr(className="my-2"),
+                
+                # Key Insights (market data)
+                html.Div([
+                    html.H6([
+                        html.I(className="bi bi-lightbulb me-2 text-warning"),
+                        "Key Insights"
+                    ], className="mb-2"),
+                    html.Ul(market_lines if market_lines else [
+                        html.Li("Market data loading...", className="small mb-1 text-muted")
+                    ], className="ps-3 mb-0")
+                ], className="mb-3"),
+                
+                html.Hr(className="my-2"),
+                
+                # AI Trading Signals
+                html.Div([
+                    html.H6([
+                        html.I(className="bi bi-graph-up-arrow me-2 text-info"),
+                        "AI Trading Signals"
+                    ], className="mb-2"),
+                    dbc.Row(signal_badges if signal_badges else [
+                        dbc.Col(html.Span("Analyzing...", className="small text-muted"), width=12)
+                    ])
+                ], className="mb-2"),
+                
+                # View Full Brief button
+                dbc.Button(
+                    [
+                        html.I(className="bi bi-arrow-right-circle me-2"),
+                        "View Full AI Brief"
+                    ],
+                    id="view-full-brief-btn",
+                    color="primary",
+                    size="sm",
+                    className="w-100 mt-2"
+                )
+            ])
+            
+        except Exception as e:
+            logger.error(f"Morning Brief error: {e}", exc_info=True)
+            return html.Div([
+                dbc.Alert([
+                    html.I(className="bi bi-exclamation-triangle me-2"),
+                    f"Error generating brief: {str(e)[:100]}"
+                ], color="danger", className="mb-2"),
+                # Keep the original static content
+                html.Div([
+                    html.H6("Market Sentiment", className="text-muted mb-2"),
+                    dbc.Progress(value=65, color="success", className="mb-1", style={"height": "8px"}),
+                    html.Small("Bullish (Fear & Greed: 65)", className="text-success")
+                ])
+            ])
