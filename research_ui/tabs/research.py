@@ -240,7 +240,7 @@ def create_results_layout(result: dict) -> html.Div:
     Returns:
         Div containing charts and statistics
     """
-    from dash.components.reports import (
+    from research_ui.components.reports import (
         create_equity_curve_chart,
         create_drawdown_chart,
         create_stats_card,
@@ -338,7 +338,7 @@ def register_research_callbacks(app):
         """Run backtest when button is clicked"""
         from datetime import datetime
         from engines.backtest.runner import BacktestRunner, BacktestConfig, StrategyType
-        from dash.components.reports import (
+        from research_ui.components.reports import (
             create_equity_curve_chart,
             create_drawdown_chart,
             create_stats_card,

@@ -386,16 +386,18 @@ def create_trade_log_table(trades: List[Dict[str, Any]]) -> dash_table.DataTable
             'color': 'white',
         },
         style_data_conditional=[
-            # Green for positive P&L
+            # Green for positive P&L (doesn't contain minus sign)
             {
                 'if': {
-                    'filter_query': '{P&L} contains "$" && {P&L} not contains "-"',
+                    'column_id': 'P&L',
+                    'filter_query': '{P&L} not contains "-"',
                 },
                 'color': '#00ff88',
             },
             # Red for negative P&L
             {
                 'if': {
+                    'column_id': 'P&L',
                     'filter_query': '{P&L} contains "-"',
                 },
                 'color': '#ff4444',

@@ -63,7 +63,7 @@ from tradeops_ui.tabs.trade_ops_callbacks import register_tradeops_callbacks
 register_tradeops_callbacks(app)
 
 # Register Research Lab callbacks (Phase 7 - Historical Backtest Engine)
-from dash.tabs.research import register_research_callbacks
+from research_ui.tabs.research import register_research_callbacks
 register_research_callbacks(app)
 
 if __name__ == '__main__':
