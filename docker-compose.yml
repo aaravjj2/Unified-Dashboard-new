@@ -226,6 +226,35 @@ services:
       retries: 3
       start_period: 10s
 
+  # Triton Inference Server for optimized ML model serving (Phase 11)
+  tritonserver:
+    image: nvcr.io/nvidia/tritonserver:23.10-py3
+    container_name: tritonserver
+    networks:
+      - shared-network
+    ports:
+      - "8001:8001"  # gRPC endpoint
+      - "8002:8002"  # Metrics endpoint
+    volumes:
+      - ./model_repository:/models:ro
+    environment:
+      - TRITON_MODEL_REPOSITORY=/models
+    command: ["tritonserver", "--model-repository=/models", "--strict-model-config=false"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
   gpt4all_stub:
     build:
       context: .
