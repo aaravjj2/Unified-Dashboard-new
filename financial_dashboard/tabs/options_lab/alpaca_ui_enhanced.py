@@ -969,9 +969,175 @@ def _create_watchlist_item(symbol: str, price: float, change: float, change_pct:
     })
 
 
+def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
+    """
+    Create consolidated 4-tab Alpaca Options Lab layout.
+    Phase 15 - Agent-UX Consolidation
+    
+    Workspaces:
+    1. Scanner: Market Viz + Flow + Patterns
+    2. Strategy: Chain + Builder + AI
+    3. Command: Positions + Trade Ops
+    4. Admin: Status + Research
+    """
+    from dashboard_layouts.layouts.workspaces import (
+        scanner_layout,
+        strategy_layout,
+        command_layout,
+        admin_layout,
+    )
+    
+    return html.Div([
+        # Top bar with ticker input and controls (preserved from original)
+        html.Div([
+            html.Div([
+                html.Label("Symbol:", style={'color': '#9ca3af', 'fontSize': '13px', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                dcc.Input(
+                    id='alpaca-ticker-input',
+                    type='text',
+                    value=ticker,
+                    placeholder='Enter ticker...',
+                    style={
+                        'width': '120px',
+                        'padding': '8px',
+                        'backgroundColor': '#2a2d3a',
+                        'color': '#ffffff',
+                        'border': '1px solid #3d4050',
+                        'borderRadius': '4px',
+                        'marginRight': '10px'
+                    }
+                ),
+                html.Button("Load Chain", id='alpaca-load-button', n_clicks=0,
+                           style={
+                               'padding': '8px 20px',
+                               'backgroundColor': '#4caf50',
+                               'color': 'white',
+                               'border': 'none',
+                               'borderRadius': '4px',
+                               'cursor': 'pointer',
+                               'fontWeight': 'bold',
+                               'marginRight': '20px'
+                           }),
+                
+                # Trading mode toggle
+                html.Div([
+                    html.Span("Trading Mode: ", style={'color': '#9ca3af', 'fontSize': '12px'}),
+                    dcc.RadioItems(
+                        id='trading-mode-toggle',
+                        options=[
+                            {'label': ' Paper', 'value': 'paper'},
+                            {'label': ' Live', 'value': 'live'}
+                        ],
+                        value='paper',
+                        inline=True,
+                        style={'fontSize': '12px'},
+                        labelStyle={'color': '#e0e0e0', 'marginRight': '10px'}
+                    )
+                ], style={'display': 'inline-block', 'marginRight': '20px'}),
+                
+                # Auto-refresh toggle
+                html.Div([
+                    dcc.Checklist(
+                        id='auto-refresh-toggle',
+                        options=[{'label': ' Auto-Refresh (30s)', 'value': 'enabled'}],
+                        value=[],
+                        style={'fontSize': '12px', 'color': '#e0e0e0'}
+                    )
+                ], style={'display': 'inline-block'}),
+                
+                # Phase 15 indicator
+                dbc.Badge("4-Tab UX", color="warning", className="ms-3"),
+            ], style={'display': 'flex', 'alignItems': 'center', 'flexWrap': 'wrap'})
+        ], style={
+            'padding': '15px',
+            'backgroundColor': '#1e2130',
+            'borderRadius': '8px',
+            'marginBottom': '15px'
+        }),
+        
+        # CONSOLIDATED 4 TABS (Phase 15)
+        dcc.Tabs(
+            id='main-workspace-tabs',
+            value='scanner-workspace-tab',
+            children=[
+                # Tab 1: Scanner Workspace
+                dcc.Tab(
+                    label='🔭 Scanner',
+                    value='scanner-workspace-tab',
+                    children=[scanner_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#F5C211'}
+                ),
+                
+                # Tab 2: Strategy Workspace
+                dcc.Tab(
+                    label='⚔️ Strategy',
+                    value='strategy-workspace-tab',
+                    children=[strategy_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#00d4ff'}
+                ),
+                
+                # Tab 3: Command Workspace
+                dcc.Tab(
+                    label='🎮 Command',
+                    value='command-workspace-tab',
+                    children=[command_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}
+                ),
+                
+                # Tab 4: Admin Workspace
+                dcc.Tab(
+                    label='🔧 Admin',
+                    value='admin-workspace-tab',
+                    children=[admin_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}
+                ),
+            ],
+            style={'marginBottom': '15px'}
+        ),
+        
+        # Hidden components (preserved for callbacks)
+        dcc.Dropdown(id='alpaca-expiration-dropdown', options=[], value=None, style={'display': 'none'}),
+        dcc.Download(id='alpaca-download-csv'),
+        dcc.Download(id='alpaca-download-json'),
+        dcc.Store(id='alpaca-options-store'),
+        dcc.Store(id='strategy-legs-store', data=[]),
+        dcc.Store(id='positions-store', data=[]),
+        dcc.Store(id='watchlist-store', data=['SPY', 'QQQ', 'AAPL']),
+        dcc.Store(id='alerts-store', data=[]),
+        dcc.Store(id='strategy-engine-refresh-trigger', data=0),
+        dcc.Store(id='pattern-data-store', data=[]),  # Phase 15: Pattern detection store
+        dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
+        dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
+        
+        html.Div(id='alpaca-cache-info', style={'display': 'none'}),
+        html.Div(id='alpaca-order-modal-container'),
+        html.Div(id='alpaca-header-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-expiration-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-export-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-table-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-status-message', style={
+            'marginTop': '20px', 'padding': '10px', 'borderRadius': '4px', 'fontSize': '13px'
+        }),
+        
+        # Hotkey listener for Terminal UX
+        html.Div(id='hotkey-listener', style={'display': 'none'}),
+        
+    ], style={
+        'padding': '20px',
+        'backgroundColor': '#16181f',
+        'minHeight': '100vh',
+        'color': '#ffffff'
+    })
+
+
 def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
     """
     Create enhanced Alpaca-style Options Lab layout with all panels.
+    Original 12-tab layout preserved for backwards compatibility.
     
     This replaces the basic layout with comprehensive analytics.
     """

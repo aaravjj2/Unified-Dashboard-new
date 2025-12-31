@@ -26,8 +26,15 @@ else:
 from dash import Dash
 import dash_bootstrap_components as dbc
 
-# Import the enhanced layout
-from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import create_enhanced_options_layout
+# Check if using consolidated 4-tab layout (Phase 15)
+USE_CONSOLIDATED_LAYOUT = os.getenv('UX_CONSOLIDATED', 'true').lower() == 'true'
+
+if USE_CONSOLIDATED_LAYOUT:
+    from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import create_consolidated_options_layout as create_layout
+    print("🎛️ Using Phase 15 Consolidated 4-Tab Layout")
+else:
+    from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import create_enhanced_options_layout as create_layout
+    print("📊 Using Original 12-Tab Layout")
 
 # Create app with explicit assets folder for Market Viz hotkeys
 app = Dash(
@@ -39,7 +46,7 @@ app = Dash(
     # Load assets from financial_dashboard/assets for hotkeys.js
     assets_folder='/home/aarav/Unified-Dashboard/financial_dashboard/assets',
 )
-app.layout = create_enhanced_options_layout("SPY")
+app.layout = create_layout("SPY")
 
 # Register base callbacks first (these use @callback decorator)
 import financial_dashboard.tabs.options_lab.alpaca_callbacks
