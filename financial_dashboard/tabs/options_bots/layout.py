@@ -187,7 +187,7 @@ def create_connection_status_card() -> dbc.Card:
 
 
 def create_market_overview_card() -> dbc.Card:
-    """Create the market overview card."""
+    """Create the market overview card with IV metrics."""
     return dbc.Card([
         dbc.CardHeader([
             html.I(className="fas fa-chart-line me-2"),
@@ -201,25 +201,38 @@ def create_market_overview_card() -> dbc.Card:
                             html.Small("Market Status", className="text-muted"),
                             html.H5("Loading...", id="options-bots-market-status"),
                         ]),
-                    ], width=3),
+                    ], width=2),
                     dbc.Col([
                         html.Div([
                             html.Small("SPY", className="text-muted"),
                             html.H5("--", id="options-bots-spy-price"),
                         ]),
-                    ], width=3),
+                    ], width=2),
                     dbc.Col([
                         html.Div([
                             html.Small("VIX", className="text-muted"),
                             html.H5("--", id="options-bots-vix-price"),
                         ]),
-                    ], width=3),
+                    ], width=2),
                     dbc.Col([
                         html.Div([
                             html.Small("GLD", className="text-muted"),
                             html.H5("--", id="options-bots-gld-price"),
                         ]),
-                    ], width=3),
+                    ], width=2),
+                    # === NEW: IV Rank & IV Percentile ===
+                    dbc.Col([
+                        html.Div([
+                            html.Small("IV Rank", className="text-muted"),
+                            html.H5("--", id="options-bots-iv-rank", className="text-warning"),
+                        ]),
+                    ], width=2),
+                    dbc.Col([
+                        html.Div([
+                            html.Small("IV %tile", className="text-muted"),
+                            html.H5("--", id="options-bots-iv-percentile", className="text-info"),
+                        ]),
+                    ], width=2),
                 ]),
             ]),
         ]),
@@ -277,6 +290,51 @@ def create_dashboard_tab() -> html.Div:
             ], md=3, className="mb-3"),
         ]),
         
+        # === NEW: Portfolio Greeks Panel ===
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="fas fa-chart-pie me-2 text-info"),
+                        html.Span("Portfolio Greeks", className="fw-bold"),
+                        dbc.Badge("Live", color="success", className="ms-2")
+                    ], className="bg-dark border-secondary"),
+                    dbc.CardBody([
+                        dbc.Row([
+                            dbc.Col([
+                                html.Div([
+                                    html.Small("Delta", className="text-muted d-block"),
+                                    html.H4("0", id="ob-portfolio-delta", className="mb-0 text-info"),
+                                    html.Small("Net exposure", className="text-muted", style={'fontSize': '10px'})
+                                ], className="text-center p-2 border-end border-secondary")
+                            ], width=3),
+                            dbc.Col([
+                                html.Div([
+                                    html.Small("Gamma", className="text-muted d-block"),
+                                    html.H4("0", id="ob-portfolio-gamma", className="mb-0 text-warning"),
+                                    html.Small("Accel risk", className="text-muted", style={'fontSize': '10px'})
+                                ], className="text-center p-2 border-end border-secondary")
+                            ], width=3),
+                            dbc.Col([
+                                html.Div([
+                                    html.Small("Theta", className="text-muted d-block"),
+                                    html.H4("$0", id="ob-portfolio-theta", className="mb-0 text-success"),
+                                    html.Small("Daily decay", className="text-muted", style={'fontSize': '10px'})
+                                ], className="text-center p-2 border-end border-secondary")
+                            ], width=3),
+                            dbc.Col([
+                                html.Div([
+                                    html.Small("Vega", className="text-muted d-block"),
+                                    html.H4("$0", id="ob-portfolio-vega", className="mb-0 text-danger"),
+                                    html.Small("IV sensitivity", className="text-muted", style={'fontSize': '10px'})
+                                ], className="text-center p-2")
+                            ], width=3),
+                        ], className="g-0"),
+                    ], className="bg-dark p-2"),
+                ], className="border-secondary"),
+            ], md=12, className="mb-3"),
+        ]),
+        
         # Active Bots Preview + Recent Activity
         dbc.Row([
             dbc.Col([
@@ -318,44 +376,162 @@ def create_dashboard_tab() -> html.Div:
             ], md=4, className="mb-3"),
         ]),
         
-        # Quick Actions
+        # === ENHANCED: Quick Deploy Panel ===
         dbc.Row([
             dbc.Col([
                 dbc.Card([
                     dbc.CardHeader([
-                        html.I(className="fas fa-bolt me-2"),
-                        "Quick Actions"
-                    ]),
+                        html.I(className="fas fa-rocket me-2"),
+                        "Quick Deploy",
+                        dbc.Badge("One-Click", color="success", className="ms-2")
+                    ], className="bg-dark border-secondary"),
                     dbc.CardBody([
+                        # Row 1: Income strategies
+                        html.Div([
+                            html.Small("Income Strategies", className="text-muted mb-2 d-block"),
+                            dbc.ButtonGroup([
+                                dbc.Button([
+                                    html.I(className="fas fa-coins me-1"),
+                                    "GLD RSI Put"
+                                ], id="options-bots-quick-gld", color="success", size="sm", className="me-1"),
+                                dbc.Button([
+                                    html.I(className="fas fa-layer-group me-1"),
+                                    "SPY Iron Condor"
+                                ], id="options-bots-quick-spy-ic", color="info", size="sm", className="me-1"),
+                                dbc.Button([
+                                    html.I(className="fas fa-sync me-1"),
+                                    "SPY Wheel"
+                                ], id="options-bots-quick-wheel", color="warning", size="sm", className="me-1"),
+                                dbc.Button([
+                                    html.I(className="fas fa-shield-alt me-1"),
+                                    "Covered Call"
+                                ], id="options-bots-quick-cc", color="secondary", size="sm"),
+                            ], className="mb-3"),
+                        ]),
+                        # Row 2: Volatility plays
+                        html.Div([
+                            html.Small("Volatility Plays", className="text-muted mb-2 d-block"),
+                            dbc.ButtonGroup([
+                                dbc.Button([
+                                    html.I(className="fas fa-expand-arrows-alt me-1"),
+                                    "Long Straddle"
+                                ], id="options-bots-quick-straddle", color="primary", size="sm", className="me-1"),
+                                dbc.Button([
+                                    html.I(className="fas fa-compress-arrows-alt me-1"),
+                                    "Short Strangle"
+                                ], id="options-bots-quick-strangle", color="danger", size="sm", className="me-1"),
+                                dbc.Button([
+                                    html.I(className="fas fa-chart-bar me-1"),
+                                    "VIX Hedge"
+                                ], id="options-bots-quick-vix-hedge", color="dark", size="sm"),
+                            ], className="mb-3"),
+                        ]),
+                        html.Hr(className="my-2"),
+                        # Bot Controls Row
                         dbc.Row([
                             dbc.Col([
                                 dbc.Button([
-                                    html.I(className="fas fa-plus me-2"),
-                                    "Create GLD RSI Bot"
-                                ], id="options-bots-quick-gld", color="success", className="w-100 mb-2"),
-                            ], md=3),
-                            dbc.Col([
-                                dbc.Button([
-                                    html.I(className="fas fa-plus me-2"),
-                                    "Create SPY Iron Condor"
-                                ], id="options-bots-quick-spy-ic", color="info", className="w-100 mb-2"),
-                            ], md=3),
-                            dbc.Col([
-                                dbc.Button([
                                     html.I(className="fas fa-stop-circle me-2"),
-                                    "Stop All Bots"
-                                ], id="options-bots-stop-all", color="danger", outline=True, className="w-100 mb-2"),
-                            ], md=3),
+                                    "Stop All"
+                                ], id="options-bots-stop-all", color="danger", outline=True, size="sm", className="w-100"),
+                            ], width=4),
                             dbc.Col([
                                 dbc.Button([
                                     html.I(className="fas fa-play-circle me-2"),
-                                    "Start All Bots"
-                                ], id="options-bots-start-all", color="success", outline=True, className="w-100 mb-2"),
-                            ], md=3),
+                                    "Start All"
+                                ], id="options-bots-start-all", color="success", outline=True, size="sm", className="w-100"),
+                            ], width=4),
+                            dbc.Col([
+                                dbc.Button([
+                                    html.I(className="fas fa-sync-alt me-2"),
+                                    "Refresh"
+                                ], id="options-bots-refresh-quick", color="secondary", outline=True, size="sm", className="w-100"),
+                            ], width=4),
                         ]),
-                    ]),
-                ]),
-            ], className="mb-3"),
+                    ], className="bg-dark"),
+                ], className="border-secondary"),
+            ], md=6, className="mb-3"),
+            
+            # === NEW: Position Sizing Calculator ===
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.I(className="fas fa-calculator me-2"),
+                        "Position Sizing",
+                        dbc.Badge("Risk Mgmt", color="warning", className="ms-2")
+                    ], className="bg-dark border-secondary"),
+                    dbc.CardBody([
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Account Value ($)", className="small text-muted"),
+                                dbc.Input(
+                                    id="ob-account-value",
+                                    type="number",
+                                    value=25000,
+                                    min=1000,
+                                    step=1000,
+                                    size="sm",
+                                ),
+                            ], width=6),
+                            dbc.Col([
+                                dbc.Label("Risk per Trade (%)", className="small text-muted"),
+                                dbc.Input(
+                                    id="ob-risk-per-trade",
+                                    type="number",
+                                    value=2,
+                                    min=0.5,
+                                    max=10,
+                                    step=0.5,
+                                    size="sm",
+                                ),
+                            ], width=6),
+                        ], className="mb-2"),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Label("Max Spread Width ($)", className="small text-muted"),
+                                dbc.Input(
+                                    id="ob-max-spread",
+                                    type="number",
+                                    value=5,
+                                    min=1,
+                                    max=20,
+                                    step=1,
+                                    size="sm",
+                                ),
+                            ], width=6),
+                            dbc.Col([
+                                dbc.Label("Target Win Rate (%)", className="small text-muted"),
+                                dbc.Input(
+                                    id="ob-target-winrate",
+                                    type="number",
+                                    value=65,
+                                    min=50,
+                                    max=90,
+                                    step=5,
+                                    size="sm",
+                                ),
+                            ], width=6),
+                        ], className="mb-2"),
+                        html.Hr(className="my-2"),
+                        html.Div(id="ob-position-size-result", children=[
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Small("Max Risk", className="text-muted d-block"),
+                                    html.H5("$500", className="text-danger mb-0"),
+                                ], width=4, className="text-center"),
+                                dbc.Col([
+                                    html.Small("Contracts", className="text-muted d-block"),
+                                    html.H5("1", className="text-success mb-0"),
+                                ], width=4, className="text-center"),
+                                dbc.Col([
+                                    html.Small("Margin Req", className="text-muted d-block"),
+                                    html.H5("$500", className="text-info mb-0"),
+                                ], width=4, className="text-center"),
+                            ]),
+                        ]),
+                    ], className="bg-dark"),
+                ], className="border-secondary"),
+            ], md=6, className="mb-3"),
         ]),
     ])
 

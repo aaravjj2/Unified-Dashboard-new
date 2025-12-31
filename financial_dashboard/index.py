@@ -264,18 +264,18 @@ TAB_CONFIG = [
 # Module-level constant for enabled tabs (used by create_layout)
 ENABLED_TABS = [
     'home',  # Primary Command Center (clean UI)
-    'research_lab',      # PRIORITY: Force render first
-    'attribution_lab',   # PRIORITY: Force render second
-    'strategy_lab',      # PHASE 2: Real data integration complete
-    'strategy_builder',  # PHASE 3: Iron Condor Builder
-    'picks',
-    'market_trends',
-    'market_forecast',
-    'volatility_lab',
-    'portfolio',
-    'options_lab',
+    # 'research_lab',      # REMOVED: Manual research tool
+    # 'attribution_lab',   # REMOVED: Post-trade analysis
+    'strategy_lab',      # KEEP: For strategy execution/monitoring
+    # 'strategy_builder',  # REMOVED: Manual strategy construction
+    # 'picks',             # REMOVED: Manual discretionary trading
+    'market_trends',     # KEEP: Market Intelligence
+    'market_forecast',   # KEEP: Market Intelligence
+    'volatility_lab',    # KEEP: Market Intelligence
+    'portfolio',         # KEEP: Real-world tracking
+    # 'options_lab',       # REMOVED: Merging into Bot Manager
     'options_bots',  # NEW: Automated options trading bots
-    'quant_lab',  # PHASE 3: RL Trading, QLib Factors, Deep Hedging
+    # 'quant_lab',  # REMOVED: Experimental
 ]
 
 # Load tab modules dynamically

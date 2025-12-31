@@ -35,6 +35,8 @@ from forecast_ui.tabs.forecasts import create_forecast_tab
 from tradeops_ui.tabs.trade_ops import create_trade_ops_tab
 # Import Research tab (Phase 7)
 from research_ui.tabs.research import create_research_tab
+# Import Market Viz tab (Phase 6 - Agent-Viz)
+from financial_dashboard.tabs.market_viz.layout import create_market_viz_layout
 
 logger = logging.getLogger(__name__)
 
@@ -1140,6 +1142,12 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
                 create_research_tab()
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#00bcd4'}),
+            
+            # Tab 11: Market Viz (Phase 6 - Agent-Viz)
+            dcc.Tab(label='📈 Market Viz', children=[
+                create_market_viz_layout(ticker='SPY', use_mock=True)
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#F5C211'}),
             
         ], style={'marginBottom': '15px'}),
         

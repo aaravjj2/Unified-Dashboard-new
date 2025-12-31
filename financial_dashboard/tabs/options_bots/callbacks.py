@@ -243,6 +243,185 @@ def register_options_bots_callbacks(app) -> None:
             return "0", "0", "0", "$0", [html.P("Error loading bots", className="text-danger")], []
     
     # =========================================================================
+    # PORTFOLIO GREEKS (NEW)
+    # =========================================================================
+    
+    @app.callback(
+        [
+            Output("ob-portfolio-delta", "children"),
+            Output("ob-portfolio-gamma", "children"),
+            Output("ob-portfolio-theta", "children"),
+            Output("ob-portfolio-vega", "children"),
+        ],
+        [
+            Input("options-bots-refresh-interval", "n_intervals"),
+            Input("options-bots-refresh-all", "n_clicks"),
+        ],
+        prevent_initial_call=False,
+    )
+    def update_portfolio_greeks(n_intervals, refresh_clicks):
+        """Update portfolio-level Greeks from all active positions."""
+        try:
+            scheduler = get_options_scheduler()
+            all_bots = scheduler.get_all_bots_status()
+            
+            # Aggregate Greeks from all active positions
+            total_delta = 0
+            total_gamma = 0
+            total_theta = 0
+            total_vega = 0
+            
+            for bot in all_bots:
+                if bot.get("is_running"):
+                    greeks = bot.get("portfolio_greeks", {})
+                    total_delta += greeks.get("delta", 0)
+                    total_gamma += greeks.get("gamma", 0)
+                    total_theta += greeks.get("theta", 0)
+                    total_vega += greeks.get("vega", 0)
+            
+            # Format with color indicators
+            def format_greek(value, prefix=""):
+                if value > 0:
+                    return f"+{prefix}{value:.1f}"
+                elif value < 0:
+                    return f"{prefix}{value:.1f}"
+                return f"{prefix}0"
+            
+            return (
+                format_greek(total_delta),
+                format_greek(total_gamma),
+                format_greek(total_theta, "$"),
+                format_greek(total_vega, "$"),
+            )
+            
+        except Exception as e:
+            logger.error(f"Error updating portfolio Greeks: {e}")
+            return "0", "0", "$0", "$0"
+    
+    # =========================================================================
+    # IV RANK & PERCENTILE
+    # =========================================================================
+    
+    @app.callback(
+        [
+            Output("options-bots-iv-rank", "children"),
+            Output("options-bots-iv-percentile", "children"),
+        ],
+        [
+            Input("options-bots-refresh-interval", "n_intervals"),
+            Input("options-bots-refresh-all", "n_clicks"),
+        ],
+        prevent_initial_call=False,
+    )
+    def update_iv_metrics(n_intervals, refresh_clicks):
+        """Update IV Rank and IV Percentile for SPY."""
+        try:
+            import yfinance as yf
+            
+            # Get VIX historical data (1 year)
+            vix = yf.Ticker("^VIX")
+            hist = vix.history(period="1y")
+            
+            if hist.empty:
+                return "--", "--"
+            
+            current_vix = hist['Close'].iloc[-1]
+            vix_52wk_high = hist['Close'].max()
+            vix_52wk_low = hist['Close'].min()
+            
+            # IV Rank = (Current - 52wk Low) / (52wk High - 52wk Low) * 100
+            iv_range = vix_52wk_high - vix_52wk_low
+            if iv_range > 0:
+                iv_rank = ((current_vix - vix_52wk_low) / iv_range) * 100
+            else:
+                iv_rank = 50
+            
+            # IV Percentile = % of days current VIX was above
+            iv_percentile = (hist['Close'] < current_vix).sum() / len(hist) * 100
+            
+            # Color coding based on levels
+            def get_iv_color(value):
+                if value < 25:
+                    return "text-danger"  # Low IV - red (bad for selling)
+                elif value < 50:
+                    return "text-warning"  # Medium IV
+                else:
+                    return "text-success"  # High IV - green (good for selling)
+            
+            iv_rank_text = html.Span(f"{iv_rank:.0f}%", className=get_iv_color(iv_rank))
+            iv_percentile_text = html.Span(f"{iv_percentile:.0f}%", className=get_iv_color(iv_percentile))
+            
+            return iv_rank_text, iv_percentile_text
+            
+        except Exception as e:
+            logger.error(f"Error calculating IV metrics: {e}")
+            return "--", "--"
+    
+    # =========================================================================
+    # POSITION SIZING CALCULATOR
+    # =========================================================================
+    
+    @app.callback(
+        Output("ob-position-size-result", "children"),
+        [
+            Input("ob-account-value", "value"),
+            Input("ob-risk-per-trade", "value"),
+            Input("ob-max-spread", "value"),
+            Input("ob-target-winrate", "value"),
+        ],
+    )
+    def calculate_position_size(account_value, risk_pct, max_spread, target_winrate):
+        """Calculate optimal position sizing based on account and risk parameters."""
+        try:
+            if not all([account_value, risk_pct, max_spread]):
+                return no_update
+            
+            # Max risk per trade
+            max_risk = account_value * (risk_pct / 100)
+            
+            # Max contracts based on spread width (risk = spread width * 100)
+            max_contracts = int(max_risk / (max_spread * 100))
+            if max_contracts < 1:
+                max_contracts = 1
+            
+            # Margin requirement (typically spread width * contracts * 100)
+            margin_req = max_contracts * max_spread * 100
+            
+            # Kelly criterion suggestion
+            if target_winrate:
+                win_rate = target_winrate / 100
+                loss_rate = 1 - win_rate
+                # Assume 2:1 risk/reward for credit spreads
+                avg_win = max_spread * 0.5  # Keep ~50% of premium
+                avg_loss = max_spread  # Lose full spread
+                kelly_pct = (win_rate / avg_loss) - (loss_rate / avg_win) if avg_win > 0 else 0
+                kelly_contracts = max(1, int(account_value * max(0, kelly_pct) / (max_spread * 100)))
+            else:
+                kelly_contracts = max_contracts
+            
+            # Use the more conservative of kelly and risk-based
+            recommended_contracts = min(max_contracts, kelly_contracts)
+            
+            return dbc.Row([
+                dbc.Col([
+                    html.Small("Max Risk", className="text-muted d-block"),
+                    html.H5(f"${max_risk:,.0f}", className="text-danger mb-0"),
+                ], width=4, className="text-center"),
+                dbc.Col([
+                    html.Small("Contracts", className="text-muted d-block"),
+                    html.H5(f"{recommended_contracts}", className="text-success mb-0"),
+                ], width=4, className="text-center"),
+                dbc.Col([
+                    html.Small("Margin Req", className="text-muted d-block"),
+                    html.H5(f"${margin_req:,.0f}", className="text-info mb-0"),
+                ], width=4, className="text-center"),
+            ])
+            
+        except Exception as e:
+            logger.error(f"Error calculating position size: {e}")
+            return html.P("Error calculating", className="text-danger")
+    
+    # =========================================================================
     # TEMPLATE DESCRIPTIONS
     # =========================================================================
     

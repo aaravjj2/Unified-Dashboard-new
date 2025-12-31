@@ -12,24 +12,32 @@
     
     // Filter function for duplicate callback warnings
     function shouldSuppress(args) {
-        const message = args[0];
-        if (typeof message === 'string') {
-            // Suppress "Duplicate callback outputs" warnings
-            if (message.includes('Duplicate callback outputs')) {
-                return true;
+        try {
+            const message = args[0];
+            if (typeof message === 'string') {
+                // Suppress "Duplicate callback outputs" warnings
+                if (message.includes('Duplicate callback outputs')) {
+                    return true;
+                }
+                // Suppress related duplicate warnings
+                if (message.includes('duplicate output')) {
+                    return true;
+                }
             }
-            // Suppress related duplicate warnings
-            if (message.includes('duplicate output')) {
-                return true;
+            
+            // Check for object messages (Dash sometimes logs as objects)
+            if (message && typeof message === 'object') {
+                try {
+                    const msgStr = JSON.stringify(message);
+                    if (msgStr && (msgStr.includes('Duplicate callback') || msgStr.includes('duplicate output'))) {
+                        return true;
+                    }
+                } catch (e) {
+                    // JSON.stringify failed (circular ref, etc.) - don't suppress
+                }
             }
-        }
-        
-        // Check for object messages (Dash sometimes logs as objects)
-        if (typeof message === 'object' && message !== null) {
-            const msgStr = JSON.stringify(message);
-            if (msgStr.includes('Duplicate callback') || msgStr.includes('duplicate output')) {
-                return true;
-            }
+        } catch (e) {
+            // Safety catch - don't suppress if we can't check
         }
         
         return false;

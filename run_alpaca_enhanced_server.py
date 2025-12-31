@@ -29,13 +29,15 @@ import dash_bootstrap_components as dbc
 # Import the enhanced layout
 from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import create_enhanced_options_layout
 
-# Create app
+# Create app with explicit assets folder for Market Viz hotkeys
 app = Dash(
     __name__, 
     external_stylesheets=[dbc.themes.DARKLY], 
     suppress_callback_exceptions=True,
     # Prevent async loading issues
-    eager_loading=True
+    eager_loading=True,
+    # Load assets from financial_dashboard/assets for hotkeys.js
+    assets_folder='/home/aarav/Unified-Dashboard/financial_dashboard/assets',
 )
 app.layout = create_enhanced_options_layout("SPY")
 
@@ -66,12 +68,21 @@ register_tradeops_callbacks(app)
 from research_ui.tabs.research import register_research_callbacks
 register_research_callbacks(app)
 
+# Register Market Viz UX callbacks (Phase 6 - Agent-Viz)
+from financial_dashboard.callbacks.ux import register_ux_callbacks
+try:
+    register_ux_callbacks(app)
+    print("📈 Market Viz: Phase 6 Active")
+except Exception as e:
+    print(f"⚠️ Market Viz callbacks skipped (components not in current view): {e}")
+
 if __name__ == '__main__':
     print("🚀 Starting Enhanced Alpaca Options Lab on port 8053...")
-    print("📊 Features: Chain, Greeks & IV, Strategy Builder, Strategy Engine, AI, Forecast, Flow, Positions, Status, Trade Ops, Research")
+    print("📊 Features: Chain, Greeks & IV, Strategy Builder, Strategy Engine, AI, Forecast, Flow, Positions, Status, Trade Ops, Research, Market Viz")
     print(f"🔐 Alpaca API: {'✅ Configured' if os.getenv('APCA_API_KEY_ID') else '❌ Not configured'}")
     print(f"📈 Data Sources: Alpaca → yfinance → mock")
     print("🔮 ML Forecast Engine: Phase 2 Active")
     print("⚙️ Trade Ops Engine: Phase 4/5 Active")
     print("📊 Research Lab: Phase 7 Active")
+    print("📈 Market Viz: Phase 6 Active (GEX, Vol Surface, Flow Tape, Hotkeys)")
     app.run(debug=False, port=8053, host='0.0.0.0')

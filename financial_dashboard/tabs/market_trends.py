@@ -2146,7 +2146,7 @@ def register_callbacks(app):
         Output('status', 'style', allow_duplicate=True),
         Output('current-job', 'data', allow_duplicate=True),
         Output('poll-interval', 'disabled', allow_duplicate=True),
-        Output('trends-results-store', 'data'),
+        Output('trends-results-store', 'data', allow_duplicate=True),
         Input('poll-interval', 'n_intervals'),
         State('current-job', 'data'),
         prevent_initial_call=True

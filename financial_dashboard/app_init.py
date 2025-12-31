@@ -28,7 +28,8 @@ def setup_callbacks_and_layout(app, index_module):
             app,
             loaded_tabs=index_module.loaded_tabs,
             SH=index_module.SH,
-            CHATBOT_AVAILABLE=index_module.CHATBOT_AVAILABLE
+            CHATBOT_AVAILABLE=index_module.CHATBOT_AVAILABLE,
+            enabled_tabs=index_module.ENABLED_TABS
         )
         logger.info(f"✅ Registered {_callback_count} tab callbacks")
     except Exception as e:

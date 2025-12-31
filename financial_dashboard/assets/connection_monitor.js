@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("📡 Connection Monitor initialized");
 
-    const POLL_ENDPOINT = '/_dash-layout'; // Lightweight endpoint
+    const POLL_ENDPOINT = '/api/options/ready'; // Checks Backend + Redis (Readiness)
     let interval = 2000;
     const MAX_INTERVAL = 30000;
     let timer = null;
@@ -52,8 +52,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function checkConnection() {
-        fetch(POLL_ENDPOINT, { method: 'GET', cache: 'no-store' })
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
+
+        fetch(POLL_ENDPOINT, {
+            method: 'GET',
+            cache: 'no-store',
+            signal: controller.signal
+        })
             .then(response => {
+                clearTimeout(timeoutId);
                 if (response.ok) {
                     // Success
                     if (interval > 2000) {
@@ -62,11 +70,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     interval = 2000; // Reset backoff
                     hideBadge();
                 } else {
-                    throw new Error("Server error");
+                    throw new Error("Server error " + response.status);
                 }
             })
             .catch(error => {
-                console.warn(`⚠️ Connection lost: ${error.message}. Retrying in ${interval}ms`);
+                clearTimeout(timeoutId);
+                const isTimeout = error.name === 'AbortError';
+                const msg = isTimeout ? 'Request timed out' : error.message;
+
+                console.warn(`⚠️ Connection lost: ${msg}. Retrying in ${interval}ms`);
                 showBadge();
 
                 // Exponential Backoff

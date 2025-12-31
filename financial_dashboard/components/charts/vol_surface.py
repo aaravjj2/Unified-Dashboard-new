@@ -215,9 +215,8 @@ def create_vol_surface_figure(
                 [1, ALPACA_DARK["surface_high"]],
             ],
             colorbar=dict(
-                title="IV (%)",
+                title=dict(text="IV (%)", font=dict(color=ALPACA_DARK["text"])),
                 ticksuffix="%",
-                titlefont=dict(color=ALPACA_DARK["text"]),
                 tickfont=dict(color=ALPACA_DARK["text"]),
             ),
             hovertemplate=(
@@ -249,25 +248,22 @@ def create_vol_surface_figure(
         paper_bgcolor=ALPACA_DARK["paper"],
         scene=dict(
             xaxis=dict(
-                title="Strike ($)",
+                title=dict(text="Strike ($)", font=dict(color=ALPACA_DARK["text"])),
                 backgroundcolor=ALPACA_DARK["bg"],
                 gridcolor=ALPACA_DARK["grid"],
                 tickfont=dict(color=ALPACA_DARK["text"]),
-                titlefont=dict(color=ALPACA_DARK["text"]),
             ),
             yaxis=dict(
-                title="Days to Expiry",
+                title=dict(text="Days to Expiry", font=dict(color=ALPACA_DARK["text"])),
                 backgroundcolor=ALPACA_DARK["bg"],
                 gridcolor=ALPACA_DARK["grid"],
                 tickfont=dict(color=ALPACA_DARK["text"]),
-                titlefont=dict(color=ALPACA_DARK["text"]),
             ),
             zaxis=dict(
-                title="IV (%)",
+                title=dict(text="IV (%)", font=dict(color=ALPACA_DARK["text"])),
                 backgroundcolor=ALPACA_DARK["bg"],
                 gridcolor=ALPACA_DARK["grid"],
                 tickfont=dict(color=ALPACA_DARK["text"]),
-                titlefont=dict(color=ALPACA_DARK["text"]),
             ),
             bgcolor=ALPACA_DARK["bg"],
         ),

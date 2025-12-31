@@ -24,6 +24,12 @@ if os.path.exists(_impl_path):
 
 if _impl_module and hasattr(_impl_module, 'register_all_callbacks'):
 	register_all_callbacks = _impl_module.register_all_callbacks
+else:
+    # Fallback to callback_registry if callbacks.py is missing
+    try:
+        from financial_dashboard.callback_registry import register_all_callbacks
+    except ImportError:
+        pass
 
 __all__ = [
 	"chatbot_callbacks",

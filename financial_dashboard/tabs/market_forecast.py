@@ -764,7 +764,7 @@ def layout():
                 html.Div(id=COMPONENT_IDS['progress_content'], children=[
                     html.Div([
                         html.Span("Initializing...", className="text-muted"),
-                        dbc.Spinner(size="sm", color="primary", className="ms-2")
+                        dbc.Spinner(size="sm", color="primary", spinner_class_name="ms-2")
                     ])
                 ])
             ], className="bg-dark"),
