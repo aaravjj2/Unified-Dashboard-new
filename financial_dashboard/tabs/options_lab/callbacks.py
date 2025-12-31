@@ -2406,22 +2406,30 @@ def register_callbacks(app):
                 empty_fig, empty_fig
             )
 
-    # AI Recommendations Callback
+    # AI Recommendations Callback - Enhanced with TA-Lib Patterns and AI Forecast
     @app.callback(
         [Output('ol-ai-recommendations', 'children'),
          Output('ol-ai-chart', 'figure')],
         [Input('ol-ai-generate-btn', 'n_clicks')],
-        [State('ol-ai-rec-type', 'value')],
+        [State('ol-ai-rec-type', 'value'),
+         State('symbol-store', 'data')],  # Get current symbol
         prevent_initial_call=True
     )
-    def generate_ai_recommendations(n_clicks, rec_type):
-        """Generate AI trade recommendations."""
+    def generate_ai_recommendations(n_clicks, rec_type, symbol_data):
+        """Generate AI trade recommendations with TA-Lib patterns and advanced AI forecast."""
         try:
             from .ai_recommendations import (
                 get_recommendation_engine,
                 create_recommendations_summary,
                 create_recommendation_card
             )
+            
+            # Get current symbol from store or default to SPY
+            symbol = 'SPY'
+            if symbol_data and isinstance(symbol_data, dict):
+                symbol = symbol_data.get('symbol', 'SPY')
+            elif symbol_data and isinstance(symbol_data, str):
+                symbol = symbol_data
             
             engine = get_recommendation_engine()
             
@@ -2434,7 +2442,80 @@ def register_callbacks(app):
             else:
                 recs = all_recs[:10]  # Top 10
             
-            # Create recommendation cards
+            # === ENHANCED: Add TA-Lib Pattern Signals ===
+            pattern_section = html.Div()
+            ai_forecast_section = html.Div()
+            
+            try:
+                from engines.analysis import TALibPatternEngine, AIOptionsForecast
+                from engines.analysis.talib_patterns import scan_df_patterns
+                import yfinance as yf
+                
+                # Fetch price data for pattern analysis
+                ticker_data = yf.Ticker(symbol)
+                df = ticker_data.history(period='6mo')
+                
+                if not df.empty:
+                    # Get pattern signals using DataFrame-friendly function
+                    patterns = scan_df_patterns(df, lookback=5)
+                    
+                    if patterns:
+                        pattern_badges = []
+                        for p in patterns[:5]:
+                            cat_str = str(p.category.value) if hasattr(p.category, 'value') else str(p.category)
+                            color = 'success' if 'bullish' in cat_str else ('danger' if 'bearish' in cat_str else 'secondary')
+                            pattern_badges.append(
+                                dbc.Badge(
+                                    f"{p.display_name} ({p.strength}%)",
+                                    color=color,
+                                    className="me-1 mb-1"
+                                )
+                            )
+                        
+                        pattern_section = dbc.Card([
+                            dbc.CardHeader([
+                                html.Strong("🔍 TA-Lib Pattern Signals"),
+                                dbc.Badge(f"{len(patterns)} detected", color="info", className="ms-2")
+                            ]),
+                            dbc.CardBody(pattern_badges if pattern_badges else "No recent patterns detected")
+                        ], className="mb-3", color="dark", inverse=True)
+                    
+                    # Get AI Forecast signals
+                    ai_forecast = AIOptionsForecast()
+                    signals = ai_forecast.get_signals(symbol, ohlc_data=df)
+                    recommendations_ai = ai_forecast.get_recommendations(symbol, ohlc_data=df)
+                    
+                    if recommendations_ai:
+                        ai_cards = []
+                        for rec_ai in recommendations_ai[:3]:
+                            dir_val = rec_ai.direction.value if hasattr(rec_ai.direction, 'value') else str(rec_ai.direction)
+                            direction_color = 'success' if dir_val == 'bullish' else ('danger' if dir_val == 'bearish' else 'warning')
+                            strat_val = rec_ai.strategy.value if hasattr(rec_ai.strategy, 'value') else str(rec_ai.strategy)
+                            ai_cards.append(dbc.Card([
+                                dbc.CardHeader([
+                                    html.Strong(f"🤖 {strat_val}"),
+                                    dbc.Badge(dir_val.upper(), color=direction_color, className="ms-2"),
+                                    dbc.Badge(f"{rec_ai.confidence:.0f}% conf", color="info", className="ms-2"),
+                                ]),
+                                dbc.CardBody([
+                                    html.P(rec_ai.rationale, className="small mb-2"),
+                                    dbc.Row([
+                                        dbc.Col([html.Strong("Entry: "), f"${rec_ai.entry_price:.2f}"], width=4),
+                                        dbc.Col([html.Strong("Target: "), f"${rec_ai.price_targets[0].price:.2f}" if rec_ai.price_targets else "--"], width=4),
+                                        dbc.Col([html.Strong("Stop: "), f"${rec_ai.stop_loss:.2f}" if rec_ai.stop_loss else "--"], width=4),
+                                    ], className="small"),
+                                ])
+                            ], className="mb-2", color="dark", outline=True))
+                        
+                        ai_forecast_section = html.Div([
+                            html.H6("🧠 AI Forecast Engine", className="mt-3 mb-2"),
+                            html.Div(ai_cards)
+                        ])
+                        
+            except Exception as pattern_err:
+                logger.warning(f"Pattern analysis warning: {pattern_err}")
+            
+            # Create recommendation cards (original functionality)
             cards = []
             for rec in recs[:5]:
                 card_data = create_recommendation_card(rec)
@@ -2481,7 +2562,15 @@ def register_callbacks(app):
             # Create summary chart
             summary_fig = create_recommendations_summary(recs)
             
-            return html.Div(cards), summary_fig
+            # Combine all sections: Pattern signals, AI forecast, and traditional recommendations
+            full_output = html.Div([
+                pattern_section,      # TA-Lib Pattern Signals
+                ai_forecast_section,  # AI Forecast Engine
+                html.H6("📊 Traditional Recommendations", className="mt-3 mb-2"),
+                html.Div(cards),
+            ])
+            
+            return full_output, summary_fig
             
         except Exception as e:
             logger.error(f"AI recommendations error: {e}", exc_info=True)
