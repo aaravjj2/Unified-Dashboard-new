@@ -226,6 +226,108 @@ def create_ai_automation_hub_panel() -> html.Div:
     })
 
 
+def create_chain_viewer_panel() -> html.Div:
+    """
+    Create Options Chain Viewer panel.
+    
+    Displays the live options chain data table with calls/puts,
+    strikes, IV, Greeks, and volume data. This is the main chain
+    viewer that was missing from the consolidated layout.
+    """
+    return html.Div([
+        html.H5("📈 Options Chain Viewer", style={'color': '#ffffff', 'marginBottom': '15px'}),
+        
+        # Expiration selector
+        html.Div([
+            html.Div([
+                html.Label("Expiration Date:", style={'color': '#9ca3af', 'fontSize': '12px', 'marginRight': '10px'}),
+                dcc.Dropdown(
+                    id='chain-viewer-expiration',
+                    options=[],
+                    value=None,
+                    placeholder="Select expiration...",
+                    style={'width': '200px', 'display': 'inline-block'}
+                ),
+            ], style={'display': 'flex', 'alignItems': 'center', 'marginBottom': '10px'}),
+            
+            # Filter controls
+            html.Div([
+                html.Span("Filter: ", style={'color': '#9ca3af', 'fontSize': '12px', 'marginRight': '10px'}),
+                dcc.RadioItems(
+                    id='chain-filter-moneyness',
+                    options=[
+                        {'label': ' All', 'value': 'all'},
+                        {'label': ' ITM', 'value': 'itm'},
+                        {'label': ' ATM ±5', 'value': 'atm'},
+                        {'label': ' OTM', 'value': 'otm'}
+                    ],
+                    value='all',
+                    inline=True,
+                    style={'fontSize': '12px'},
+                    labelStyle={'color': '#e0e0e0', 'marginRight': '15px'}
+                )
+            ], style={'marginBottom': '10px'})
+        ], style={
+            'padding': '10px',
+            'backgroundColor': '#2a2d3a',
+            'borderRadius': '6px',
+            'marginBottom': '15px'
+        }),
+        
+        # Chain table container (populated by callbacks)
+        html.Div(
+            id='chain-viewer-table-container',
+            children=[
+                html.Div([
+                    html.P("📊 Click 'Load Chain' to fetch options data", 
+                           style={'color': '#9ca3af', 'textAlign': 'center', 'padding': '40px'}),
+                    html.P("💡 Data updates automatically on symbol change", 
+                           style={'color': '#6b7280', 'textAlign': 'center', 'fontSize': '12px'})
+                ])
+            ],
+            style={
+                'minHeight': '400px',
+                'backgroundColor': '#1e2130',
+                'borderRadius': '6px',
+                'padding': '10px',
+                'overflowX': 'auto'
+            }
+        ),
+        
+        # Chain stats summary
+        html.Div([
+            html.Div([
+                html.Span("Calls OI: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-calls-oi', children="--", style={'color': '#4caf50', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("Puts OI: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-puts-oi', children="--", style={'color': '#f44336', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("P/C Ratio: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-pc-ratio', children="--", style={'color': '#F5C211', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("Max Pain: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-max-pain', children="--", style={'color': '#00d4ff', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block'}),
+        ], style={
+            'padding': '10px',
+            'backgroundColor': '#2a2d3a',
+            'borderRadius': '6px',
+            'marginTop': '10px'
+        })
+        
+    ], style={
+        'backgroundColor': '#1e2130',
+        'padding': '15px',
+        'borderRadius': '8px',
+        'marginTop': '15px',
+        'border': '2px solid #F5C211'
+    })
+
+
 def create_greeks_panel() -> html.Div:
     """Create Greeks visualization panel."""
     return html.Div([

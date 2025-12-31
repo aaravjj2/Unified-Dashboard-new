@@ -290,6 +290,7 @@ def strategy_layout() -> html.Div:
     # Import strategy components
     try:
         from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import (
+            create_chain_viewer_panel,
             create_greeks_panel,
             create_iv_surface_panel,
             create_strategy_builder,
@@ -298,6 +299,7 @@ def strategy_layout() -> html.Div:
         from financial_dashboard.tabs.options_lab.strategy_engine_ui import create_strategy_analysis_tab
         from forecast_ui.tabs.forecasts import create_forecast_tab
         
+        chain_viewer = create_chain_viewer_panel()
         greeks_panel = create_greeks_panel()
         iv_panel = create_iv_surface_panel()
         strategy_builder = create_strategy_builder()
@@ -307,6 +309,7 @@ def strategy_layout() -> html.Div:
         
     except ImportError as e:
         logger.error(f"Error importing strategy components: {e}")
+        chain_viewer = html.Div("Chain Viewer loading...", id="chain-viewer-placeholder")
         greeks_panel = html.Div("Greeks loading...", id="greeks-panel-placeholder")
         iv_panel = html.Div("IV loading...", id="iv-panel-placeholder")
         strategy_builder = html.Div("Builder loading...", id="builder-placeholder")
@@ -342,7 +345,7 @@ def strategy_layout() -> html.Div:
                         value="chain-tab",
                         children=[
                             html.Div(
-                                children=[greeks_panel, iv_panel],
+                                children=[chain_viewer, greeks_panel, iv_panel],
                                 style={"padding": "15px"}
                             )
                         ],
