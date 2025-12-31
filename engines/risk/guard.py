@@ -295,7 +295,9 @@ class RiskManager:
         )
     
     def _validate_order_structure(self, order: OrderRequest) -> bool:
-        """Validate order has required fields."""
+        """Validate order has required fields and sanity checks."""
+        import math
+        
         if not order.ticker or len(order.ticker) == 0:
             return False
         if order.quantity <= 0:
@@ -304,6 +306,14 @@ class RiskManager:
             return False
         if order.order_type.lower() not in ("market", "limit", "stop", "stop_limit"):
             return False
+            
+        # Price validation
+        if order.price is not None:
+             if math.isnan(order.price) or math.isinf(order.price):
+                 return False
+             if order.price < 0:
+                 return False
+                 
         return True
     
     def _log_violation(self, result: RiskCheckResult):

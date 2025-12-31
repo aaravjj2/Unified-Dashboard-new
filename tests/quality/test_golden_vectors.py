@@ -146,7 +146,7 @@ class TestGoldenVectors:
             for field in required_fields:
                 assert field in vec, f"Vector {i} missing field: {field}"
     
-    @pytest.mark.parametrize("vector_idx", range(100))
+    @pytest.mark.parametrize("vector_idx", range(len(GOLDEN_VECTORS)))
     def test_black_scholes_price(self, vector_idx, golden_vectors, pricing_model):
         """Test price matches golden vector to 6 decimal places."""
         vec = golden_vectors[vector_idx]
@@ -167,7 +167,7 @@ class TestGoldenVectors:
             f"Expected {vec['price']}, got {result.price}, diff={price_diff}"
         )
     
-    @pytest.mark.parametrize("vector_idx", range(100))  
+    @pytest.mark.parametrize("vector_idx", range(len(GOLDEN_VECTORS)))  
     def test_black_scholes_delta(self, vector_idx, golden_vectors, pricing_model):
         """Test delta matches golden vector."""
         vec = golden_vectors[vector_idx]

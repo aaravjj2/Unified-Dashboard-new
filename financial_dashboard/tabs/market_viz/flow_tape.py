@@ -359,7 +359,7 @@ def generate_mock_flow_data(
         strike = round(spot_price * (1 + moneyness), 0)
         
         # Generate expiry (1-60 DTE)
-        dte = np.random.choice([7, 14, 21, 30, 45, 60])
+        dte = int(np.random.choice([7, 14, 21, 30, 45, 60]))
         expiry = (datetime.now() + timedelta(days=dte)).strftime("%Y-%m-%d")
         
         # Generate price and size
