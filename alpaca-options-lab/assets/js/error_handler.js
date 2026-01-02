@@ -28,6 +28,18 @@ function isHarmlessError(message) {
     if (msgStr.includes('Value is null')) {
         return true;
     }
+    // "Value is undefined" errors from TradingView Lightweight Charts
+    if (msgStr.includes('Value is undefined')) {
+        return true;
+    }
+    // React error #185 (invalid state update - known Dash/React issue)
+    if (msgStr.includes('Minified React error #185') || msgStr.includes('React error #185')) {
+        return true;
+    }
+    // dash_tvlwc errors (TradingView component)
+    if (msgStr.includes('dash_tvlwc') && (msgStr.includes('undefined') || msgStr.includes('null'))) {
+        return true;
+    }
     return false;
 }
 

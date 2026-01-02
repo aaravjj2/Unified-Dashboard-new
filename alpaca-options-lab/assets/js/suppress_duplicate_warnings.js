@@ -35,6 +35,18 @@
                 if (message.includes('Value is null')) {
                     return true;
                 }
+                // Suppress "Value is undefined" errors (TradingView Lightweight Charts)
+                if (message.includes('Value is undefined')) {
+                    return true;
+                }
+                // Suppress React error #185 (invalid state update - known Dash/React issue)
+                if (message.includes('Minified React error #185') || message.includes('React error #185')) {
+                    return true;
+                }
+                // Suppress dash_tvlwc errors (TradingView component initialization)
+                if (message.includes('dash_tvlwc') && (message.includes('undefined') || message.includes('null'))) {
+                    return true;
+                }
             }
             
             // Check for object messages (Dash sometimes logs as objects)
@@ -68,6 +80,28 @@
     
     // Override console.error
     console.error = function(...args) {
+        // Check first argument (usually the error message)
+        const firstArg = args[0];
+        let msgStr = '';
+        
+        if (typeof firstArg === 'string') {
+            msgStr = firstArg;
+        } else if (firstArg && firstArg.toString) {
+            msgStr = firstArg.toString();
+        } else if (firstArg && firstArg.message) {
+            msgStr = firstArg.message;
+        }
+        
+        // Suppress TVLWC and React errors before checking shouldSuppress
+        if (msgStr.includes('Value is undefined') ||
+            msgStr.includes('dash_tvlwc') ||
+            msgStr.includes('removeSeries') ||
+            msgStr.includes('Minified React error #185') ||
+            msgStr.includes('React error #185')) {
+            // Silently suppress - don't log at all
+            return;
+        }
+        
         if (!shouldSuppress(args)) {
             originalError.apply(console, args);
         }

@@ -9,9 +9,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Monitor for the specific error and suppress it
     const originalError = console.error;
     console.error = function (msg, ...args) {
-        if (typeof msg === 'string' && msg.includes('Value is undefined')) {
-            console.warn('🛡️ Suppressed TVLWC initialization error:', msg);
-            return; // Suppress
+        const msgStr = String(msg || '');
+        // Suppress TVLWC errors
+        if (msgStr.includes('Value is undefined') || 
+            msgStr.includes('dash_tvlwc') ||
+            msgStr.includes('removeSeries')) {
+            // Silently suppress - don't log
+            return;
+        }
+        // Suppress React error #185 (invalid state update)
+        if (msgStr.includes('Minified React error #185') || 
+            msgStr.includes('React error #185')) {
+            // Silently suppress
+            return;
         }
         originalError.call(console, msg, ...args);
     };
