@@ -1,5 +1,7 @@
 """
 Configuration module for Financial Dashboard.
+
+Phase 1: Added Hybrid Sentiment Engine configuration.
 """
 
 from .focus_assets import (
@@ -23,10 +25,22 @@ from .focus_assets import (
     is_major_tech,
 )
 
+# Phase 1: Sentiment Engine Configuration
+from .sentiment import (
+    SentimentConfig,
+    ScannerConfig,
+    get_sentiment_config,
+    get_scanner_config,
+    get_cfg,
+    get_alpaca_keys,
+    is_alpaca_configured,
+)
+
 # Alias for consistency
 get_asset_metadata = get_asset_info
 
 __all__ = [
+    # Focus assets
     'PRIMARY_WATCHLIST',
     'PRECIOUS_METALS',
     'MAJOR_TECH',
@@ -46,4 +60,12 @@ __all__ = [
     'get_asset_metadata',
     'is_precious_metal',
     'is_major_tech',
+    # Phase 1: Sentiment config
+    'SentimentConfig',
+    'ScannerConfig',
+    'get_sentiment_config',
+    'get_scanner_config',
+    'get_cfg',
+    'get_alpaca_keys',
+    'is_alpaca_configured',
 ]
