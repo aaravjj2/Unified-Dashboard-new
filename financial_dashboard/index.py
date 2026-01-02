@@ -243,6 +243,8 @@ TAB_CONFIG = [
     {'id': 'volatility_lab', 'name': '⚡ Volatility Lab', 'module': 'tabs/volatility_lab_pkg/__init__.py'},  # Phase 34 rebuild
     {'id': 'attribution_lab', 'name': '📊 Attribution Lab', 'module': 'tabs/attribution_lab/__init__.py'},
     {'id': 'strategy_lab', 'name': '⚡ Strategy Lab', 'module': 'tabs/strategy_lab/__init__.py'},
+    # PHASE 3: Iron Condor Builder
+    {'id': 'strategy_builder', 'name': '🦅 Strategy Builder', 'module': 'tabs/strategy_builder.py'},
     # Use the rebuilt tab implementations (clean, testable rebuilds)
     {'id': 'picks', 'name': '⭐ Stock Picks', 'module': 'tabs/picks_unified.py'},
     # DISABLED: Analysis Hub - renamed to .bak due to duplicate callback issues
@@ -262,17 +264,18 @@ TAB_CONFIG = [
 # Module-level constant for enabled tabs (used by create_layout)
 ENABLED_TABS = [
     'home',  # Primary Command Center (clean UI)
-    'research_lab',      # PRIORITY: Force render first
-    'attribution_lab',   # PRIORITY: Force render second
-    'strategy_lab',      # PHASE 2: Real data integration complete
-    'picks',
-    'market_trends',
-    'market_forecast',
-    'volatility_lab',
-    'portfolio',
-    'options_lab',
+    # 'research_lab',      # REMOVED: Manual research tool
+    # 'attribution_lab',   # REMOVED: Post-trade analysis
+    'strategy_lab',      # KEEP: For strategy execution/monitoring
+    # 'strategy_builder',  # REMOVED: Manual strategy construction
+    # 'picks',             # REMOVED: Manual discretionary trading
+    'market_trends',     # KEEP: Market Intelligence
+    'market_forecast',   # KEEP: Market Intelligence
+    'volatility_lab',    # KEEP: Market Intelligence
+    'portfolio',         # KEEP: Real-world tracking
+    # 'options_lab',       # REMOVED: Merging into Bot Manager
     'options_bots',  # NEW: Automated options trading bots
-    'quant_lab',  # PHASE 3: RL Trading, QLib Factors, Deep Hedging
+    # 'quant_lab',  # REMOVED: Experimental
 ]
 
 # Load tab modules dynamically

@@ -33,6 +33,10 @@ def get_all_placeholders():
         dcc.Store(id='mp-current-job'),
         dcc.Store(id='mp-page-load-ts'),
         dcc.Store(id='wp-current-job'),
+        
+        # Options Lab stores - MUST be at app level for callbacks to work before tab loads
+        dcc.Store(id='options-chain-store', storage_type='memory'),
+        dcc.Store(id='options-surface-store', storage_type='memory'),
 
         # dcc.Download components
         dcc.Download(id='download-data'),

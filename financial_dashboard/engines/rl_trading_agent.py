@@ -267,11 +267,19 @@ class RLTradingAgent:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=int(days * 1.5))
             
-            df = yf.download(ticker, start=start_date, end=end_date, progress=False)
+            df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
             if df.empty:
                 raise ValueError(f"No data for {ticker}")
             
-            prices = df['Close'].values[-days:]
+            # Handle MultiIndex columns from yfinance
+            if isinstance(df.columns, pd.MultiIndex):
+                close_col = ('Close', ticker) if ('Close', ticker) in df.columns else 'Close'
+                prices = df[close_col].dropna().values[-days:]
+            else:
+                prices = df['Close'].dropna().values[-days:]
+            
+            # Flatten if needed
+            prices = np.array(prices).flatten()
             return prices
         except Exception as e:
             logger.warning(f"Failed to fetch {ticker}: {e}, using synthetic data")

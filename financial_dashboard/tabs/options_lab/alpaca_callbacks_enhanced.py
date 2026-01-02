@@ -16,7 +16,7 @@ Additional callbacks for:
 """
 
 import logging
-from dash import Input, Output, State, callback, ctx, no_update
+from dash import Input, Output, State, callback, ctx, no_update, dcc
 from dash import html
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -1567,7 +1567,7 @@ def register_enhanced_callbacks(app):
                             html.Span(f"{ta_result['confidence']*100:.0f}%", style={'color': '#00bcd4'})
                         ], style={'marginTop': '5px'}),
                         html.Div([
-                            html.Span(f"Support: ${support_resistance['support']:.2f} | Resistance: ${support_resistance['resistance']:.2f}", 
+                            html.Span(f"Support: ${support_resistance.get('nearest_support', 0) or 0:.2f} | Resistance: ${support_resistance.get('nearest_resistance', 0) or 0:.2f}", 
                                      style={'color': '#9ca3af', 'fontSize': '12px'})
                         ], style={'marginTop': '10px'})
                     ])
@@ -1607,7 +1607,7 @@ def register_enhanced_callbacks(app):
                             html.Span(f"{iv_result['percentile']:.0f}%", style={'color': percentile_color, 'fontWeight': 'bold', 'fontSize': '18px'})
                         ]),
                         html.Div([
-                            html.Span(f"Current: {current_iv*100:.1f}% | Mean: {iv_result['mean']*100:.1f}% | Std: {iv_result['std']*100:.1f}%",
+                            html.Span(f"Current: {current_iv*100:.1f}% | Mean: {iv_result.get('historical_mean', 0.25)*100:.1f}% | Std: {iv_result.get('historical_std', 0.05)*100:.1f}%",
                                      style={'color': '#9ca3af', 'fontSize': '12px'})
                         ], style={'marginTop': '5px'}),
                         html.Div([
@@ -1701,15 +1701,15 @@ def register_enhanced_callbacks(app):
                         ]),
                         html.Div([
                             html.Span("Volatility Forecast: ", style={'color': '#9ca3af'}),
-                            html.Span(f"{volatility['forecast']*100:.1f}%", style={'color': '#FF9800', 'fontWeight': 'bold'})
+                            html.Span(f"{volatility.get('forecast_vol', 0.20)*100:.1f}%", style={'color': '#FF9800', 'fontWeight': 'bold'})
                         ], style={'marginTop': '5px'}),
                         html.Div([
                             html.Span("Expected Move (30d): ", style={'color': '#9ca3af'}),
-                            html.Span(f"±${expected_move['expected_move']:.2f} ({expected_move['expected_move_pct']:.1f}%)", 
+                            html.Span(f"±${expected_move.get('expected_move_dollars', 0):.2f} ({expected_move.get('expected_move_pct', 0):.1f}%)", 
                                      style={'color': '#00bcd4', 'fontWeight': 'bold'})
                         ], style={'marginTop': '5px'}),
                         html.Div([
-                            html.Span(f"Range: ${expected_move['lower']:.2f} - ${expected_move['upper']:.2f}",
+                            html.Span(f"Range: ${expected_move.get('lower_bound', 0):.2f} - ${expected_move.get('upper_bound', 0):.2f}",
                                      style={'color': '#9ca3af', 'fontSize': '12px'})
                         ], style={'marginTop': '5px'})
                     ])

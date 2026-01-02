@@ -57,7 +57,8 @@ def _build_main_layout():
     """Build main Options Lab layout with consolidated tabs."""
     return dbc.Container([
         # Hidden stores for state management
-        dcc.Store(id='options-chain-store', storage_type='memory'),
+        # NOTE: options-chain-store is now defined in layout_placeholders.py at app level
+        # dcc.Store(id='options-chain-store', storage_type='memory'),
         dcc.Store(id='options-analysis-store', storage_type='memory'),
         dcc.Store(id='ol-ai-recommendations-store', storage_type='memory'),
         dcc.Store(id='ol-portfolio-store', storage_type='memory'),

@@ -8,7 +8,7 @@ Requirements:
 - PORT=8051
 - PHASE5_DETERMINISTIC=1
 - AZURE_ENABLED=false
-- Headful Chromium only
+- Headful Chromium (auto-falls back to headless when no DISPLAY or when P5_HEADLESS=1)
 - No test skipping
 - Full audit trail with screenshots
 
@@ -38,6 +38,7 @@ BASE_URL = f'http://localhost:{PORT}'
 SCREENSHOT_DIR = Path(__file__).parent.parent.parent / 'reports' / 'phase5' / 'screenshots'
 DOM_DIR = Path(__file__).parent.parent.parent / 'reports' / 'phase5' / 'dom'
 LOG_DIR = Path(__file__).parent.parent.parent / 'reports' / 'phase5' / 'logs'
+HEADLESS = os.getenv('P5_HEADLESS', '0') == '1' or not os.getenv('DISPLAY')
 
 # Create directories
 SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
@@ -109,12 +110,13 @@ def wait_for_chart(page: Page, chart_id: str, timeout: int = CHART_RENDER_TIMEOU
 
 @pytest.fixture(scope="module")
 def browser_context():
-    """Launch headful Chromium browser."""
-    logger.info("🚀 Launching headful Chromium for Phase 5 tests...")
+    """Launch Chromium browser (headful by default, headless when DISPLAY is absent)."""
+    mode = "headless" if HEADLESS else "headful"
+    logger.info(f"🚀 Launching {mode} Chromium for Phase 5 tests...")
     
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=False,  # Headful as per requirements
+            headless=HEADLESS,
             args=[
                 '--start-maximized',
                 '--disable-blink-features=AutomationControlled'

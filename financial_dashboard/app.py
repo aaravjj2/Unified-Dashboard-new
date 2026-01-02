@@ -530,6 +530,14 @@ def create_app():
         logger.info("✅ Registered Options Backtest API: /api/options/backtest/*")
     except Exception as e:
         logger.warning(f"Could not register Options Backtest API: {e}")
+        
+    # Register Options Health Blueprint (Phase 12 Quality)
+    try:
+        from financial_dashboard.tabs.options_lab.health_endpoints import health_bp as options_health_bp
+        server.register_blueprint(options_health_bp)
+        logger.info("✅ Registered Options Health API: /api/options/health")
+    except Exception as e:
+         logger.warning(f"Could not register Options Health API: {e}")
     
     # Register Picks Pipeline API Blueprint (Picks Rebuild - Agent-1B)
     try:

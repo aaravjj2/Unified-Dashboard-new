@@ -39,6 +39,7 @@ print(f"Running: {status['is_running']}, Trades: {status['total_trades']}")
 
 from __future__ import annotations
 import asyncio
+import aiohttp
 import json
 import logging
 import os
@@ -50,6 +51,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 from uuid import uuid4
+from concurrent.futures import ThreadPoolExecutor
 
 from .schema import Recipe, TriggerType, create_short_put_spread_recipe
 from .engine import RecipeExecutor, ExecutionEvent, ExecutorState
@@ -443,9 +445,15 @@ class OptionsScheduler:
         
         # Runtime state
         self._running_bots: Dict[str, dict] = {}  # bot_id -> runtime info
-        self._stop_events: Dict[str, threading.Event] = {}
-        self._threads: Dict[str, threading.Thread] = {}
+        self._tasks: Dict[str, asyncio.Task] = {} # bot_id -> asyncio.Task
         self._lock = threading.Lock()
+        self._shutdown = False
+        
+        # Asyncio Loop Management
+        self.loop = asyncio.new_event_loop()
+        self.executor = ThreadPoolExecutor(max_workers=10) # For blocking calls
+        self._loop_thread = threading.Thread(target=self._start_background_loop, daemon=True)
+        self._loop_thread.start()
         
         # Event callbacks for UI updates
         self._event_callbacks: List[Callable[[str, dict], None]] = []
@@ -453,14 +461,25 @@ class OptionsScheduler:
         # Auto-start bots that were running
         self._auto_start_bots()
         
-        logger.info("OptionsScheduler initialized")
+        logger.info("OptionsScheduler initialized (Async Mode)")
+
+    def _start_background_loop(self):
+        """Run the asyncio event loop in a background thread."""
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_forever()
     
     def _auto_start_bots(self):
         """Restart bots that were running before shutdown."""
+        # Give the loop a moment to start
+        import time
+        time.sleep(0.1)
         for config in self.db.get_all_bots():
             if config.status == "running":
                 logger.info(f"Auto-starting bot: {config.name}")
-                self.start_bot(config.bot_id)
+                try:
+                    self.start_bot(config.bot_id)
+                except Exception as e:
+                    logger.error(f"Failed to auto-start bot {config.name}: {e}")
     
     # =========================================================================
     # BOT LIFECYCLE
@@ -528,21 +547,10 @@ class OptionsScheduler:
             logger.warning(f"Bot already running: {bot_id}")
             return True
         
-        # Create stop event
-        stop_event = threading.Event()
-        self._stop_events[bot_id] = stop_event
-        
-        # Start background thread
-        thread = threading.Thread(
-            target=self._run_bot_loop,
-            args=(bot_id, stop_event),
-            daemon=True,
-            name=f"OptionsBot-{bot_id}"
-        )
-        thread.start()
+        # Schedule the bot coroutine on the background loop
+        asyncio.run_coroutine_threadsafe(self._start_bot_task(bot_id), self.loop)
         
         with self._lock:
-            self._threads[bot_id] = thread
             self._running_bots[bot_id] = {
                 "started_at": datetime.now().isoformat(),
                 "config": config,
@@ -553,26 +561,24 @@ class OptionsScheduler:
         
         logger.info(f"Started bot: {config.name} ({bot_id})")
         return True
+
+    async def _start_bot_task(self, bot_id):
+        """Helper to create task in the loop."""
+        task = asyncio.create_task(self._run_bot_loop_async(bot_id))
+        self._tasks[bot_id] = task
     
     def stop_bot(self, bot_id: str) -> bool:
         """Stop a bot's execution."""
-        if bot_id not in self._stop_events:
+        if bot_id not in self._running_bots:
             logger.warning(f"Bot not running: {bot_id}")
             return False
         
-        # Signal thread to stop
-        self._stop_events[bot_id].set()
-        
-        # Wait for thread to finish (with timeout)
-        thread = self._threads.get(bot_id)
-        if thread:
-            thread.join(timeout=5.0)
+        # Cancel the task via the loop
+        asyncio.run_coroutine_threadsafe(self._stop_bot_task(bot_id), self.loop)
         
         # Clean up
         with self._lock:
             self._running_bots.pop(bot_id, None)
-            self._threads.pop(bot_id, None)
-            self._stop_events.pop(bot_id, None)
         
         self.db.update_bot_status(bot_id, "stopped")
         
@@ -581,6 +587,16 @@ class OptionsScheduler:
         
         logger.info(f"Stopped bot: {bot_id}")
         return True
+
+    async def _stop_bot_task(self, bot_id):
+        """Helper to cancel task in the loop."""
+        if bot_id in self._tasks:
+            self._tasks[bot_id].cancel()
+            try:
+                await self._tasks[bot_id]
+            except asyncio.CancelledError:
+                pass
+            del self._tasks[bot_id]
     
     def delete_bot(self, bot_id: str) -> bool:
         """Delete a bot completely."""
@@ -598,9 +614,13 @@ class OptionsScheduler:
     # BOT EXECUTION LOOP
     # =========================================================================
     
-    def _run_bot_loop(self, bot_id: str, stop_event: threading.Event):
-        """Main execution loop for a bot (runs in background thread)."""
-        config = self.db.get_bot(bot_id)
+    async def _run_bot_loop_async(self, bot_id: str):
+        """Main execution loop for a bot (runs in asyncio task)."""
+        # Run DB access in executor - but only if not shut down
+        if self._shutdown:
+            return
+            
+        config = await self.loop.run_in_executor(self.executor, self.db.get_bot, bot_id)
         if not config:
             return
         
@@ -615,42 +635,60 @@ class OptionsScheduler:
             )
             
             # Load the recipe and get the context
-            context = executor.load_recipe(recipe)
+            context = await self.loop.run_in_executor(self.executor, executor.load_recipe, recipe)
             
             # Start the bot (sets state to RUNNING)
             executor.start(context.bot_id)
             
             logger.info(f"Bot {config.name} starting execution loop (interval={config.check_interval}s)")
             
-            while not stop_event.is_set():
+            while not self._shutdown:
                 try:
-                    # Check market status
-                    market_status = self.data_handler.get_market_status()
+                    # Check market status (run in executor)
+                    market_status = await self.loop.run_in_executor(self.executor, self.data_handler.get_market_status)
                     
                     # Only check conditions when market is open
                     # (Or always check if configured)
                     if market_status.get("is_open", False) or os.environ.get("BOT_ALWAYS_CHECK", "0") == "1":
-                        self._execute_check(bot_id, executor, config, recipe, context.bot_id)
+                        # Run the check in executor
+                        await self.loop.run_in_executor(
+                            self.executor, 
+                            self._execute_check, 
+                            bot_id, executor, config, recipe, context.bot_id
+                        )
                     else:
-                        self.db.log_event(bot_id, "market_closed", "Market is closed, skipping check")
+                        await self.loop.run_in_executor(
+                            self.executor,
+                            self.db.log_event,
+                            bot_id, "market_closed", "Market is closed, skipping check"
+                        )
                     
-                    # Wait for next interval (or stop signal)
-                    stop_event.wait(timeout=config.check_interval)
+                    # Wait for next interval
+                    await asyncio.sleep(config.check_interval)
                     
+                except asyncio.CancelledError:
+                    logger.info(f"Bot {config.name} task cancelled")
+                    raise
                 except Exception as e:
+                    if self._shutdown:
+                        break
                     logger.exception(f"Error in bot loop for {bot_id}")
-                    self._increment_error(bot_id)
-                    self.db.log_event(bot_id, "error", str(e))
+                    try:
+                        await self.loop.run_in_executor(self.executor, self._increment_error, bot_id)
+                        await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "error", str(e))
+                    except RuntimeError:
+                        # Executor shut down
+                        break
                     
                     # Back off on errors
-                    stop_event.wait(timeout=30)
+                    await asyncio.sleep(30)
             
+        except asyncio.CancelledError:
             logger.info(f"Bot {config.name} execution loop stopped")
-            
         except Exception as e:
             logger.exception(f"Fatal error in bot {bot_id}")
-            self.db.update_bot_status(bot_id, "error")
-            self.db.log_event(bot_id, "fatal_error", str(e))
+            await self.loop.run_in_executor(self.executor, self.db.update_bot_status, bot_id, "error")
+            await self.loop.run_in_executor(self.executor, self.db.log_event, bot_id, "fatal_error", str(e))
     
     def _execute_check(
         self,
@@ -889,12 +927,23 @@ class OptionsScheduler:
     
     def stop_all(self):
         """Stop all running bots."""
+        self._shutdown = True
         for bot_id in list(self._running_bots.keys()):
             self.stop_bot(bot_id)
     
+    def shutdown(self):
+        """Gracefully shutdown the scheduler."""
+        self._shutdown = True
+        self.stop_all()
+        self.executor.shutdown(wait=False)
+        self.loop.call_soon_threadsafe(self.loop.stop)
+    
     def __del__(self):
         """Cleanup on destruction."""
-        self.stop_all()
+        try:
+            self.shutdown()
+        except Exception:
+            pass
 
 
 # =============================================================================

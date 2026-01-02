@@ -359,11 +359,11 @@ app.layout = html.Div(placeholder_children)
 # tab module is not mounted yet.
 try:
     # lightweight placeholders: Stores, Divs, Intervals, Buttons, Inputs
+    # NOTE: mf-job is already defined in placeholder_children, so don't duplicate
     forecast_placeholders = [
-        dcc.Store(id='mf-job', data=''),
-        dcc.Interval(id='mf-poll', interval=2000, disabled=True),
-        html.Div(id='mf-status', style={'display': 'none'}),
-        html.Div(id='mf-results', style={'display': 'none'}),
+        # dcc.Store(id='mf-job', data=''),  # REMOVED - duplicate with line 330
+        dcc.Interval(id='mf-poll-interval', interval=2000, disabled=True),  # Renamed from mf-poll (already defined line 329)
+        # mf-status and mf-results already defined in placeholder_children
         dcc.Download(id='mf-download'),
         html.Button('Download CSV (latest)', id='mf-download-btn', n_clicks=0, style={'display': 'none'}),
         html.Button('Run Forecast', id='mf-run', n_clicks=0, style={'display': 'none'}),

@@ -129,9 +129,13 @@ class FactorCalculator:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=int(days * 1.5))
             
-            df = yf.download(ticker, start=start_date, end=end_date, progress=False)
+            df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
             if df.empty:
                 raise ValueError(f"No data for {ticker}")
+            
+            # Handle MultiIndex columns from yfinance
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
             
             df = df.rename(columns={
                 'Close': 'close',
@@ -143,7 +147,22 @@ class FactorCalculator:
             return df.tail(days)
         except Exception as e:
             logger.warning(f"Failed to fetch {ticker}: {e}, using synthetic data")
-            return self._get_price_data.__wrapped__(self, ticker, days)
+            # Generate synthetic data on failure
+            np.random.seed(hash(ticker) % 2**32)
+            dates = pd.date_range(end=datetime.now(), periods=days, freq='D')
+            base_price = 100 + hash(ticker) % 100
+            returns = np.random.normal(0.0005, 0.02, days)
+            prices = base_price * np.cumprod(1 + returns)
+            volume = np.random.randint(1000000, 10000000, days)
+            
+            return pd.DataFrame({
+                'date': dates,
+                'close': prices,
+                'volume': volume,
+                'high': prices * (1 + np.random.uniform(0, 0.02, days)),
+                'low': prices * (1 - np.random.uniform(0, 0.02, days)),
+                'open': prices * (1 + np.random.uniform(-0.01, 0.01, days))
+            }).set_index('date')
     
     def calculate_momentum(self, ticker: str) -> FactorScore:
         """Calculate momentum factor (12-1 month return)."""

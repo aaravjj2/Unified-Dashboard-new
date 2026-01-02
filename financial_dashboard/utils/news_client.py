@@ -45,16 +45,27 @@ class NewsClient:
         Args:
             auto_validate: If True, ensure keys are present via load_env
         """
-        # Always load environment and validate keys
-        from .load_env import load_environment
-        env_status = load_environment(raise_on_missing=True)
+        # Load environment - but don't fail if keys are missing (graceful degradation)
+        try:
+            from .load_env import load_environment
+            env_status = load_environment(raise_on_missing=False)
+        except Exception as e:
+            logger.warning(f"[NewsClient] Environment load failed: {e}")
+            
         self.finnhub_key = os.getenv('FINNHUB_API_KEY')
         self.newsapi_key = os.getenv('NEWSAPI_KEY') or os.getenv('NEWS_API_KEY')
-        if not self.finnhub_key:
-            raise RuntimeError("FINNHUB_API_KEY not set - Finnhub news unavailable")
-        if not self.newsapi_key:
-            raise RuntimeError("NEWSAPI_KEY not set - NewsAPI fallback unavailable")
-        logger.info(f"[NewsClient] Providers available: Finnhub, NewsAPI")
+        
+        available = []
+        if self.finnhub_key:
+            available.append('Finnhub')
+        if self.newsapi_key:
+            available.append('NewsAPI')
+            
+        if available:
+            logger.info(f"[NewsClient] Providers available: {', '.join(available)}")
+        else:
+            logger.warning("[NewsClient] No news providers available - news will be empty")
+            
         # Rate limiter: avoid blasting Finnhub with >30 requests/min by default
         self._rate_limiter = RateLimiter(max_requests=30, window_seconds=60)
         # Concurrency throttle for batch fetches

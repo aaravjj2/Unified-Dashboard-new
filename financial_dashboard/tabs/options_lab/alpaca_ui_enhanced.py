@@ -14,6 +14,7 @@ Major enhancements:
 - Smart Analysis Engine
 - Auto Trading Engine
 - Monitoring & Alerts System
+- System Status (Phase 1 Data Fabric)
 """
 
 import dash
@@ -23,6 +24,19 @@ from typing import Dict, List, Optional
 import pandas as pd
 import numpy as np
 import logging
+
+# Import system status panel
+from .system_status_ui import create_system_status_panel
+# Import strategy engine panel (Phase 3)
+from .strategy_engine_ui import create_strategy_analysis_tab
+# Import ML forecast tab (Phase 2)
+from forecast_ui.tabs.forecasts import create_forecast_tab
+# Import Trade Ops tab (Phase 4/5)
+from tradeops_ui.tabs.trade_ops import create_trade_ops_tab
+# Import Research tab (Phase 7)
+from research_ui.tabs.research import create_research_tab
+# Import Market Viz tab (Phase 6 - Agent-Viz)
+from financial_dashboard.tabs.market_viz.layout import create_market_viz_layout
 
 logger = logging.getLogger(__name__)
 
@@ -209,6 +223,108 @@ def create_ai_automation_hub_panel() -> html.Div:
         'borderRadius': '8px',
         'marginTop': '15px',
         'border': '2px solid #00d4ff'
+    })
+
+
+def create_chain_viewer_panel() -> html.Div:
+    """
+    Create Options Chain Viewer panel.
+    
+    Displays the live options chain data table with calls/puts,
+    strikes, IV, Greeks, and volume data. This is the main chain
+    viewer that was missing from the consolidated layout.
+    """
+    return html.Div([
+        html.H5("📈 Options Chain Viewer", style={'color': '#ffffff', 'marginBottom': '15px'}),
+        
+        # Expiration selector
+        html.Div([
+            html.Div([
+                html.Label("Expiration Date:", style={'color': '#9ca3af', 'fontSize': '12px', 'marginRight': '10px'}),
+                dcc.Dropdown(
+                    id='chain-viewer-expiration',
+                    options=[],
+                    value=None,
+                    placeholder="Select expiration...",
+                    style={'width': '200px', 'display': 'inline-block'}
+                ),
+            ], style={'display': 'flex', 'alignItems': 'center', 'marginBottom': '10px'}),
+            
+            # Filter controls
+            html.Div([
+                html.Span("Filter: ", style={'color': '#9ca3af', 'fontSize': '12px', 'marginRight': '10px'}),
+                dcc.RadioItems(
+                    id='chain-filter-moneyness',
+                    options=[
+                        {'label': ' All', 'value': 'all'},
+                        {'label': ' ITM', 'value': 'itm'},
+                        {'label': ' ATM ±5', 'value': 'atm'},
+                        {'label': ' OTM', 'value': 'otm'}
+                    ],
+                    value='all',
+                    inline=True,
+                    style={'fontSize': '12px'},
+                    labelStyle={'color': '#e0e0e0', 'marginRight': '15px'}
+                )
+            ], style={'marginBottom': '10px'})
+        ], style={
+            'padding': '10px',
+            'backgroundColor': '#2a2d3a',
+            'borderRadius': '6px',
+            'marginBottom': '15px'
+        }),
+        
+        # Chain table container (populated by callbacks)
+        html.Div(
+            id='chain-viewer-table-container',
+            children=[
+                html.Div([
+                    html.P("📊 Click 'Load Chain' to fetch options data", 
+                           style={'color': '#9ca3af', 'textAlign': 'center', 'padding': '40px'}),
+                    html.P("💡 Data updates automatically on symbol change", 
+                           style={'color': '#6b7280', 'textAlign': 'center', 'fontSize': '12px'})
+                ])
+            ],
+            style={
+                'minHeight': '400px',
+                'backgroundColor': '#1e2130',
+                'borderRadius': '6px',
+                'padding': '10px',
+                'overflowX': 'auto'
+            }
+        ),
+        
+        # Chain stats summary
+        html.Div([
+            html.Div([
+                html.Span("Calls OI: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-calls-oi', children="--", style={'color': '#4caf50', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("Puts OI: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-puts-oi', children="--", style={'color': '#f44336', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("P/C Ratio: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-pc-ratio', children="--", style={'color': '#F5C211', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block', 'marginRight': '20px'}),
+            html.Div([
+                html.Span("Max Pain: ", style={'color': '#9ca3af', 'fontSize': '11px'}),
+                html.Span(id='chain-max-pain', children="--", style={'color': '#00d4ff', 'fontSize': '13px', 'fontWeight': 'bold'}),
+            ], style={'display': 'inline-block'}),
+        ], style={
+            'padding': '10px',
+            'backgroundColor': '#2a2d3a',
+            'borderRadius': '6px',
+            'marginTop': '10px'
+        })
+        
+    ], style={
+        'backgroundColor': '#1e2130',
+        'padding': '15px',
+        'borderRadius': '8px',
+        'marginTop': '15px',
+        'border': '2px solid #F5C211'
     })
 
 
@@ -955,9 +1071,175 @@ def _create_watchlist_item(symbol: str, price: float, change: float, change_pct:
     })
 
 
+def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
+    """
+    Create consolidated 4-tab Alpaca Options Lab layout.
+    Phase 15 - Agent-UX Consolidation
+    
+    Workspaces:
+    1. Scanner: Market Viz + Flow + Patterns
+    2. Strategy: Chain + Builder + AI
+    3. Command: Positions + Trade Ops
+    4. Admin: Status + Research
+    """
+    from dashboard_layouts.layouts.workspaces import (
+        scanner_layout,
+        strategy_layout,
+        command_layout,
+        admin_layout,
+    )
+    
+    return html.Div([
+        # Top bar with ticker input and controls (preserved from original)
+        html.Div([
+            html.Div([
+                html.Label("Symbol:", style={'color': '#9ca3af', 'fontSize': '13px', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                dcc.Input(
+                    id='alpaca-ticker-input',
+                    type='text',
+                    value=ticker,
+                    placeholder='Enter ticker...',
+                    style={
+                        'width': '120px',
+                        'padding': '8px',
+                        'backgroundColor': '#2a2d3a',
+                        'color': '#ffffff',
+                        'border': '1px solid #3d4050',
+                        'borderRadius': '4px',
+                        'marginRight': '10px'
+                    }
+                ),
+                html.Button("Load Chain", id='alpaca-load-button', n_clicks=0,
+                           style={
+                               'padding': '8px 20px',
+                               'backgroundColor': '#4caf50',
+                               'color': 'white',
+                               'border': 'none',
+                               'borderRadius': '4px',
+                               'cursor': 'pointer',
+                               'fontWeight': 'bold',
+                               'marginRight': '20px'
+                           }),
+                
+                # Trading mode toggle
+                html.Div([
+                    html.Span("Trading Mode: ", style={'color': '#9ca3af', 'fontSize': '12px'}),
+                    dcc.RadioItems(
+                        id='trading-mode-toggle',
+                        options=[
+                            {'label': ' Paper', 'value': 'paper'},
+                            {'label': ' Live', 'value': 'live'}
+                        ],
+                        value='paper',
+                        inline=True,
+                        style={'fontSize': '12px'},
+                        labelStyle={'color': '#e0e0e0', 'marginRight': '10px'}
+                    )
+                ], style={'display': 'inline-block', 'marginRight': '20px'}),
+                
+                # Auto-refresh toggle
+                html.Div([
+                    dcc.Checklist(
+                        id='auto-refresh-toggle',
+                        options=[{'label': ' Auto-Refresh (30s)', 'value': 'enabled'}],
+                        value=[],
+                        style={'fontSize': '12px', 'color': '#e0e0e0'}
+                    )
+                ], style={'display': 'inline-block'}),
+                
+                # Phase 15 indicator
+                dbc.Badge("4-Tab UX", color="warning", className="ms-3"),
+            ], style={'display': 'flex', 'alignItems': 'center', 'flexWrap': 'wrap'})
+        ], style={
+            'padding': '15px',
+            'backgroundColor': '#1e2130',
+            'borderRadius': '8px',
+            'marginBottom': '15px'
+        }),
+        
+        # CONSOLIDATED 4 TABS (Phase 15)
+        dcc.Tabs(
+            id='main-workspace-tabs',
+            value='scanner-workspace-tab',
+            children=[
+                # Tab 1: Scanner Workspace
+                dcc.Tab(
+                    label='🔭 Scanner',
+                    value='scanner-workspace-tab',
+                    children=[scanner_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#F5C211'}
+                ),
+                
+                # Tab 2: Strategy Workspace
+                dcc.Tab(
+                    label='⚔️ Strategy',
+                    value='strategy-workspace-tab',
+                    children=[strategy_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#00d4ff'}
+                ),
+                
+                # Tab 3: Command Workspace
+                dcc.Tab(
+                    label='🎮 Command',
+                    value='command-workspace-tab',
+                    children=[command_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}
+                ),
+                
+                # Tab 4: Admin Workspace
+                dcc.Tab(
+                    label='🔧 Admin',
+                    value='admin-workspace-tab',
+                    children=[admin_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}
+                ),
+            ],
+            style={'marginBottom': '15px'}
+        ),
+        
+        # Hidden components (preserved for callbacks)
+        dcc.Dropdown(id='alpaca-expiration-dropdown', options=[], value=None, style={'display': 'none'}),
+        dcc.Download(id='alpaca-download-csv'),
+        dcc.Download(id='alpaca-download-json'),
+        dcc.Store(id='alpaca-options-store'),
+        dcc.Store(id='strategy-legs-store', data=[]),
+        dcc.Store(id='positions-store', data=[]),
+        dcc.Store(id='watchlist-store', data=['SPY', 'QQQ', 'AAPL']),
+        dcc.Store(id='alerts-store', data=[]),
+        dcc.Store(id='strategy-engine-refresh-trigger', data=0),
+        dcc.Store(id='pattern-data-store', data=[]),  # Phase 15: Pattern detection store
+        dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
+        dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
+        
+        html.Div(id='alpaca-cache-info', style={'display': 'none'}),
+        html.Div(id='alpaca-order-modal-container'),
+        html.Div(id='alpaca-header-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-expiration-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-export-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-table-container', style={'display': 'none'}),  # Preserve for callbacks
+        html.Div(id='alpaca-status-message', style={
+            'marginTop': '20px', 'padding': '10px', 'borderRadius': '4px', 'fontSize': '13px'
+        }),
+        
+        # Hotkey listener for Terminal UX
+        html.Div(id='hotkey-listener', style={'display': 'none'}),
+        
+    ], style={
+        'padding': '20px',
+        'backgroundColor': '#16181f',
+        'minHeight': '100vh',
+        'color': '#ffffff'
+    })
+
+
 def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
     """
     Create enhanced Alpaca-style Options Lab layout with all panels.
+    Original 12-tab layout preserved for backwards compatibility.
     
     This replaces the basic layout with comprehensive analytics.
     """
@@ -1071,7 +1353,13 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 4: ML Recommendations
+            # Tab 4: Strategy Engine (Phase 3 - IC Builder, Picker, Greeks Rollup)
+            dcc.Tab(label='🦅 Strategy Engine', children=[
+                create_strategy_analysis_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#00d4ff'}),
+            
+            # Tab 5: ML Recommendations
             dcc.Tab(label='🤖 AI', children=[
                 html.Div([
                     create_ml_recommendations_panel(),
@@ -1082,7 +1370,13 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 5: Flow Analysis
+            # Tab 6: ML Forecast (Phase 2)
+            dcc.Tab(label='🔮 Forecast', children=[
+                create_forecast_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#9c27b0'}),
+            
+            # Tab 7: Flow Analysis
             dcc.Tab(label='🔥 Flow', children=[
                 html.Div([
                     create_flow_analysis_panel()
@@ -1090,7 +1384,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
             
-            # Tab 6: Positions & Risk
+            # Tab 7: Positions & Risk
             dcc.Tab(label='💼 Positions', children=[
                 html.Div([
                     create_positions_panel(),
@@ -1098,6 +1392,30 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
                 ], style={'padding': '15px'})
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
+            
+            # Tab 8: System Status (Phase 1 Data Fabric)
+            dcc.Tab(label='🔧 Status', children=[
+                create_system_status_panel()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#4caf50'}),
+            
+            # Tab 9: Trade Operations (Phase 4/5)
+            dcc.Tab(label='⚙️ Trade Ops', children=[
+                create_trade_ops_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}),
+            
+            # Tab 10: Research Lab (Phase 7)
+            dcc.Tab(label='📊 Research', children=[
+                create_research_tab()
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#00bcd4'}),
+            
+            # Tab 11: Market Viz (Phase 6 - Agent-Viz)
+            dcc.Tab(label='📈 Market Viz', children=[
+                create_market_viz_layout(ticker='SPY', use_mock=True)
+            ], style={'backgroundColor': '#16181f', 'color': '#fff'},
+               selected_style={'backgroundColor': '#2a2d3a', 'color': '#F5C211'}),
             
         ], style={'marginBottom': '15px'}),
         
@@ -1118,6 +1436,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
         dcc.Store(id='positions-store', data=[]),
         dcc.Store(id='watchlist-store', data=['SPY', 'QQQ', 'AAPL']),
         dcc.Store(id='alerts-store', data=[]),
+        dcc.Store(id='strategy-engine-refresh-trigger', data=0),  # Phase 3 Greeks rollup trigger
         dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
         dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
         

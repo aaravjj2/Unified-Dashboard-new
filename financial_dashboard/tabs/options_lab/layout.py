@@ -45,6 +45,15 @@ def create_layout():
 def _build_safe_layout():
     """Main layout builder with 6 canonical subtabs."""
     return dbc.Container([
+        # Hidden stores required by callbacks
+        dcc.Store(id='options-chain-store', data={}),
+        dcc.Store(id='options-analysis-store', data={}),
+        dcc.Store(id='options-surface-store', data={}),
+        dcc.Store(id='ol-ai-recommendations-store', data={}),
+        dcc.Store(id='ol-portfolio-store', data={}),
+        dcc.Store(id='ol-backtest-store', data={}),
+        dcc.Store(id='ol-settings-store', data={}),
+        
         # Global Controls (uses existing options-* IDs for callback compatibility)
         dbc.Card([
             dbc.CardBody([
