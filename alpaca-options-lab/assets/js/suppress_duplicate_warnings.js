@@ -31,6 +31,10 @@
                 if (message.includes('Unexpected end of JSON input')) {
                     return true;
                 }
+                // Suppress "Value is null" errors (Dash DOM access before elements exist)
+                if (message.includes('Value is null')) {
+                    return true;
+                }
             }
             
             // Check for object messages (Dash sometimes logs as objects)

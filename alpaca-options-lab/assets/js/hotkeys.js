@@ -37,6 +37,31 @@
         'Shift+R': {
             action: 'refreshData',
             description: 'Refresh Data'
+        },
+        // Workspace navigation hotkeys
+        'Ctrl+1': {
+            action: 'switchWorkspace',
+            description: 'Scanner Workspace',
+            workspace: 'scanner-workspace-tab'
+        },
+        'Ctrl+2': {
+            action: 'switchWorkspace',
+            description: 'Strategy Workspace',
+            workspace: 'strategy-workspace-tab'
+        },
+        'Ctrl+3': {
+            action: 'switchWorkspace',
+            description: 'Command Workspace',
+            workspace: 'command-workspace-tab'
+        },
+        'Ctrl+4': {
+            action: 'switchWorkspace',
+            description: 'Admin Workspace',
+            workspace: 'admin-workspace-tab'
+        },
+        'Ctrl+K': {
+            action: 'openCommandPalette',
+            description: 'Open Command Palette'
         }
     };
 
@@ -119,6 +144,85 @@
         document.dispatchEvent(event);
         showNotification('Cancel All Signal Sent', 'warning');
         console.log('[Hotkeys] Shift+C: Dispatched cancelAllOrders event');
+        return true;
+    }
+
+    /**
+     * Switch to a specific workspace tab
+     */
+    function switchWorkspace(workspaceId, description) {
+        // Find the Dash tabs component
+        const tabsContainer = document.querySelector('#main-workspace-tabs');
+        if (!tabsContainer) {
+            console.warn('[Hotkeys] Tabs container not found');
+            showNotification('Tabs not found', 'warning');
+            return false;
+        }
+
+        // Find and click the correct tab
+        const tabs = tabsContainer.querySelectorAll('.tab');
+        const tabMapping = {
+            'scanner-workspace-tab': 0,
+            'strategy-workspace-tab': 1,
+            'command-workspace-tab': 2,
+            'admin-workspace-tab': 3
+        };
+
+        const tabIndex = tabMapping[workspaceId];
+        if (tabIndex !== undefined && tabs[tabIndex]) {
+            tabs[tabIndex].click();
+            showNotification(`Switched to ${description}`, 'success');
+            console.log(`[Hotkeys] Switched to ${workspaceId}`);
+            return true;
+        }
+
+        // Fallback: Try using Dash's setProps pattern
+        try {
+            // Dispatch a custom event that can be caught by clientside callbacks
+            const event = new CustomEvent('workspaceSwitch', {
+                bubbles: true,
+                detail: { workspace: workspaceId, description: description }
+            });
+            document.dispatchEvent(event);
+
+            // Also try to find React fiber and trigger change
+            const reactKey = Object.keys(tabsContainer).find(key => key.startsWith('__reactFiber'));
+            if (reactKey) {
+                // This is a React component - dispatch via Dash callback system
+                if (window.dash_clientside && window.dash_clientside.set_props) {
+                    window.dash_clientside.set_props('main-workspace-tabs', { value: workspaceId });
+                }
+            }
+
+            showNotification(`Switching to ${description}...`, 'info');
+            return true;
+        } catch (e) {
+            console.error('[Hotkeys] Error switching workspace:', e);
+            showNotification('Failed to switch workspace', 'negative');
+            return false;
+        }
+    }
+
+    /**
+     * Open command palette modal
+     */
+    function openCommandPalette() {
+        // Try to find and click the command palette trigger
+        const triggerBtn = document.querySelector('#command-palette-trigger');
+        if (triggerBtn) {
+            triggerBtn.click();
+            showNotification('Command Palette', 'info');
+            console.log('[Hotkeys] Ctrl+K: Opened Command Palette');
+            return true;
+        }
+
+        // Fallback: dispatch custom event
+        const event = new CustomEvent('openCommandPalette', {
+            bubbles: true,
+            detail: { source: 'hotkey' }
+        });
+        document.dispatchEvent(event);
+        showNotification('Opening Command Palette...', 'info');
         return true;
     }
 
@@ -228,7 +332,7 @@
 
             console.log(`[Hotkeys] Triggered: ${combo} -> ${hotkey.description}`);
 
-            switch (hotkey.action) {
+                switch (hotkey.action) {
                 case 'focusBuyTicket':
                     focusBuyTicket();
                     break;
@@ -237,6 +341,12 @@
                     break;
                 case 'refreshData':
                     refreshData();
+                    break;
+                case 'switchWorkspace':
+                    switchWorkspace(hotkey.workspace, hotkey.description);
+                    break;
+                case 'openCommandPalette':
+                    openCommandPalette();
                     break;
             }
         }
@@ -288,6 +398,13 @@
         panel.innerHTML = `
             <div style="font-weight:bold;margin-bottom:8px;color:${ALPACA_DARK.accent}">⌨️ Hotkeys</div>
             <div style="font-size:11px">
+                <div style="margin-bottom:4px;color:#9ca3af">Navigation:</div>
+                <div><kbd>Ctrl+1</kbd> Scanner</div>
+                <div><kbd>Ctrl+2</kbd> Strategy</div>
+                <div><kbd>Ctrl+3</kbd> Command</div>
+                <div><kbd>Ctrl+4</kbd> Admin</div>
+                <div><kbd>Ctrl+K</kbd> Cmd Palette</div>
+                <div style="margin-top:8px;margin-bottom:4px;color:#9ca3af">Trading:</div>
                 <div><kbd>Shift+B</kbd> Buy Ticket</div>
                 <div><kbd>Shift+C</kbd> Cancel All</div>
                 <div><kbd>Shift+R</kbd> Refresh</div>

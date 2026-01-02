@@ -24,6 +24,10 @@ function isHarmlessError(message) {
     if (msgStr.includes('Duplicate callback')) {
         return true;
     }
+    // "Value is null" errors from Dash DOM access before elements exist
+    if (msgStr.includes('Value is null')) {
+        return true;
+    }
     return false;
 }
 
