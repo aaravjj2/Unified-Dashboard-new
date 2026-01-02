@@ -1,0 +1,29 @@
+
+DASHBOARD SNAPSHOT REPORT
+========================
+Generated: 2025-12-31T18:06:27.742630
+Base URL: http://127.0.0.1:8053
+
+COMPONENTS
+----------
+Total Components: 1224
+Graphs: 0
+Stores: 16
+Tabs: 11
+
+CALLBACKS
+---------
+Total Callbacks: 57
+
+COMPONENT TYPES (Top 10)
+------------------------
+Div: 453
+Span: 143
+Badge: 36
+Label: 29
+Button: 29
+P: 28
+Col: 18
+Input: 17
+Graph: 17
+Store: 17

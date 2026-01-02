@@ -422,6 +422,7 @@ def create_inputs_panel():
                 "Generate Forecast"
             ],
                 id=COMPONENT_IDS['run_btn'],
+                n_clicks=0,  # CRITICAL: Initialize n_clicks for callback to work
                 color="success",
                 size="lg",
                 className="w-100 fw-bold",

@@ -336,3 +336,239 @@ def create_tab_toolbar(tab_name, filters=None, show_refresh=True, show_export=Tr
             ], className="d-flex justify-content-between align-items-center flex-wrap")
         ], className="py-2")
     ], className="tab-toolbar mb-3")
+
+
+# ============================================================================
+# PART 4: ENHANCED UI COMPONENTS
+# ============================================================================
+
+def create_metric_card_v2(
+    title: str,
+    value: str,
+    change: str = None,
+    change_type: str = "neutral",
+    icon: str = None,
+    id: str = None
+):
+    """
+    Create a professional metric card with enhanced styling.
+    
+    Args:
+        title: Metric label
+        value: Main value to display
+        change: Change value (e.g., "+5.2%")
+        change_type: 'positive', 'negative', or 'neutral'
+        icon: Optional emoji icon
+        id: Component ID
+    """
+    change_class = {
+        'positive': 'text-success',
+        'negative': 'text-danger',
+        'neutral': 'text-muted'
+    }.get(change_type, 'text-muted')
+    
+    arrow = ""
+    if change:
+        if change_type == "positive":
+            arrow = "↑ "
+        elif change_type == "negative":
+            arrow = "↓ "
+    
+    content = [
+        html.Div([
+            html.Small(title, className="text-muted text-uppercase", style={"letterSpacing": "0.05em"}),
+            html.Div([
+                html.Span(icon + " ", style={"marginRight": "8px"}) if icon else None,
+                html.Span(value, className="h3 mb-0 fw-bold"),
+            ], className="d-flex align-items-center mt-1"),
+        ])
+    ]
+    
+    if change:
+        content.append(
+            html.Small(f"{arrow}{change}", className=f"metric-change {change_class} mt-2 d-block")
+        )
+    
+    return dbc.Card(
+        dbc.CardBody(content, className="py-3"),
+        className="metric-card hover-lift",
+        id=id
+    )
+
+
+def create_status_badge_v2(status: str, text: str = None, live: bool = False):
+    """
+    Create a modern status badge.
+    
+    Args:
+        status: 'success', 'warning', 'error', 'info', 'neutral'
+        text: Display text (defaults to capitalized status)
+        live: Show pulsing indicator
+    """
+    status_icons = {
+        'success': '✓',
+        'warning': '⚠',
+        'error': '✗',
+        'info': 'ℹ',
+        'neutral': '•'
+    }
+    
+    display_text = text or status.capitalize()
+    icon = status_icons.get(status, '•')
+    
+    classes = f"status-badge status-badge-{status}"
+    if live:
+        classes += " status-badge-live"
+    
+    return html.Span(
+        [icon, " ", display_text] if not live else display_text,
+        className=classes
+    )
+
+
+def create_section_header_v2(
+    title: str,
+    subtitle: str = None,
+    action_button: dict = None,
+    badge: dict = None
+):
+    """
+    Create a section header with optional action button or badge.
+    
+    Args:
+        title: Section title
+        subtitle: Optional subtitle text
+        action_button: Dict with 'label', 'id', 'color' keys
+        badge: Dict with 'text', 'type' keys
+    """
+    header_content = [html.H4(title, className="mb-0")]
+    
+    if badge:
+        badge_type = badge.get('type', 'info')
+        header_content.append(
+            create_status_badge_v2(badge_type, badge.get('text', ''))
+        )
+    
+    left_side = html.Div(header_content, className="d-flex align-items-center gap-2")
+    
+    if subtitle:
+        left_side = html.Div([
+            html.Div(header_content, className="d-flex align-items-center gap-2"),
+            html.Small(subtitle, className="text-muted")
+        ])
+    
+    right_side = None
+    if action_button:
+        right_side = dbc.Button(
+            action_button.get('label', 'Action'),
+            id=action_button.get('id'),
+            color=action_button.get('color', 'primary'),
+            size='sm',
+            outline=action_button.get('outline', False)
+        )
+    
+    return html.Div([
+        left_side,
+        right_side
+    ] if right_side else [left_side], 
+    className="section-header d-flex justify-content-between align-items-center mb-4 pb-3"
+    )
+
+
+def create_progress_bar_modern(
+    value: float,
+    max_value: float = 100,
+    label: str = None,
+    variant: str = "info",
+    show_percent: bool = True
+):
+    """
+    Create a modern progress bar.
+    
+    Args:
+        value: Current value
+        max_value: Maximum value
+        label: Optional label above bar
+        variant: 'success', 'warning', 'danger', 'info'
+        show_percent: Show percentage text
+    """
+    percent = min(100, (value / max_value) * 100) if max_value > 0 else 0
+    
+    content = []
+    
+    if label or show_percent:
+        header = []
+        if label:
+            header.append(html.Span(label, className="text-muted"))
+        if show_percent:
+            header.append(html.Span(f"{percent:.1f}%", className="text-muted"))
+        content.append(
+            html.Div(
+                header, 
+                className="d-flex justify-content-between mb-1",
+                style={"fontSize": "0.875rem"}
+            )
+        )
+    
+    content.append(
+        html.Div(
+            html.Div(
+                className=f"progress-bar-fill progress-{variant}",
+                style={"width": f"{percent}%"}
+            ),
+            className="progress-bar-modern"
+        )
+    )
+    
+    return html.Div(content)
+
+
+def create_card_modern(
+    title: str = None,
+    children=None,
+    footer=None,
+    header_right=None,
+    id: str = None,
+    className: str = ""
+):
+    """
+    Create a modern card component.
+    
+    Args:
+        title: Card header title
+        children: Card body content
+        footer: Optional footer content
+        header_right: Optional right-aligned header content
+        id: Component ID
+        className: Additional CSS classes
+    """
+    parts = []
+    
+    if title or header_right:
+        header_content = []
+        if title:
+            header_content.append(html.H5(title, className="mb-0"))
+        if header_right:
+            header_content.append(header_right)
+        parts.append(
+            html.Div(
+                header_content,
+                className="dash-card-header d-flex justify-content-between align-items-center"
+            )
+        )
+    
+    if children:
+        parts.append(
+            html.Div(children, className="dash-card-body")
+        )
+    
+    if footer:
+        parts.append(
+            html.Div(footer, className="dash-card-footer")
+        )
+    
+    return html.Div(
+        parts,
+        className=f"dash-card-modern {className}",
+        id=id
+    )

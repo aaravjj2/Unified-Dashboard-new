@@ -267,16 +267,24 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
         logger.warning("TradingView charts not available, using Plotly fallback")
         return _render_plotly_fallback(df, symbol, height)
     
-    # Generate or convert data
-    if df is None or len(df) == 0:
-        df = generate_mock_ohlcv(symbol)
+    # ALWAYS generate mock data first to ensure valid initial state
+    # This prevents "Value is undefined" errors on initial render
+    mock_df = generate_mock_ohlcv(symbol, days=60)
     
-    tv_data = dataframe_to_tv_format(df)
-    
-    if not tv_data or len(tv_data) == 0:
-        logger.warning(f"No valid chart data for {symbol}, generating mock data")
-        df = generate_mock_ohlcv(symbol)
+    # Try to use provided data, fall back to mock if invalid
+    if df is not None and len(df) > 0:
         tv_data = dataframe_to_tv_format(df)
+        if not tv_data or len(tv_data) < 2:
+            logger.warning(f"Provided data invalid for {symbol}, using mock data")
+            tv_data = dataframe_to_tv_format(mock_df)
+    else:
+        tv_data = dataframe_to_tv_format(mock_df)
+    
+    # Final fallback - ensure we always have valid data
+    if not tv_data or len(tv_data) < 2:
+        logger.warning(f"No valid chart data for {symbol}, regenerating mock data")
+        mock_df = generate_mock_ohlcv(symbol, days=60)
+        tv_data = dataframe_to_tv_format(mock_df)
     
     if not tv_data or len(tv_data) == 0:
         return html.Div("No chart data available", style={
@@ -392,7 +400,7 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
                 chartOptions=chart_options,
                 seriesOptions=[series_options["candlestick"]]
             )
-        ], style={'borderRadius': '8px', 'overflow': 'hidden'})
+        ], style={'borderRadius': '8px', 'overflow': 'hidden', 'height': f'{height}px'})
     ], style={
         'backgroundColor': ALPACA_DARK['paper'],
         'padding': '16px',

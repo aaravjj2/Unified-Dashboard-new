@@ -40,10 +40,13 @@ from financial_dashboard.utils.news_manager import NewsManager
 
 # Phase 5: Regime Detection Engine
 try:
-    from financial_dashboard.tabs.market_trends.regime_engine import RegimeDetector, REGIME_LABELS, REGIME_COLORS
+    from financial_dashboard.tabs.market_trends.regime_engine import (
+        RegimeDetector, REGIME_LABELS, REGIME_COLORS, detect_regimes as _detect_regimes_func
+    )
     REGIME_ENGINE_AVAILABLE = True
 except ImportError as e:
     REGIME_ENGINE_AVAILABLE = False
+    _detect_regimes_func = None
 try:
     from financial_dashboard.serving.serving_client import ServingClient
     _SC = ServingClient()
@@ -2640,13 +2643,10 @@ def register_callbacks(app):
             return error_msg, "❌ Engine not available", "N/A"
         
         try:
-            # Initialize detector
-            detector = RegimeDetector(n_regimes=3, method=method)
+            # Use the standalone detect_regimes function
+            df_result, stats = _detect_regimes_func(ticker, method=method, lookback_days=lookback_days)
             
-            # Detect regimes
-            result = detector.detect_regimes(ticker, lookback_days=lookback_days)
-            
-            if result is None:
+            if df_result is None:
                 error_ui = html.Div([
                     html.I(className="bi bi-x-circle text-danger", style={'fontSize': '48px'}),
                     html.H5(f"No data for {ticker}", className="mt-3 text-danger"),
@@ -2655,9 +2655,9 @@ def register_callbacks(app):
                 return error_ui, "❌ No data", "N/A"
             
             # Create regime chart
-            df = result['data']
-            current_regime = result['current_regime']
-            regime_probs = result.get('regime_probabilities', {})
+            df = df_result
+            current_regime = stats.get('current', {}).get('regime_id', 0)
+            regime_probs = stats.get('regime_probabilities', {})
             
             # Build chart
             fig = go.Figure()

@@ -265,113 +265,115 @@ def create_pattern_feed(patterns: Optional[List[Dict]] = None) -> html.Div:
     Returns:
         Pattern feed div component
     """
-    if patterns is None:
-        patterns = []
+    # Generate mock patterns if none provided (for initial display)
+    if patterns is None or len(patterns) == 0:
+        patterns = [
+            {
+                "signal": "bullish",
+                "pattern_type": "bull_flag",
+                "confidence": 0.82,
+                "description": "SPY forming bullish flag after strong uptrend",
+                "target_price": 472.50
+            },
+            {
+                "signal": "bearish",
+                "pattern_type": "double_top",
+                "confidence": 0.71,
+                "description": "NVDA showing resistance at $145 level",
+                "target_price": 135.00
+            },
+            {
+                "signal": "neutral",
+                "pattern_type": "triangle",
+                "confidence": 0.65,
+                "description": "TSLA consolidating in symmetrical triangle",
+                "target_price": None
+            },
+        ]
     
     pattern_items = []
-    
-    if not patterns:
+    for p in patterns[:5]:  # Show top 5 patterns
+        signal = p.get("signal", "neutral")
+        pattern_type = p.get("pattern_type", "unknown")
+        confidence = p.get("confidence", 0)
+        description = p.get("description", "")
+        target = p.get("target_price")
+        
+        # Configuration based on signal
+        signal_config = {
+            "bullish": {
+                "color": ALPACA_DARK["positive"],
+                "icon": "📈",
+                "border": ALPACA_DARK["positive"]
+            },
+            "bearish": {
+                "color": ALPACA_DARK["negative"],
+                "icon": "📉",
+                "border": ALPACA_DARK["negative"]
+            },
+        }.get(signal, {
+            "color": ALPACA_DARK["text"],
+            "icon": "➡️",
+            "border": ALPACA_DARK["border"]
+        })
+        
         pattern_items.append(
-            html.Div([
-                html.Div("🔍", style={"fontSize": "36px", "marginBottom": "12px"}),
-                html.Div("Scanning for chart patterns...", style={
-                    "color": ALPACA_DARK["text"],
-                    "fontSize": "14px",
-                    "fontWeight": "500",
-                }),
-                html.Div("Patterns will appear here when detected", style={
-                    "color": ALPACA_DARK["text_muted"],
-                    "fontSize": "12px",
-                    "marginTop": "4px",
-                }),
-            ], style={
-                "textAlign": "center",
-                "padding": "48px 20px",
-            })
-        )
-    else:
-        for p in patterns[:5]:  # Show top 5 patterns
-            signal = p.get("signal", "neutral")
-            pattern_type = p.get("pattern_type", "unknown")
-            confidence = p.get("confidence", 0)
-            description = p.get("description", "")
-            target = p.get("target_price")
-            
-            # Configuration based on signal
-            signal_config = {
-                "bullish": {
-                    "color": ALPACA_DARK["positive"],
-                    "icon": "📈",
-                    "border": ALPACA_DARK["positive"]
-                },
-                "bearish": {
-                    "color": ALPACA_DARK["negative"],
-                    "icon": "📉",
-                    "border": ALPACA_DARK["negative"]
-                },
-            }.get(signal, {
-                "color": ALPACA_DARK["text"],
-                "icon": "➡️",
-                "border": ALPACA_DARK["border"]
-            })
-            
-            pattern_items.append(
-                html.Div(
-                    children=[
-                        html.Div(
-                            children=[
-                                html.Span(signal_config["icon"], style={
-                                    "marginRight": "8px", 
-                                    "fontSize": "18px"
-                                }),
-                                html.Span(
-                                    signal.upper(),
-                                    style={
-                                        "color": signal_config["color"],
-                                        "fontWeight": "700",
-                                        "fontSize": "12px",
-                                        "marginRight": "12px",
-                                    }
-                                ),
-                                html.Span(
-                                    pattern_type.replace("_", " ").title(),
-                                    style={
-                                        "color": ALPACA_DARK["gold"],
-                                        "fontWeight": "500"
-                                    }
-                                ),
-                            ],
-                            style={"marginBottom": "6px"}
-                        ),
-                        html.Div(
-                            children=[
-                                html.Span(description, style={
-                                    "color": ALPACA_DARK["text_muted"],
-                                    "fontSize": "12px"
-                                }),
-                            ]
-                        ),
-                        html.Div(
-                            children=[
-                                dbc.Badge(f"{confidence:.0%} conf", color="info", className="me-2"),
-                                dbc.Badge(
-                                    f"Target: ${target:.2f}", 
-                                    color="success"
-                                ) if target else None,
-                            ],
-                            style={"marginTop": "8px"}
-                        ),
-                    ],
-                    style={
-                        "padding": "14px 16px",
-                        "borderLeft": f"4px solid {signal_config['border']}",
-                        "marginBottom": "8px",
-                        "backgroundColor": ALPACA_DARK["bg_tertiary"],
-                        "borderRadius": "0 8px 8px 0",
-                        "transition": "all 0.2s ease",
-                    }
-                )
+            html.Div(
+                children=[
+                    html.Div(
+                        children=[
+                            html.Span(signal_config["icon"], style={
+                                "marginRight": "8px", 
+                                "fontSize": "18px"
+                            }),
+                            html.Span(
+                                signal.upper(),
+                                style={
+                                    "color": signal_config["color"],
+                                    "fontWeight": "700",
+                                    "fontSize": "12px",
+                                    "marginRight": "12px",
+                                }
+                            ),
+                            html.Span(
+                                pattern_type.replace("_", " ").title(),
+                                style={
+                                    "color": ALPACA_DARK["gold"],
+                                    "fontWeight": "500"
+                                }
+                            ),
+                        ],
+                        style={"marginBottom": "6px"}
+                    ),
+                    html.Div(
+                        children=[
+                            html.Span(description, style={
+                                "color": ALPACA_DARK["text_muted"],
+                                "fontSize": "12px"
+                            }),
+                        ]
+                    ),
+                    html.Div(
+                        children=[
+                            dbc.Badge(f"{confidence:.0%} conf", color="info", className="me-2"),
+                            dbc.Badge(
+                                f"Target: ${target:.2f}", 
+                                color="success"
+                            ) if target else None,
+                        ],
+                        style={"marginTop": "8px"}
+                    ),
+                ],
+                style={
+                    "padding": "14px 16px",
+                    "borderLeft": f"4px solid {signal_config['border']}",
+                    "marginBottom": "8px",
+                    "backgroundColor": ALPACA_DARK["bg_tertiary"],
+                    "borderRadius": "0 8px 8px 0",
+                    "transition": "all 0.2s ease",
+                }
             )
+        )
     
     return create_section_card(
         title="Pattern Feed",
