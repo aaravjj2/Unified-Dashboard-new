@@ -14,11 +14,11 @@ def validate_loop1():
     results = []
     try:
         conn = psycopg2.connect(
-            host='localhost',
-            port=5432,
-            dbname='market_data',
-            user='postgres',
-            password='postgres'
+            host=os.getenv('POSTGRES_HOST', 'localhost'),
+            port=int(os.getenv('POSTGRES_PORT', '5432')),
+            dbname=os.getenv('POSTGRES_DB', 'market_data'),
+            user=os.getenv('POSTGRES_USER', 'postgres'),
+            password=os.getenv('POSTGRES_PASSWORD', 'postgres')
         )
         cur = conn.cursor()
         
@@ -67,11 +67,11 @@ def validate_loop2():
     results = []
     try:
         conn = psycopg2.connect(
-            host='localhost',
-            port=5432,
-            dbname='market_data',
-            user='postgres',
-            password='postgres'
+            host=os.getenv('POSTGRES_HOST', 'localhost'),
+            port=int(os.getenv('POSTGRES_PORT', '5432')),
+            dbname=os.getenv('POSTGRES_DB', 'market_data'),
+            user=os.getenv('POSTGRES_USER', 'postgres'),
+            password=os.getenv('POSTGRES_PASSWORD', 'postgres')
         )
         cur = conn.cursor()
         

@@ -3,6 +3,7 @@
 Load picks CSV files into postgres_db picks table.
 This is a temporary data population script until Dagster pipeline is properly configured.
 """
+import os
 import pandas as pd
 import psycopg2
 from pathlib import Path
@@ -13,11 +14,11 @@ def load_picks_to_db():
     
     # Database connection
     conn = psycopg2.connect(
-        host='postgres_db',
-        port=5432,
-        database='market_data',
-        user='postgres',
-        password='postgres'
+        host=os.getenv('POSTGRES_HOST', 'postgres_db'),
+        port=int(os.getenv('POSTGRES_PORT', '5432')),
+        database=os.getenv('POSTGRES_DB', 'market_data'),
+        user=os.getenv('POSTGRES_USER', 'postgres'),
+        password=os.getenv('POSTGRES_PASSWORD', 'postgres')
     )
     cursor = conn.cursor()
     
