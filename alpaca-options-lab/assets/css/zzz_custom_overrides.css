@@ -1,0 +1,237 @@
+/* ========================================
+   UNIFIED FINANCIAL DASHBOARD - CUSTOM OVERRIDES
+   Phase 3 Component-Specific Fix (No Global Hacks)
+   ======================================== */
+
+/* ─────────────────────────────────────────
+   TEXT VISIBILITY - Component Targeting
+   ───────────────────────────────────────── */
+
+/* Override Bootstrap text-muted ONLY for dashboard content areas 
+   (avoid breaking Bootstrap modal/tooltip native styles) */
+.tab-content .text-muted,
+.card-body .text-muted,
+.table .text-muted,
+.container .text-muted,
+.row .text-muted {
+    color: #212529 !important; /* Bootstrap's default dark gray */
+    opacity: 0.85;
+}
+
+/* ─────────────────────────────────────────
+   TABLE TEXT - Ensure Readability
+   ───────────────────────────────────────── */
+
+/* DataTables and standard tables */
+.dash-table-container table,
+.table,
+table {
+    color: #212529; /* Dark text on light backgrounds */
+}
+
+.dash-table-container .dash-cell,
+.dash-table-container td,
+.dash-table-container th {
+    color: #212529 !important;
+}
+
+/* Portfolio tables specifically */
+#portfolio-table td,
+#portfolio-table th,
+#home-portfolio-table td,
+#home-portfolio-table th {
+    color: #212529 !important;
+}
+
+/* Market trends, weekly/monthly picks */
+.market-trends-table td,
+.market-trends-table th,
+.weekly-picks-table td,
+.weekly-picks-table th,
+.monthly-picks-table td,
+.monthly-picks-table th {
+    color: #212529 !important;
+}
+
+/* ─────────────────────────────────────────
+   METRICS & CARDS
+   ───────────────────────────────────────── */
+
+.metric-card,
+.kpi-card,
+.stat-box {
+    color: #212529;
+}
+
+.metric-value,
+.kpi-value {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+/* ─────────────────────────────────────────
+   STRATEGY LAB SUBTABS
+   ───────────────────────────────────────── */
+
+#strategy-lab-content .text-muted,
+#strategy-setup-tab .text-muted,
+#strategy-backtest-tab .text-muted,
+#strategy-execution-tab .text-muted,
+#strategy-results-tab .text-muted,
+#strategy-benchmark-tab .text-muted,
+#strategy-risk-tab .text-muted {
+    color: #212529 !important;
+}
+
+/* Accordion and collapse content */
+.accordion-body,
+.accordion-body *,
+.accordion-item .accordion-body,
+.accordion-item .accordion-body *,
+.collapse-content,
+.collapse-content *,
+.alert,
+.card-text,
+p,
+small,
+.small {
+    color: #212529 !important;
+}
+
+/* ─────────────────────────────────────────
+   TOOLTIPS & HELP TEXT
+   ───────────────────────────────────────── */
+
+.tooltip-inner,
+.help-text,
+.info-text,
+.beginner-guide,
+.markdown,
+.markdown *,
+.dcc-markdown,
+.dcc-markdown *,
+dcc-markdown,
+dcc-markdown *,
+[class*="markdown"],
+[class*="markdown"] *,
+[class*="guide"],
+[class*="guide"] *,
+[class*="help"],
+[class*="help"] *,
+[class*="info"],
+[class*="info"] *,
+[class*="description"],
+[class*="description"] * {
+    color: #212529 !important;
+}
+
+/* Beginner Guide Accordion - Force ALL children to dark text */
+.accordion-item:has([title*="Beginner"]) .accordion-body,
+.accordion-item:has([title*="Beginner"]) .accordion-body *,
+.accordion-item:has([title*="beginner"]) .accordion-body,
+.accordion-item:has([title*="beginner"]) .accordion-body *,
+.accordion-item:has([title*="Guide"]) .accordion-body,
+.accordion-item:has([title*="Guide"]) .accordion-body * {
+    color: #212529 !important;
+}
+
+/* Preserve Bootstrap tooltip white text on dark background */
+.tooltip .tooltip-inner {
+    background-color: #000000;
+    color: #ffffff !important;
+}
+
+/* ─────────────────────────────────────────
+   FORM CONTROLS (Minimal Changes)
+   ───────────────────────────────────────── */
+
+/* Keep inputs readable without forcing dark theme */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+    color: #212529;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+}
+
+/* ─────────────────────────────────────────
+   UTILITY CLASSES
+   ───────────────────────────────────────── */
+
+.text-dark-override {
+    color: #000000 !important;
+}
+
+.bg-light-safe {
+    background-color: #f8f9fa !important;
+}
+
+/* ─────────────────────────────────────────
+   RESPONSIVE TABLE FIXES
+   ───────────────────────────────────────── */
+
+/* Prevent text wrapping in compact tables */
+.dash-table-container .dash-spreadsheet-container .cell,
+.dash-table-container .cell-table td,
+.dash-table-container .cell-table th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========================================
+   END CUSTOM OVERRIDES
+   ======================================== */
+
+/* ------------------------------------------------------------------
+     Market Trends: scoped override for the actual results table
+     - The global rules above use `!important` and force dark text.
+     - Add a highly-specific selector for the real results table (not
+         the sentinel) which uses the `data-testid` set by the Dash layout
+         to restore white text in dark UI contexts.
+     ------------------------------------------------------------------ */
+[data-testid="market-trends-data-table"] td,
+[data-testid="market-trends-data-table"] th {
+        color: #ffffff !important;
+}
+
+/* Also ensure header cells inside the data table use full contrast */
+[data-testid="market-trends-data-table"] thead th,
+[data-testid="market-trends-data-table"] tbody td {
+        color: #ffffff !important;
+}
+
+/* Allow wrapping and sensible table layout for the Market Trends results table. */
+[data-testid="market-trends-data-table"] td,
+[data-testid="market-trends-data-table"] th {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+[data-testid="market-trends-data-table"] {
+    table-layout: auto !important;
+}
+
+/* Ensure the Market Trends results table is fully visible on dark theme
+   - Force a dark background for the table and wrapper
+   - Force white text for all cells and headers
+   - Add a subtle border so table boundaries remain visible when screenshots are taken
+*/
+.market-trends-table-wrapper,
+[data-testid="market-trends-data-table"] {
+    background-color: rgba(10,14,39,0.85) !important; /* dark translucent */
+    color: #ffffff !important;
+}
+
+[data-testid="market-trends-data-table"] th,
+[data-testid="market-trends-data-table"] td {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Ensure table remains readable even if content is loading/placeholder */
+[data-testid="market-trends-data-table"] thead th {
+    background-color: rgba(255,255,255,0.04) !important;
+}
+

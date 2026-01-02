@@ -1,0 +1,331 @@
+/* Custom Dashboard Styles - Enhanced UX */
+/* Phase 12+ improvements with accessibility, loading states, and better UI */
+
+/* ============================================================================
+   LOADING STATES & ANIMATIONS
+   ============================================================================ */
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.skeleton-line {
+    animation: pulse 1.5s ease-in-out infinite;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%);
+    background-size: 200% 100%;
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+/* ============================================================================
+   CHATBOT FAB
+   ============================================================================ */
+
+#chatbot-fab {
+    z-index: 99999 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#chatbot-window, #chatbot-container {
+    z-index: 9999 !important;
+}
+
+#chatbot-toggle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+}
+
+/* ============================================================================
+   CARD IMPROVEMENTS
+   ============================================================================ */
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-weight: 600;
+}
+
+/* ============================================================================
+   TABLE IMPROVEMENTS
+   ============================================================================ */
+
+.table {
+    --bs-table-bg: transparent;
+}
+
+.table thead th {
+    background-color: rgba(255,255,255,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* ============================================================================
+   STATUS INDICATORS
+   ============================================================================ */
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-online { background-color: #4ade80; }
+.status-offline { background-color: #ef4444; }
+.status-warning { background-color: #fbbf24; }
+.status-pending { 
+    background-color: #60a5fa;
+    animation: pulse 1s infinite;
+}
+
+/* ============================================================================
+   METRIC CARDS
+   ============================================================================ */
+
+.metric-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+}
+
+.metric-change-positive { color: #4ade80; }
+.metric-change-negative { color: #ef4444; }
+
+/* ============================================================================
+   BUTTON IMPROVEMENTS
+   ============================================================================ */
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+}
+
+/* Icon-only buttons need proper ARIA labels */
+.btn-icon {
+    padding: 0.375rem 0.5rem;
+}
+
+/* ============================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================================ */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Skip to content link */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 100000;
+    padding: 1em;
+    background-color: #0a0e27;
+    color: white;
+}
+
+.skip-link:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
+}
+
+/* Ensure sufficient color contrast */
+.text-muted {
+    color: #9ca3af !important;
+}
+
+/* ============================================================================
+   TAB IMPROVEMENTS
+   ============================================================================ */
+
+.nav-tabs .nav-link {
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom-color: #667eea;
+}
+
+/* ============================================================================
+   TOOLTIP IMPROVEMENTS
+   ============================================================================ */
+
+.tooltip {
+    font-size: 0.875rem;
+}
+
+.tooltip-inner {
+    background-color: #1f2937;
+    padding: 8px 12px;
+    border-radius: 6px;
+    max-width: 300px;
+}
+
+/* ============================================================================
+   ALERT IMPROVEMENTS
+   ============================================================================ */
+
+.alert {
+    animation: fadeIn 0.3s ease;
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-info {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #86efac;
+}
+
+.alert-warning {
+    background-color: rgba(250, 204, 21, 0.1);
+    color: #fde047;
+}
+
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+}
+
+/* ============================================================================
+   EMPTY STATES
+   ============================================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.empty-state-description {
+    font-size: 0.875rem;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* ============================================================================
+   RESPONSIVE IMPROVEMENTS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .card-header {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .metric-value {
+        font-size: 1.25rem;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+}
+
+/* ============================================================================
+   DARK MODE OPTIMIZATIONS
+   ============================================================================ */
+
+body {
+    background-color: #0a0e27;
+    color: #e5e7eb;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}

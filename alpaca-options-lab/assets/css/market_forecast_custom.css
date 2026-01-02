@@ -1,0 +1,19 @@
+.dash-dropdown-dark .Select-control {
+    background-color: #16213e !important;
+    border-color: #374151 !important;
+}
+.dash-dropdown-dark .Select-value-label,
+.dash-dropdown-dark .Select-placeholder {
+    color: #e5e5e5 !important;
+}
+.dash-dropdown-dark .Select-menu-outer {
+    background-color: #16213e !important;
+    border-color: #374151 !important;
+}
+.dash-dropdown-dark .VirtualizedSelectOption {
+    background-color: #16213e;
+    color: #e5e5e5;
+}
+.dash-dropdown-dark .VirtualizedSelectFocusedOption {
+    background-color: #0f3460 !important;
+}

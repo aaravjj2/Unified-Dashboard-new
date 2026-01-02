@@ -1,0 +1,37 @@
+/* Research Lab Tab Label Fix */
+/* Ensure tab labels are always visible */
+/* Scope Research Lab tab label fixes to the Research Lab pane only so global
+   .nav-link rules don't affect the main dashboard navigation. */
+#tab-pane-research_lab .nav-link {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #adb5bd !important;
+    padding: 0.5rem 1rem !important;
+    min-width: 100px !important;
+}
+
+#tab-pane-research_lab .nav-link:not(:empty) {
+    /* Tab has content */
+    font-size: 1rem !important;
+}
+
+/* Active tab styling */
+#tab-pane-research_lab .nav-link.active,
+#tab-pane-research_lab .nav-link[aria-selected="true"] {
+    color: #00bc8c !important;
+    font-weight: 600 !important;
+    background-color: #2b3035 !important;
+}
+
+/* Ensure tab content is visible when active (scoped) */
+#tab-pane-research_lab .tab-pane {
+    padding: 1rem !important;
+}
+
+#tab-pane-research_lab .tab-pane.active {
+    display: block !important;
+}
+
+/* If specific tab ordering is required for Research Lab, add rules here. */
+/* If specific tab ordering is required for Research Lab, add rules here. */

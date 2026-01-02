@@ -1,0 +1,58 @@
+/* Force readable (black) text color for market trends tables to override theme rules */
+#results-table .dash-cell-value,
+#results-table-client .dash-cell-value,
+#results-table .dash-cell,
+#results-table-client .dash-cell,
+#results-table table td,
+#results-table-client table td,
+#results-table .cell-table td,
+#results-table-client .cell-table td {
+  color: #000 !important;
+}
+
+/* also ensure header text is black */
+#results-table thead th,
+#results-table-client thead th,
+#results-table .dash-header,
+#results-table-client .dash-header {
+  color: #000 !important;
+}
+
+/* If any high-specificity theme rules attempt to set opacity, reset it */
+#results-table .dash-cell-value, #results-table-client .dash-cell-value {
+  opacity: 1 !important;
+}
+
+/* High specificity fallbacks for different dash-table DOM variants */
+div#results-table div.dash-spreadsheet-inner div.cell, div#results-table-client div.dash-spreadsheet-inner div.cell,
+div#results-table table td, div#results-table-client table td,
+div#results-table .dash-cell-value, div#results-table-client .dash-cell-value {
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+div#results-table thead th, div#results-table-client thead th,
+div#results-table .dash-header, div#results-table-client .dash-header {
+  color: #000 !important;
+}
+
+/* Ensure server-pasted preview remains readable in dark themes by forcing
+   a light background and black text for the preview wrapper and any
+   table cells/headers it contains. */
+.market-trends-server-preview,
+.market-trends-server-preview table,
+.market-trends-server-preview thead th,
+.market-trends-server-preview tbody td,
+.market-trends-server-preview .dash-cell-value {
+  background-color: #fff !important;
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+/* Make sure the preview has some padding so text isn't flush with page */
+.market-trends-server-preview {
+  padding: 6px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}

@@ -1,0 +1,37 @@
+/* Final override loaded last to beat other assets */
+/* Duplicate of market_trends_override but saved with a name that sorts later */
+#trends-results-table-container, #trends-results-table-container * ,
+#results-table, #results-table * , #results-table-client, #results-table-client * {
+  background-color: transparent !important;
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+#trends-results-table-container td, #trends-results-table-container .dash-cell, #trends-results-table-container .dash-cell-value,
+#results-table td, #results-table .dash-cell, #results-table .dash-cell-value,
+#results-table-client td, #results-table-client .dash-cell, #results-table-client .dash-cell-value {
+  /* height: auto !important; */        /* REMOVED: Conflicts with 28px compact height */
+  /* max-height: none !important; */    /* REMOVED: Conflicts with 28px compact height */
+  /* line-height: normal !important; */ /* REMOVED: Let market_trends_table.css control */
+  /* white-space: normal !important; */ /* REMOVED: Let market_trends_table.css control */
+  /* overflow: visible !important; */   /* REMOVED: Let market_trends_table.css control */
+  /* display: table-cell !important; */ /* REMOVED: Causes handleResize infinite recursion */
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* REMOVED: display override causes crashes */
+/*
+#results-table .dash-spreadsheet-inner div.cell, #results-table-client .dash-spreadsheet-inner div.cell,
+#trends-results-table-container .dash-spreadsheet-inner div.cell {
+  display: table-cell !important;
+}
+*/
+
+#results-table .dash-spreadsheet-container, #results-table-client .dash-spreadsheet-container,
+#trends-results-table-container .dash-spreadsheet-container {
+  /* max-height: none !important; */  /* REMOVED: Let default or other CSS control */
+  /* height: auto !important; */      /* REMOVED: Let default or other CSS control */
+  overflow: auto !important;           /* Ensure scrolling works */
+}
