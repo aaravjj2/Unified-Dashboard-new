@@ -1,0 +1,42 @@
+/* Ensure results-table CELLS (not containers) never wrap and stay compact */
+/* CRITICAL: Only apply height constraints to CELLS, not to containers! */
+#results-table .dash-cell-value, #results-table-client .dash-cell-value,
+#results-table .dash-cell, #results-table-client .dash-cell {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  height: 28px !important;
+  max-height: 28px !important;
+  line-height: 14px !important;
+}
+
+/* Allow containers to scroll and show all rows */
+#results-table .dash-spreadsheet-container, #results-table-client .dash-spreadsheet-container {
+  max-height: 600px !important;  /* Allow scrolling for all rows */
+  overflow: auto !important;
+}
+
+/* REMOVED: This was clipping the container to 28px, hiding all rows! */
+/*
+#results-table .dash-spreadsheet-inner, #results-table-client .dash-spreadsheet-inner {
+  max-height: 28px !important;
+}
+*/
+
+/* Make the table body rows have white background and black text while
+   keeping column headers unaffected. Use high-specificity selectors and
+   !important to override the dark theme for the results table rows. */
+#results-table .cell-table td, #results-table-client .cell-table td,
+#results-table .dash-spreadsheet-container .dash-spreadsheet-inner .cell, #results-table-client .dash-spreadsheet-container .dash-spreadsheet-inner .cell,
+#results-table .dash-cell, #results-table-client .dash-cell,
+#results-table .dash-cell-value, #results-table-client .dash-cell-value {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Ensure the inner cell table uses the white background for full row width */
+/* Ensure the inner cell table uses the white background for full row width */
+#results-table .cell-table tbody tr td, #results-table-client .cell-table tbody tr td {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}

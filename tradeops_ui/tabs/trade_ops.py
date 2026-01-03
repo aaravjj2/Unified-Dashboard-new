@@ -10,6 +10,19 @@ Main UI for trade operations:
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
 from typing import List, Dict, Any, Optional
+import sys
+import os
+
+# Import Week 2 enhancements
+try:
+    from src.ui.components.buttons import create_button
+except ImportError:
+    try:
+        # Try importing with package prefix if src is not top-level
+        from alpaca_options_lab.src.ui.components.buttons import create_button
+    except ImportError:
+        def create_button(button_id, text, **kwargs):
+            return dbc.Button(text, id=button_id, **kwargs)
 
 from tradeops_ui.components.alerts import create_alerts_feed
 
@@ -41,10 +54,10 @@ def create_orders_table(orders: Optional[List[Dict[str, Any]]] = None) -> html.D
                     pill=True,
                     className="me-2"
                 ),
-                dbc.Button(
-                    [html.Span("🔄 ", style={"marginRight": "5px"}), "Refresh"],
-                    id="btn-refresh-orders",
-                    color="outline-info",
+                create_button(
+                    button_id="btn-refresh-orders",
+                    text=[html.Span("🔄 ", style={"marginRight": "5px"}), "Refresh"],
+                    variant="secondary",
                     size="sm"
                 )
             ], style={"display": "flex", "alignItems": "center"})
@@ -121,18 +134,18 @@ def create_orders_table(orders: Optional[List[Dict[str, Any]]] = None) -> html.D
         
         # Cancel button
         html.Div([
-            dbc.Button(
-                [html.Span("❌ ", style={"marginRight": "5px"}), "Cancel Selected"],
-                id="btn-cancel-order",
-                color="danger",
+            create_button(
+                button_id="btn-cancel-order",
+                text=[html.Span("❌ ", style={"marginRight": "5px"}), "Cancel Selected"],
+                variant="danger",
                 size="sm",
                 disabled=True,
                 className="me-2"
             ),
-            dbc.Button(
-                [html.Span("🗑️ ", style={"marginRight": "5px"}), "Cancel All"],
-                id="btn-cancel-all",
-                color="outline-danger",
+            create_button(
+                button_id="btn-cancel-all",
+                text=[html.Span("🗑️ ", style={"marginRight": "5px"}), "Cancel All"],
+                variant="danger",
                 size="sm"
             )
         ], style={"marginTop": "15px", "display": "flex"})
@@ -332,20 +345,21 @@ def create_test_order_panel() -> html.Div:
         ], style={"marginBottom": "15px"}),
         
         # Submit button
-        dbc.Button(
-            [html.Span("📤 ", style={"marginRight": "5px"}), "Submit Test Order"],
-            id="btn-test-order",
-            color="primary",
-            className="w-100 mb-2"
+        create_button(
+            button_id="btn-test-order",
+            text=[html.Span("📤 ", style={"marginRight": "5px"}), "Submit Test Order"],
+            variant="primary",
+            full_width=True,
+            className="mb-2"
         ),
         
         # Risk violation test
-        dbc.Button(
-            [html.Span("⚠️ ", style={"marginRight": "5px"}), "Test Risk Violation (150 shares)"],
-            id="btn-test-risk-violation",
-            color="warning",
-            outline=True,
-            className="w-100 mb-2"
+        create_button(
+            button_id="btn-test-risk-violation",
+            text=[html.Span("⚠️ ", style={"marginRight": "5px"}), "Test Risk Violation (150 shares)"],
+            variant="secondary",
+            full_width=True,
+            className="mb-2"
         ),
         
         # IV Spike simulation

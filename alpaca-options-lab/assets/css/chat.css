@@ -1,0 +1,149 @@
+/*
+ * Chat Widget CSS - Force Black Text for Readability
+ * Part of RAG Chat Assistant Implementation
+ * Created: 2024-11-22
+ */
+
+/* Force chat text color to black for all chat bubble and response containers */
+.chat-widget, 
+.chat-container, 
+.chat-response, 
+.chat-bubble, 
+.chat-message,
+#chatbot-messages-container,
+#chatbot-messages,
+#chatbot-input {
+  color: #000 !important;
+  /* Ensure background remains accessible; bubble background is light */
+  background-color: rgba(255,255,255,0.98) !important;
+}
+
+/* Specific targeting for message bubbles in the existing chatbot component */
+#chatbot-messages > div > div > div {
+  color: #333 !important;
+}
+
+/* User messages should have distinct styling but still readable text */
+.chat-message-user,
+#chatbot-messages .user-message {
+  color: #000 !important;
+  background-color: rgba(103, 126, 234, 0.15) !important;
+}
+
+/* Bot/assistant messages */
+.chat-message-bot,
+#chatbot-messages .bot-message {
+  color: #333 !important;
+  background-color: rgba(255,255,255,0.98) !important;
+}
+
+/* If your app uses theme classes like .theme-dark, still force readable text */
+.theme-dark .chat-widget, 
+.theme-dark .chat-container, 
+.theme-dark .chat-response, 
+.theme-dark .chat-bubble, 
+.theme-dark .chat-message,
+.theme-dark #chatbot-messages-container,
+.theme-dark #chatbot-messages {
+  color: #000 !important;
+  background-color: rgba(255,255,255,0.95) !important;
+}
+
+/* Input field must be readable */
+#chatbot-input {
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+#chatbot-input::placeholder {
+  color: #666 !important;
+  opacity: 0.7;
+}
+
+/* Action suggestion cards (for RAG action confirmations) */
+.chat-action-suggestion,
+[id^="chat-action-suggestion-"] {
+  color: #000 !important;
+  background-color: #fff8e1 !important;
+  border: 2px solid #ffa726 !important;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+.chat-action-suggestion .action-title {
+  font-weight: 600;
+  color: #000 !important;
+}
+
+.chat-action-suggestion .action-payload {
+  color: #333 !important;
+  font-size: 0.9em;
+  margin: 4px 0;
+}
+
+/* Confirmation buttons for actions */
+#chat-action-confirm-yes,
+#chat-action-confirm-no {
+  margin: 4px;
+}
+
+/* Source/provenance indicators */
+.chat-source-link,
+.chat-provenance {
+  color: #1976d2 !important;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+/* Data attribute for testing - color diagnostic */
+[data-testid="chat-color-diagnostic"],
+#chat-color-diagnostic {
+  /* This element's computed color should be rgb(0, 0, 0) in tests */
+  color: #000 !important;
+  /* Make visible but non-intrusive for testing */
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  pointer-events: none;
+  z-index: 999999;
+}
+
+/* Loading states */
+#chatbot-loading-output {
+  color: #000 !important;
+}
+
+/* Context toggle switch */
+#chat-toggle-context {
+  color: #000 !important;
+}
+
+/* Response containers with unique IDs (chat-response-<uuid>) */
+[id^="chat-response-"] {
+  color: #333 !important;
+  background-color: #fff !important;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+}
+
+/* Ensure code blocks in chat remain readable */
+#chatbot-messages code,
+#chatbot-messages pre {
+  background-color: #f5f5f5 !important;
+  color: #000 !important;
+  border: 1px solid #ddd !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#chatbot-messages pre code {
+  display: block;
+  padding: 8px;
+  overflow-x: auto;
+}

@@ -1147,6 +1147,25 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
                     )
                 ], style={'display': 'inline-block'}),
                 
+                # Command Palette Button (Phase 17)
+                html.Button(
+                    "⌘K",
+                    id='command-palette-trigger',
+                    n_clicks=0,
+                    style={
+                        'padding': '6px 12px',
+                        'backgroundColor': '#3d4050',
+                        'color': '#F5C211',
+                        'border': '1px solid #F5C211',
+                        'borderRadius': '4px',
+                        'cursor': 'pointer',
+                        'fontWeight': 'bold',
+                        'fontSize': '12px',
+                        'marginLeft': '15px'
+                    },
+                    title='Open Command Palette (Ctrl+K)'
+                ),
+                
                 # Phase 15 indicator
                 dbc.Badge("4-Tab UX", color="warning", className="ms-3"),
             ], style={'display': 'flex', 'alignItems': 'center', 'flexWrap': 'wrap'})
@@ -1212,6 +1231,7 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
         dcc.Store(id='alerts-store', data=[]),
         dcc.Store(id='strategy-engine-refresh-trigger', data=0),
         dcc.Store(id='pattern-data-store', data=[]),  # Phase 15: Pattern detection store
+        dcc.Store(id='command-history-store', data=[]),  # Phase 17: Command history
         dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
         dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
         
@@ -1227,6 +1247,119 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
         
         # Hotkey listener for Terminal UX
         html.Div(id='hotkey-listener', style={'display': 'none'}),
+        
+        # Phase 17: Command Palette Modal
+        dbc.Modal([
+            dbc.ModalHeader([
+                html.Div([
+                    html.Span("⌘", style={
+                        'backgroundColor': '#3d4050',
+                        'padding': '2px 8px',
+                        'borderRadius': '4px',
+                        'marginRight': '8px',
+                        'fontSize': '12px'
+                    }),
+                    html.Span("Command Palette", style={'fontWeight': 'bold'})
+                ], style={'display': 'flex', 'alignItems': 'center'})
+            ], close_button=True, style={'backgroundColor': '#1e2130', 'borderBottom': '1px solid #3d4050'}),
+            
+            dbc.ModalBody([
+                # Command Input
+                html.Div([
+                    dcc.Input(
+                        id='command-input',
+                        type='text',
+                        placeholder='Type a command (e.g., /gex SPY, /chain AAPL)...',
+                        autoFocus=True,
+                        debounce=True,
+                        style={
+                            'width': '100%',
+                            'padding': '12px 15px',
+                            'backgroundColor': '#2a2d3a',
+                            'color': '#ffffff',
+                            'border': '2px solid #F5C211',
+                            'borderRadius': '8px',
+                            'fontSize': '16px',
+                            'outline': 'none'
+                        }
+                    ),
+                ], style={'marginBottom': '15px'}),
+                
+                # Suggestions List
+                html.Div(
+                    id='command-suggestions',
+                    children=[
+                        html.Div([
+                            html.Div([
+                                html.Span("/gex", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                                html.Span("<TICKER>", style={'color': '#6b7280', 'fontSize': '12px'}),
+                            ]),
+                            html.Div("Show Gamma Exposure (GEX) chart", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid #F5C211', 'backgroundColor': '#2a2d3a', 'marginBottom': '2px'}),
+                        html.Div([
+                            html.Div([
+                                html.Span("/chain", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                                html.Span("<TICKER>", style={'color': '#6b7280', 'fontSize': '12px'}),
+                            ]),
+                            html.Div("Load options chain for ticker", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid transparent', 'marginBottom': '2px'}),
+                        html.Div([
+                            html.Div([
+                                html.Span("/flow", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                                html.Span("<TICKER>", style={'color': '#6b7280', 'fontSize': '12px'}),
+                            ]),
+                            html.Div("Show options flow tape", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid transparent', 'marginBottom': '2px'}),
+                        html.Div([
+                            html.Div([
+                                html.Span("/forecast", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                                html.Span("<TICKER>", style={'color': '#6b7280', 'fontSize': '12px'}),
+                            ]),
+                            html.Div("Get AI forecast for ticker", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid transparent', 'marginBottom': '2px'}),
+                        html.Div([
+                            html.Div([
+                                html.Span("/scanner", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                            ]),
+                            html.Div("Switch to Scanner workspace", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid transparent', 'marginBottom': '2px'}),
+                        html.Div([
+                            html.Div([
+                                html.Span("/help", style={'color': '#F5C211', 'fontWeight': 'bold', 'marginRight': '10px'}),
+                            ]),
+                            html.Div("Show all available commands", style={'color': '#9ca3af', 'fontSize': '12px', 'marginTop': '2px'})
+                        ], style={'padding': '10px 15px', 'borderLeft': '3px solid transparent', 'marginBottom': '2px'}),
+                    ],
+                    style={
+                        'maxHeight': '300px',
+                        'overflowY': 'auto',
+                        'backgroundColor': '#1e2130',
+                        'borderRadius': '8px'
+                    }
+                ),
+                
+                # Result Display
+                html.Div(id='command-result-display', children=[]),
+                
+                # Help Footer
+                html.Div([
+                    html.Span("↑↓ Navigate", style={'marginRight': '15px', 'color': '#6b7280'}),
+                    html.Span("Enter Execute", style={'marginRight': '15px', 'color': '#6b7280'}),
+                    html.Span("Esc Close", style={'color': '#6b7280'}),
+                ], style={
+                    'marginTop': '15px',
+                    'paddingTop': '10px',
+                    'borderTop': '1px solid #3d4050',
+                    'fontSize': '12px'
+                })
+            ], style={'backgroundColor': '#16181f', 'padding': '20px'}),
+        ], 
+        id='command-palette-modal',
+        is_open=False,
+        size='lg',
+        centered=True,
+        backdrop=True,
+        ),
         
     ], style={
         'padding': '20px',

@@ -1,21 +1,53 @@
 /**
  * Global Error Handler for Phase 12 Resilience.
  * Catches unhandled exceptions (Poison Pills) and prevents White Screen of Death.
+ * 
+ * FIXED: Removed aggressive fetch/XHR monkey-patching that was blocking
+ * valid Dash callback responses. The patch was causing Plotly charts to
+ * not update even when the server returned valid data.
  */
 
-// 1. Global Exception Handlers
+// Known harmless errors to suppress
+function isHarmlessError(message) {
+    if (!message) return false;
+    const msgStr = String(message);
+    
+    // Dash persistence error - occurs during lazy loading, harmless
+    if (msgStr.includes("Cannot use 'in' operator to search for 'persistence'")) {
+        return true;
+    }
+    // JSON parsing errors from empty responses
+    if (msgStr.includes('Unexpected end of JSON input')) {
+        return true;
+    }
+    // Duplicate callback warnings
+    if (msgStr.includes('Duplicate callback')) {
+        return true;
+    }
+    return false;
+}
+
+// 1. Global Exception Handlers - KEPT (these are safe)
 window.onerror = function (message, source, lineno, colno, error) {
+    // Suppress known harmless errors
+    if (isHarmlessError(message)) {
+        return true; // Suppress silently
+    }
     console.error("🛑 ResilientGuard Caught Error:", message);
     showErrorToast("Data Error: Protocol mismatch detected. Recovering...");
     return true; // Suppress error propagation
 };
 
 window.onunhandledrejection = function (event) {
+    // Suppress known harmless errors
+    if (isHarmlessError(event.reason)) {
+        return; // Suppress silently
+    }
     console.error("🛑 ResilientGuard Caught Async Error:", event.reason);
     showErrorToast("Data Error: Async operation failed.");
 };
 
-// 2. Toast Notification UI
+// 2. Toast Notification UI - KEPT (this is safe)
 function showErrorToast(msg) {
     let toast = document.getElementById('resilience-toast');
     if (!toast) {
@@ -58,76 +90,15 @@ function showErrorToast(msg) {
     }, 6000);
 }
 
-// 3. 🛡️ Monkey Patch Fetch to intercept Poison Pills (Phase 12)
-const originalFetch = window.fetch;
-window.fetch = async function (resource, config) {
-    try {
-        const response = await originalFetch(resource, config);
+// 3. REMOVED: Fetch monkey-patching
+// The previous implementation was cloning responses and trying to parse JSON,
+// which interfered with Dash's response handling and caused Plotly charts
+// to not update even when valid data was returned.
+// 
+// The original intent was to detect "Poison Pills" (malformed responses),
+// but it ended up blocking legitimate responses.
 
-        // Only inspect Dash update requests
-        const url = (typeof resource === 'string') ? resource : (resource.url || '');
-        if (url && url.includes('_dash-update-component') && response.ok) {
-            const clone = response.clone();
-            try {
-                // Try to parse JSON and validate structure
-                const data = await clone.json();
+// 4. REMOVED: XHR monkey-patching
+// Same issue as fetch - the response interception was breaking Dash callbacks.
 
-                // Poison Pill Detection: response must be object, not string/garbage
-                // Default Dash response is {response: {...}, multi: bool}
-                if (data && data.response && typeof data.response !== 'object') {
-                    throw new Error("Invalid Dash Response Structure detected (Poison Pill)");
-                }
-                // Additional checks can be added here
-
-            } catch (e) {
-                console.warn("🛡️ Security Guard blocked toxic data:", e);
-                showErrorToast("Data Error: Toxic payload blocked.");
-
-                // Return safe empty response to prevent Renderer crash
-                // This keeps the UI alive ("Not blanked out")
-                return new Response(JSON.stringify({ response: {} }), {
-                    status: 200,
-                    headers: response.headers
-                });
-            }
-        }
-        return response;
-    } catch (err) {
-        // Network errors handled elsewhere
-        throw err;
-    }
-};
-
-// 4. 🛡️ Monkey Patch XHR (Legacy Dash Support)
-const originalOpen = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function (method, url) {
-    this._url = url;
-    return originalOpen.apply(this, arguments);
-};
-
-const originalSend = XMLHttpRequest.prototype.send;
-XMLHttpRequest.prototype.send = function () {
-    this.addEventListener('load', function () {
-        if (this._url && (typeof this._url === 'string') && this._url.includes('_dash-update-component')) {
-            try {
-                // Try parse
-                const data = JSON.parse(this.responseText);
-                if (data && data.response && typeof data.response !== 'object') {
-                    throw new Error("Invalid Dash Response Structure detected (XHR Poison Pill)");
-                }
-            } catch (e) {
-                console.warn("🛡️ Security Guard blocked XHR toxic data:", e);
-                showErrorToast("Data Error: Toxic XHR payload blocked.");
-
-                // Overwrite response to safe value
-                try {
-                    Object.defineProperty(this, 'responseText', { value: '{"response": {}}', writable: true, configurable: true });
-                    Object.defineProperty(this, 'response', { value: '{"response": {}}', writable: true, configurable: true });
-                } catch (err) {
-                    console.error("Failed to overwrite XHR response", err);
-                }
-            }
-        }
-    });
-    return originalSend.apply(this, arguments);
-};
+console.log("✅ Error handler loaded (v2 - no response interception)");

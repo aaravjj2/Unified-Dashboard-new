@@ -2747,6 +2747,22 @@ def register_callbacks(app):
                 html.P(f"Error: {str(e)}", className="text-danger")
             )
 
+    # Callback: Render Custom TV Chart (Scanner) - Clientside
+    # This invokes the function defined in assets/render_tv_chart.js
+    app.clientside_callback(
+        """
+        function(data) {
+            if (window.dash_clientside && window.dash_clientside.tv && window.dash_clientside.tv.render_chart) {
+                return window.dash_clientside.tv.render_chart(data);
+            }
+            console.warn("TV Render function not found in window.dash_clientside.tv");
+            return window.dash_clientside.no_update;
+        }
+        """,
+        Output('scanner-tv-render-output', 'children'),
+        [Input('scanner-tv-data-store', 'data')]
+    )
+
     # Mark callbacks as registered
     _callbacks_registered = True
     logger.info("✅ Options Lab callbacks registered successfully (including all enhanced features)")

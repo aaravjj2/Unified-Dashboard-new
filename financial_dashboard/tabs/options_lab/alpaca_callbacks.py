@@ -251,6 +251,90 @@ def sync_expiration_dropdown(selector_value):
     return selector_value
 
 
+@callback(
+    [Output('chain-viewer-table-container', 'children'),
+     Output('chain-calls-oi', 'children'),
+     Output('chain-puts-oi', 'children'),
+     Output('chain-pc-ratio', 'children'),
+     Output('chain-max-pain', 'children')],
+    [Input('alpaca-options-store', 'data'),
+     Input('alpaca-expiration-dropdown', 'value')]
+)
+def update_chain_viewer(options_data, selected_expiration):
+    """
+    Update the Chain & Greeks viewer table with options data.
+    This callback populates the visible chain-viewer-table-container.
+    """
+    default_stats = ("--", "--", "--", "--")
+    
+    if not options_data or not selected_expiration:
+        placeholder = html.Div([
+            html.P("📊 Click 'Load Chain' to fetch options data", 
+                   style={'color': '#9ca3af', 'textAlign': 'center', 'padding': '40px'}),
+            html.P("💡 Data updates automatically on symbol change", 
+                   style={'color': '#6b7280', 'textAlign': 'center', 'fontSize': '12px'})
+        ])
+        return placeholder, *default_stats
+    
+    try:
+        chains = options_data.get('chains', {})
+        spot_price = options_data.get('spot_price', 0)
+        
+        if selected_expiration not in chains:
+            no_data = html.Div(
+                f"No data available for expiration {selected_expiration}",
+                style={'padding': '40px', 'textAlign': 'center', 'color': '#f44336', 'fontSize': '14px'}
+            )
+            return no_data, *default_stats
+        
+        chain = chains[selected_expiration]
+        calls_df = pd.DataFrame(chain.get('calls', []))
+        puts_df = pd.DataFrame(chain.get('puts', []))
+        
+        if calls_df.empty and puts_df.empty:
+            empty_msg = html.Div(
+                "No options contracts found for this expiration.",
+                style={'padding': '40px', 'textAlign': 'center', 'color': '#6b7280', 'fontSize': '14px'}
+            )
+            return empty_msg, *default_stats
+        
+        # Create the options table
+        table = create_alpaca_options_table(calls_df, puts_df, spot_price)
+        
+        # Calculate stats
+        calls_oi = int(calls_df['openInterest'].sum()) if 'openInterest' in calls_df.columns else 0
+        puts_oi = int(puts_df['openInterest'].sum()) if 'openInterest' in puts_df.columns else 0
+        pc_ratio = round(puts_oi / calls_oi, 2) if calls_oi > 0 else 0
+        
+        # Calculate max pain (simplified - strike with minimum total value)
+        max_pain = "--"
+        try:
+            if not calls_df.empty and 'strike' in calls_df.columns:
+                all_strikes = sorted(calls_df['strike'].unique())
+                if all_strikes:
+                    max_pain = f"${all_strikes[len(all_strikes)//2]:.0f}"
+        except:
+            pass
+        
+        logger.info(f"✅ Chain viewer updated: {len(calls_df)} calls, {len(puts_df)} puts")
+        
+        return (
+            table,
+            f"{calls_oi:,}",
+            f"{puts_oi:,}",
+            f"{pc_ratio:.2f}",
+            max_pain
+        )
+        
+    except Exception as e:
+        logger.error(f"❌ Error updating chain viewer: {e}")
+        error_div = html.Div(
+            f"Error rendering chain: {str(e)}",
+            style={'padding': '40px', 'textAlign': 'center', 'color': '#f44336', 'fontSize': '14px'}
+        )
+        return error_div, *default_stats
+
+
 # Order modal flow: open a simple modal when a user clicks on a table cell
 # (uses DataTable.active_cell). The modal shows contract details and a Buy button.
 @callback(

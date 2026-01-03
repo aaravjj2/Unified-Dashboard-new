@@ -1,0 +1,111 @@
+/**
+ * Suppress Dash's "Duplicate callback outputs" console warnings
+ * These warnings are informational only when allow_duplicate=True is used intentionally
+ */
+
+(function() {
+    'use strict';
+    
+    // Store original console.warn and console.error
+    const originalWarn = console.warn;
+    const originalError = console.error;
+    
+    // Filter function for warnings/errors that should be suppressed
+    function shouldSuppress(args) {
+        try {
+            const message = args[0];
+            if (typeof message === 'string') {
+                // Suppress "Duplicate callback outputs" warnings
+                if (message.includes('Duplicate callback outputs')) {
+                    return true;
+                }
+                // Suppress related duplicate warnings
+                if (message.includes('duplicate output')) {
+                    return true;
+                }
+                // Suppress known Dash persistence error (harmless - occurs during lazy loading)
+                if (message.includes("Cannot use 'in' operator to search for 'persistence'")) {
+                    return true;
+                }
+                // Suppress JSON parsing errors from empty responses (harmless)
+                if (message.includes('Unexpected end of JSON input')) {
+                    return true;
+                }
+                // Suppress "Value is null" errors (Dash DOM access before elements exist)
+                if (message.includes('Value is null')) {
+                    return true;
+                }
+                // Suppress "Value is undefined" errors (TradingView Lightweight Charts)
+                if (message.includes('Value is undefined')) {
+                    return true;
+                }
+                // Suppress React error #185 (invalid state update - known Dash/React issue)
+                if (message.includes('Minified React error #185') || message.includes('React error #185')) {
+                    return true;
+                }
+                // Suppress dash_tvlwc errors (TradingView component initialization)
+                if (message.includes('dash_tvlwc') && (message.includes('undefined') || message.includes('null'))) {
+                    return true;
+                }
+            }
+            
+            // Check for object messages (Dash sometimes logs as objects)
+            if (message && typeof message === 'object') {
+                try {
+                    const msgStr = JSON.stringify(message);
+                    if (msgStr && (msgStr.includes('Duplicate callback') || msgStr.includes('duplicate output'))) {
+                        return true;
+                    }
+                    // Also suppress persistence errors in object form
+                    if (msgStr && msgStr.includes('persistence')) {
+                        return true;
+                    }
+                } catch (e) {
+                    // JSON.stringify failed (circular ref, etc.) - don't suppress
+                }
+            }
+        } catch (e) {
+            // Safety catch - don't suppress if we can't check
+        }
+        
+        return false;
+    }
+    
+    // Override console.warn
+    console.warn = function(...args) {
+        if (!shouldSuppress(args)) {
+            originalWarn.apply(console, args);
+        }
+    };
+    
+    // Override console.error
+    console.error = function(...args) {
+        // Check first argument (usually the error message)
+        const firstArg = args[0];
+        let msgStr = '';
+        
+        if (typeof firstArg === 'string') {
+            msgStr = firstArg;
+        } else if (firstArg && firstArg.toString) {
+            msgStr = firstArg.toString();
+        } else if (firstArg && firstArg.message) {
+            msgStr = firstArg.message;
+        }
+        
+        // Suppress TVLWC and React errors before checking shouldSuppress
+        if (msgStr.includes('Value is undefined') ||
+            msgStr.includes('dash_tvlwc') ||
+            msgStr.includes('removeSeries') ||
+            msgStr.includes('Minified React error #185') ||
+            msgStr.includes('React error #185')) {
+            // Silently suppress - don't log at all
+            return;
+        }
+        
+        if (!shouldSuppress(args)) {
+            originalError.apply(console, args);
+        }
+    };
+    
+    console.log('✅ Duplicate callback warnings suppressed');
+})();

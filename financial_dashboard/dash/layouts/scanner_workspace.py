@@ -23,6 +23,11 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
 
+try:
+    from financial_dashboard.dash.components.charting import dataframe_to_tv_format
+except ImportError:
+    dataframe_to_tv_format = None
+
 # Add parent paths
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
@@ -517,7 +522,8 @@ def register_scanner_callbacks(app):
     @app.callback(
         [Output('scanner-price-chart', 'figure'),
          Output('scanner-pattern-alerts', 'children'),
-         Output('scanner-selected-symbol', 'data')],
+         Output('scanner-selected-symbol', 'data'),
+         Output('scanner-tv-data-store', 'data')],
         [Input(f'scanner-sym-btn-{sym}', 'n_clicks') for sym in DEFAULT_SYMBOLS],
         [State('scanner-selected-symbol', 'data')],
         prevent_initial_call=False
@@ -597,7 +603,15 @@ def register_scanner_callbacks(app):
                 plot_bgcolor=COLORS['background']
             )
         
-        return fig, pattern_alerts, current_symbol
+        # Prepare TradingView data
+        tv_data = []
+        if df is not None and not df.empty and dataframe_to_tv_format:
+            try:
+                tv_data = dataframe_to_tv_format(df)
+            except Exception as e:
+                logger.error(f"Error converting to TV format: {e}")
+        
+        return fig, pattern_alerts, current_symbol, tv_data
     
     @app.callback(
         [Output('scanner-news-feed', 'children'),
@@ -644,6 +658,54 @@ def register_scanner_callbacks(app):
             return "primary" if selected == btn_sym else "outline-primary"
     
     logger.info("✅ Scanner workspace callbacks registered")
+    
+    # -------------------------------------------------------------------------
+    # CLIENTSIDE CALLBACKS (Phase 3: TradingView Integration)
+    # -------------------------------------------------------------------------
+    
+    app.clientside_callback(
+        """
+        function(data) {
+            if (!data) {
+                console.log("⚠️ No data for TV chart rendering");
+                return window.dash_clientside.no_update;
+            }
+            
+            console.log("📈 Triggering Custom TV Chart Render...", data);
+            
+            // Call the global render function defined in assets/render_tv_chart.js
+            if (window.dash_clientside && window.dash_clientside.tv && window.dash_clientside.tv.render_chart) {
+                return window.dash_clientside.tv.render_chart(data);
+            } else {
+                console.error("❌ render_tv_chart function not found in window.dash_clientside.tv");
+                return window.dash_clientside.no_update;
+            }
+        }
+        """,
+        Output('scanner-tv-render-output', 'children'),
+        Input('scanner-tv-data-store', 'data'),
+        prevent_initial_call=False  # Must be False to render chart on initial page load
+    )
+    
+    # Callback to populate TV data store from initial data (triggered by one-shot interval)
+    @app.callback(
+        Output('scanner-tv-data-store', 'data', allow_duplicate=True),
+        Input('scanner-tv-render-interval', 'n_intervals'),
+        State('scanner-tv-initial-data', 'children'),
+        prevent_initial_call=True
+    )
+    def populate_tv_data(n_intervals, initial_data_json):
+        """Load initial TV chart data from hidden div to trigger clientside render"""
+        import json
+        if n_intervals and initial_data_json:
+            try:
+                data = json.loads(initial_data_json)
+                if data:
+                    logger.info(f"📈 Populating TV data store with {len(data)} candles")
+                    return data
+            except Exception as e:
+                logger.error(f"Error parsing TV initial data: {e}")
+        return no_update
 
 
 # =============================================================================

@@ -10,7 +10,7 @@
     const originalWarn = console.warn;
     const originalError = console.error;
     
-    // Filter function for duplicate callback warnings
+    // Filter function for warnings/errors that should be suppressed
     function shouldSuppress(args) {
         try {
             const message = args[0];
@@ -23,6 +23,14 @@
                 if (message.includes('duplicate output')) {
                     return true;
                 }
+                // Suppress known Dash persistence error (harmless - occurs during lazy loading)
+                if (message.includes("Cannot use 'in' operator to search for 'persistence'")) {
+                    return true;
+                }
+                // Suppress JSON parsing errors from empty responses (harmless)
+                if (message.includes('Unexpected end of JSON input')) {
+                    return true;
+                }
             }
             
             // Check for object messages (Dash sometimes logs as objects)
@@ -30,6 +38,10 @@
                 try {
                     const msgStr = JSON.stringify(message);
                     if (msgStr && (msgStr.includes('Duplicate callback') || msgStr.includes('duplicate output'))) {
+                        return true;
+                    }
+                    // Also suppress persistence errors in object form
+                    if (msgStr && msgStr.includes('persistence')) {
                         return true;
                     }
                 } catch (e) {

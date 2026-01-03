@@ -1,0 +1,94 @@
+/**
+ * Graph Line Fix - Ensures visibility on dark backgrounds
+ * ========================================================
+ * Forces graph lines to be white/light when on dark backgrounds
+ */
+
+/* Global Plotly graph fixes for dark theme */
+.js-plotly-plot .plotly .main-svg {
+    background: transparent !important;
+}
+
+/* Ensure axis lines are visible on dark backgrounds */
+.js-plotly-plot .xaxislayer-above line,
+.js-plotly-plot .yaxislayer-above line,
+.js-plotly-plot .zerolinelayer line {
+    stroke: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Grid lines - subtle but visible */
+.js-plotly-plot .gridlayer line {
+    stroke: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Axis tick text */
+.js-plotly-plot .xtick text,
+.js-plotly-plot .ytick text {
+    fill: #e0e0e0 !important;
+}
+
+/* Axis titles */
+.js-plotly-plot .g-xtitle text,
+.js-plotly-plot .g-ytitle text {
+    fill: #ffffff !important;
+}
+
+/* Chart title */
+.js-plotly-plot .g-gtitle text {
+    fill: #ffffff !important;
+}
+
+/* Legend text */
+.js-plotly-plot .legend text {
+    fill: #e0e0e0 !important;
+}
+
+/* Legend background for visibility */
+.js-plotly-plot .legend .bg {
+    fill: rgba(30, 30, 40, 0.8) !important;
+    stroke: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Trace lines - ensure minimum visibility */
+.js-plotly-plot .scatterlayer .trace .lines path {
+    stroke-width: 2px;
+}
+
+/* Hover labels */
+.js-plotly-plot .hoverlayer .hovertext text {
+    fill: #ffffff !important;
+}
+
+.js-plotly-plot .hoverlayer .hovertext path {
+    fill: rgba(30, 30, 40, 0.95) !important;
+    stroke: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Ensure annotation text is visible */
+.js-plotly-plot .annotation text {
+    fill: #ffffff !important;
+}
+
+/* Range slider for dark theme */
+.js-plotly-plot .rangeslider-container .rangeslider-bg {
+    fill: rgba(255, 255, 255, 0.05) !important;
+}
+
+.js-plotly-plot .rangeslider-container .rangeslider-mask-min,
+.js-plotly-plot .rangeslider-container .rangeslider-mask-max {
+    fill: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Modebar buttons */
+.js-plotly-plot .modebar-btn path {
+    fill: rgba(255, 255, 255, 0.7) !important;
+}
+
+.js-plotly-plot .modebar-btn:hover path {
+    fill: #60a5fa !important;
+}
+
+/* Default trace colors for good visibility on dark backgrounds */
+.js-plotly-plot .trace.scatter .lines path:not([style*="stroke"]) {
+    stroke: #60a5fa;
+}

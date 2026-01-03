@@ -19,7 +19,7 @@ from playwright.sync_api import sync_playwright
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-REDIS_CONTAINER = "doc_redis"
+REDIS_CONTAINER = "doc_ingestion_redis"
 DASHBOARD_URL = "http://127.0.0.1:8053"
 
 class ChaosMonkey:

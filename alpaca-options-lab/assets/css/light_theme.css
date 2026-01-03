@@ -1,0 +1,266 @@
+/* Light Theme Override for Alpaca Dashboard */
+/* Overrides all dark inline styles */
+
+/* ============================================
+   GLOBAL BACKGROUND FIXES
+   ============================================ */
+
+/* Main body and app container */
+body, #_dash-app-content, .container-fluid {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+/* All dark backgrounds to light */
+div[style*="background"], 
+div[style*="backgroundColor"],
+.card, .card-body, .modal-content, .modal-body, .modal-header {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* ============================================
+   TEXT COLOR FIXES  
+   ============================================ */
+
+/* Fix all gray/white text */
+span, p, h1, h2, h3, h4, h5, h6, label, 
+div[style*="color: #9ca3af"],
+div[style*="color: #6b7280"],
+div[style*="color: #e0e0e0"],
+div[style*="color: #ffffff"],
+div[style*="color: #fff"],
+div[style*="color: white"] {
+    color: #212529 !important;
+}
+
+/* Keep accent colors */
+span[style*="color: #F5C211"] { color: #b88c00 !important; }
+span[style*="color: #4caf50"] { color: #28a745 !important; }
+span[style*="color: #f44336"] { color: #dc3545 !important; }
+span[style*="color: #00d4ff"] { color: #0d6efd !important; }
+span[style*="color: #FF9800"] { color: #fd7e14 !important; }
+span[style*="color: #2196F3"] { color: #0d6efd !important; }
+
+/* ============================================
+   INPUT FIELD FIXES
+   ============================================ */
+
+input, select, textarea, .form-control {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid #ced4da !important;
+}
+
+input::placeholder {
+    color: #6c757d !important;
+}
+
+/* Dropdown */
+.Select-control, .Select-menu-outer {
+    background-color: #ffffff !important;
+}
+
+.Select-value-label, .Select-option {
+    color: #212529 !important;
+}
+
+/* ============================================
+   TAB STYLING
+   ============================================ */
+
+.tab, .tab--selected, .tabs, .custom-tab, .custom-tab--selected {
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+}
+
+.tab--selected, .custom-tab--selected {
+    background-color: #e9ecef !important;
+    border-bottom: 3px solid #0d6efd !important;
+}
+
+.tab .tab-content, .tabs-content {
+    background-color: #ffffff !important;
+}
+
+/* ============================================
+   BUTTON STYLING
+   ============================================ */
+
+/* Load Chain button stays green */
+#alpaca-load-button {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+#alpaca-load-button:hover {
+    background-color: #218838 !important;
+}
+
+/* Command palette button */
+#command-palette-trigger {
+    background-color: #6c757d !important;
+    border: 2px solid #ffc107 !important;
+    color: #ffc107 !important;
+}
+
+/* ============================================
+   TABLE STYLING
+   ============================================ */
+
+table, .dash-table-container, .cell-table {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+th, td {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+tr:nth-child(even) td {
+    background-color: #f8f9fa !important;
+}
+
+tr:hover td {
+    background-color: #e9ecef !important;
+}
+
+/* ============================================
+   MODAL STYLING
+   ============================================ */
+
+.modal-content {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.modal-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.modal-body {
+    background-color: #ffffff !important;
+}
+
+#command-input {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 2px solid #ffc107 !important;
+}
+
+#command-suggestions > div {
+    background-color: #f8f9fa !important;
+    border-left: 3px solid #ffc107 !important;
+}
+
+#command-result-display {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+/* ============================================
+   CARD PANEL STYLING
+   ============================================ */
+
+/* All panel cards get white background with shadow */
+div[style*="#1e2130"], div[style*="#16181f"], div[style*="#2a2d3a"],
+div[style*="#262a3d"], div[style*="#252525"], div[style*="#1E1E1E"] {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* ============================================
+   CHARTS STYLING
+   ============================================ */
+
+.js-plotly-plot, .plotly {
+    background-color: #ffffff !important;
+}
+
+/* ============================================
+   STATUS MESSAGE STYLING
+   ============================================ */
+
+#alpaca-status-message {
+    border: 1px solid #ced4da !important;
+}
+
+/* Success message */
+#alpaca-status-message[style*="#2a3d2a"],
+#alpaca-status-message[style*="4caf50"] {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+/* Error message */
+#alpaca-status-message[style*="#3d2a2a"],
+#alpaca-status-message[style*="f44336"] {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border-color: #f5c6cb !important;
+}
+
+/* ============================================
+   BADGE STYLING (keep colors)
+   ============================================ */
+
+.badge {
+    font-weight: 500 !important;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
+
+/* ============================================
+   AI PANEL STYLING
+   ============================================ */
+
+/* Make AI panels readable */
+#ai-regime-display, #ai-scanner-results, #ai-signals-container,
+#ai-ta-analysis, #ai-iv-analysis, #ai-auto-strategy,
+#ai-ml-predictions, #ai-alerts-container {
+    color: #212529 !important;
+}
+
+/* ============================================
+   FORCE IMPORTANT OVERRIDES
+   ============================================ */
+
+/* Nuclear option - force all inline bg colors */
+[style*="background-color: #1"] { background-color: #ffffff !important; }
+[style*="background-color: #2"] { background-color: #ffffff !important; }
+[style*="background-color: rgb(30"] { background-color: #ffffff !important; }
+[style*="background-color: rgb(22"] { background-color: #ffffff !important; }
+[style*="background-color: rgb(37"] { background-color: #ffffff !important; }
+[style*="background-color: rgb(38"] { background-color: #ffffff !important; }
+
+/* Force text to be readable */
+[style*="color: #9c"], [style*="color: #6b"], [style*="color: #e0"],
+[style*="color: #ff"], [style*="color: rgb("] {
+    color: #212529 !important;
+}

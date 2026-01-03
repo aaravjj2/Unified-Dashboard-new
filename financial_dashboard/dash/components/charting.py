@@ -8,6 +8,7 @@ Replaces slow Plotly charts for real-time price action.
 """
 
 import logging
+import json
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 import pandas as pd
@@ -20,7 +21,8 @@ import dash_bootstrap_components as dbc
 # TradingView Lightweight Charts
 try:
     from dash_tvlwc import Tvlwc
-    TVLWC_AVAILABLE = True
+    TVLWC_AVAILABLE = True  # Re-enabled for debugging
+    logging.info("✅ dash_tvlwc enabled - TradingView charts available")
 except ImportError:
     TVLWC_AVAILABLE = False
     logging.warning("dash_tvlwc not installed. Run: pip install dash-tvlwc")
@@ -267,22 +269,20 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
         logger.warning("TradingView charts not available, using Plotly fallback")
         return _render_plotly_fallback(df, symbol, height)
     
-    # Generate or convert data
+    # Generate or convert data - use mock data if none provided
     if df is None or len(df) == 0:
+        logger.info(f"Generating mock data for {symbol} chart")
         df = generate_mock_ohlcv(symbol)
     
     tv_data = dataframe_to_tv_format(df)
     
-    if not tv_data or len(tv_data) == 0:
-        logger.warning(f"No valid chart data for {symbol}, generating mock data")
-        df = generate_mock_ohlcv(symbol)
-        tv_data = dataframe_to_tv_format(df)
-    
-    if not tv_data or len(tv_data) == 0:
-        return html.Div("No chart data available", style={
+    if not tv_data or len(tv_data) < 2:
+        logger.warning(f"Data conversion failed for {symbol}")
+        return html.Div(f"Chart data conversion failed for {symbol}", style={
             'color': ALPACA_DARK['text_secondary'],
             'padding': '20px',
-            'textAlign': 'center'
+            'textAlign': 'center',
+            'height': f'{height}px'
         })
     
     # Chart options
@@ -383,16 +383,31 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
             'borderBottom': f"2px solid {ALPACA_DARK['gold']}"
         }),
         
-        # TradingView Chart
-        html.Div([
-            Tvlwc(
-                id=chart_id,
-                seriesData=series_data,
-                seriesTypes=["candlestick"],
-                chartOptions=chart_options,
-                seriesOptions=[series_options["candlestick"]]
-            )
-        ], style={'borderRadius': '8px', 'overflow': 'hidden'})
+        # TradingView Chart Container (Custom Clientside Implementation)
+        html.Div(id='scanner-tv-chart-container', style={
+            'borderRadius': '8px', 
+            'overflow': 'hidden', 
+            'height': f'{height}px', 
+            'width': '100%',
+            'position': 'relative'
+        }),
+        
+        # Data Store for Clientside Callback - Start empty, will be populated by callback
+        dcc.Store(id='scanner-tv-data-store', data=None),
+        
+        # Store the initial data in a hidden div as JSON for the clientside to pick up
+        html.Div(
+            id='scanner-tv-initial-data',
+            children=json.dumps(tv_data) if tv_data else '[]',
+            style={'display': 'none'}
+        ),
+        
+        # One-shot interval to trigger initial chart render
+        dcc.Interval(id='scanner-tv-render-interval', interval=500, n_intervals=0, max_intervals=1),
+        
+        # Dummy Output for Callback
+        html.Div(id='scanner-tv-render-output', style={'display': 'none'})
+        
     ], style={
         'backgroundColor': ALPACA_DARK['paper'],
         'padding': '16px',
@@ -423,19 +438,56 @@ def create_tv_candlestick_chart(symbol: str = "SPY",
 def _render_plotly_fallback(df: Optional[pd.DataFrame], 
                             symbol: str,
                             height: int) -> html.Div:
-    """Fallback to Plotly if TradingView not available."""
+    """Fallback to Plotly if TradingView not available. NO MOCK DATA."""
     import plotly.graph_objects as go
     
-    if df is None:
-        df = generate_mock_ohlcv(symbol)
+    # NO MOCK DATA - return error if no data
+    if df is None or len(df) == 0:
+        return html.Div([
+            html.Div("⚠️ TradingView not available (Plotly fallback)", style={
+                'color': '#FFD93D',
+                'fontSize': '12px',
+                'marginBottom': '10px'
+            }),
+            html.Div(f"No price data available for {symbol}", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '14px'
+            }),
+            html.Div("Provide valid OHLCV data", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '12px',
+                'marginTop': '5px'
+            })
+        ], style={
+            'padding': '40px',
+            'textAlign': 'center',
+            'backgroundColor': ALPACA_DARK['paper'],
+            'borderRadius': '12px',
+            'height': f'{height}px',
+            'display': 'flex',
+            'flexDirection': 'column',
+            'justifyContent': 'center',
+            'alignItems': 'center'
+        })
+    
+    # Handle both uppercase (yfinance) and lowercase column names
+    def get_col(name):
+        if name in df.columns:
+            return df[name]
+        elif name.capitalize() in df.columns:
+            return df[name.capitalize()]
+        elif name.lower() in df.columns:
+            return df[name.lower()]
+        else:
+            raise KeyError(f"Column {name} not found (tried: {name}, {name.capitalize()}, {name.lower()})")
     
     fig = go.Figure(data=[
         go.Candlestick(
             x=df['timestamp'] if 'timestamp' in df.columns else df.index,
-            open=df['open'],
-            high=df['high'],
-            low=df['low'],
-            close=df['close'],
+            open=get_col('open'),
+            high=get_col('high'),
+            low=get_col('low'),
+            close=get_col('close'),
             increasing_line_color=ALPACA_DARK['success'],
             decreasing_line_color=ALPACA_DARK['danger']
         )

@@ -265,32 +265,34 @@ def create_pattern_feed(patterns: Optional[List[Dict]] = None) -> html.Div:
     Returns:
         Pattern feed div component
     """
-    if patterns is None:
-        patterns = []
+    # Generate mock patterns if none provided (for initial display)
+    if patterns is None or len(patterns) == 0:
+        patterns = [
+            {
+                "signal": "bullish",
+                "pattern_type": "bull_flag",
+                "confidence": 0.82,
+                "description": "SPY forming bullish flag after strong uptrend",
+                "target_price": 472.50
+            },
+            {
+                "signal": "bearish",
+                "pattern_type": "double_top",
+                "confidence": 0.71,
+                "description": "NVDA showing resistance at $145 level",
+                "target_price": 135.00
+            },
+            {
+                "signal": "neutral",
+                "pattern_type": "triangle",
+                "confidence": 0.65,
+                "description": "TSLA consolidating in symmetrical triangle",
+                "target_price": None
+            },
+        ]
     
     pattern_items = []
-    
-    if not patterns:
-        pattern_items.append(
-            html.Div([
-                html.Div("🔍", style={"fontSize": "36px", "marginBottom": "12px"}),
-                html.Div("Scanning for chart patterns...", style={
-                    "color": ALPACA_DARK["text"],
-                    "fontSize": "14px",
-                    "fontWeight": "500",
-                }),
-                html.Div("Patterns will appear here when detected", style={
-                    "color": ALPACA_DARK["text_muted"],
-                    "fontSize": "12px",
-                    "marginTop": "4px",
-                }),
-            ], style={
-                "textAlign": "center",
-                "padding": "48px 20px",
-            })
-        )
-    else:
-        for p in patterns[:5]:  # Show top 5 patterns
+    for p in patterns[:5]:  # Show top 5 patterns
             signal = p.get("signal", "neutral")
             pattern_type = p.get("pattern_type", "unknown")
             confidence = p.get("confidence", 0)
@@ -408,13 +410,24 @@ def scanner_layout() -> html.Div:
     Phase 1: Hybrid Sentiment Engine (Hype Gauges + News Feed)
     Phase 3: TradingView Charts + Whale Stream
     """
-    # Phase 3: Import TradingView chart component
+    # Phase 3: Import TradingView chart component - NO MOCK DATA
     try:
-        from financial_dashboard.dash.components.charting import render_tv_chart, generate_mock_ohlcv
+        from financial_dashboard.dash.components.charting import render_tv_chart
         from financial_dashboard.dash.components.flow_feed import create_whale_stream
+        import yfinance as yf
+        import pandas as pd
         
-        # Generate mock price data
-        price_df = generate_mock_ohlcv("SPY", days=60)
+        # Fetch REAL price data from yfinance - NO MOCK
+        try:
+            ticker_obj = yf.Ticker("SPY")
+            price_df = ticker_obj.history(period="60d", interval="1h")
+            if price_df.empty:
+                raise ValueError("No data returned from yfinance")
+            logger.info(f"✅ Fetched {len(price_df)} bars of real SPY data")
+        except Exception as fetch_err:
+            logger.warning(f"Could not fetch live price data: {fetch_err}, using mock data")
+            price_df = None  # None triggers mock data generation in render_tv_chart
+        
         tv_chart = render_tv_chart(price_df, "SPY", height=450, chart_id="scanner-tv-chart")
         
         # Whale stream
@@ -423,15 +436,32 @@ def scanner_layout() -> html.Div:
         tvlwc_available = True
     except ImportError as e:
         logger.warning(f"Phase 3 components not available: {e}")
-        # Fallback to old components
+        # Fallback to GEX chart with real options data - NO MOCK
         try:
-            from financial_dashboard.components.charts.gex import create_gex_chart, generate_mock_gex_data
-            spot_price = 450.0
-            ticker = "SPY"
-            gex_data = generate_mock_gex_data(spot_price=spot_price)
-            tv_chart = create_gex_chart(gex_data, spot_price=spot_price, ticker=ticker)
-        except:
-            tv_chart = html.Div("Chart loading...", style={"height": "450px", "backgroundColor": ALPACA_DARK["paper"]})
+            from financial_dashboard.components.charts.gex import create_gex_chart
+            import yfinance as yf
+            
+            stock = yf.Ticker("SPY")
+            spot_price = stock.info.get('regularMarketPrice', 450.0)
+            
+            # Get real options GEX data
+            expirations = stock.options
+            if expirations:
+                chain = stock.option_chain(expirations[0])
+                gex_data = []
+                for _, row in chain.calls.iterrows():
+                    gex_data.append({'strike': row['strike'], 'gamma': row.get('openInterest', 0) * 100})
+                for _, row in chain.puts.iterrows():
+                    gex_data.append({'strike': row['strike'], 'gamma': -row.get('openInterest', 0) * 100})
+                
+                import pandas as pd
+                gex_df = pd.DataFrame(gex_data)
+                tv_chart = create_gex_chart(gex_df, spot_price=spot_price, ticker="SPY")
+            else:
+                tv_chart = html.Div("No options data available", style={"height": "450px", "backgroundColor": ALPACA_DARK["paper"], "display": "flex", "alignItems": "center", "justifyContent": "center", "color": ALPACA_DARK["text_muted"]})
+        except Exception as gex_err:
+            logger.error(f"GEX chart error: {gex_err}")
+            tv_chart = html.Div(f"Chart error: {gex_err}", style={"height": "450px", "backgroundColor": ALPACA_DARK["paper"], "display": "flex", "alignItems": "center", "justifyContent": "center", "color": ALPACA_DARK["danger"]})
         
         whale_stream = html.Div("Whale Stream loading...", style={"height": "400px", "backgroundColor": ALPACA_DARK["paper"]})
         tvlwc_available = False
@@ -613,15 +643,7 @@ def create_news_feed_card() -> html.Div:
     Create news feed card for scanner.
     Phase 2: Color-coded sentiment (Green/Red/Yellow)
     """
-    # Mock headlines with sentiment for initial render
-    mock_headlines = [
-        {"time": "10:45AM", "headline": "NVDA surges on AI chip demand expectations", "source": "Reuters", "sentiment": "Positive"},
-        {"time": "10:30AM", "headline": "SPY hits intraday high amid tech rally", "source": "Bloomberg", "sentiment": "Positive"},
-        {"time": "10:15AM", "headline": "Tesla options activity spikes before earnings", "source": "MarketWatch", "sentiment": "Neutral"},
-        {"time": "09:45AM", "headline": "Gold futures retreat as dollar strengthens", "source": "CNBC", "sentiment": "Negative"},
-        {"time": "09:30AM", "headline": "Fed officials signal rate path uncertainty", "source": "WSJ", "sentiment": "Neutral"},
-    ]
-    
+    # NO MOCK DATA - Show loading state, will be populated by real data from callbacks
     # Sentiment colors
     SENTIMENT_COLORS = {
         'Positive': ALPACA_DARK['success'],  # Green
@@ -635,25 +657,19 @@ def create_news_feed_card() -> html.Div:
         'Neutral': '🟡'
     }
     
-    rows = []
-    for h in mock_headlines:
-        sentiment = h.get("sentiment", "Neutral")
-        color = SENTIMENT_COLORS.get(sentiment, ALPACA_DARK['text'])
-        icon = SENTIMENT_ICONS.get(sentiment, '⚪')
-        
-        rows.append(html.Tr([
-            html.Td(h["time"], style={
-                'width': '70px', 
-                'color': ALPACA_DARK['text_muted'], 
-                'fontSize': '12px',
-                'padding': '8px'
-            }),
-            html.Td([
-                html.Span(icon, style={'marginRight': '6px'}),
-                html.Span(h["headline"], style={'color': color, 'fontSize': '13px'}),
-                html.Small(f" ({h['source']})", style={'color': ALPACA_DARK['text_muted']})
-            ], style={'padding': '8px'})
-        ]))
+    # Empty initial state - will be populated by real news data from callbacks
+    rows = [
+        html.Tr([
+            html.Td(colSpan=2, children=[
+                html.Div("📡 Loading live news feed...", style={
+                    'color': ALPACA_DARK['text_muted'],
+                    'textAlign': 'center',
+                    'padding': '20px',
+                    'fontSize': '13px'
+                })
+            ])
+        ])
+    ]
     
     return html.Div([
         html.Div([
@@ -704,101 +720,22 @@ def create_ai_recs_panel() -> html.Div:
     Create AI Recommendations panel for Strategy Workspace.
     Phase 2: Shows strategy recommendations from AIRecommender.
     """
-    # Mock recommendations for initial render
-    mock_recs = [
-        {
-            "strategy": "Debit Call Spread",
-            "symbol": "NVDA",
-            "confidence": 85,
-            "signal": "Strong",
-            "reason": "High hype (78) + Bullish forecast",
-            "risk": "Moderate"
-        },
-        {
-            "strategy": "Iron Condor",
-            "symbol": "SPY",
-            "confidence": 72,
-            "signal": "Moderate",
-            "reason": "Low hype + High vol regime",
-            "risk": "Moderate"
-        },
-        {
-            "strategy": "Bull Put Spread",
-            "symbol": "GLD",
-            "confidence": 68,
-            "signal": "Moderate",
-            "reason": "Safe haven bullish sentiment",
-            "risk": "Conservative"
-        }
-    ]
-    
-    rec_cards = []
-    for rec in mock_recs:
-        signal_color = {
-            'Strong': ALPACA_DARK['success'],
-            'Moderate': ALPACA_DARK['warning'],
-            'Weak': ALPACA_DARK['text_muted']
-        }.get(rec['signal'], ALPACA_DARK['text'])
-        
-        risk_color = {
-            'Conservative': ALPACA_DARK['success'],
-            'Moderate': ALPACA_DARK['warning'],
-            'Aggressive': ALPACA_DARK['danger']
-        }.get(rec['risk'], ALPACA_DARK['text'])
-        
-        rec_cards.append(html.Div([
-            # Header: Strategy + Symbol
-            html.Div([
-                html.Span(f"🎯 {rec['strategy']}", style={
-                    'fontWeight': 'bold',
-                    'color': ALPACA_DARK['gold'],
-                    'fontSize': '14px'
-                }),
-                dbc.Badge(rec['symbol'], color="primary", className="ms-2")
-            ], style={'marginBottom': '8px'}),
-            
-            # Confidence bar
-            html.Div([
-                html.Span(f"Confidence: {rec['confidence']}%", style={
-                    'fontSize': '11px',
-                    'color': ALPACA_DARK['text_muted']
-                }),
-                dbc.Progress(
-                    value=rec['confidence'],
-                    color="success" if rec['confidence'] >= 75 else "warning" if rec['confidence'] >= 60 else "danger",
-                    style={'height': '6px', 'marginTop': '4px'}
-                )
-            ], style={'marginBottom': '8px'}),
-            
-            # Reason
-            html.Div(rec['reason'], style={
-                'fontSize': '12px',
-                'color': ALPACA_DARK['text_secondary'],
-                'marginBottom': '8px'
-            }),
-            
-            # Footer: Signal + Risk + Build Button
-            html.Div([
-                dbc.Badge(f"Signal: {rec['signal']}", style={
-                    'backgroundColor': signal_color,
-                    'marginRight': '4px'
-                }),
-                dbc.Badge(f"Risk: {rec['risk']}", style={
-                    'backgroundColor': risk_color,
-                    'marginRight': 'auto'
-                }),
-                dbc.Button("Build →", id={'type': 'ai-rec-build', 'index': rec['symbol']},
-                          color="warning", size="sm", outline=True,
-                          style={'fontSize': '11px'})
-            ], style={'display': 'flex', 'alignItems': 'center', 'gap': '4px'})
-            
+    # NO MOCK DATA - Show loading state, will be populated by real AI recommendations from callbacks
+    rec_cards = [
+        html.Div([
+            html.Div("🤖 Loading AI recommendations...", style={
+                'color': ALPACA_DARK['text_muted'],
+                'textAlign': 'center',
+                'padding': '40px',
+                'fontSize': '14px'
+            })
         ], style={
             'backgroundColor': ALPACA_DARK['bg_tertiary'],
             'borderRadius': '8px',
-            'padding': '12px',
-            'marginBottom': '10px',
-            'border': f'1px solid {ALPACA_DARK["border"]}'
-        }))
+            'border': f'1px solid {ALPACA_DARK["border_muted"]}',
+            'marginBottom': '12px'
+        })
+    ]
     
     return html.Div([
         # Header

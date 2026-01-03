@@ -1,0 +1,52 @@
+# Alpaca Options Lab - Dependencies
+# ==================================
+
+# Core Dashboard Framework
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+plotly>=5.18.0
+
+# TradingView Charts
+dash-tvlwc>=0.1.1
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Financial APIs
+alpaca-py>=0.13.0
+alpaca-trade-api>=3.0.0
+yfinance>=0.2.31
+finnhub-python>=2.4.18
+
+# Web Scraping (for FinViz)
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+aiohttp>=3.9.0
+
+# Technical Analysis
+ta>=0.11.0
+
+# Machine Learning (optional)
+scikit-learn>=1.3.0
+
+# Logging
+colorlog>=6.7.0
+
+# Database (optional)
+psycopg2-binary>=2.9.9
+
+# Async Support
+asyncio-throttle>=1.0.2
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.4.0
+playwright>=1.40.0
+
+# Type Hints
+typing-extensions>=4.8.0
+
