@@ -13,11 +13,60 @@ Enhanced with professional trading terminal aesthetics.
 """
 
 import logging
+import sys
+import os
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
 from typing import Optional, Dict, Any, List
 import numpy as np
 from datetime import datetime
+
+# Add parent paths for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+# Import Week 2 enhancements
+try:
+    from src.ui.components.loading_states import (
+        inject_loading_css,
+        create_skeleton_card,
+        create_skeleton_gauge,
+        create_loading_spinner,
+    )
+    from src.ui.components.tooltips import (
+        create_tooltip,
+        create_rich_tooltip,
+        create_greeks_tooltip,
+    )
+    from src.ui.components.buttons import (
+        create_button,
+        inject_button_css,
+        create_icon_button,
+    )
+    ENHANCEMENTS_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Week 2 enhancements not available: {e}")
+    ENHANCEMENTS_AVAILABLE = False
+    # Fallback implementations
+    def inject_loading_css():
+        return html.Style("")
+    def inject_button_css():
+        return html.Style("")
+    def create_button(button_id, text, **kwargs):
+        return dbc.Button(text, id=button_id)
+    def create_skeleton_card(**kwargs):
+        return html.Div("Loading...", style={"padding": "20px"})
+    def create_skeleton_gauge():
+        return html.Div("Loading gauge...", style={"padding": "20px"})
+    def create_loading_spinner(**kwargs):
+        return dbc.Spinner()
+    def create_tooltip(target_id, content, **kwargs):
+        return dbc.Tooltip(content, target=target_id)
+    def create_rich_tooltip(target_id, title, description, **kwargs):
+        return dbc.Tooltip(f"{title}: {description}", target=target_id)
+    def create_greeks_tooltip(target_id, greek_name, value, interpretation):
+        return dbc.Tooltip(f"{greek_name}: {interpretation}", target=target_id)
+    def create_icon_button(button_id, icon, **kwargs):
+        return dbc.Button(icon, id=button_id, size="sm")
 
 logger = logging.getLogger(__name__)
 
@@ -787,9 +836,13 @@ def create_ai_recs_panel() -> html.Div:
                     'backgroundColor': risk_color,
                     'marginRight': 'auto'
                 }),
-                dbc.Button("Build →", id={'type': 'ai-rec-build', 'index': rec['symbol']},
-                          color="warning", size="sm", outline=True,
-                          style={'fontSize': '11px'})
+                create_button(
+                    button_id={'type': 'ai-rec-build', 'index': rec['symbol']},
+                    text="Build →",
+                    variant="primary",
+                    size="sm",
+                    style={'fontSize': '11px'}
+                )
             ], style={'display': 'flex', 'alignItems': 'center', 'gap': '4px'})
             
         ], style={
@@ -816,11 +869,14 @@ def create_ai_recs_panel() -> html.Div:
         }),
         
         # Refresh button
-        dbc.Button([
-            html.I(className="bi bi-arrow-clockwise me-1"),
-            "Refresh AI Recs"
-        ], id="refresh-ai-recs", color="primary", size="sm", className="mb-3", 
-           style={'width': '100%'}),
+        create_button(
+            button_id="refresh-ai-recs",
+            text=[html.I(className="bi bi-arrow-clockwise me-1"), "Refresh AI Recs"],
+            variant="primary",
+            size="sm",
+            full_width=True,
+            className="mb-3"
+        ),
         
         # Recommendations list
         html.Div(rec_cards, id='ai-recs-container', style={'maxHeight': '400px', 'overflowY': 'auto'}),
@@ -893,6 +949,7 @@ def strategy_layout() -> html.Div:
     return html.Div(
         id="strategy-workspace",
         className="fade-in",
+        **{'data-test-id': 'strategy-workspace'},
         children=[
             # Header
             create_workspace_header(
@@ -925,7 +982,8 @@ def strategy_layout() -> html.Div:
                         children=[
                             html.Div(
                                 children=[chain_viewer, greeks_panel, iv_panel],
-                                style={"padding": "20px"}
+                                style={"padding": "20px"},
+                                **{'data-test-id': 'strategy-chain-panel'}
                             )
                         ],
                         style=TAB_STYLE,
@@ -938,8 +996,8 @@ def strategy_layout() -> html.Div:
                             html.Div([
                                 # Phase 2: Side-by-side layout - Builder + AI Recs
                                 dbc.Row([
-                                    dbc.Col([strategy_builder], md=8),
-                                    dbc.Col([create_ai_recs_panel()], md=4),
+                                    dbc.Col([strategy_builder], md=8, **{'data-test-id': 'strategy-builder-panel'}),
+                                    dbc.Col([html.Div([create_ai_recs_panel()], **{'data-test-id': 'strategy-ai-recs-panel'})], md=4),
                                 ])
                             ], style={"padding": "20px"})
                         ],
@@ -949,7 +1007,7 @@ def strategy_layout() -> html.Div:
                     dcc.Tab(
                         label="🦅 Engine",
                         value="engine-tab",
-                        children=[strategy_engine],
+                        children=[html.Div(strategy_engine, **{'data-test-id': 'strategy-engine-panel'})],
                         style=TAB_STYLE,
                         selected_style=TAB_SELECTED_STYLE
                     ),
@@ -959,7 +1017,8 @@ def strategy_layout() -> html.Div:
                         children=[
                             html.Div(
                                 children=[ml_panel, forecast_tab],
-                                style={"padding": "20px"}
+                                style={"padding": "20px"},
+                                **{'data-test-id': 'strategy-ml-panel'}
                             )
                         ],
                         style=TAB_STYLE,
@@ -1014,6 +1073,7 @@ def command_layout() -> html.Div:
     return html.Div(
         id="command-workspace",
         className="fade-in",
+        **{'data-test-id': 'command-workspace'},
         children=[
             # Header
             create_workspace_header(
@@ -1033,20 +1093,23 @@ def command_layout() -> html.Div:
                 create_metric_card("Delta", "-125", "Shares Eq.", "warning", "Δ"),
                 create_metric_card("Theta", "+$85", "Per Day", "success", "Θ"),
                 create_metric_card("Risk Score", "LOW", "3 Positions", "success", "⚠️"),
-            ], style=METRIC_GRID_STYLE),
+            ], style=METRIC_GRID_STYLE, **{'data-test-id': 'command-portfolio-metrics'}),
             
             # Sub-tabs
             dcc.Tabs(
                 id="command-sub-tabs",
                 value="positions-tab",
+                **{'data-test-id': 'command-sub-tabs'},
                 children=[
                     dcc.Tab(
                         label="💼 Positions",
                         value="positions-tab",
+                        **{'data-test-id': 'command-positions-tab'},
                         children=[
                             html.Div(
                                 children=[positions_panel],
-                                style={"padding": "20px"}
+                                style={"padding": "20px"},
+                                **{'data-test-id': 'positions-panel'}
                             )
                         ],
                         style=TAB_STYLE,
@@ -1055,10 +1118,12 @@ def command_layout() -> html.Div:
                     dcc.Tab(
                         label="⚠️ Risk & P/L",
                         value="risk-tab",
+                        **{'data-test-id': 'command-risk-tab'},
                         children=[
                             html.Div(
                                 children=[risk_panel, flow_panel],
-                                style={"padding": "20px"}
+                                style={"padding": "20px"},
+                                **{'data-test-id': 'risk-panel'}
                             )
                         ],
                         style=TAB_STYLE,
@@ -1067,6 +1132,7 @@ def command_layout() -> html.Div:
                     dcc.Tab(
                         label="⚙️ Trade Ops",
                         value="tradeops-tab",
+                        **{'data-test-id': 'command-tradeops-tab'},
                         children=[trade_ops],
                         style=TAB_STYLE,
                         selected_style=TAB_SELECTED_STYLE
@@ -1312,6 +1378,7 @@ def admin_layout() -> html.Div:
     return html.Div(
         id="admin-workspace",
         className="fade-in",
+        **{'data-test-id': 'admin-workspace'},
         children=[
             # Header
             create_workspace_header(
@@ -1335,16 +1402,18 @@ def admin_layout() -> html.Div:
                 create_metric_card("Data Feed", "Live", "< 100ms", "success", "📡"),
                 create_metric_card("Models", "3/3", "Loaded", "success", "🤖"),
                 create_metric_card("Cache", "85%", "Hit Rate", "info", "💾"),
-            ], style=METRIC_GRID_STYLE),
+            ], style=METRIC_GRID_STYLE, **{'data-test-id': 'admin-health-metrics'}),
             
             # Sub-tabs
             dcc.Tabs(
                 id="admin-sub-tabs",
                 value="status-tab",
+                **{'data-test-id': 'admin-sub-tabs'},
                 children=[
                     dcc.Tab(
                         label="🔧 System Status",
                         value="status-tab",
+                        **{'data-test-id': 'admin-status-tab'},
                         children=[status_panel],
                         style=TAB_STYLE,
                         selected_style=TAB_SELECTED_STYLE
@@ -1352,6 +1421,7 @@ def admin_layout() -> html.Div:
                     dcc.Tab(
                         label="📊 Research Lab",
                         value="research-tab",
+                        **{'data-test-id': 'admin-research-tab'},
                         children=[research_tab],
                         style=TAB_STYLE,
                         selected_style=TAB_SELECTED_STYLE

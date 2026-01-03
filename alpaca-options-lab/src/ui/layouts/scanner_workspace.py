@@ -26,6 +26,13 @@ import numpy as np
 # Add parent paths
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+# Import Week 2 enhancements
+try:
+    from src.ui.components.buttons import create_button
+except ImportError:
+    def create_button(button_id, text, **kwargs):
+        return dbc.Button(text, id=button_id, **kwargs)
+
 # Local imports with fallbacks
 try:
     from financial_dashboard.engines.news import HybridNewsClient, get_news_client
@@ -86,52 +93,40 @@ COLORS = {
 # =============================================================================
 
 def get_price_data(symbol: str, period: str = '5d', interval: str = '15m') -> Optional[pd.DataFrame]:
-    """Fetch price data using yfinance."""
+    """
+    Fetch price data using yfinance with retry logic.
+    
+    NO MOCK FALLBACK - returns empty DataFrame if all sources fail.
+    """
     if not YF_AVAILABLE:
-        return generate_mock_price_data(symbol)
+        logger.error(f"yfinance not available - install with: pip install yfinance")
+        return pd.DataFrame()  # Return empty instead of mock
     
-    try:
-        ticker = yf.Ticker(symbol)
-        df = ticker.history(period=period, interval=interval)
-        if df.empty:
-            return generate_mock_price_data(symbol)
-        return df
-    except Exception as e:
-        logger.warning(f"Failed to fetch {symbol} data: {e}")
-        return generate_mock_price_data(symbol)
+    # Retry up to 3 times with backoff
+    for attempt in range(3):
+        try:
+            ticker = yf.Ticker(symbol)
+            df = ticker.history(period=period, interval=interval)
+            if not df.empty:
+                logger.info(f"✅ Fetched {len(df)} bars for {symbol} from yfinance")
+                return df
+            # If empty, try with longer period
+            if attempt == 0 and df.empty:
+                df = ticker.history(period='1mo', interval='1h')
+                if not df.empty:
+                    return df
+        except Exception as e:
+            logger.warning(f"Attempt {attempt+1}/3 failed for {symbol}: {e}")
+            if attempt < 2:
+                import time
+                time.sleep(0.5 * (attempt + 1))
+    
+    logger.error(f"❌ All attempts failed for {symbol} - returning empty data")
+    return pd.DataFrame()  # Return empty DataFrame, NOT mock data
 
 
-def generate_mock_price_data(symbol: str, n_bars: int = 100) -> pd.DataFrame:
-    """Generate mock OHLCV data for testing."""
-    np.random.seed(hash(symbol) % 2**32)
-    
-    base_prices = {
-        'NVDA': 140.0, 'TSLA': 250.0, 'SPY': 590.0, 'GLD': 240.0,
-        'AMD': 120.0, 'AAPL': 190.0, 'MSFT': 420.0
-    }
-    base = base_prices.get(symbol, 100.0)
-    
-    # Generate random walk
-    returns = np.random.randn(n_bars) * 0.01  # 1% daily vol
-    prices = base * np.cumprod(1 + returns)
-    
-    # Generate OHLC
-    high = prices * (1 + np.abs(np.random.randn(n_bars) * 0.005))
-    low = prices * (1 - np.abs(np.random.randn(n_bars) * 0.005))
-    open_p = np.roll(prices, 1)
-    open_p[0] = base
-    
-    volume = np.random.randint(1000000, 5000000, n_bars)
-    
-    dates = pd.date_range(end=datetime.now(), periods=n_bars, freq='15min')
-    
-    return pd.DataFrame({
-        'Open': open_p,
-        'High': high,
-        'Low': low,
-        'Close': prices,
-        'Volume': volume
-    }, index=dates)
+# NOTE: Mock data function removed - we now return empty DataFrames instead
+# to force proper API integration and avoid silently using fake data
 
 
 def create_hype_gauge(symbol: str, score: float, label: str, is_mock: bool = False) -> dbc.Card:
@@ -199,7 +194,7 @@ def create_hype_gauge(symbol: str, score: float, label: str, is_mock: bool = Fal
                 html.Span(label, style={'color': color, 'fontWeight': 'bold'}),
             ], className="text-center mt-1")
         ], style={'padding': '0.5rem'})
-    ], style={'backgroundColor': COLORS['card_bg'], 'border': 'none', 'borderRadius': '8px'})
+    ], style={'backgroundColor': COLORS['card_bg'], 'border': 'none', 'borderRadius': '8px'}, **{'data-test-id': f'hype-gauge-{symbol}'})
 
 
 def create_candlestick_chart(df: pd.DataFrame, symbol: str, 
@@ -389,10 +384,18 @@ def create_scanner_layout() -> html.Div:
             ], width=8),
             dbc.Col([
                 dbc.ButtonGroup([
-                    dbc.Button([html.I(className="bi bi-arrow-clockwise me-1"), "Refresh"],
-                              id="scanner-refresh-btn", color="primary", size="sm"),
-                    dbc.Button([html.I(className="bi bi-gear")],
-                              id="scanner-settings-btn", color="secondary", size="sm"),
+                    create_button(
+                        button_id="scanner-refresh-btn",
+                        text=[html.I(className="bi bi-arrow-clockwise me-1"), "Refresh"],
+                        variant="primary",
+                        size="sm"
+                    ),
+                    create_button(
+                        button_id="scanner-settings-btn",
+                        text=[html.I(className="bi bi-gear")],
+                        variant="secondary",
+                        size="sm"
+                    ),
                 ], className="float-end")
             ], width=4)
         ], className="mb-4"),
@@ -419,9 +422,13 @@ def create_scanner_layout() -> html.Div:
                             "Price Chart"
                         ]),
                         dbc.ButtonGroup([
-                            dbc.Button(sym, id=f"scanner-sym-btn-{sym}", 
-                                      color="outline-primary" if i > 0 else "primary",
-                                      size="sm", className="me-1")
+                            create_button(
+                                button_id=f"scanner-sym-btn-{sym}",
+                                text=sym,
+                                variant="ghost" if i > 0 else "primary",
+                                size="sm",
+                                className="me-1"
+                            )
                             for i, sym in enumerate(symbols)
                         ], className="float-end")
                     ], style={'backgroundColor': COLORS['card_bg']}),
@@ -484,7 +491,7 @@ def register_scanner_callbacks(app):
         prevent_initial_call=False
     )
     def update_hype_gauges(n_intervals):
-        """Update all hype gauges with latest sentiment data."""
+        """Update all hype gauges with LIVE sentiment data - NO MOCK FALLBACK."""
         config = get_scanner_config()
         symbols = config.DEFAULT_SYMBOLS if hasattr(config, 'DEFAULT_SYMBOLS') else DEFAULT_SYMBOLS
         
@@ -492,21 +499,29 @@ def register_scanner_callbacks(app):
         client = get_news_client()
         
         for symbol in symbols:
+            is_mock = False
             try:
                 if client:
                     hype_data = client.get_hype_score(symbol)
                     score = hype_data.get('hype_score', 0.5)
                     label = hype_data.get('sentiment_label', 'Neutral')
-                    is_mock = hype_data.get('is_mock', True)
+                    is_mock = hype_data.get('is_mock', False)  # Default to False
+                    source = hype_data.get('sentiment_source', 'unknown')
+                    
+                    # Only mark as mock if the source explicitly says so
+                    if source == 'mock':
+                        is_mock = True
+                        
+                    logger.debug(f"Hype for {symbol}: {score:.2f} ({label}) via {source}")
                 else:
                     score = 0.5
-                    label = "No Data"
-                    is_mock = True
+                    label = "Connecting..."
+                    is_mock = False  # Not mock, just waiting for connection
             except Exception as e:
                 logger.error(f"Error getting hype for {symbol}: {e}")
                 score = 0.5
-                label = "Error"
-                is_mock = True
+                label = "API Error"
+                is_mock = False  # Not mock, just error
             
             gauges.append(
                 dbc.Col(create_hype_gauge(symbol, score, label, is_mock), md=3)
@@ -607,26 +622,34 @@ def register_scanner_callbacks(app):
         prevent_initial_call=False
     )
     def update_news_feed(n_intervals, symbol):
-        """Update news feed for selected symbol."""
+        """Update news feed for selected symbol - LIVE DATA ONLY."""
         if not symbol:
             symbol = DEFAULT_SYMBOLS[0]
         
         client = get_news_client()
+        headlines_data = []
         
         try:
             if client:
                 headlines = client.get_finviz_headlines(symbol, max_items=20)
                 headlines_data = [h.to_dict() if hasattr(h, 'to_dict') else h for h in headlines]
+                logger.info(f"✅ Fetched {len(headlines_data)} headlines for {symbol}")
             else:
-                # Mock headlines
-                headlines_data = [
-                    {'time': '10:30AM', 'headline': f'{symbol} shows strong momentum ahead of earnings', 'link': '#', 'source': 'Mock'},
-                    {'time': '09:45AM', 'headline': f'Analysts raise price target on {symbol}', 'link': '#', 'source': 'Mock'},
-                    {'time': '09:15AM', 'headline': f'{symbol} options activity surges', 'link': '#', 'source': 'Mock'},
-                ]
+                # No client available - show error message, NOT mock data
+                logger.warning(f"⚠️ News client not available for {symbol}")
+                headlines_data = []
         except Exception as e:
             logger.error(f"Error fetching news for {symbol}: {e}")
             headlines_data = []
+        
+        # If no data, show helpful message
+        if not headlines_data:
+            headlines_data = [{
+                'time': datetime.now().strftime('%I:%M%p'),
+                'headline': f'📰 Live news feed connecting... Check API keys if this persists.',
+                'link': '',
+                'source': 'System'
+            }]
         
         news_table = create_news_table(headlines_data)
         count = str(len(headlines_data))

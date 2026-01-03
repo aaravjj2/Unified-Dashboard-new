@@ -201,6 +201,39 @@ try:
 except Exception as e:
     print(f"\n⚠️ News Client: {e}")
 
+
+# Server-side prewarm to reduce first-navigation latency for heavy workspaces
+def server_side_prewarm_background():
+    import threading
+    import time
+    try:
+        import requests
+    except Exception:
+        requests = None
+
+    def _do_warm():
+        try:
+            host = os.getenv('HOST', '127.0.0.1')
+            port = int(os.getenv('PORT', 8053))
+            base = f"http://{host}:{port}"
+            paths = ["/scanner", "/strategy", "/ml_integration_lab", "/"]
+
+            # Lightly fetch each path multiple times to warm Flask, caches and any proxied resources
+            for _ in range(3):
+                for p in paths:
+                    try:
+                        if requests:
+                            url = base + p
+                            requests.get(url, timeout=2)
+                    except Exception:
+                        pass
+                time.sleep(0.6)
+        except Exception:
+            pass
+
+    t = threading.Thread(target=_do_warm, daemon=True)
+    t.start()
+
 # Run golden vector tests (math integrity check)
 try:
     from financial_dashboard.tests.quality.golden_vectors import run_startup_checks
@@ -245,5 +278,11 @@ if __name__ == '__main__':
 ╚══════════════════════════════════════════════════════════════╝
 """)
     
+    # Start background prewarm to reduce first-navigation latency
+    try:
+        server_side_prewarm_background()
+    except Exception:
+        pass
+
     app.run(debug=DEBUG, port=PORT, host=HOST)
 

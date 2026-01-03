@@ -7,6 +7,18 @@ Provides UI for historical backtesting of options strategies.
 from datetime import date, datetime, timedelta
 from dash import html, dcc, callback, Input, Output, State, no_update
 import dash_bootstrap_components as dbc
+import sys
+import os
+
+# Import Week 2 enhancements
+try:
+    from src.ui.components.buttons import create_button
+except ImportError:
+    try:
+        from alpaca_options_lab.src.ui.components.buttons import create_button
+    except ImportError:
+        def create_button(button_id, text, **kwargs):
+            return dbc.Button(text, id=button_id, **kwargs)
 
 from engines.backtest.runner import StrategyType
 
@@ -168,24 +180,17 @@ def create_research_tab() -> dbc.Container:
                 # Run Button
                 dbc.Row([
                     dbc.Col([
-                        dbc.Button(
-                            [
-                                html.I(className="fas fa-play me-2"),
-                                "Run Backtest"
-                            ],
-                            id="btn-run-backtest",
-                            color="success",
+                        create_button(
+                            button_id="btn-run-backtest",
+                            text=[html.I(className="fas fa-play me-2"), "Run Backtest"],
+                            variant="success",
                             size="lg",
                             className="me-2"
                         ),
-                        dbc.Button(
-                            [
-                                html.I(className="fas fa-stop me-2"),
-                                "Cancel"
-                            ],
-                            id="btn-cancel-backtest",
-                            color="danger",
-                            outline=True,
+                        create_button(
+                            button_id="btn-cancel-backtest",
+                            text=[html.I(className="fas fa-stop me-2"), "Cancel"],
+                            variant="danger",
                             disabled=True,
                         ),
                     ], className="text-center"),

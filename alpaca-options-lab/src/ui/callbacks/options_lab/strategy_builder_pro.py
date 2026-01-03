@@ -12,6 +12,18 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime, timedelta
+import sys
+import os
+
+# Add parent paths
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+
+# Import Week 2 enhancements
+try:
+    from src.ui.components.buttons import create_button
+except ImportError:
+    def create_button(button_id, text, **kwargs):
+        return dbc.Button(text, id=button_id, **kwargs)
 
 # ============================================================
 # Strategy Types
@@ -535,25 +547,28 @@ def create_strategy_builder_panel() -> html.Div:
                 
                 # Action buttons
                 dbc.ButtonGroup([
-                    dbc.Button([
-                        html.I(className="fas fa-magic me-2"),
-                        "Auto-Suggest Strikes"
-                    ], id="auto-suggest-btn", color="info", outline=True),
-                    dbc.Button([
-                        html.I(className="fas fa-calculator me-2"),
-                        "Calculate"
-                    ], id="calculate-strategy-btn", color="primary"),
-                    dbc.Button([
-                        html.I(className="fas fa-play me-2"),
-                        "Backtest"
-                    ], id="backtest-strategy-btn", color="success", outline=True),
+                    create_button(
+                        button_id="auto-suggest-btn",
+                        text=[html.I(className="fas fa-magic me-2"), "Auto-Suggest Strikes"],
+                        variant="secondary"
+                    ),
+                    create_button(
+                        button_id="calculate-strategy-btn",
+                        text=[html.I(className="fas fa-calculator me-2"), "Calculate"],
+                        variant="primary"
+                    ),
+                    create_button(
+                        button_id="backtest-strategy-btn",
+                        text=[html.I(className="fas fa-play me-2"), "Backtest"],
+                        variant="success"
+                    ),
                 ], className="mb-3"),
                 
                 # Results area
                 html.Div(id="strategy-results-area")
             ])
-        ])
-    ])
+        ], **{'data-test-id': 'strategy-builder-card'})
+    ], **{'data-test-id': 'strategy-builder-panel'})
 
 
 __all__ = [

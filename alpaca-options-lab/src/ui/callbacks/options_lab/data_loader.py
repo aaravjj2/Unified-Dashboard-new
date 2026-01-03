@@ -202,11 +202,13 @@ def fetch_options_chain_alpaca(ticker: str, expiry: Optional[str] = None) -> Opt
 
 def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = True) -> Dict:
     """
-    Fetch options chain for a given ticker with fallback chain: Alpaca → yfinance → mock.
+    Fetch options chain for a given ticker with fallback chain: Alpaca → yfinance.
+    
+    NO MOCK DATA FALLBACK - returns error dict if all live sources fail.
     
     Args:
         ticker: Stock ticker symbol
-        use_mock: If True, skip to mock data immediately
+        use_mock: DEPRECATED - ignored, we never use mock data
         use_alpaca: If True, try Alpaca first (default: True)
         
     Returns:
@@ -218,13 +220,10 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
             'calls': pd.DataFrame,
             'puts': pd.DataFrame,
             'error': Optional[str],
-            'source': str  # 'alpaca', 'yfinance', or 'mock'
+            'source': str  # 'alpaca', 'yfinance', or 'no_data'
         }
     """
-    if use_mock:
-        result = _generate_mock_chain(ticker)
-        result['source'] = 'mock'
-        return result
+    # REMOVED: Mock data fallback - we want real data or clear error
     
     # Try Alpaca first (if enabled)
     if use_alpaca:
@@ -238,25 +237,25 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
     
     # Fallback to yfinance
     try:
-        logger.info(f"🔄 Falling back to yfinance for {ticker}")
+        logger.info(f"🔄 Trying yfinance for {ticker}")
         stock = yf.Ticker(ticker)
         
         # Get current price
+        spot_price = None
         try:
             spot_price = stock.info.get('currentPrice') or stock.info.get('regularMarketPrice')
             if not spot_price:
                 hist = stock.history(period='1d')
-                spot_price = hist['Close'].iloc[-1] if not hist.empty else 100.0
+                spot_price = hist['Close'].iloc[-1] if not hist.empty else None
         except Exception as e:
             logger.warning(f"Could not fetch spot price for {ticker}: {e}")
-            spot_price = 100.0
         
         # Get expiration dates
         expirations = stock.options
         
         if not expirations or len(expirations) == 0:
-            logger.warning(f"No options data available for {ticker}")
-            return _generate_mock_chain(ticker)
+            logger.warning(f"No options data available for {ticker} from yfinance")
+            return _create_error_response(ticker, "No options expirations found - check ticker symbol")
         
         # Get first expiration chain
         first_exp = expirations[0]
@@ -272,9 +271,9 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
             puts = pd.DataFrame()
         
         # Add calculated fields (only if not empty)
-        if not calls.empty:
+        if not calls.empty and spot_price:
             calls = _enrich_chain_data(calls, spot_price, 'call', first_exp)
-        if not puts.empty:
+        if not puts.empty and spot_price:
             puts = _enrich_chain_data(puts, spot_price, 'put', first_exp)
         
         logger.info(f"✅ Using yfinance data for {ticker}")
@@ -290,11 +289,22 @@ def fetch_options_chain(ticker: str, use_mock: bool = False, use_alpaca: bool = 
         
     except Exception as e:
         logger.error(f"❌ yfinance failed for {ticker}: {e}")
-        logger.info(f"🔄 Falling back to mock data for {ticker}")
-        fallback = _generate_mock_chain(ticker)
-        fallback['source'] = 'mock'
-        fallback['error'] = f"Live data unavailable: {str(e)}"
-        return fallback
+        # NO MOCK FALLBACK - return error response
+        return _create_error_response(ticker, f"Live data unavailable: {str(e)}")
+
+
+def _create_error_response(ticker: str, error_msg: str) -> Dict:
+    """Create a standardized error response when no live data is available."""
+    logger.warning(f"❌ No live data for {ticker}: {error_msg}")
+    return {
+        'ticker': ticker,
+        'spot_price': None,
+        'expirations': [],
+        'calls': pd.DataFrame(),
+        'puts': pd.DataFrame(),
+        'error': error_msg,
+        'source': 'no_data'
+    }
 
 
 def _enrich_chain_data(df: pd.DataFrame, spot_price: float, option_type: str, expiration_date: str = None) -> pd.DataFrame:

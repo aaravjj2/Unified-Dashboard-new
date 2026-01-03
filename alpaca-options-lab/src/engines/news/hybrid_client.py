@@ -617,9 +617,10 @@ class HybridNewsClient:
         if result is None:
             result = self._get_stocktwits_sentiment(symbol)
         
-        # Final fallback to mock
+        # Final fallback - return neutral with clear indication of no data
+        # NO MOCK DATA - user should know when live data is unavailable
         if result is None:
-            result = self._get_mock_sentiment(symbol)
+            result = self._get_neutral_sentiment(symbol, "All APIs unavailable")
         
         # Cache and return
         self._sentiment_cache.set(cache_key, result)
@@ -772,38 +773,23 @@ class HybridNewsClient:
         
         return None
     
-    def _get_mock_sentiment(self, symbol: str) -> SentimentResult:
-        """Generate mock sentiment for testing."""
-        # Use symbol hash for consistent mock data
-        seed = int(hashlib.md5(symbol.encode()).hexdigest()[:8], 16)
-        random.seed(seed + int(time.time() // 3600))  # Change hourly
+    def _get_neutral_sentiment(self, symbol: str, reason: str = "No data") -> SentimentResult:
+        """
+        Return neutral sentiment when no live data is available.
         
-        # Generate realistic-looking mock data
-        base_score = random.uniform(0.3, 0.7)
-        
-        # Add symbol-specific bias
-        symbol_bias = {
-            'NVDA': 0.15,   # Tech generally bullish
-            'TSLA': 0.1,    # Volatile but bullish
-            'SPY': 0.05,    # Market neutral
-            'GLD': -0.05,   # Counter-cyclical
-            'AMD': 0.1,
-            'AAPL': 0.08,
-        }
-        bias = symbol_bias.get(symbol, 0)
-        score = max(0.1, min(0.9, base_score + bias))
-        
-        label = self._score_to_label(score)
+        NOTE: We no longer use mock data - this returns clearly labeled 'no_data' source.
+        """
+        logger.warning(f"⚠️ No sentiment data available for {symbol}: {reason}")
         
         return SentimentResult(
             symbol=symbol,
-            score=score,
-            label=label,
-            source='mock',
-            confidence=0.5,
-            bullish_count=int(score * 100),
-            bearish_count=int((1 - score) * 100),
-            is_mock=True
+            score=0.5,  # Neutral
+            label=f'No Data ({reason})',
+            source='no_data',
+            confidence=0.0,  # Zero confidence
+            bullish_count=0,
+            bearish_count=0,
+            is_mock=False  # Not mock - explicitly no data
         )
     
     @staticmethod

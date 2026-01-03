@@ -1074,7 +1074,7 @@ def _create_watchlist_item(symbol: str, price: float, change: float, change_pct:
 def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
     """
     Create consolidated 4-tab Alpaca Options Lab layout.
-    Phase 15 - Agent-UX Consolidation
+    Phase 15 - Agent-UX Consolidation + Week 2 Enhancements
     
     Workspaces:
     1. Scanner: Market Viz + Flow + Patterns
@@ -1089,7 +1089,20 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
         admin_layout,
     )
     
+    # Import Week 2 CSS injectors
+    try:
+        from src.ui.components.loading_states import inject_loading_css
+        from src.ui.components.buttons import inject_button_css
+        loading_css = inject_loading_css()
+        button_css = inject_button_css()
+    except ImportError:
+        loading_css = html.Style("")
+        button_css = html.Style("")
+    
     return html.Div([
+        # Inject Week 2 CSS for loading states and button hover effects
+        loading_css,
+        button_css,
         # Top bar with ticker input and controls (preserved from original)
         html.Div([
             html.Div([
@@ -1232,6 +1245,7 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
         dcc.Store(id='strategy-engine-refresh-trigger', data=0),
         dcc.Store(id='pattern-data-store', data=[]),  # Phase 15: Pattern detection store
         dcc.Store(id='command-history-store', data=[]),  # Phase 17: Command history
+        dcc.Store(id='workspace-switch-trigger', data=''),  # Workspace hotkey trigger
         dcc.Interval(id='alpaca-auto-load', interval=2000, n_intervals=0, max_intervals=1),
         dcc.Interval(id='auto-refresh-interval', interval=30000, n_intervals=0, disabled=True),
         
@@ -1546,7 +1560,7 @@ def create_enhanced_options_layout(ticker: str = "SPY") -> html.Div:
             
             # Tab 11: Market Viz (Phase 6 - Agent-Viz)
             dcc.Tab(label='📈 Market Viz', children=[
-                create_market_viz_layout(ticker='SPY', use_mock=True)
+                create_market_viz_layout(ticker='SPY', use_mock=False)  # NO MOCK DATA
             ], style={'backgroundColor': '#16181f', 'color': '#fff'},
                selected_style={'backgroundColor': '#2a2d3a', 'color': '#F5C211'}),
             

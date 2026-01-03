@@ -123,7 +123,7 @@ def create_alpaca_options_table(calls_df: pd.DataFrame, puts_df: pd.DataFrame, s
         
         table_data.append(row)
     
-    # Create DataTable with Alpaca-style formatting
+    # Create DataTable with Alpaca-style formatting + BUY buttons
     table = dash_table.DataTable(
         id='alpaca-options-table',
         data=table_data,
@@ -151,6 +151,7 @@ def create_alpaca_options_table(calls_df: pd.DataFrame, puts_df: pd.DataFrame, s
             {'name': 'Vol', 'id': 'put_vol'},
             {'name': 'OI', 'id': 'put_oi', 'type': 'numeric'},
         ],
+        row_selectable='single',  # Enable row selection for buying
         style_table={
             'overflowX': 'auto',
             'maxHeight': '600px',
@@ -220,9 +221,108 @@ def create_alpaca_options_table(calls_df: pd.DataFrame, puts_df: pd.DataFrame, s
         page_action='none',
     )
     
+    # Create trade panel for selected option
+    trade_panel = create_trade_panel()
+    
     return html.Div([
-        table
+        table,
+        trade_panel
     ], style={'marginTop': '20px'})
+
+
+def create_trade_panel() -> html.Div:
+    """Create trade execution panel that appears when an option is selected."""
+    return html.Div([
+        html.Div(id='option-trade-panel', children=[
+            dbc.Card([
+                dbc.CardHeader([
+                    html.H5("📊 Trade Selected Option", className="mb-0"),
+                ], style={'backgroundColor': '#1e2130', 'color': '#ffffff'}),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Option Type:", className="text-muted"),
+                            dbc.RadioItems(
+                                id='trade-option-type',
+                                options=[
+                                    {'label': '📈 CALL', 'value': 'call'},
+                                    {'label': '📉 PUT', 'value': 'put'}
+                                ],
+                                value='call',
+                                inline=True,
+                                className="mb-2"
+                            )
+                        ], md=3),
+                        dbc.Col([
+                            html.Label("Action:", className="text-muted"),
+                            dbc.RadioItems(
+                                id='trade-action',
+                                options=[
+                                    {'label': '🟢 BUY', 'value': 'buy'},
+                                    {'label': '🔴 SELL', 'value': 'sell'}
+                                ],
+                                value='buy',
+                                inline=True,
+                                className="mb-2"
+                            )
+                        ], md=3),
+                        dbc.Col([
+                            html.Label("Quantity:", className="text-muted"),
+                            dbc.Input(
+                                id='trade-quantity',
+                                type='number',
+                                value=1,
+                                min=1,
+                                max=100,
+                                step=1,
+                                style={'backgroundColor': '#2a2d3a', 'color': '#ffffff', 'border': '1px solid #3d4050'}
+                            )
+                        ], md=2),
+                        dbc.Col([
+                            html.Label("Order Type:", className="text-muted"),
+                            dbc.Select(
+                                id='trade-order-type',
+                                options=[
+                                    {'label': 'Market', 'value': 'market'},
+                                    {'label': 'Limit', 'value': 'limit'}
+                                ],
+                                value='limit',
+                                style={'backgroundColor': '#2a2d3a', 'color': '#ffffff', 'border': '1px solid #3d4050'}
+                            )
+                        ], md=2),
+                        dbc.Col([
+                            html.Label("Limit Price:", className="text-muted"),
+                            dbc.Input(
+                                id='trade-limit-price',
+                                type='number',
+                                placeholder='$0.00',
+                                step=0.01,
+                                style={'backgroundColor': '#2a2d3a', 'color': '#ffffff', 'border': '1px solid #3d4050'}
+                            )
+                        ], md=2),
+                    ], className="mb-3"),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div(id='trade-summary', children=[
+                                html.Span("Select an option row above to trade", className="text-muted")
+                            ])
+                        ], md=8),
+                        dbc.Col([
+                            dbc.Button(
+                                [html.I(className="bi bi-cart-check me-2"), "Execute Trade"],
+                                id='execute-trade-btn',
+                                color='success',
+                                size='lg',
+                                className="w-100",
+                                disabled=True
+                            )
+                        ], md=4),
+                    ]),
+                    html.Div(id='trade-result', className="mt-3")
+                ], style={'backgroundColor': '#2a2d3a'})
+            ], style={'backgroundColor': '#1e2130', 'border': '1px solid #3d4050', 'marginTop': '20px'})
+        ], style={'display': 'none'})  # Hidden by default, shown when row selected
+    ])
 
 
 def create_alpaca_header(ticker: str, spot_price: float, timestamp: str) -> html.Div:

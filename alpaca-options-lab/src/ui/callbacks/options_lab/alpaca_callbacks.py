@@ -581,3 +581,183 @@ def refresh_data(n_clicks, ticker):
             'marginTop': '20px', 'padding': '10px', 'borderRadius': '4px',
             'fontSize': '13px', 'backgroundColor': '#3d2a2a', 'color': '#f44336'
         }
+
+
+# =============================================================================
+# TRADE PANEL CALLBACKS - Execute trades on selected options
+# =============================================================================
+
+@callback(
+    [Output('option-trade-panel', 'style'),
+     Output('trade-summary', 'children'),
+     Output('execute-trade-btn', 'disabled'),
+     Output('trade-limit-price', 'value')],
+    [Input('alpaca-options-table', 'selected_rows'),
+     Input('trade-option-type', 'value'),
+     Input('trade-action', 'value'),
+     Input('trade-quantity', 'value')],
+    [State('alpaca-options-store', 'data'),
+     State('alpaca-expiration-dropdown', 'value')]
+)
+def update_trade_panel(selected_rows, option_type, action, quantity, options_data, expiration):
+    """Update trade panel when an option row is selected."""
+    import dash_bootstrap_components as dbc
+    
+    # Hide panel if no selection
+    if not selected_rows or not options_data or not expiration:
+        return {'display': 'none'}, html.Span("Select an option row to trade", className="text-muted"), True, None
+    
+    try:
+        row_idx = selected_rows[0]
+        chains = options_data.get('chains', {})
+        
+        if expiration not in chains:
+            return {'display': 'none'}, html.Span("No chain data", className="text-muted"), True, None
+        
+        chain = chains[expiration]
+        options_list = chain.get('calls' if option_type == 'call' else 'puts', [])
+        
+        # Build combined strike list (same as table order)
+        calls = chain.get('calls', [])
+        puts = chain.get('puts', [])
+        all_strikes = sorted(set([c.get('strike', 0) for c in calls] + [p.get('strike', 0) for p in puts]))
+        
+        if row_idx >= len(all_strikes):
+            return {'display': 'none'}, html.Span("Invalid selection", className="text-muted"), True, None
+        
+        selected_strike = all_strikes[row_idx]
+        
+        # Find the option at this strike
+        option = None
+        for opt in options_list:
+            if opt.get('strike') == selected_strike:
+                option = opt
+                break
+        
+        if not option:
+            return {'display': 'block'}, html.Span(f"No {option_type} at strike ${selected_strike}", className="text-warning"), True, None
+        
+        # Calculate trade details
+        bid = float(option.get('bid', 0))
+        ask = float(option.get('ask', 0))
+        mid = (bid + ask) / 2 if bid and ask else float(option.get('lastPrice', 0))
+        contract_symbol = option.get('contractSymbol', f"{options_data.get('ticker')}_{expiration}_{selected_strike}")
+        
+        # Suggested limit price
+        suggested_price = bid if action == 'sell' else ask
+        
+        # Calculate total cost/credit
+        qty = int(quantity or 1)
+        total_value = qty * mid * 100  # Options are per 100 shares
+        
+        action_label = "BUY" if action == 'buy' else "SELL"
+        type_label = "CALL" if option_type == 'call' else "PUT"
+        
+        summary = html.Div([
+            html.Div([
+                html.Strong(f"{action_label} {qty} {type_label}"),
+                html.Span(f" @ Strike ${selected_strike:.2f}", className="text-muted ms-2"),
+            ]),
+            html.Div([
+                html.Span(f"Contract: ", className="text-muted"),
+                html.Code(contract_symbol, style={'fontSize': '11px'}),
+            ]),
+            html.Div([
+                html.Span(f"Bid: ${bid:.2f} | Ask: ${ask:.2f} | Mid: ${mid:.2f}", className="text-muted"),
+            ]),
+            html.Div([
+                html.Span(f"Est. {'Cost' if action == 'buy' else 'Credit'}: ", className="text-muted"),
+                html.Strong(f"${total_value:.2f}", style={'color': '#4caf50' if action == 'sell' else '#f44336'}),
+            ]),
+        ])
+        
+        return {'display': 'block'}, summary, False, round(suggested_price, 2)
+        
+    except Exception as e:
+        logger.error(f"Trade panel error: {e}")
+        return {'display': 'block'}, html.Span(f"Error: {e}", className="text-danger"), True, None
+
+
+@callback(
+    Output('trade-result', 'children'),
+    [Input('execute-trade-btn', 'n_clicks')],
+    [State('alpaca-options-table', 'selected_rows'),
+     State('trade-option-type', 'value'),
+     State('trade-action', 'value'),
+     State('trade-quantity', 'value'),
+     State('trade-order-type', 'value'),
+     State('trade-limit-price', 'value'),
+     State('alpaca-options-store', 'data'),
+     State('alpaca-expiration-dropdown', 'value')],
+    prevent_initial_call=True
+)
+def execute_trade(n_clicks, selected_rows, option_type, action, quantity, order_type, limit_price, options_data, expiration):
+    """Execute the trade when button is clicked."""
+    import dash_bootstrap_components as dbc
+    
+    if not n_clicks or not selected_rows or not options_data:
+        return None
+    
+    try:
+        from .trading_client import place_option_order
+        
+        row_idx = selected_rows[0]
+        chains = options_data.get('chains', {})
+        chain = chains.get(expiration, {})
+        
+        # Get option details
+        options_list = chain.get('calls' if option_type == 'call' else 'puts', [])
+        calls = chain.get('calls', [])
+        puts = chain.get('puts', [])
+        all_strikes = sorted(set([c.get('strike', 0) for c in calls] + [p.get('strike', 0) for p in puts]))
+        
+        if row_idx >= len(all_strikes):
+            return dbc.Alert("Invalid selection", color="danger")
+        
+        selected_strike = all_strikes[row_idx]
+        
+        # Find the option
+        option = None
+        for opt in options_list:
+            if opt.get('strike') == selected_strike:
+                option = opt
+                break
+        
+        if not option:
+            return dbc.Alert(f"No {option_type} found at strike ${selected_strike}", color="warning")
+        
+        contract_symbol = option.get('contractSymbol', '')
+        current_price = float(option.get('lastPrice', 0))
+        
+        if not contract_symbol:
+            return dbc.Alert("Contract symbol not found", color="danger")
+        
+        # Place the order
+        order, message = place_option_order(
+            symbol=contract_symbol,
+            qty=int(quantity or 1),
+            side=action,
+            order_type=order_type,
+            limit_price=float(limit_price) if limit_price and order_type == 'limit' else None,
+            current_price=current_price,
+            confirmed=True  # User clicked the button = confirmed
+        )
+        
+        if order:
+            return dbc.Alert([
+                html.H6("✅ Order Submitted!", className="alert-heading"),
+                html.P([
+                    html.Strong("Order ID: "), order.id, html.Br(),
+                    html.Strong("Status: "), order.status, html.Br(),
+                    html.Strong("Symbol: "), order.symbol,
+                ])
+            ], color="success", dismissable=True)
+        else:
+            return dbc.Alert([
+                html.H6("❌ Order Failed", className="alert-heading"),
+                html.P(message)
+            ], color="danger", dismissable=True)
+        
+    except Exception as e:
+        logger.error(f"Trade execution error: {e}")
+        return dbc.Alert(f"Error: {str(e)}", color="danger", dismissable=True)

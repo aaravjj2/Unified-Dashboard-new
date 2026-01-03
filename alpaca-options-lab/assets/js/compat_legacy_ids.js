@@ -23,15 +23,24 @@
       const target = document.getElementById(hubId) || document.querySelector('#'+hubId);
       if(!target) return;
 
-      // Clone the target so the legacy id is visible/clickable in the DOM
-      const clone = target.cloneNode(true);
+      // Create a lightweight alias element instead of cloning the full
+      // React-managed node. Cloning React DOM nodes can break reconciliation
+      // and lead to minified React errors in the console. This proxy keeps
+      // only textual content and forwards clicks to the real target.
+      const clone = document.createElement('div');
       clone.id = legacyId;
-      // Ensure clone is visible and not hidden by utility classes
+      // Copy some non-reactive presentation hints but avoid children/event listeners
+      try{
+        clone.className = target.className || '';
+      }catch(e){}
+      clone.setAttribute('data-legacy-alias','true');
       clone.style.display = '';
       clone.style.visibility = 'visible';
       clone.style.opacity = 1;
+      // Keep the textual content in sync
+      try{ clone.textContent = target.innerText || target.textContent || ''; }catch(e){}
 
-      // Forward clicks on the clone to the real target so Dash callbacks fire
+      // Forward clicks on the lightweight alias to the real target so Dash callbacks fire
       clone.addEventListener('click', function(ev){
         try{ target.click(); }catch(e){}
       }, {capture:false});
@@ -39,7 +48,7 @@
       // Keep textual content in sync using a MutationObserver
       const observer = new MutationObserver(function(muts){
         try{
-          clone.innerText = target.innerText;
+          clone.textContent = target.innerText || target.textContent || '';
         }catch(e){}
       });
       observer.observe(target, {childList:true, subtree:true, characterData:true});

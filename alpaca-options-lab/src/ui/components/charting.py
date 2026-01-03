@@ -18,12 +18,16 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # TradingView Lightweight Charts
+# Using enhanced Plotly candlestick charts with TradingView styling
+# dash_tvlwc has React lifecycle bugs with removeSeries - using Plotly instead
 try:
     from dash_tvlwc import Tvlwc
+    # Enable TVLWC if installed - use with caution for dynamic updates
     TVLWC_AVAILABLE = True
+    logging.info("dash_tvlwc available - TradingView charts enabled")
 except ImportError:
     TVLWC_AVAILABLE = False
-    logging.warning("dash_tvlwc not installed. Run: pip install dash-tvlwc")
+    logging.info("dash_tvlwc not installed - using enhanced Plotly charts")
 
 logger = logging.getLogger(__name__)
 
@@ -253,10 +257,11 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
     Render TradingView Lightweight Chart component.
     
     Phase 3: The Cockpit - Fast, professional candlestick charts.
+    NO MOCK DATA - displays error message if no data provided.
     
     Args:
-        df: DataFrame with OHLCV data
-        symbol: Symbol for title/mock data
+        df: DataFrame with OHLCV data (required for chart)
+        symbol: Symbol for title
         height: Chart height in pixels
         chart_id: Unique ID for the chart
         
@@ -267,16 +272,46 @@ def render_tv_chart(df: Optional[pd.DataFrame] = None,
         logger.warning("TradingView charts not available, using Plotly fallback")
         return _render_plotly_fallback(df, symbol, height)
     
-    # Generate or convert data
+    # NO MOCK DATA - if no data provided, show error message
     if df is None or len(df) == 0:
-        df = generate_mock_ohlcv(symbol)
+        return html.Div([
+            html.Div("📊 No Chart Data Available", style={
+                'color': ALPACA_DARK['text'],
+                'fontSize': '18px',
+                'fontWeight': 'bold',
+                'marginBottom': '10px'
+            }),
+            html.Div(f"Unable to fetch price data for {symbol}", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '14px'
+            }),
+            html.Div("Check your data connection or try a different symbol", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '12px',
+                'marginTop': '5px'
+            })
+        ], style={
+            'padding': '40px',
+            'textAlign': 'center',
+            'backgroundColor': ALPACA_DARK['paper'],
+            'borderRadius': '8px',
+            'height': f'{height}px',
+            'display': 'flex',
+            'flexDirection': 'column',
+            'justifyContent': 'center',
+            'alignItems': 'center'
+        })
     
     tv_data = dataframe_to_tv_format(df)
     
     if not tv_data or len(tv_data) == 0:
-        logger.warning(f"No valid chart data for {symbol}, generating mock data")
-        df = generate_mock_ohlcv(symbol)
-        tv_data = dataframe_to_tv_format(df)
+        logger.warning(f"No valid chart data for {symbol} - data conversion failed")
+        return html.Div(f"Chart data conversion failed for {symbol}", style={
+            'color': ALPACA_DARK['text_secondary'],
+            'padding': '20px',
+            'textAlign': 'center',
+            'height': f'{height}px'
+        })
     
     if not tv_data or len(tv_data) == 0:
         return html.Div("No chart data available", style={
@@ -421,44 +456,180 @@ def create_tv_candlestick_chart(symbol: str = "SPY",
 
 
 def _render_plotly_fallback(df: Optional[pd.DataFrame], 
-                            symbol: str,
-                            height: int) -> html.Div:
-    """Fallback to Plotly if TradingView not available."""
+                           symbol: str,
+                           height: int) -> html.Div:
+    """
+    Enhanced Plotly candlestick chart with TradingView-style theming.
+    
+    Features:
+    - Professional dark theme matching TradingView aesthetics
+    - Volume subplot with color-coded bars
+    - Price annotations and crosshair
+    - Responsive design
+    """
     import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
     
-    if df is None:
-        df = generate_mock_ohlcv(symbol)
+    if df is None or len(df) == 0:
+        # Return error message instead of mock data
+        return html.Div([
+            html.Div("📊 Chart Data Required", style={
+                'color': ALPACA_DARK['gold'],
+                'fontSize': '16px',
+                'fontWeight': 'bold',
+                'marginBottom': '10px'
+            }),
+            html.Div(f"No price data available for {symbol}", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '14px'
+            }),
+            html.Div("Load data to view chart", style={
+                'color': ALPACA_DARK['text_secondary'],
+                'fontSize': '12px',
+                'marginTop': '5px'
+            })
+        ], style={
+            'padding': '40px',
+            'textAlign': 'center',
+            'backgroundColor': ALPACA_DARK['paper'],
+            'borderRadius': '8px',
+            'height': f'{height}px',
+            'display': 'flex',
+            'flexDirection': 'column',
+            'justifyContent': 'center',
+            'alignItems': 'center',
+            'border': f"1px solid {ALPACA_DARK['grid']}"
+        })
     
-    fig = go.Figure(data=[
-        go.Candlestick(
-            x=df['timestamp'] if 'timestamp' in df.columns else df.index,
-            open=df['open'],
-            high=df['high'],
-            low=df['low'],
-            close=df['close'],
-            increasing_line_color=ALPACA_DARK['success'],
-            decreasing_line_color=ALPACA_DARK['danger']
+    # Determine time column
+    time_col = 'timestamp' if 'timestamp' in df.columns else df.index
+    
+    # Create subplots for candlestick + volume
+    has_volume = 'volume' in df.columns
+    if has_volume:
+        fig = make_subplots(
+            rows=2, cols=1,
+            shared_xaxes=True,
+            vertical_spacing=0.03,
+            row_heights=[0.7, 0.3]
         )
-    ])
+    else:
+        fig = go.Figure()
     
+    # Candlestick chart
+    candlestick = go.Candlestick(
+        x=time_col if isinstance(time_col, pd.DatetimeIndex) else df[time_col],
+        open=df['open'],
+        high=df['high'],
+        low=df['low'],
+        close=df['close'],
+        increasing_line_color=ALPACA_DARK['success'],
+        decreasing_line_color=ALPACA_DARK['danger'],
+        increasing_fillcolor=ALPACA_DARK['success'],
+        decreasing_fillcolor=ALPACA_DARK['danger'],
+        name='Price',
+        showlegend=False
+    )
+    
+    if has_volume:
+        fig.add_trace(candlestick, row=1, col=1)
+        
+        # Volume bars with color coding
+        colors = [ALPACA_DARK['success'] if c >= o else ALPACA_DARK['danger'] 
+                  for c, o in zip(df['close'], df['open'])]
+        
+        volume_bar = go.Bar(
+            x=time_col if isinstance(time_col, pd.DatetimeIndex) else df[time_col],
+            y=df['volume'],
+            marker_color=colors,
+            opacity=0.7,
+            name='Volume',
+            showlegend=False
+        )
+        fig.add_trace(volume_bar, row=2, col=1)
+        
+        # Update y-axis for volume
+        fig.update_yaxes(
+            title_text="Volume",
+            row=2, col=1,
+            gridcolor=ALPACA_DARK['grid'],
+            showgrid=True,
+            tickformat='.2s'
+        )
+    else:
+        fig.add_trace(candlestick)
+    
+    # Calculate current price and change
+    current_price = df['close'].iloc[-1]
+    prev_price = df['close'].iloc[-2] if len(df) > 1 else current_price
+    price_change = current_price - prev_price
+    price_change_pct = (price_change / prev_price * 100) if prev_price > 0 else 0
+    change_color = ALPACA_DARK['success'] if price_change >= 0 else ALPACA_DARK['danger']
+    
+    # Professional dark theme layout
     fig.update_layout(
         height=height,
         template='plotly_dark',
         plot_bgcolor=ALPACA_DARK['paper'],
         paper_bgcolor=ALPACA_DARK['paper'],
-        font={'color': ALPACA_DARK['text']},
-        xaxis={'rangeslider': {'visible': False}},
-        margin={'l': 20, 'r': 20, 't': 30, 'b': 20}
+        font={'color': ALPACA_DARK['text'], 'family': 'SF Mono, JetBrains Mono, monospace'},
+        title={
+            'text': f"<b>{symbol}</b> ${current_price:.2f} <span style='color:{change_color}'>{price_change:+.2f} ({price_change_pct:+.2f}%)</span>",
+            'font': {'size': 14, 'color': ALPACA_DARK['text']},
+            'x': 0.02,
+            'xanchor': 'left'
+        },
+        xaxis={
+            'rangeslider': {'visible': False},
+            'gridcolor': ALPACA_DARK['grid'],
+            'showgrid': True,
+            'zeroline': False,
+            'type': 'date'
+        },
+        yaxis={
+            'gridcolor': ALPACA_DARK['grid'],
+            'showgrid': True,
+            'zeroline': False,
+            'side': 'right',
+            'tickformat': '.2f'
+        },
+        margin={'l': 10, 'r': 60, 't': 40, 'b': 30},
+        hovermode='x unified',
+        dragmode='pan',
+        showlegend=False
+    )
+    
+    # Add crosshair styling
+    fig.update_xaxes(
+        showspikes=True,
+        spikecolor=ALPACA_DARK['gold'],
+        spikethickness=1,
+        spikedash='dot',
+        spikemode='across'
+    )
+    fig.update_yaxes(
+        showspikes=True,
+        spikecolor=ALPACA_DARK['gold'],
+        spikethickness=1,
+        spikedash='dot'
     )
     
     return html.Div([
-        html.Div(f"⚠️ TradingView charts not available (Plotly fallback)", style={
-            'color': ALPACA_DARK['text_secondary'],
-            'fontSize': '11px',
-            'marginBottom': '8px'
-        }),
-        dcc.Graph(figure=fig, config={'displayModeBar': False})
-    ])
+        dcc.Graph(
+            figure=fig, 
+            config={
+                'displayModeBar': True,
+                'displaylogo': False,
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+                'scrollZoom': True
+            },
+            style={'height': f'{height}px'}
+        )
+    ], style={
+        'backgroundColor': ALPACA_DARK['paper'],
+        'borderRadius': '8px',
+        'border': f"1px solid {ALPACA_DARK['grid']}"
+    })
 
 
 # =============================================================================

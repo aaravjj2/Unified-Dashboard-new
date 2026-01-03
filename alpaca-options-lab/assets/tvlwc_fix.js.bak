@@ -1,0 +1,84 @@
+/**
+ * TradingView Lightweight Charts Fix for Alpaca Options Lab
+ * Resolves 0-width canvas issue and removeSeries errors
+ */
+
+(function () {
+    'use strict';
+
+    console.log("📈 TVLWC Chart Fix v2 initialized");
+
+    // Suppress removeSeries errors
+    const originalError = console.error;
+    console.error = function (msg, ...args) {
+        if (typeof msg === 'string' && msg.includes('Value is undefined')) {
+            console.warn('🛡️ Suppressed TVLWC removeSeries error:', msg);
+            return;
+        }
+        originalError.call(console, msg, ...args);
+    };
+
+    // Function to fix canvas width issues
+    function fixChartCanvases() {
+        const charts = document.querySelectorAll('[id*="chart"], [id*="tvlwc"]');
+        let fixed = 0;
+
+        charts.forEach(chart => {
+            const canvases = chart.querySelectorAll('canvas');
+            if (canvases.length === 0) return;
+
+            const parent = chart.parentElement || chart;
+            const parentWidth = parent.offsetWidth || parent.clientWidth || 600;
+            const parentHeight = parent.offsetHeight || parent.clientHeight || 400;
+
+            canvases.forEach(canvas => {
+                if (canvas.width === 0 || canvas.height === 0) {
+                    // Force canvas to match parent dimensions
+                    canvas.width = parentWidth;
+                    canvas.height = parentHeight;
+                    canvas.style.width = parentWidth + 'px';
+                    canvas.style.height = parentHeight + 'px';
+                    fixed++;
+                    console.log(`🔧 Fixed canvas: ${canvas.width}x${canvas.height}`);
+                }
+            });
+        });
+
+        if (fixed > 0) {
+            console.log(`✅ Fixed ${fixed} canvas element(s)`);
+            // Trigger window resize to force TradingView to redraw
+            window.dispatchEvent(new Event('resize'));
+        }
+    }
+
+    // Run fix on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixChartCanvases);
+    } else {
+        fixChartCanvases();
+    }
+
+    // Re-run fix after Dash updates (when charts might re-render)
+    const observer = new MutationObserver((mutations) => {
+        let shouldFix = false;
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && (node.id?.includes('chart') || node.querySelector?.('[id*="chart"]'))) {
+                    shouldFix = true;
+                }
+            });
+        });
+        if (shouldFix) {
+            setTimeout(fixChartCanvases, 100);
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also fix on tab changes and window resize
+    window.addEventListener('resize', () => setTimeout(fixChartCanvases, 50));
+
+    // Set interval to periodically check (for Dash callback updates)
+    setInterval(fixChartCanvases, 2000);
+
+})();
