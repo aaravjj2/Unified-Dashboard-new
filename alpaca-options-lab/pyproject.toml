@@ -1,0 +1,315 @@
+# ============================================================================
+# Alpaca Options Lab - Python Project Configuration
+# ============================================================================
+# Production-grade options trading infrastructure
+# Based on: Comprehensive Audit & Action Plan Roadmap
+# ============================================================================
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "alpaca-options-lab"
+version = "1.0.0"
+description = "Production-grade options trading infrastructure with real-time Greeks, backtesting, and risk management"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Alpaca Options Lab Team", email = "optionslab@example.com"}
+]
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+keywords = ["options", "trading", "greeks", "backtesting", "alpaca", "finance"]
+
+[project.urls]
+homepage = "https://github.com/alpaca-options-lab"
+documentation = "https://alpaca-options-lab.readthedocs.io"
+repository = "https://github.com/alpaca-options-lab/alpaca-options-lab"
+changelog = "https://github.com/alpaca-options-lab/alpaca-options-lab/blob/main/CHANGELOG.md"
+
+[tool.poetry]
+name = "alpaca-options-lab"
+version = "1.0.0"
+description = "Production-grade options trading infrastructure"
+authors = ["Alpaca Options Lab Team"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+# ==========================================================================
+# Data & Numerical Computing
+# ==========================================================================
+numpy = "^1.24"
+pandas = "^2.0"
+scipy = "^1.10"
+numba = "^0.58"  # JIT compilation for Greeks
+
+# ==========================================================================
+# Options Pricing
+# ==========================================================================
+py_vollib = "^1.0"  # IV & Greeks reference implementation
+
+# ==========================================================================
+# Async & Networking
+# ==========================================================================
+asyncio = "^3.4"
+asyncpg = "^0.28"  # Fast PostgreSQL async driver
+aiohttp = "^3.8"
+websockets = "^11.0"
+aioredis = "^2.0"  # Redis async client
+
+# ==========================================================================
+# Database
+# ==========================================================================
+psycopg2-binary = "^2.9"
+sqlalchemy = "^2.0"
+
+# ==========================================================================
+# Machine Learning & Portfolio Optimization
+# ==========================================================================
+scikit-learn = "^1.3"
+riskfolio-lib = "^5.0"  # HRP, MVO optimization
+
+# ==========================================================================
+# Visualization
+# ==========================================================================
+plotly = "^5.14"
+dash = "^2.14"
+dash-bootstrap-components = "^1.5"
+
+# ==========================================================================
+# Trading APIs
+# ==========================================================================
+alpaca-py = "^0.11"
+
+# ==========================================================================
+# Utilities
+# ==========================================================================
+structlog = "^23.1"  # Structured logging
+pydantic = "^2.0"  # Data validation
+click = "^8.1"  # CLI
+cachetools = "^5.3"  # LRU caching
+python-dateutil = "^2.8"
+pytz = "^2023.3"
+pyyaml = "^6.0"
+
+# ==========================================================================
+# Metrics & Monitoring
+# ==========================================================================
+prometheus-client = "^0.17"
+opentelemetry-api = "^1.20"
+opentelemetry-sdk = "^1.20"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3"
+pytest-asyncio = "^0.21"
+pytest-cov = "^4.1"
+pytest-mock = "^3.11"
+pytest-benchmark = "^4.0"
+black = "^23.3"
+ruff = "^0.0.270"
+mypy = "^1.3"
+pre-commit = "^3.3"
+hypothesis = "^6.80"  # Property-based testing
+factory-boy = "^3.3"  # Test fixtures
+freezegun = "^1.2"  # Time mocking
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.0"
+sphinx-rtd-theme = "^1.3"
+sphinx-autodoc-typehints = "^1.24"
+myst-parser = "^2.0"
+
+# ==========================================================================
+# Tool Configuration
+# ==========================================================================
+
+[tool.black]
+line-length = 100
+target-version = ['py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "S",   # flake8-bandit (security)
+    "A",   # flake8-builtins
+    "COM", # flake8-commas
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "PIE", # flake8-pie
+    "PT",  # flake8-pytest-style
+    "Q",   # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "TCH", # flake8-type-checking
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "PL",  # pylint
+    "TRY", # tryceratops
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "E501",    # line too long (handled by black)
+    "B008",    # do not perform function calls in argument defaults
+    "C901",    # too complex
+    "PLR0913", # too many arguments
+    "S101",    # use of assert detected
+]
+
+[tool.ruff.per-file-ignores]
+"tests/**/*" = ["S101", "PLR2004", "ARG001"]
+"__init__.py" = ["F401"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["src"]
+known_third_party = ["alpaca", "numpy", "pandas", "scipy"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip = [".git", ".venv", "build", "dist"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "alpaca.*",
+    "py_vollib.*",
+    "riskfolio.*",
+    "numba.*",
+    "scipy.*",
+    "plotly.*",
+    "dash.*",
+]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = """
+    -v
+    --strict-markers
+    --strict-config
+    -ra
+    --tb=short
+    --cov=src
+    --cov-report=term-missing
+    --cov-report=html
+    --cov-fail-under=80
+"""
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests requiring live API connection",
+    "e2e: marks end-to-end tests requiring full infrastructure",
+    "benchmark: marks performance benchmarks",
+    "unit: marks unit tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/conftest.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "raise AssertionError",
+    "@abstractmethod",
+    "@abc.abstractmethod",
+]
+fail_under = 80
+show_missing = true
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+# ==========================================================================
+# CLI Scripts
+# ==========================================================================
+
+[project.scripts]
+alpaca-lab = "src.cli:main"
+alpaca-backtest = "src.backtesting.cli:main"
+
+# ==========================================================================
+# Entry Points
+# ==========================================================================
+
+[project.entry-points."alpaca_options_lab.strategies"]
+covered_call = "src.strategies.covered_call:CoveredCallStrategy"
+iron_condor = "src.strategies.iron_condor:IronCondorStrategy"
+wheel = "src.strategies.wheel:WheelStrategy"

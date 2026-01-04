@@ -1,0 +1,218 @@
+# ============================================================================
+# Alpaca Options Lab - Docker Compose Infrastructure
+# ============================================================================
+# Production-grade infrastructure stack with:
+# - TimescaleDB for time-series data
+# - Redis for caching and pub/sub
+# - Prometheus for metrics
+# - Grafana for dashboards
+# 
+# Usage:
+#   docker-compose up -d
+#   docker-compose logs -f timescaledb
+#   docker-compose down -v  # Remove volumes
+# ============================================================================
+
+version: '3.8'
+
+services:
+  # ==========================================================================
+  # TimescaleDB - Time-series optimized PostgreSQL
+  # ==========================================================================
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: alpaca-timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-alpaca}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-alpaca_secret_123}
+      POSTGRES_DB: ${POSTGRES_DB:-alpaca_options}
+      # TimescaleDB tuning
+      TIMESCALEDB_TELEMETRY: "off"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./config/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    shm_size: 1g
+    command: >
+      postgres 
+      -c shared_buffers=2GB
+      -c effective_cache_size=6GB
+      -c maintenance_work_mem=512MB
+      -c work_mem=64MB
+      -c max_connections=200
+      -c max_parallel_workers_per_gather=4
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c wal_buffers=64MB
+      -c min_wal_size=2GB
+      -c max_wal_size=8GB
+      -c checkpoint_completion_target=0.9
+      -c default_statistics_target=100
+      -c timescaledb.max_background_workers=8
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alpaca -d alpaca_options"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+
+  # ==========================================================================
+  # Redis - Caching and pub/sub
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: alpaca-redis
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --tcp-keepalive 60
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+
+  # ==========================================================================
+  # Prometheus - Metrics collection
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: alpaca-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    depends_on:
+      - timescaledb
+
+  # ==========================================================================
+  # Grafana - Dashboards and visualization
+  # ==========================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: alpaca-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-alpaca_grafana_123}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-piechart-panel
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: timescaledb:5432
+      GF_DATABASE_NAME: ${POSTGRES_DB:-alpaca_options}
+      GF_DATABASE_USER: ${POSTGRES_USER:-alpaca}
+      GF_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-alpaca_secret_123}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    depends_on:
+      - prometheus
+      - timescaledb
+
+  # ==========================================================================
+  # pgAdmin - Database administration (optional)
+  # ==========================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: alpaca-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@alpaca.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-alpaca_admin_123}
+      PGADMIN_CONFIG_SERVER_MODE: "True"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    depends_on:
+      - timescaledb
+    profiles:
+      - dev  # Only start with --profile dev
+
+  # ==========================================================================
+  # Node Exporter - System metrics (optional)
+  # ==========================================================================
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: alpaca-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - alpaca-network
+    profiles:
+      - monitoring
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  alpaca-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  timescale_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  pgadmin_data:
+    driver: local

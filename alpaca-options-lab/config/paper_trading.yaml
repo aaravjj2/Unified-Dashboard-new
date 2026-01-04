@@ -1,0 +1,84 @@
+# Alpaca Options Lab - Paper Trading Configuration
+# ================================================
+
+app:
+  name: "alpaca-options-lab"
+  environment: "paper"
+  debug: false
+  log_level: "INFO"
+
+database:
+  host: "${DB_HOST:-localhost}"
+  port: 5432
+  name: "options_lab_paper"
+  user: "${DB_USER:-postgres}"
+  password: "${DB_PASSWORD}"
+  pool:
+    min_size: 5
+    max_size: 20
+    max_overflow: 5
+    pool_timeout: 30
+    pool_recycle: 1800
+  timescale:
+    enabled: true
+    compression_after: "7 days"
+    retention: "180 days"
+
+alpaca:
+  api_key: "${ALPACA_API_KEY}"
+  api_secret: "${ALPACA_API_SECRET}"
+  base_url: "https://paper-api.alpaca.markets"
+  data_url: "https://data.alpaca.markets"
+  websocket_url: "wss://stream.data.alpaca.markets"
+  rate_limit:
+    requests_per_minute: 200
+    burst_size: 50
+
+pricing:
+  default_risk_free_rate: 0.05
+  default_dividend_yield: 0.0
+  greeks_cache:
+    enabled: true
+    ttl_seconds: 45
+    max_size: 200000
+  iv_solver:
+    max_iterations: 100
+    tolerance: 1e-9
+
+risk:
+  limits:
+    max_portfolio_delta: 750
+    max_position_size: 75
+    max_single_option_contracts: 40
+    max_portfolio_vega: 40000
+    max_daily_loss: 0.015  # 1.5% of portfolio
+    margin_utilization_warning: 0.65
+    margin_utilization_critical: 0.80
+  monitoring:
+    check_interval_seconds: 20
+    alert_cooldown_seconds: 180
+
+backtesting:
+  default_commission: 0.65
+  default_slippage: 0.01
+  max_concurrent_backtests: 6
+  cache_market_data: true
+
+logging:
+  format: "json"
+  correlation_id: true
+  handlers:
+    - type: "console"
+      level: "INFO"
+    - type: "file"
+      level: "DEBUG"
+      path: "logs/paper_trading.log"
+      max_bytes: 20971520  # 20MB
+      backup_count: 7
+
+metrics:
+  enabled: true
+  prometheus:
+    enabled: true
+    port: 9090
+  export_interval_seconds: 15

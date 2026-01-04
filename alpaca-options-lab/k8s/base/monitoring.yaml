@@ -1,0 +1,245 @@
+# Prometheus ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: alpaca-options-monitor
+  namespace: alpaca-options
+  labels:
+    app: alpaca-options
+spec:
+  selector:
+    matchLabels:
+      app: api-server
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+# Grafana Dashboard ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-trading
+  namespace: alpaca-options
+  labels:
+    grafana_dashboard: "true"
+data:
+  trading-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "Alpaca Options Trading Dashboard",
+        "panels": [
+          {
+            "title": "API Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{namespace=\"alpaca-options\"}[5m])",
+                "legendFormat": "{{method}} {{path}}"
+              }
+            ]
+          },
+          {
+            "title": "Active Positions",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "trading_active_positions{namespace=\"alpaca-options\"}"
+              }
+            ]
+          },
+          {
+            "title": "Portfolio Value",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "trading_portfolio_value{namespace=\"alpaca-options\"}"
+              }
+            ]
+          },
+          {
+            "title": "Daily P&L",
+            "type": "gauge",
+            "targets": [
+              {
+                "expr": "trading_daily_pnl{namespace=\"alpaca-options\"}"
+              }
+            ]
+          },
+          {
+            "title": "Order Fill Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(trading_orders_filled_total{namespace=\"alpaca-options\"}[5m])"
+              }
+            ]
+          },
+          {
+            "title": "Greeks Exposure",
+            "type": "table",
+            "targets": [
+              {
+                "expr": "trading_portfolio_delta{namespace=\"alpaca-options\"}",
+                "legendFormat": "Delta"
+              },
+              {
+                "expr": "trading_portfolio_gamma{namespace=\"alpaca-options\"}",
+                "legendFormat": "Gamma"
+              },
+              {
+                "expr": "trading_portfolio_theta{namespace=\"alpaca-options\"}",
+                "legendFormat": "Theta"
+              },
+              {
+                "expr": "trading_portfolio_vega{namespace=\"alpaca-options\"}",
+                "legendFormat": "Vega"
+              }
+            ]
+          }
+        ]
+      }
+    }
+---
+# Alert Rules
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alpaca-options-alerts
+  namespace: alpaca-options
+spec:
+  groups:
+  - name: trading-alerts
+    rules:
+    - alert: HighDailyLoss
+      expr: trading_daily_pnl{namespace="alpaca-options"} < -2500
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High daily loss detected"
+        description: "Daily P&L is {{ $value }}, exceeding warning threshold"
+    
+    - alert: KillSwitchActivated
+      expr: trading_kill_switch_active{namespace="alpaca-options"} == 1
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Kill switch has been activated"
+        description: "Trading has been halted due to kill switch activation"
+    
+    - alert: APIHighErrorRate
+      expr: rate(http_requests_total{namespace="alpaca-options", status=~"5.."}[5m]) / rate(http_requests_total{namespace="alpaca-options"}[5m]) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High API error rate"
+        description: "Error rate is {{ $value | humanizePercentage }}"
+    
+    - alert: HighLatency
+      expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{namespace="alpaca-options"}[5m])) > 2
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High API latency"
+        description: "P99 latency is {{ $value }}s"
+    
+    - alert: DatabaseConnectionIssue
+      expr: pg_up{namespace="alpaca-options"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "PostgreSQL connection lost"
+        description: "Cannot connect to PostgreSQL database"
+    
+    - alert: RedisConnectionIssue
+      expr: redis_up{namespace="alpaca-options"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Redis connection lost"
+        description: "Cannot connect to Redis"
+    
+    - alert: HighMemoryUsage
+      expr: container_memory_usage_bytes{namespace="alpaca-options"} / container_spec_memory_limit_bytes{namespace="alpaca-options"} > 0.9
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory usage"
+        description: "Pod {{ $labels.pod }} memory usage is {{ $value | humanizePercentage }}"
+    
+    - alert: PodRestartLoop
+      expr: rate(kube_pod_container_status_restarts_total{namespace="alpaca-options"}[15m]) > 0.5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod in restart loop"
+        description: "Pod {{ $labels.pod }} is restarting frequently"
+
+  - name: market-hours-alerts
+    rules:
+    - alert: TradingEngineDown
+      expr: up{job="trading-engine", namespace="alpaca-options"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Trading engine is down"
+        description: "Trading engine pod is not responding"
+    
+    - alert: NoOrdersProcessed
+      expr: rate(trading_orders_total{namespace="alpaca-options"}[15m]) == 0 and day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 13 and hour() < 20
+      for: 30m
+      labels:
+        severity: warning
+      annotations:
+        summary: "No orders during market hours"
+        description: "No orders have been processed in the last 30 minutes during market hours"
+---
+# Loki for logs (optional)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+  namespace: alpaca-options
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+
+    positions:
+      filename: /tmp/positions.yaml
+
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - alpaca-options
+        pipeline_stages:
+          - json:
+              expressions:
+                level: level
+                message: message
+                timestamp: timestamp
+          - labels:
+              level:
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace

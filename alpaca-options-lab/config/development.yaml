@@ -1,0 +1,84 @@
+# Alpaca Options Lab - Development Configuration
+# ===============================================
+
+app:
+  name: "alpaca-options-lab"
+  environment: "development"
+  debug: true
+  log_level: "DEBUG"
+
+database:
+  host: "localhost"
+  port: 5432
+  name: "options_lab_dev"
+  user: "postgres"
+  password: "${DB_PASSWORD:-devpassword}"
+  pool:
+    min_size: 2
+    max_size: 10
+    max_overflow: 5
+    pool_timeout: 30
+    pool_recycle: 1800
+  timescale:
+    enabled: true
+    compression_after: "7 days"
+    retention: "90 days"
+
+alpaca:
+  api_key: "${ALPACA_API_KEY}"
+  api_secret: "${ALPACA_API_SECRET}"
+  base_url: "https://paper-api.alpaca.markets"
+  data_url: "https://data.alpaca.markets"
+  websocket_url: "wss://stream.data.alpaca.markets"
+  rate_limit:
+    requests_per_minute: 200
+    burst_size: 50
+
+pricing:
+  default_risk_free_rate: 0.05
+  default_dividend_yield: 0.0
+  greeks_cache:
+    enabled: true
+    ttl_seconds: 60
+    max_size: 100000
+  iv_solver:
+    max_iterations: 100
+    tolerance: 1e-8
+
+risk:
+  limits:
+    max_portfolio_delta: 1000
+    max_position_size: 100
+    max_single_option_contracts: 50
+    max_portfolio_vega: 50000
+    max_daily_loss: 0.02  # 2% of portfolio
+    margin_utilization_warning: 0.70
+    margin_utilization_critical: 0.85
+  monitoring:
+    check_interval_seconds: 30
+    alert_cooldown_seconds: 300
+
+backtesting:
+  default_commission: 0.65  # Per contract
+  default_slippage: 0.01  # 1% of bid-ask spread
+  max_concurrent_backtests: 4
+  cache_market_data: true
+
+logging:
+  format: "json"
+  correlation_id: true
+  handlers:
+    - type: "console"
+      level: "DEBUG"
+    - type: "file"
+      level: "INFO"
+      path: "logs/options_lab.log"
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+
+metrics:
+  enabled: true
+  prometheus:
+    enabled: true
+    port: 9090
+  export_interval_seconds: 15

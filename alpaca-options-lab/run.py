@@ -157,6 +157,30 @@ def register_all_callbacks(app):
         print("  ✅ Trade Ops callbacks registered")
     except Exception as e:
         print(f"  ⚠️ Trade Ops: {e}")
+
+    # Phase 3 Dashboard Callbacks
+    try:
+        from src.ui.callbacks.phase3_callbacks import register_phase3_callbacks
+        register_phase3_callbacks(app)
+        print("  ✅ Phase 3 callbacks registered")
+    except Exception as e:
+        print(f"  ⚠️ Phase 3 callbacks: {e}")
+    
+    # Additional UI component callbacks
+    try:
+        from src.ui.callbacks.phase3_extra_callbacks import register_phase3_extra_callbacks
+        register_phase3_extra_callbacks(app)
+        print("  ✅ Phase 3 extra callbacks registered")
+    except Exception as e:
+        print(f"  ⚠️ Phase 3 extra callbacks: {e}")
+    
+    # Deep-Tech Stack Dashboard Callbacks (LOB, Charts, Agents, Events)
+    try:
+        from src.ui.callbacks.deeptech_callbacks import register_deeptech_callbacks
+        register_deeptech_callbacks(app)
+        print("  ✅ Deep-Tech Stack callbacks registered")
+    except Exception as e:
+        print(f"  ⚠️ Deep-Tech callbacks: {e}")
     
     # Research Lab callbacks
     try:

@@ -1305,6 +1305,55 @@ def admin_layout() -> html.Div:
     )
 
 
+# ===========================================================================
+# DEEP-TECH LAYOUT
+# ===========================================================================
+
+def deeptech_layout() -> html.Div:
+    """
+    Deep-Tech Workspace: LOB, Charts, Agents, Events.
+    
+    Contains advanced components from the Deep-Tech Stack roadmap:
+    - Limit Order Book (LOB) Microstructure visualization
+    - TradingView-style candlestick charts
+    - Agent workflow visualization (LangGraph)
+    - Event queue monitoring (EDA)
+    """
+    try:
+        from src.ui.components.deeptech_dashboard import create_deeptech_dashboard_layout
+        return create_deeptech_dashboard_layout()
+    except ImportError:
+        # Fallback if the component isn't available
+        return html.Div([
+            html.H3("🔬 Deep-Tech Stack Dashboard", className="text-warning"),
+            html.P("Deep-Tech components are loading...", className="text-muted"),
+            html.Div([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("LOB Microstructure", className="card-title"),
+                        html.P("Limit Order Book visualization coming soon...")
+                    ])
+                ], className="mb-3"),
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("TradingView Charts", className="card-title"),
+                        html.P("Interactive candlestick charts coming soon...")
+                    ])
+                ], className="mb-3"),
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Agent Workflow", className="card-title"),
+                        html.P("LangGraph agent visualization coming soon...")
+                    ])
+                ], className="mb-3"),
+            ])
+        ], style={
+            "padding": "24px",
+            "backgroundColor": ALPACA_DARK["bg"],
+            "minHeight": "100vh",
+        })
+
+
 # =============================================================================
 # WORKSPACE REGISTRY
 # =============================================================================
@@ -1327,6 +1376,12 @@ WORKSPACE_REGISTRY = {
         "layout": command_layout,
         "description": "Positions, Risk, Execution",
         "color": "danger",
+    },
+    "deeptech": {
+        "label": "🔬 Deep-Tech",
+        "layout": deeptech_layout,
+        "description": "LOB, Charts, Agents, Events",
+        "color": "primary",
     },
     "admin": {
         "label": "🔧 Admin",
