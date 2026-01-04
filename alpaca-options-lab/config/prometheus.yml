@@ -1,0 +1,117 @@
+# ============================================================================
+# Alpaca Options Lab - Prometheus Configuration
+# ============================================================================
+# Metrics collection for:
+# - Application metrics (via Python prometheus_client)
+# - Database metrics (pg_exporter)
+# - System metrics (node_exporter)
+# - Redis metrics
+# ============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: 'development'
+    service: 'alpaca-options-lab'
+
+# Alertmanager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+          # - alertmanager:9093
+
+# Rule files (optional)
+rule_files:
+  # - "alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # ==========================================================================
+  # Prometheus self-monitoring
+  # ==========================================================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: /metrics
+
+  # ==========================================================================
+  # Alpaca Options Lab Application
+  # ==========================================================================
+  - job_name: 'alpaca-options-lab'
+    static_configs:
+      - targets: ['host.docker.internal:8053']  # Main app
+        labels:
+          app: 'options-lab'
+          component: 'dashboard'
+      - targets: ['host.docker.internal:8054']  # Optional: additional services
+        labels:
+          app: 'options-lab'
+          component: 'api'
+    metrics_path: /metrics
+    scrape_interval: 10s
+
+  # ==========================================================================
+  # PostgreSQL/TimescaleDB
+  # ==========================================================================
+  - job_name: 'timescaledb'
+    static_configs:
+      - targets: ['timescaledb:5432']
+        labels:
+          database: 'alpaca_options'
+    # Note: Requires pg_exporter sidecar or direct postgres metrics
+
+  # ==========================================================================
+  # Redis
+  # ==========================================================================
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+        labels:
+          cache: 'greeks'
+
+  # ==========================================================================
+  # Node Exporter (system metrics)
+  # ==========================================================================
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # ==========================================================================
+  # Custom metrics endpoints
+  # ==========================================================================
+  - job_name: 'greeks-calculator'
+    static_configs:
+      - targets: ['host.docker.internal:8055']
+    metrics_path: /metrics
+    scrape_interval: 5s
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'greeks_.*'
+        action: keep
+
+  - job_name: 'feed-handler'
+    static_configs:
+      - targets: ['host.docker.internal:8056']
+    metrics_path: /metrics
+    scrape_interval: 5s
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: '(feed_|websocket_|tick_).*'
+        action: keep
+
+# ============================================================================
+# Remote write (optional - for long-term storage)
+# ============================================================================
+# remote_write:
+#   - url: "http://mimir:9009/api/v1/push"
+#     queue_config:
+#       max_samples_per_send: 1000
+#       batch_send_deadline: 5s
+
+# ============================================================================
+# Remote read (optional)
+# ============================================================================
+# remote_read:
+#   - url: "http://mimir:9009/prometheus/api/v1/read"

@@ -1087,6 +1087,7 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
         strategy_layout,
         command_layout,
         admin_layout,
+        deeptech_layout,
     )
     
     return html.Div([
@@ -1167,7 +1168,7 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
                 ),
                 
                 # Phase 15 indicator
-                dbc.Badge("4-Tab UX", color="warning", className="ms-3"),
+                dbc.Badge("5-Tab UX", color="warning", className="ms-3"),
             ], style={'display': 'flex', 'alignItems': 'center', 'flexWrap': 'wrap'})
         ], style={
             'padding': '15px',
@@ -1208,7 +1209,16 @@ def create_consolidated_options_layout(ticker: str = "SPY") -> html.Div:
                     selected_style={'backgroundColor': '#2a2d3a', 'color': '#ff5722'}
                 ),
                 
-                # Tab 4: Admin Workspace
+                # Tab 4: Deep-Tech Workspace (NEW)
+                dcc.Tab(
+                    label='🔬 Deep-Tech',
+                    value='deeptech-workspace-tab',
+                    children=[deeptech_layout()],
+                    style={'backgroundColor': '#16181f', 'color': '#fff'},
+                    selected_style={'backgroundColor': '#2a2d3a', 'color': '#00bcd4'}
+                ),
+                
+                # Tab 5: Admin Workspace
                 dcc.Tab(
                     label='🔧 Admin',
                     value='admin-workspace-tab',

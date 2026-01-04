@@ -1047,106 +1047,38 @@ def command_layout() -> html.Div:
     Central hub for position management and trade execution.
     """
     try:
-        from financial_dashboard.tabs.options_lab.alpaca_ui_enhanced import (
-            create_positions_panel,
-            create_risk_analytics_panel,
-            create_flow_analysis_panel,
-        )
-        from tradeops_ui.tabs.trade_ops import create_trade_ops_tab
-        
-        positions_panel = create_positions_panel()
-        risk_panel = create_risk_analytics_panel()
-        flow_panel = create_flow_analysis_panel()
-        trade_ops = create_trade_ops_tab()
+        # Phase 3: Use the new Production Dashboard
+        from src.ui.components.phase3_dashboard import create_phase3_dashboard_layout
+        return create_phase3_dashboard_layout()
         
     except ImportError as e:
-        logger.error(f"Error importing command components: {e}")
-        positions_panel = html.Div("Positions loading...", id="positions-placeholder",
-                                  className="skeleton", style={"height": "300px", "borderRadius": "8px"})
-        risk_panel = html.Div("Risk loading...", id="risk-placeholder",
-                             className="skeleton", style={"height": "250px", "borderRadius": "8px"})
-        flow_panel = html.Div("Flow loading...", id="flow-placeholder",
-                             className="skeleton", style={"height": "300px", "borderRadius": "8px"})
-        trade_ops = html.Div("Trade Ops loading...", id="tradeops-placeholder",
-                            className="skeleton", style={"height": "400px", "borderRadius": "8px"})
+        logger.error(f"Error importing Phase 3 dashboard: {e}")
+        return html.Div(f"Error loading Phase 3 Dashboard: {e}", className="alert alert-danger")
+
+
+# ===========================================================================
+# DEEP-TECH STACK LAYOUT (NEW)
+# ===========================================================================
+
+def deeptech_layout() -> html.Div:
+    """
+    Deep-Tech Workspace: LOB Microstructure, TradingView Charts, Agent Workflow, Event Queue.
     
-    return html.Div(
-        id="command-workspace",
-        className="fade-in",
-        **{'data-test-id': 'command-workspace'},
-        children=[
-            # Header
-            create_workspace_header(
-                title="Command Center",
-                icon="🎮",
-                subtitle="Position management & trade execution",
-                badges=[
-                    {"text": "POSITIONS", "color": "primary"},
-                    {"text": "RISK", "color": "danger"},
-                    {"text": "EXECUTE", "color": "success"},
-                ]
-            ),
-            
-            # Portfolio Summary Metrics
-            html.Div([
-                create_metric_card("Net P/L", "+$2,450", "Today", "success", "💰"),
-                create_metric_card("Delta", "-125", "Shares Eq.", "warning", "Δ"),
-                create_metric_card("Theta", "+$85", "Per Day", "success", "Θ"),
-                create_metric_card("Risk Score", "LOW", "3 Positions", "success", "⚠️"),
-            ], style=METRIC_GRID_STYLE, **{'data-test-id': 'command-portfolio-metrics'}),
-            
-            # Sub-tabs
-            dcc.Tabs(
-                id="command-sub-tabs",
-                value="positions-tab",
-                **{'data-test-id': 'command-sub-tabs'},
-                children=[
-                    dcc.Tab(
-                        label="💼 Positions",
-                        value="positions-tab",
-                        **{'data-test-id': 'command-positions-tab'},
-                        children=[
-                            html.Div(
-                                children=[positions_panel],
-                                style={"padding": "20px"},
-                                **{'data-test-id': 'positions-panel'}
-                            )
-                        ],
-                        style=TAB_STYLE,
-                        selected_style=TAB_SELECTED_STYLE
-                    ),
-                    dcc.Tab(
-                        label="⚠️ Risk & P/L",
-                        value="risk-tab",
-                        **{'data-test-id': 'command-risk-tab'},
-                        children=[
-                            html.Div(
-                                children=[risk_panel, flow_panel],
-                                style={"padding": "20px"},
-                                **{'data-test-id': 'risk-panel'}
-                            )
-                        ],
-                        style=TAB_STYLE,
-                        selected_style=TAB_SELECTED_STYLE
-                    ),
-                    dcc.Tab(
-                        label="⚙️ Trade Ops",
-                        value="tradeops-tab",
-                        **{'data-test-id': 'command-tradeops-tab'},
-                        children=[trade_ops],
-                        style=TAB_STYLE,
-                        selected_style=TAB_SELECTED_STYLE
-                    ),
-                ],
-                style={"marginBottom": "16px"}
-            ),
-        ],
-        style={
-            "padding": "24px",
-            "backgroundColor": ALPACA_DARK["bg"],
-            "minHeight": "100vh",
-        }
-    )
+    Advanced quantitative infrastructure featuring:
+    - Limit Order Book (LOB) visualization
+    - Interactive TradingView-style charts
+    - LangGraph Agent workflow monitoring
+    - Event-driven architecture monitor
+    
+    Reference: Deep-Tech Stack Roadmap
+    """
+    try:
+        from src.ui.components.deeptech_dashboard import create_deeptech_dashboard_layout
+        return create_deeptech_dashboard_layout()
+        
+    except ImportError as e:
+        logger.error(f"Error importing Deep-Tech dashboard: {e}")
+        return html.Div(f"Error loading Deep-Tech Dashboard: {e}", className="alert alert-danger")
 
 
 # ===========================================================================
@@ -1460,6 +1392,12 @@ WORKSPACE_REGISTRY = {
         "layout": command_layout,
         "description": "Positions, Risk, Execution",
         "color": "danger",
+    },
+    "deeptech": {
+        "label": "🔬 Deep-Tech",
+        "layout": deeptech_layout,
+        "description": "LOB, Charts, Agents, Events",
+        "color": "primary",
     },
     "admin": {
         "label": "🔧 Admin",

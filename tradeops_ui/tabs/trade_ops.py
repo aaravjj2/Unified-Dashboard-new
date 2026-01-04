@@ -22,6 +22,12 @@ except ImportError:
         from alpaca_options_lab.src.ui.components.buttons import create_button
     except ImportError:
         def create_button(button_id, text, **kwargs):
+            # Convert variant to color for dbc.Button compatibility
+            if 'variant' in kwargs:
+                kwargs['color'] = kwargs.pop('variant')
+            # Remove unsupported kwargs
+            for unsupported in ['full_width', 'loading', 'tooltip']:
+                kwargs.pop(unsupported, None)
             return dbc.Button(text, id=button_id, **kwargs)
 
 from tradeops_ui.components.alerts import create_alerts_feed

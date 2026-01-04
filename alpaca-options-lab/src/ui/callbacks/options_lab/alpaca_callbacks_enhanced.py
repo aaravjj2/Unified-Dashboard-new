@@ -159,7 +159,7 @@ def register_enhanced_callbacks(app):
                 surface = greeks_engine.surface_builder.build_surface(
                     ticker=options_data.get('ticker', 'SPY'),
                     spot_price=spot_price,
-                    options_data=flat_options
+                    chain_data=flat_options
                 )
                 
                 # Create 3D Surface Plot

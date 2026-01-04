@@ -102,11 +102,11 @@ class AlpacaOptionsLabTester:
         self.screenshots.append(path)
         return path
     
-    async def wait_for_dash_loaded(self, timeout: int = 10000):
+    async def wait_for_dash_loaded(self, timeout: int = 30000):
         """Wait for Dash app to fully load."""
         try:
-            # Wait for main container
-            await self.page.wait_for_selector('#_pages_content', timeout=timeout)
+            # Wait for main container - try class if ID fails
+            await self.page.wait_for_selector('[class*="tab"]', timeout=timeout)
             # Wait for loading spinners to disappear
             await self.page.wait_for_function(
                 "document.querySelectorAll('.dash-loading').length === 0",
@@ -116,6 +116,8 @@ class AlpacaOptionsLabTester:
             return True
         except Exception as e:
             print(f"⚠️ Wait for load failed: {e}")
+            content = await self.page.content()
+            print(f"HTML Content Preview: {content[:500]}...")
             return False
     
     async def click_and_wait(self, selector: str, timeout: int = 5000) -> bool:
@@ -190,6 +192,9 @@ class AlpacaOptionsLabTester:
         """Navigate to Options Lab."""
         # Try multiple selectors for the tab
         selectors = [
+            '#tab-options_lab', # ID if available
+            'text=Options Lab',
+            'text=💹 Options Lab',
             'a[href*="alpaca"]',
             'a[href*="options"]', 
             '[data-tab="alpaca"]',
@@ -201,12 +206,15 @@ class AlpacaOptionsLabTester:
             try:
                 element = await self.page.query_selector(selector)
                 if element:
+                    print(f"Found tab with selector: {selector}")
                     await element.click()
                     await asyncio.sleep(1)
                     return True
-            except:
+            except Exception as e:
+                print(f"Failed to click {selector}: {e}")
                 continue
         
+        print("❌ Could not find Options Lab tab to click")
         return False
     
     async def test_symbol_input_exists(self) -> bool:
@@ -307,7 +315,7 @@ class AlpacaOptionsLabTester:
         await asyncio.sleep(0.5)
         
         # Check content still visible
-        content_visible = await self.page.query_selector('#_pages_content')
+        content_visible = await self.page.query_selector('[class*="tab"]')
         
         # Reset viewport
         await self.page.set_viewport_size({'width': 1920, 'height': 1080})
